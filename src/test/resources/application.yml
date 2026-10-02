@@ -1,0 +1,13 @@
+# Fail closed if a database-backed test forgets the isolated PostgreSQL initializer.
+# Never interpolate the developer's DB_URL, DB_USERNAME or DB_PASSWORD.
+spring:
+  datasource:
+    url: jdbc:postgresql://127.0.0.1:1/test_initializer_required
+    username: isolated_test_only
+    password: unused
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+  flyway:
+    enabled: true
