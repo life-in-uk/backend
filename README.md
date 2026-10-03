@@ -45,7 +45,7 @@ After Maven dependencies have been cached, the tests can run offline.
 ## Ingestion and evidence foundation (Issue #4)
 
 Flyway V2 adds evidence-owned `ingestion_run` and `evidence_artifact`. This slice
-records history only: no acquisition, parsing, scheduling or API is implemented.
+records history only; acquisition is connected separately in Issue #6 below.
 `QualifiedSourceEndpoints.requireQualified(id)` is a source-owned read boundary;
 source repositories remain package-private. Both the run factory and database
 insertion require an existing qualified, enabled endpoint and enabled source.
@@ -81,3 +81,49 @@ response headers are added without an acquisition consumer requiring them.
 Evidence tests use the same isolated PostgreSQL initializer as source tests and
 fixture bytes only. The source schema inventory test now expects both migrations
 and all four foundation tables; accepted V1 and source behaviour remain intact.
+
+## Controlled Bank Holidays acquisition (Issue #6)
+
+`BankHolidaysAcquisition.acquire()` is an internal, parameterless application
+capability. It is not invoked on startup, exposed by a controller, or scheduled.
+Each call performs one attempt, without application retry/backoff. It neither
+reads nor changes polling eligibility/frequency policy.
+
+The source-owned `requireBankHolidays()` lookup resolves the expected configured
+endpoint and requires qualification, endpoint/source enablement, and the approved
+source identity/URL. Acquisition does not create, qualify or enable configuration.
+The GET destination comes from that endpoint; there is no caller URL argument,
+runtime destination override, or second URL literal in acquisition code.
+
+Java 21 `HttpClient` uses a 5-second connection timeout and 20-second whole-response
+deadline covering headers and body. Redirects are never followed. Requests identify
+as `LifeInUK/0.0.1 (Bank Holidays acquisition)`, accept `application/json`, and request
+identity encoding. Only HTTP 200 with exactly one valid `application/json`
+Content-Type (parameters allowed; max 200 characters), identity/no content encoding,
+and a non-empty body is accepted. Other statuses, media types, compressed responses
+and empty bodies fail. JSON syntax and Bank Holidays content are not interpreted.
+
+The maximum response body is **1 MiB (1,048,576 bytes)**, allowing ample room for a
+small calendar JSON document. Both declared length and actually received bytes are
+checked; chunked responses cannot bypass the cap. No decoding, decompression,
+normalization or reserialization occurs. The original Content-Type is retained.
+The artifact constructor hashes exactly the stored bytes; PostgreSQL independently
+checks SHA-256, with no deduplication across observations.
+
+The acquisition boundary rejects an ambient database transaction. Source resolution
+and STARTED persistence use short transactions; HTTP runs with no DB transaction.
+Evidence insert and SUCCESS completion commit atomically in another short
+transaction. Failure recording uses a separate short transaction, with fixed bounded
+messages/categories for HTTP, network, timeout, size, response characteristics,
+interruption and evidence persistence failures. Response/error dumps are not stored.
+If failure recording is unavailable or commit outcome is uncertain, an exception
+propagates; the application does not invent a terminal outcome. A persisted STARTED
+run may require later operator investigation; no recovery workflow is added here.
+
+Automated acquisition tests use a local JDK HTTP server, real Java HTTP transport,
+and the accepted isolated PostgreSQL harness in a separate test schema. A test-only
+client redirects the original configured request to loopback and asserts its original
+destination; there is no production target override. Tests cover raw-byte fidelity,
+qualification, HTTP contract, limits, deadlines (including stalled body), redirect
+rejection, transaction boundaries, persistence rollback and independent observations.
+No automated test accesses GOV.UK or requires internet.

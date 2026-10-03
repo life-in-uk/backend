@@ -14,12 +14,28 @@ public class QualifiedSourceEndpoints {
     }
 
     @Transactional(readOnly = true)
+    public SourceEndpoint requireBankHolidays() {
+        SourceEndpoint endpoint = endpoints.findByKey(SourceEndpoint.BANK_HOLIDAYS_KEY)
+                .orElseThrow(() -> new IllegalArgumentException("Bank Holidays endpoint does not exist"));
+        requireEligible(endpoint);
+        if (!Source.BANK_HOLIDAYS_KEY.equals(endpoint.getSource().getKey())
+                || !SourceEndpoint.BANK_HOLIDAYS_URL.equals(endpoint.getUrl())) {
+            throw new IllegalStateException("Bank Holidays endpoint must retain its approved identity");
+        }
+        return endpoint;
+    }
+
+    @Transactional(readOnly = true)
     public SourceEndpoint requireQualified(UUID id) {
         SourceEndpoint endpoint = endpoints.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Source endpoint does not exist"));
+        requireEligible(endpoint);
+        return endpoint;
+    }
+
+    private void requireEligible(SourceEndpoint endpoint) {
         if (!endpoint.isQualifiedAndEnabled()) {
             throw new IllegalStateException("Source endpoint must be qualified and enabled");
         }
-        return endpoint;
     }
 }
