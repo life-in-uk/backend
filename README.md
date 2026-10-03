@@ -155,3 +155,57 @@ No durable interpreted records are required by Issue #8 or the accepted current
 architecture. Interpretation remains in memory; durable domain/publication
 persistence is intentionally deferred. No Flyway migration or parser repository
 is added. Parser fixtures are authored offline and never read development evidence.
+
+## Read-only Bank Holidays API (Issue #10)
+
+`GET /api/bank-holidays` reads existing evidence through `BankHolidaysQuery` and
+an evidence-owned `BankHolidaysEvidence` selection boundary, then reuses the
+accepted parser. GET never invokes acquisition, qualification or scheduling.
+Callers cannot select a URL, source, endpoint, run or artifact. Extra query
+parameters do not influence selection.
+
+Selection requires the canonical Bank Holidays source key/scope and endpoint
+key/URL, an enabled source and endpoint, and current explicit qualification.
+This public read policy fails closed when configuration is pending or disabled;
+it does not change the parser's ability to interpret supplied historical evidence.
+Only SUCCESS runs with an artifact participate. The latest run is ordered by
+completion time descending, then PostgreSQL UUID ordering descending. Within a
+run, artifact observation time and artifact UUID descending resolve ties. A
+malformed selected artifact fails rather than falling back to older evidence.
+
+The response is an explicit DTO:
+
+```json
+{
+  "evidence": {"artifactId": "<UUID>", "observedAt": "<UTC ISO instant>"},
+  "divisions": [
+    {"division": "england-and-wales", "events": [
+      {"title": "<source title>", "date": "YYYY-MM-DD", "notes": "", "bunting": true}
+    ]},
+    {"division": "scotland", "events": []},
+    {"division": "northern-ireland", "events": []}
+  ]
+}
+```
+
+All three groups are returned in parser enum order. Events preserve source order,
+whitespace, empty notes and duplicates; no year filtering occurs. Raw bytes,
+digests, entities and source configuration are not exposed. Selection uses a short
+read-only transaction and returns a detached artifact; parsing/mapping occur after
+that transaction finishes, without lazy association access.
+
+No eligible evidence returns HTTP **404**, with code `BANK_HOLIDAYS_UNAVAILABLE`.
+Invalid selected evidence returns HTTP **500**, with code
+`BANK_HOLIDAYS_INVALID_EVIDENCE`. Both return only fixed `code` and `message`
+fields; neither acquires replacement data or exposes parser diagnostics.
+
+No CORS allowance is added here. The current frontend is a local design showcase
+with no backend fetches, and its Vite configuration does not establish a fixed
+origin or proxy. The frontend integration issue must establish the actual origin
+and any narrow development CORS allowance; wildcard origins are not enabled.
+
+API tests use a real loopback HTTP server and the existing isolated PostgreSQL
+process, with a separate test schema and authored fixtures. Acquisition is replaced
+with a test mock and verified never invoked. Complete row snapshots prove GET does
+not alter source configuration, run history or evidence. No development database,
+live GOV.UK access, interpreted persistence, migration or dependency is needed.
