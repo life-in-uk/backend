@@ -479,3 +479,37 @@ access remains the intended direction. Tests use offline fixtures and isolated
 PostgreSQL. Automatic TfL polling, meaningful Change History, approximately
 72-hour raw-evidence cleanup and frontend Underground integration remain
 NOT IMPLEMENTED.
+
+## Underground evidence projection (Issue #22)
+
+`UndergroundEvidenceProjection.projectEvidence(evidenceArtifactId)` connects a
+persisted EvidenceArtifact to Current State: evidence-owned
+`UndergroundEvidence.successful(id)` → accepted `TflUndergroundStatusParser` →
+accepted `UndergroundCurrentStateProjector`. It never contacts a provider.
+
+Eligibility comes only from persisted provenance: the artifact's run must be
+`SUCCESS`, its endpoint the canonical `tfl-underground-status` key/URL owned by the
+canonical `transport-for-london` source and scope, and source/endpoint must still
+be enabled and qualified. Missing, Bank Holidays, failed/started-run or
+otherwise ineligible evidence returns `EVIDENCE_NOT_ELIGIBLE` before parsing.
+Parser rejection returns `EVIDENCE_INVALID`; a projector/database failure returns
+`PROJECTION_FAILED`. Otherwise the projector's own `APPLIED`, `REPLAYED`,
+`IGNORED_OLDER` or `CONFLICT` outcome is returned unchanged. Every failure leaves
+evidence and the previous Current State untouched.
+
+`TflUndergroundAcquisition.acquire()` now returns `Result(runId, projection)`.
+Projection runs only after the evidence-and-SUCCESS transaction has committed,
+using the persisted artifact rather than response bytes. Failed acquisitions
+have no projection. A projection failure does not change the SUCCESS run or its
+evidence; it is reported only in `projection`. No transaction spans HTTP.
+
+Explicit owner replay of exactly one persisted artifact, with no provider access:
+
+```
+java -jar target/backend-0.0.1-SNAPSHOT.jar --project-underground-evidence=<evidence-uuid>
+```
+
+Only that command-line option activates replay; ordinary startup does nothing.
+Rejection fails startup with the bounded reason, and repeating a replay is safe
+(`REPLAYED`). There is no replay HTTP endpoint, scheduler or migration. Automatic
+TfL polling and raw-evidence cleanup remain NOT IMPLEMENTED.

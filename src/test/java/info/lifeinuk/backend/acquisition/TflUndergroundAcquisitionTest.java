@@ -9,6 +9,10 @@ import info.lifeinuk.backend.evidence.EvidenceArtifact;
 import jakarta.persistence.EntityManager;
 import info.lifeinuk.backend.source.SourceEndpoint;
 import info.lifeinuk.backend.support.IsolatedPostgres;
+import info.lifeinuk.backend.underground.UndergroundCurrentStates;
+import info.lifeinuk.backend.underground.UndergroundEvidenceProjection;
+import info.lifeinuk.backend.underground.UndergroundLineStatus;
+import info.lifeinuk.backend.underground.UndergroundOperationalStatus;
 import java.io.IOException;
 import java.net.Authenticator;
 import java.net.CookieHandler;
@@ -24,6 +28,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.HexFormat;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -46,10 +51,19 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.transaction.support.TransactionTemplate;
+import static info.lifeinuk.backend.underground.UndergroundCurrentStateProjector.Outcome.APPLIED;
+import static info.lifeinuk.backend.underground.UndergroundEvidenceProjection.Result.Failure.EVIDENCE_INVALID;
+import static info.lifeinuk.backend.underground.UndergroundEvidenceProjection.Result.Failure.PROJECTION_FAILED;
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.verify;
 
 @SpringBootTest(properties = {
     "spring.flyway.schemas=tfl_acquisition_tests", "spring.flyway.default-schema=tfl_acquisition_tests",
@@ -65,6 +79,8 @@ class TflUndergroundAcquisitionTest {
     @Autowired PlatformTransactionManager transactions;
     @Autowired EntityManager entityManager;
     @Autowired AcquisitionHistory history;
+    @Autowired UndergroundCurrentStates states;
+    @MockitoSpyBean UndergroundEvidenceProjection projection;
     private HttpServer server;
     private ExecutorService executor;
     private final AtomicInteger requests = new AtomicInteger();
@@ -85,7 +101,8 @@ class TflUndergroundAcquisitionTest {
         try (var input = getClass().getResourceAsStream("/tfl/underground-status-response.json")) {
             raw = input.readAllBytes();
         }
-        jdbc.execute("TRUNCATE evidence_artifact, ingestion_run");
+        reset(projection);
+        jdbc.execute("TRUNCATE evidence_artifact, ingestion_run, underground_current_status, underground_current_line, underground_current_snapshot");
         jdbc.update("UPDATE source_endpoint SET source_id=(SELECT id FROM source WHERE source_key='transport-for-london') WHERE endpoint_key='tfl-underground-status'");
         bootstrap.initialize();
         jdbc.update("UPDATE source SET enabled = true WHERE source_key = 'transport-for-london'");
@@ -115,8 +132,9 @@ class TflUndergroundAcquisitionTest {
         executor.shutdownNow();
         jdbc.execute("DROP TRIGGER IF EXISTS acquisition_test_reject ON evidence_artifact");
         jdbc.execute("DROP TRIGGER IF EXISTS acquisition_test_reject ON ingestion_run");
+        jdbc.execute("DROP TRIGGER IF EXISTS acquisition_test_reject ON underground_current_line");
         jdbc.execute("DROP FUNCTION IF EXISTS acquisition_test_reject()");
-        jdbc.execute("TRUNCATE evidence_artifact, ingestion_run");
+        jdbc.execute("TRUNCATE evidence_artifact, ingestion_run, underground_current_status, underground_current_line, underground_current_snapshot");
         jdbc.update("UPDATE source_endpoint SET source_id=(SELECT id FROM source WHERE source_key='transport-for-london') WHERE endpoint_key='tfl-underground-status'");
         bootstrap.initialize();
         jdbc.update("UPDATE source_endpoint SET qualification_status = 'PENDING', qualification_record = NULL, enabled = true WHERE endpoint_key = 'tfl-underground-status'");
@@ -131,7 +149,7 @@ class TflUndergroundAcquisitionTest {
     private int count(String table) { return jdbc.queryForObject("SELECT count(*) FROM " + table, Integer.class); }
     private String state(UUID id) { return jdbc.queryForObject("SELECT status FROM ingestion_run WHERE id = ?", String.class, id); }
     private void failed(String code) {
-        UUID id = acquisition.acquire();
+        UUID id = acquisition.acquire().runId();
         assertThat(state(id)).isEqualTo("FAILED");
         assertThat(jdbc.queryForObject("SELECT failure_code FROM ingestion_run WHERE id = ?", String.class, id)).isEqualTo(code);
         assertThat(jdbc.queryForObject("SELECT length(failure_message) FROM ingestion_run WHERE id = ?", Integer.class, id)).isBetween(1, 1000);
@@ -154,7 +172,7 @@ class TflUndergroundAcquisitionTest {
             respond(exchange, 200, "application/json; charset=utf-8", raw, false);
         };
         Instant before = Instant.now();
-        UUID id = acquisition.acquire();
+        UUID id = acquisition.acquire().runId();
         Instant after = Instant.now();
         assertThat(serverFailure.get()).isNull();
         assertThat(state(id)).isEqualTo("SUCCESS");
@@ -272,7 +290,7 @@ class TflUndergroundAcquisitionTest {
         Arrays.fill(body, (byte) ' ');
         body[0] = '['; body[body.length - 1] = ']';
         handler = exchange -> respond(exchange, 200, "application/json", body, true);
-        assertThat(state(acquisition.acquire())).isEqualTo("SUCCESS");
+        assertThat(state(acquisition.acquire().runId())).isEqualTo("SUCCESS");
         assertThat(jdbc.queryForObject("SELECT payload FROM evidence_artifact", byte[].class)).containsExactly(body);
     }
 
@@ -312,7 +330,7 @@ class TflUndergroundAcquisitionTest {
     void successTransitionSeesAlreadyPersistedArtifact() {
         jdbc.execute("CREATE FUNCTION acquisition_test_reject() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN IF NEW.status = 'SUCCESS' AND NOT EXISTS (SELECT 1 FROM evidence_artifact WHERE ingestion_run_id = NEW.id) THEN RAISE EXCEPTION 'Success before evidence'; END IF; RETURN NEW; END $$");
         jdbc.execute("CREATE TRIGGER acquisition_test_reject BEFORE UPDATE ON ingestion_run FOR EACH ROW EXECUTE FUNCTION acquisition_test_reject()");
-        assertThat(state(acquisition.acquire())).isEqualTo("SUCCESS");
+        assertThat(state(acquisition.acquire().runId())).isEqualTo("SUCCESS");
         assertThat(count("evidence_artifact")).isEqualTo(1);
     }
 
@@ -328,10 +346,10 @@ class TflUndergroundAcquisitionTest {
 
     @Test
     void repeatedAndChangedResponsesCreateIndependentHistory() {
-        UUID first = acquisition.acquire();
-        UUID second = acquisition.acquire();
+        UUID first = acquisition.acquire().runId();
+        UUID second = acquisition.acquire().runId();
         handler = exchange -> respond(exchange, 200, "application/json", "{\"later\":true}".getBytes(StandardCharsets.UTF_8), false);
-        UUID third = acquisition.acquire();
+        UUID third = acquisition.acquire().runId();
         assertThat(first).isNotEqualTo(second).isNotEqualTo(third);
         assertThat(count("ingestion_run")).isEqualTo(3);
         assertThat(count("evidence_artifact")).isEqualTo(3);
@@ -348,7 +366,7 @@ class TflUndergroundAcquisitionTest {
         byte[] responseBytes = new String(raw, StandardCharsets.UTF_8).replace("\n", "\r\n")
                 .getBytes(StandardCharsets.UTF_8);
         handler = exchange -> respond(exchange, 200, "application/json; charset=utf-8", responseBytes, false);
-        UUID run = acquisition.acquire();
+        UUID run = acquisition.acquire().runId();
         assertThat(state(run)).isEqualTo("SUCCESS");
         assertThat(jdbc.queryForObject("SELECT payload FROM evidence_artifact WHERE ingestion_run_id=?", byte[].class, run))
                 .containsExactly(responseBytes);
@@ -360,7 +378,7 @@ class TflUndergroundAcquisitionTest {
     @ValueSource(strings = {"application/json", "application/json; charset=UTF-8", "Application/JSON; charset=\"utf-8\""})
     void jsonMediaTypeParametersAreAcceptedWithoutChangingStoredHeaderOrBytes(String mediaType) {
         handler = exchange -> respond(exchange, 200, mediaType, raw, false);
-        UUID run = acquisition.acquire();
+        UUID run = acquisition.acquire().runId();
         assertThat(state(run)).isEqualTo("SUCCESS");
         assertThat(jdbc.queryForObject("SELECT media_type FROM evidence_artifact", String.class)).isEqualTo(mediaType);
         assertThat(jdbc.queryForObject("SELECT payload FROM evidence_artifact", byte[].class)).containsExactly(raw);
@@ -398,7 +416,7 @@ class TflUndergroundAcquisitionTest {
 
     @Test
     void persistedTflArtifactRejectsUpdatesDeletesAndDefensiveCopyMutation() {
-        UUID run = acquisition.acquire();
+        UUID run = acquisition.acquire().runId();
         UUID id = jdbc.queryForObject("SELECT id FROM evidence_artifact WHERE ingestion_run_id=?", UUID.class, run);
         EvidenceArtifact artifact = new TransactionTemplate(transactions).execute(status -> entityManager.find(EvidenceArtifact.class, id));
         byte[] copy = artifact.getPayload();
@@ -432,11 +450,97 @@ class TflUndergroundAcquisitionTest {
         UUID bankRun = history.start(bankEndpoint);
         history.succeed(bankRun, "{\"offline\":true}".getBytes(StandardCharsets.UTF_8), "application/json", Instant.now());
         String before = bankHolidaysSnapshot();
-        UUID tflRun = acquisition.acquire();
+        UUID tflRun = acquisition.acquire().runId();
         assertThat(state(tflRun)).isEqualTo("SUCCESS");
         assertThat(bankHolidaysSnapshot()).isEqualTo(before);
         assertThat(jdbc.queryForObject("SELECT use_retention_policy FROM source_endpoint WHERE endpoint_key='tfl-underground-status'", String.class))
                 .isEqualTo(SourceEndpoint.TFL_USE_RETENTION_POLICY);
+    }
+
+    private String currentState() {
+        return jdbc.queryForObject("""
+                SELECT json_build_object(
+                    'snapshot',(SELECT json_agg(row_to_json(s)) FROM underground_current_snapshot s),
+                    'lines',(SELECT json_agg(row_to_json(l) ORDER BY line_order) FROM underground_current_line l),
+                    'statuses',(SELECT json_agg(row_to_json(t) ORDER BY line_id,status_order) FROM underground_current_status t))::text
+                """, String.class);
+    }
+
+    @Test
+    void successfulAcquisitionProjectsTheCommittedArtifactThroughProductionProjection() {
+        var committedRunStatus = new AtomicReference<String>();
+        var ambientTransaction = new AtomicReference<Boolean>();
+        doAnswer(invocation -> {
+            // JdbcTemplate uses its own pooled connection outside any transaction: it sees committed rows only.
+            ambientTransaction.set(TransactionSynchronizationManager.isActualTransactionActive());
+            committedRunStatus.set(jdbc.queryForObject("SELECT r.status FROM evidence_artifact a JOIN ingestion_run r ON r.id=a.ingestion_run_id WHERE a.id=?",
+                    String.class, invocation.<UUID>getArgument(0)));
+            return invocation.callRealMethod();
+        }).when(projection).projectEvidence(any());
+        var result = acquisition.acquire();
+        UUID artifactId = jdbc.queryForObject("SELECT id FROM evidence_artifact", UUID.class);
+        assertThat(committedRunStatus.get()).isEqualTo("SUCCESS");
+        assertThat(ambientTransaction.get()).isFalse();
+        verify(projection).projectEvidence(artifactId);
+        assertThat(state(result.runId())).isEqualTo("SUCCESS");
+        assertThat(result.projection()).contains(new UndergroundEvidenceProjection.Result(APPLIED, null));
+        var artifact = new TransactionTemplate(transactions).execute(status -> entityManager.find(EvidenceArtifact.class, artifactId));
+        var current = states.current().orElseThrow();
+        assertThat(current.evidenceArtifactId()).isEqualTo(artifactId);
+        assertThat(current.observedAt()).isEqualTo(artifact.getObservedAt());
+        assertThat(current.lines()).containsExactly(new UndergroundLineStatus("fixture-line", "Offline Underground fixture",
+                List.of(new UndergroundOperationalStatus(9, "Minor Delays", Optional.of("  Test only: delays — Café, £5; punctuation!  ")))));
+        assertThat(client.invocations.get()).isEqualTo(1);
+        assertThat(jdbc.queryForObject("SELECT payload FROM evidence_artifact", byte[].class)).containsExactly(raw);
+    }
+
+    @Test
+    void failedAcquisitionNeverAttemptsProjection() {
+        handler = exchange -> respond(exchange, 500, "application/json", raw, false);
+        var httpFailure = acquisition.acquire();
+        assertThat(state(httpFailure.runId())).isEqualTo("FAILED");
+        assertThat(httpFailure.projection()).isEmpty();
+
+        handler = exchange -> respond(exchange, 200, "application/json", raw, false);
+        jdbc.execute("CREATE FUNCTION acquisition_test_reject() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN RAISE EXCEPTION 'Injected artifact failure'; END $$");
+        jdbc.execute("CREATE TRIGGER acquisition_test_reject BEFORE INSERT ON evidence_artifact FOR EACH ROW EXECUTE FUNCTION acquisition_test_reject()");
+        var persistenceFailure = acquisition.acquire();
+        assertThat(state(persistenceFailure.runId())).isEqualTo("FAILED");
+        assertThat(persistenceFailure.projection()).isEmpty();
+
+        verify(projection, never()).projectEvidence(any());
+        assertThat(count("evidence_artifact")).isZero();
+        assertThat(states.current()).isEmpty();
+    }
+
+    @Test
+    void malformedSuccessfulEvidenceIsRetainedAndLeavesPreviousCurrentState() {
+        assertThat(acquisition.acquire().projection()).contains(new UndergroundEvidenceProjection.Result(APPLIED, null));
+        String previous = currentState();
+        byte[] malformed = "{\"later\":true}".getBytes(StandardCharsets.UTF_8);
+        handler = exchange -> respond(exchange, 200, "application/json", malformed, false);
+        var result = acquisition.acquire();
+        assertThat(state(result.runId())).isEqualTo("SUCCESS");
+        assertThat(result.projection()).contains(new UndergroundEvidenceProjection.Result(null, EVIDENCE_INVALID));
+        assertThat(jdbc.queryForObject("SELECT payload FROM evidence_artifact WHERE ingestion_run_id=?", byte[].class, result.runId()))
+                .containsExactly(malformed);
+        assertThat(count("evidence_artifact")).isEqualTo(2);
+        assertThat(currentState()).isEqualTo(previous);
+    }
+
+    @Test
+    void projectorFailureAfterDurableEvidenceIsReportedWithoutFailingTheAcquisition() {
+        assertThat(acquisition.acquire().projection()).contains(new UndergroundEvidenceProjection.Result(APPLIED, null));
+        String previous = currentState();
+        jdbc.execute("CREATE FUNCTION acquisition_test_reject() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN RAISE EXCEPTION 'Injected projection failure'; END $$");
+        jdbc.execute("CREATE TRIGGER acquisition_test_reject BEFORE INSERT ON underground_current_line FOR EACH ROW EXECUTE FUNCTION acquisition_test_reject()");
+        var result = acquisition.acquire();
+        assertThat(state(result.runId())).isEqualTo("SUCCESS");
+        assertThat(jdbc.queryForObject("SELECT failure_code FROM ingestion_run WHERE id=?", String.class, result.runId())).isNull();
+        assertThat(result.projection()).contains(new UndergroundEvidenceProjection.Result(null, PROJECTION_FAILED));
+        assertThat(jdbc.queryForObject("SELECT payload FROM evidence_artifact WHERE ingestion_run_id=?", byte[].class, result.runId()))
+                .containsExactly(raw);
+        assertThat(currentState()).isEqualTo(previous);
     }
 
     @FunctionalInterface private interface Handler { void handle(HttpExchange exchange) throws Exception; }
