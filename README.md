@@ -258,9 +258,9 @@ may be retained long-term; repeated unchanged polls must not become permanent
 business-history rows. TfL terms override the default if they impose a different
 retention/republication requirement. Bank Holidays policy is independent.
 
-Issue #14 adds controlled acquisition below. **Parsing, Current State, Change
-History, cleanup and scheduling are NOT IMPLEMENTED for TfL.** Existing evidence
-triggers still reject updates/deletes;
+Issue #14 adds controlled acquisition and Issue #16 adds deterministic interpretation
+below. **Current State, Change History, cleanup and scheduling are NOT IMPLEMENTED
+for TfL.** Existing evidence triggers still reject updates/deletes;
 a future reviewed retention issue must establish an appropriate controlled expiry
 mechanism without weakening immutability while retained.
 
@@ -359,8 +359,38 @@ Tests verify bytes, size, independent digest, provenance, deadlines, limits,
 qualification-before-HTTP, redirects, rollback, immutability and Bank Holidays
 configuration/evidence isolation. They require no internet or credential.
 
-**NOT YET IMPLEMENTED/PERFORMED:** live TfL smoke acquisition, TfL interpretation,
-normalized Travel state, Current State, Change History, approximately 72-hour
-cleanup, scheduler/polling, Travel API and frontend. The future source-specific
+The separately owner-authorized Issue #14 live smoke succeeded with HTTP 200 and
+one immutable 12,464-byte evidence artifact; independent byte length and SHA-256
+verification matched. No further live request is part of interpretation.
+
+**NOT YET IMPLEMENTED:** normalized Travel state, Current State, Change History,
+approximately 72-hour cleanup, scheduler/polling, Travel API and frontend. The future source-specific
 retention policy remains intent only; no TTL, deletion or global evidence expiry
 is introduced. A live smoke test requires separate explicit owner authorization.
+
+## Deterministic Underground interpretation (Issue #16)
+
+TfL → qualified acquisition → immutable EvidenceArtifact → deterministic
+`TflUndergroundStatusParser` → in-memory `UndergroundStatusInterpretation`.
+The parser reads only the supplied artifact, retaining its UUID and observation
+Instant. It needs no Spring context, transaction, repository, acquisition or network.
+Immutable source evidence remains unchanged and independently interpretable.
+
+Each line retains its exact source ID/name and ordered list of operational statuses.
+Each status retains the source integer severity, description and optional reason;
+no severity remapping, primary/worst-status selection or text rewriting occurs.
+Source line/status order and duplicate status entries are preserved. Duplicate line
+IDs, duplicate JSON keys, trailing content and malformed required fields fail
+explicitly; mode must be `tube` and scalar types are never coerced.
+
+Unrelated provider metadata is tolerated and ignored: `$type`, provider timestamps,
+disruptions, route/service/crowding structures and validity periods are not copied
+into the domain model. Known fields remain strictly validated. Missing/null reason
+means absence; a supplied reason string (including empty text) is preserved exactly.
+Empty line/status arrays remain empty and imply no operating-state conclusion.
+
+Interpretation is intentionally in-memory, with no table or migration. Persisted
+Travel Current State, meaningful Change History, approximately 72-hour cleanup,
+polling/scheduler, Travel read API and frontend Travel integration remain unimplemented.
+Tests use authored offline fixtures and the existing isolated PostgreSQL harness;
+they do not access development evidence or contact TfL.
