@@ -364,7 +364,8 @@ one immutable 12,464-byte evidence artifact; independent byte length and SHA-256
 verification matched. No further live request is part of interpretation.
 
 **NOT YET IMPLEMENTED:** Change History, approximately 72-hour cleanup,
-scheduler/polling, Travel API and frontend. The future source-specific
+scheduler/polling and frontend. Issue #20 exposes stored Underground Current State
+through the read API below. The future source-specific
 retention policy remains intent only; no TTL, deletion or global evidence expiry
 is introduced. A live smoke test requires separate explicit owner authorization.
 
@@ -391,7 +392,7 @@ Empty line/status arrays remain empty and imply no operating-state conclusion.
 
 Interpretation remains in-memory. Issue #18 projects its supplied facts into
 persisted Current State below. Meaningful Change History, approximately 72-hour
-cleanup, polling/scheduler, Travel read API and frontend Travel integration remain
+cleanup, polling/scheduler and frontend Travel integration remain
 unimplemented.
 Tests use authored offline fixtures and the existing isolated PostgreSQL harness;
 they do not access development evidence or contact TfL.
@@ -437,5 +438,44 @@ until superseded by a successfully projected newer observation.
 
 Offline tests use isolated PostgreSQL for faithful persistence, rollback, competing
 writers, coherent reads, provenance, constraints and real application restart.
-Meaningful Change History, raw-evidence cleanup, polling/scheduler, public Travel
-API and frontend Travel integration remain NOT IMPLEMENTED.
+Meaningful Change History, raw-evidence cleanup, polling/scheduler and frontend
+Travel integration remain NOT IMPLEMENTED. The Underground read API is documented below.
+
+## Underground read API (Issue #20)
+
+`GET /api/travel/underground` exposes persisted latest-known Underground Current
+State through the accepted coherent `UndergroundCurrentStates` read boundary.
+GET never acquires, parses or projects data and performs no semantic writes.
+
+A stored snapshot returns HTTP 200 with this explicit contract:
+
+```json
+{
+  "observedAt": "2026-10-03T15:47:08.441419123Z",
+  "lines": [
+    {
+      "lineId": "central",
+      "lineName": "Central",
+      "statuses": [{"severity": 10, "description": "Good Service", "reason": null}]
+    }
+  ]
+}
+```
+
+Line/status order, repeated statuses and source text are preserved. Absent reason
+is JSON null; explicitly empty source reason stays `""`. `observedAt` is an ISO-8601
+UTC Instant with the stored precision; no freshness classification is inferred.
+Internal evidence UUIDs, hashes and persistence graphs are deliberately omitted.
+Response construction needs no retained raw EvidenceArtifact.
+
+No projected state returns HTTP 404 with code `UNDERGROUND_UNAVAILABLE`. A real
+persisted empty snapshot returns HTTP 200 with its observedAt and `lines: []`.
+Unexpected read failures return a bounded HTTP 500 `UNDERGROUND_READ_FAILED`
+response without exception diagnostics. Errors contain only `code` and `message`.
+
+This public facts endpoint follows existing unauthenticated API conventions.
+No security, CORS or caching configuration is added; same-origin/frontend proxy
+access remains the intended direction. Tests use offline fixtures and isolated
+PostgreSQL. Automatic TfL polling, meaningful Change History, approximately
+72-hour raw-evidence cleanup and frontend Underground integration remain
+NOT IMPLEMENTED.
