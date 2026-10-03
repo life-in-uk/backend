@@ -42,6 +42,7 @@ class UndergroundApiTest {
     @MockitoSpyBean UndergroundCurrentStates states;
     @MockitoBean UndergroundCurrentStateProjector projector;
     @MockitoBean TflUndergroundAcquisition acquisition;
+    @MockitoBean UndergroundEvidenceProjection evidenceProjection;
 
     @BeforeEach
     void resetState() {
@@ -50,7 +51,7 @@ class UndergroundApiTest {
     }
 
     @AfterEach
-    void noUpstreamCalls() { verifyNoInteractions(projector, acquisition); }
+    void noUpstreamCalls() { verifyNoInteractions(projector, acquisition, evidenceProjection); }
 
     private HttpResponse<String> request(String method) throws Exception {
         return http.send(HttpRequest.newBuilder(URI.create("http://127.0.0.1:" + port + "/api/travel/underground"))
