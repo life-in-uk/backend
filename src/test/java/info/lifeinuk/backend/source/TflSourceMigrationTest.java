@@ -58,7 +58,7 @@ class TflSourceMigrationTest {
                 connection.setSchema(originalSchema);
             }
         }
-        assertThat(Flyway.configure().dataSource(dataSource).schemas(schema).defaultSchema(schema).load().migrate().migrationsExecuted)
+        assertThat(Flyway.configure().dataSource(dataSource).schemas(schema).defaultSchema(schema).target("3").load().migrate().migrationsExecuted)
                 .isEqualTo(1);
         try (Connection connection = dataSource.getConnection()) {
             String originalSchema = connection.getSchema();
