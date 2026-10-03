@@ -41,3 +41,43 @@ unusable test URL. Missing binaries fail the suite rather than skipping it.
 
 No GOV.UK, Ollama, Docker or additional runtime/testing service is required.
 After Maven dependencies have been cached, the tests can run offline.
+
+## Ingestion and evidence foundation (Issue #4)
+
+Flyway V2 adds evidence-owned `ingestion_run` and `evidence_artifact`. This slice
+records history only: no acquisition, parsing, scheduling or API is implemented.
+`QualifiedSourceEndpoints.requireQualified(id)` is a source-owned read boundary;
+source repositories remain package-private. Both the run factory and database
+insertion require an existing qualified, enabled endpoint and enabled source.
+Later disablement does not erase or prevent completion of an existing attempt.
+
+Runs use UUIDs and Instant timestamps (`TIMESTAMP WITH TIME ZONE`). A run starts
+as `STARTED` and can finish once as `SUCCESS` or `FAILED`. Completion cannot
+precede its start or stored observations. Failed runs require a nonblank code
+(max 100 characters) and message (max 1000); other states have neither. Optimistic
+locking and database triggers protect identity and completed outcomes. Historical
+runs cannot be deleted.
+
+Artifacts preserve non-empty raw bytes in PostgreSQL `bytea`, a media type
+(max 200 characters), observation time, and a lowercase 64-character SHA-256.
+The constructor hashes the exact supplied bytes without decoding, parsing or
+normalization. PostgreSQL independently checks the digest using its built-in
+SHA-256 function; no extension is needed. The hash is deliberately not unique:
+identical bytes observed in different runs remain distinct historical evidence.
+
+Artifacts expose defensive byte copies and no mutation methods. Their
+package-private persistence boundary offers append via JPA `persist` and lookup,
+without merge/update/delete. Hibernate marks artifacts immutable; PostgreSQL
+triggers reject row updates and deletes, including direct SQL and bulk JPA
+attempts. These protections apply to ordinary DML; privileged schema operations
+are outside the application boundary. No retention/deletion workflow is added.
+
+Provenance follows artifact → run → endpoint → source. V1 already fixes endpoint
+URL/key; V2 prevents endpoint identity/ownership changes once observed. Mutable
+qualification and policy remain current configuration, not a historical policy
+snapshot. No copied source configuration, acquisition type, generic metadata or
+response headers are added without an acquisition consumer requiring them.
+
+Evidence tests use the same isolated PostgreSQL initializer as source tests and
+fixture bytes only. The source schema inventory test now expects both migrations
+and all four foundation tables; accepted V1 and source behaviour remain intact.

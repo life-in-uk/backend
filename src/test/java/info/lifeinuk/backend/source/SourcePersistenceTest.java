@@ -27,9 +27,9 @@ class SourcePersistenceTest {
 
     @Test
     void flywayCreatesOnlyFoundationTablesAndHibernateValidatesThem() {
-        assertThat(jdbc.queryForObject("SELECT count(*) FROM flyway_schema_history WHERE success", Integer.class)).isEqualTo(1);
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM flyway_schema_history WHERE success", Integer.class)).isEqualTo(2);
         assertThat(jdbc.queryForList("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' ORDER BY table_name",
-                String.class)).containsExactly("flyway_schema_history", "source", "source_endpoint");
+                String.class)).containsExactly("evidence_artifact", "flyway_schema_history", "ingestion_run", "source", "source_endpoint");
         assertThat(sources.findByKey(Source.BANK_HOLIDAYS_KEY)).isPresent();
         assertThat(endpoints.findByKey(SourceEndpoint.BANK_HOLIDAYS_KEY)).isPresent();
     }
