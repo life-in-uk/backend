@@ -26,6 +26,22 @@ import java.util.UUID;
 public class SourceEndpoint {
     public static final String BANK_HOLIDAYS_KEY = "gov-uk-bank-holidays-json";
     public static final String BANK_HOLIDAYS_URL = "https://www.gov.uk/bank-holidays.json";
+    public static final String TFL_UNDERGROUND_KEY = "tfl-underground-status";
+    public static final String TFL_UNDERGROUND_URL = "https://api.tfl.gov.uk/Line/Mode/tube/Status";
+    public static final String TFL_TERMS_REFERENCE = "https://tfl.gov.uk/corporate/terms-and-conditions/transport-data-service";
+    public static final String TFL_USE_RETENTION_POLICY = """
+            Intended Life in UK Travel Live use: Underground operational line status.
+            Raw high-frequency evidence is short-lived and immutable while retained;
+            default target retention is approximately 72 hours from EvidenceArtifact observation time,
+            not filesystem, build or application creation time. Future Current State is independent
+            of raw evidence expiry and remains until updated or expired under its own domain rules.
+            Future meaningful normalized Change History has a separate, potentially long-term lifecycle;
+            repeated unchanged polling observations must not become permanent business-history rows.
+            TfL licence/terms override this product default, including retention/republication requirements.
+            Future reuse must satisfy TfL attribution, third-party acknowledgements, branding and rate limits;
+            see https://tfl.gov.uk/corporate/terms-and-conditions/transport-data-service.
+            This is policy only: no acquisition, current state, change history or cleanup is implemented.
+            """;
     public static final String ATTRIBUTION_REFERENCE = "https://www.gov.uk/bank-holidays";
     public static final int DAILY_POLL_SECONDS = 86_400;
     public static final String PENDING_POLICY = "Acquisition and retention are not approved until explicit qualification.";
@@ -65,17 +81,15 @@ public class SourceEndpoint {
     @Column(nullable = false)
     private boolean enabled;
 
-    @NotNull
     @Enumerated(EnumType.STRING)
-    @Column(name = "calendar_scope", nullable = false, length = 20)
+    @Column(name = "calendar_scope", length = 20)
     private CalendarScope calendarScope;
 
     @Positive
-    @Column(name = "poll_interval_seconds", nullable = false)
-    private int pollIntervalSeconds;
+    @Column(name = "poll_interval_seconds")
+    private Integer pollIntervalSeconds;
 
-    @NotNull
-    @Column(name = "next_poll_at", nullable = false)
+    @Column(name = "next_poll_at")
     private Instant nextPollAt;
 
     @Version
@@ -104,6 +118,31 @@ public class SourceEndpoint {
         return endpoint;
     }
 
+    /** No calendar or polling policy is invented for the operational-status foundation. */
+    public static SourceEndpoint tflUnderground(Source source) {
+        Objects.requireNonNull(source, "Source is required");
+        if (!Source.TFL_KEY.equals(source.getKey()) || !Source.TFL_UNDERGROUND_SCOPE.equals(source.getScope())) {
+            throw new IllegalArgumentException("Underground status requires its canonical TfL source and scope");
+        }
+        SourceEndpoint endpoint = new SourceEndpoint();
+        endpoint.id = UUID.randomUUID();
+        endpoint.source = source;
+        endpoint.key = TFL_UNDERGROUND_KEY;
+        endpoint.url = TFL_UNDERGROUND_URL;
+        endpoint.qualificationStatus = QualificationStatus.PENDING;
+        endpoint.attributionReference = TFL_TERMS_REFERENCE;
+        endpoint.useRetentionPolicy = PENDING_POLICY + "\n" + TFL_USE_RETENTION_POLICY;
+        endpoint.enabled = true;
+        return endpoint;
+    }
+
+    boolean hasCanonicalTflIdentity() {
+        return TFL_UNDERGROUND_KEY.equals(key) && TFL_UNDERGROUND_URL.equals(url)
+                && Source.TFL_KEY.equals(source.getKey())
+                && Source.TFL_UNDERGROUND_SCOPE.equals(source.getScope())
+                && calendarScope == null && pollIntervalSeconds == null && nextPollAt == null;
+    }
+
     public void qualify(String record, String useRetentionPolicy) {
         if (record == null || record.isBlank() || useRetentionPolicy == null || useRetentionPolicy.isBlank()) {
             throw new IllegalArgumentException("Explicit qualification record and use/retention policy are required");
@@ -116,10 +155,16 @@ public class SourceEndpoint {
     /** Permission check only; this does not initiate acquisition or scheduling. */
     public boolean isQualifiedAndEnabled() {
         return source.isEnabled() && enabled && qualificationStatus == QualificationStatus.QUALIFIED
-                && qualificationRecord != null && !qualificationRecord.isBlank();
+                && qualificationRecord != null && !qualificationRecord.isBlank()
+                && useRetentionPolicy != null && !useRetentionPolicy.isBlank()
+                && (!(TFL_UNDERGROUND_KEY.equals(key) || Source.TFL_KEY.equals(source.getKey()))
+                    || hasCanonicalTflIdentity());
     }
 
     public int calendarYear(Clock clock) {
+        if (calendarScope != CalendarScope.CURRENT_YEAR) {
+            throw new IllegalStateException("This endpoint has no calendar policy");
+        }
         return LocalDate.now(clock.withZone(ZoneId.of("Europe/London"))).getYear();
     }
 
@@ -133,7 +178,7 @@ public class SourceEndpoint {
     public String getUseRetentionPolicy() { return useRetentionPolicy; }
     public boolean isEnabled() { return enabled; }
     public CalendarScope getCalendarScope() { return calendarScope; }
-    public int getPollIntervalSeconds() { return pollIntervalSeconds; }
+    public Integer getPollIntervalSeconds() { return pollIntervalSeconds; }
     public Instant getNextPollAt() { return nextPollAt; }
     public long getVersion() { return version; }
     public void setEnabled(boolean enabled) { this.enabled = enabled; }

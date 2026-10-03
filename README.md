@@ -7,7 +7,7 @@ Startup inserts the GOV.UK Bank Holidays configuration if absent. It performs no
 HTTP requests and runs no polling timer. Existing records, IDs, enablement,
 qualification, versions and polling eligibility are never overwritten by bootstrap.
 
-The only supported endpoint is `https://www.gov.uk/bank-holidays.json`. Its URL is
+The Bank Holidays endpoint is `https://www.gov.uk/bank-holidays.json`. Its URL is
 fixed in the model and constrained in PostgreSQL. The calendar scope is rolling
 `CURRENT_YEAR` in Europe/London, with daily polling intent and a persisted
 `next_poll_at`. These are policy data, not a scheduler or observation history.
@@ -79,7 +79,7 @@ snapshot. No copied source configuration, acquisition type, generic metadata or
 response headers are added without an acquisition consumer requiring them.
 
 Evidence tests use the same isolated PostgreSQL initializer as source tests and
-fixture bytes only. The source schema inventory test now expects both migrations
+fixture bytes only. The source schema inventory test covers all accepted migrations
 and all four foundation tables; accepted V1 and source behaviour remain intact.
 
 ## Controlled Bank Holidays acquisition (Issue #6)
@@ -209,3 +209,86 @@ process, with a separate test schema and authored fixtures. Acquisition is repla
 with a test mock and verified never invoked. Complete row snapshots prove GET does
 not alter source configuration, run history or evidence. No development database,
 live GOV.UK access, interpreted persistence, migration or dependency is needed.
+
+## TfL Underground source foundation (Issue #12)
+
+Transport for London is the second canonical provider, with source key
+`transport-for-london`, display name `Transport for London`, and the currently
+supported dataset scope `TFL_UNDERGROUND_STATUS`. One endpoint belongs to it:
+`tfl-underground-status`, at `https://api.tfl.gov.uk/Line/Mode/tube/Status`.
+TfL's [official API schema](https://api.tfl.gov.uk/swagger/docs/v1) documents
+`GET /Line/Mode/{modes}/Status`, producing structured JSON; `tube` restricts it to
+Underground. [Official request examples](https://content.tfl.gov.uk/example-api-requests.pdf)
+identify this route as current Tube line status. No operational request was made
+for this foundation.
+
+V3 generalises V1's single-provider checks to these two controlled endpoint/URL
+pairs and two scopes, preserving immutable endpoint keys/URLs and source scopes
+with database triggers. Bank Holidays keeps its existing calendar and polling-policy
+requirements. TfL has no calendar scope, polling interval or next-poll timestamp:
+those existing columns are nullable for TfL only. No frequency is selected and no
+scheduler is added. V1/V2, existing rows and evidence protections remain unchanged.
+
+TfL bootstrap inserts missing canonical configuration only, with PENDING status
+by default. The recorded pending policy is an **unapproved draft**, not permission.
+`QualifiedSourceEndpoints.requireTflUnderground()` and `requireQualified(id)`
+require source/endpoint enablement, QUALIFIED status, nonblank owner record and
+use/retention policy, and canonical TfL ownership/scope/URL. Repositories remain
+package-private and no URL input or public qualification interface is added.
+
+To bootstrap a **new** explicitly qualified endpoint, supply all three properties:
+
+- `life-in-uk.source.tfl-underground.qualified=true`
+- `life-in-uk.source.tfl-underground.qualification-record=<explicit owner decision>`
+- `life-in-uk.source.tfl-underground.use-retention-policy=<owner-approved use/licence/retention decision>`
+
+The owner record should identify provider, Underground scope, official endpoint,
+Travel Live use, retention and applicable attribution/licence obligations. Existing
+qualification, records, policies, identities, versions and disabled state survive
+restart, even if bootstrap properties change. Later approval uses the existing
+source-owned `SourceEndpoint.qualify(record, policy)` operation; bootstrap does not
+upgrade existing PENDING records. No TfL approval is fabricated by this issue.
+
+The draft source-specific policy describes high-frequency raw evidence as immutable
+while retained, with a default target of **approximately 72 hours from
+EvidenceArtifact observation time**. This is a product target, not a TfL-mandated
+TTL or an implemented deletion mechanism. Future Current State survives raw expiry
+and follows its own update/expiry rules. Future meaningful normalized Change History
+may be retained long-term; repeated unchanged polls must not become permanent
+business-history rows. TfL terms override the default if they impose a different
+retention/republication requirement. Bank Holidays policy is independent.
+
+**Acquisition, parsing, Current State, Change History, cleanup and scheduling are
+NOT IMPLEMENTED for TfL.** Existing evidence triggers still reject updates/deletes;
+a future reviewed retention issue must establish an appropriate controlled expiry
+mechanism without weakening immutability while retained.
+
+Official documentation reviewed for this decision (2026-10-03):
+
+- [TfL Unified API overview](https://tfl.gov.uk/info-for/open-data-users/unified-api):
+  structured developer API for transport data.
+- [Transport Data Service licence](https://tfl.gov.uk/corporate/terms-and-conditions/transport-data-service):
+  permits copying, adapting and commercial/non-commercial reuse subject to terms.
+  It requires `Powered by TfL Open Data`, OS and Geomni acknowledgements, protected
+  branding/non-endorsement, and a maximum of 500 calls/minute per feed. It reserves
+  throttling rights, requires ongoing terms review, and grants no use rights after
+  licence termination. These are TfL-amended terms, not an unqualified OGL grant.
+- [API portal products](https://api-portal.tfl.gov.uk/products): anonymous access is
+  limited to 50 requests/minute; registered subscription access offers 500/minute,
+  with higher quotas available by request. A higher portal quota does not itself
+  override the licence limit.
+- [Developer guidelines](https://content.tfl.gov.uk/syndication-developer-guidelines.pdf):
+  documents legacy XML-feed freshness/display rules. Its illustrative two-minute
+  values are not assumed to be Unified API retention rules; applicability to future
+  JSON publication must be reviewed.
+
+No specific raw-storage duration was identified in the reviewed licence. Before
+qualification/use, the owner must review applicable feed guidance and the licence's
+registration applicability (the licence states it applies from registration, while
+the portal supports anonymous access), as well as display/attribution obligations.
+Anonymous technical access is not treated as automatic legal approval. No provider
+permission or prohibition is invented for the 72-hour product target.
+
+Future credentials must remain external acquisition configuration, never in the
+canonical URL, database fixtures, migrations or Git. No credential plumbing is added;
+foundation tests need no key and remain entirely offline on isolated PostgreSQL.

@@ -63,8 +63,8 @@ class BankHolidaysApiTest {
     @BeforeEach
     void prepare() throws Exception {
         jdbc.execute("TRUNCATE evidence_artifact, ingestion_run");
-        jdbc.update("UPDATE source SET enabled=true");
-        jdbc.update("UPDATE source_endpoint SET enabled=true, qualification_status='QUALIFIED', qualification_record='Offline fixture approval'");
+        jdbc.update("UPDATE source SET enabled=true WHERE source_key = 'gov-uk-bank-holidays'");
+        jdbc.update("UPDATE source_endpoint SET enabled=true, qualification_status='QUALIFIED', qualification_record='Offline fixture approval' WHERE endpoint_key = 'gov-uk-bank-holidays-json'");
         endpointId = jdbc.queryForObject("SELECT id FROM source_endpoint WHERE endpoint_key=?", UUID.class, SourceEndpoint.BANK_HOLIDAYS_KEY);
         try (var stream = getClass().getResourceAsStream("/bankholidays/representative.json")) {
             raw = stream.readAllBytes();
@@ -234,11 +234,11 @@ class BankHolidaysApiTest {
     @ValueSource(strings = {"endpoint-disabled", "source-disabled", "pending", "blank-approval"})
     void currentIneligibleConfigurationCannotBeExposed(String condition) throws Exception {
         store(raw, START, RunStatus.SUCCESS);
-        if (condition.equals("endpoint-disabled")) { jdbc.update("UPDATE source_endpoint SET enabled=false"); }
-        if (condition.equals("source-disabled")) { jdbc.update("UPDATE source SET enabled=false"); }
-        if (condition.equals("pending")) { jdbc.update("UPDATE source_endpoint SET qualification_status='PENDING', qualification_record=NULL"); }
+        if (condition.equals("endpoint-disabled")) { jdbc.update("UPDATE source_endpoint SET enabled=false WHERE endpoint_key = 'gov-uk-bank-holidays-json'"); }
+        if (condition.equals("source-disabled")) { jdbc.update("UPDATE source SET enabled=false WHERE source_key = 'gov-uk-bank-holidays'"); }
+        if (condition.equals("pending")) { jdbc.update("UPDATE source_endpoint SET qualification_status='PENDING', qualification_record=NULL WHERE endpoint_key = 'gov-uk-bank-holidays-json'"); }
         if (condition.equals("blank-approval")) {
-            jdbc.update("UPDATE source_endpoint SET qualification_record=?", "\u2003");
+            jdbc.update("UPDATE source_endpoint SET qualification_record=? WHERE endpoint_key = 'gov-uk-bank-holidays-json'", "\u2003");
         }
         String before = snapshot();
         assertThat(request("GET", "").statusCode()).isEqualTo(404);

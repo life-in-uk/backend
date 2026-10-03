@@ -26,6 +26,17 @@ public class QualifiedSourceEndpoints {
     }
 
     @Transactional(readOnly = true)
+    public SourceEndpoint requireTflUnderground() {
+        SourceEndpoint endpoint = endpoints.findByKey(SourceEndpoint.TFL_UNDERGROUND_KEY)
+                .orElseThrow(() -> new IllegalArgumentException("TfL Underground endpoint does not exist"));
+        requireEligible(endpoint);
+        if (!endpoint.hasCanonicalTflIdentity()) {
+            throw new IllegalStateException("TfL Underground endpoint must retain its approved identity");
+        }
+        return endpoint;
+    }
+
+    @Transactional(readOnly = true)
     public SourceEndpoint requireQualified(UUID id) {
         SourceEndpoint endpoint = endpoints.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Source endpoint does not exist"));
