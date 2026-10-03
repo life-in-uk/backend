@@ -258,8 +258,9 @@ may be retained long-term; repeated unchanged polls must not become permanent
 business-history rows. TfL terms override the default if they impose a different
 retention/republication requirement. Bank Holidays policy is independent.
 
-**Acquisition, parsing, Current State, Change History, cleanup and scheduling are
-NOT IMPLEMENTED for TfL.** Existing evidence triggers still reject updates/deletes;
+Issue #14 adds controlled acquisition below. **Parsing, Current State, Change
+History, cleanup and scheduling are NOT IMPLEMENTED for TfL.** Existing evidence
+triggers still reject updates/deletes;
 a future reviewed retention issue must establish an appropriate controlled expiry
 mechanism without weakening immutability while retained.
 
@@ -292,3 +293,74 @@ permission or prohibition is invented for the 72-hour product target.
 Future credentials must remain external acquisition configuration, never in the
 canonical URL, database fixtures, migrations or Git. No credential plumbing is added;
 foundation tests need no key and remain entirely offline on isolated PostgreSQL.
+
+## Controlled TfL Underground acquisition (Issue #14)
+
+`TflUndergroundAcquisition.acquire()` is an internal, parameterless operation:
+qualified canonical endpoint → one HTTP attempt → IngestionRun → immutable raw
+EvidenceArtifact. It is not called at startup, scheduled, or exposed publicly.
+`QualifiedSourceEndpoints.requireTflUnderground()` must succeed before any HTTP
+invocation; `AcquisitionHistory.start()` rechecks eligibility in its short STARTED
+transaction. Missing/ineligible configuration produces no run and no HTTP request.
+There is no caller URL, alternate route, destination override or credential input.
+
+The request URL comes from the qualified endpoint. The TfL transport wrapper
+accepts only its exact canonical key/HTTPS URL. Bank Holidays keeps its own wrapper
+and contract. Both use a package-private `JsonEvidenceHttp` primitive extracted
+from the accepted Bank Holidays transport, sharing bounded body handling, header
+validation, cancellation and deadlines. It is not a public fetch API or provider
+framework, and restricts transport targets to the two approved endpoint URLs.
+Acquisition orchestration stays explicit per provider; the existing evidence-owned
+history operations already supply shared lifecycle/persistence behaviour.
+
+The JDK client performs GET with a **5-second connection timeout** and **20-second
+whole-response deadline** covering headers and body. Redirects are NEVER followed,
+including cross-host redirects. There is no application retry/backoff. Requests
+use `LifeInUK/0.0.1 (TfL Underground acquisition)`, accept `application/json`, and
+request identity encoding. Access is anonymous: no key is mandatory, no optional
+credential plumbing is added, and no credential appears in a stored URL.
+
+Only HTTP **200**, one valid `application/json` Content-Type (charset/other valid
+parameters allowed, header maximum 200 characters), identity/no encoding, and a
+non-empty body are accepted. HTML, redirects, other statuses, encoded bodies and
+missing/invalid media types fail. JSON syntax and TfL business fields are not
+interpreted; the media type is preserved as received.
+
+The response cap is **1 MiB (1,048,576 bytes)**. The Underground-only line-status
+scope is small; this gives substantial headroom for nested disruption descriptions
+while bounding storage and memory per invocation. Declared length can reject early,
+and the body subscriber independently caps actual bytes, including chunked bodies.
+Responses exactly at the cap are allowed. This reuses Bank Holidays' accepted cap
+without changing either provider's retention policy.
+
+Accepted body bytes are stored without decoding, parsing, trimming, decompression
+or reserialization. `EvidenceArtifact.getByteSize()` derives the exact length from
+its stored payload; PostgreSQL `octet_length(payload)` provides the same authoritative
+size. No redundant size column or migration is needed. The existing constructor
+hashes those exact bytes with SHA-256, and PostgreSQL independently verifies the
+stored digest. Observation time is UTC `Instant.now()` after complete accepted body
+receipt, within the run interval; it is not startup, migration or expiry time.
+
+HTTP runs without a database transaction. Evidence insertion and SUCCESS completion
+commit atomically through `AcquisitionHistory.succeed()`. HTTP/network/timeout/size/
+media failures create coherent FAILED history with fixed bounded diagnostics and no
+artifact. Evidence/SUCCESS persistence failures roll back together before a separate
+FAILED transaction. If failure recording is unavailable, the exception propagates
+and the already committed STARTED run remains for investigation; no terminal result
+is invented. Each successful invocation creates one artifact, even for identical
+payloads. Existing defensive copies, Hibernate immutability and database update/
+delete protections apply equally to TfL evidence.
+
+Automated tests use authored transport-only fixtures (not authoritative TfL schema
+snapshots), a real loopback JDK HTTP server/client, and the accepted isolated
+PostgreSQL process in a separate schema. A test-only client checks the original
+canonical request before rerouting to loopback. It has no production equivalent.
+Tests verify bytes, size, independent digest, provenance, deadlines, limits,
+qualification-before-HTTP, redirects, rollback, immutability and Bank Holidays
+configuration/evidence isolation. They require no internet or credential.
+
+**NOT YET IMPLEMENTED/PERFORMED:** live TfL smoke acquisition, TfL interpretation,
+normalized Travel state, Current State, Change History, approximately 72-hour
+cleanup, scheduler/polling, Travel API and frontend. The future source-specific
+retention policy remains intent only; no TTL, deletion or global evidence expiry
+is introduced. A live smoke test requires separate explicit owner authorization.

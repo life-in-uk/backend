@@ -61,6 +61,8 @@ public class EvidenceArtifact {
     public UUID getId() { return id; }
     public IngestionRun getIngestionRun() { return ingestionRun; }
     public byte[] getPayload() { return payload.clone(); }
+    /** Exact size is derived from stored bytes, so it cannot drift from the payload. */
+    public int getByteSize() { return payload.length; }
     public String getMediaType() { return mediaType; }
     public Instant getObservedAt() { return observedAt; }
     public String getSha256() { return sha256; }
