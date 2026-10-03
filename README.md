@@ -258,9 +258,9 @@ may be retained long-term; repeated unchanged polls must not become permanent
 business-history rows. TfL terms override the default if they impose a different
 retention/republication requirement. Bank Holidays policy is independent.
 
-Issue #14 adds controlled acquisition and Issue #16 adds deterministic interpretation
-below. **Current State, Change History, cleanup and scheduling are NOT IMPLEMENTED
-for TfL.** Existing evidence triggers still reject updates/deletes;
+Issues #14/#16 add acquisition and interpretation; Issue #18 adds persisted
+latest-known Current State below. **Change History, cleanup and scheduling are
+NOT IMPLEMENTED for TfL.** Existing evidence triggers still reject updates/deletes;
 a future reviewed retention issue must establish an appropriate controlled expiry
 mechanism without weakening immutability while retained.
 
@@ -363,8 +363,8 @@ The separately owner-authorized Issue #14 live smoke succeeded with HTTP 200 and
 one immutable 12,464-byte evidence artifact; independent byte length and SHA-256
 verification matched. No further live request is part of interpretation.
 
-**NOT YET IMPLEMENTED:** normalized Travel state, Current State, Change History,
-approximately 72-hour cleanup, scheduler/polling, Travel API and frontend. The future source-specific
+**NOT YET IMPLEMENTED:** Change History, approximately 72-hour cleanup,
+scheduler/polling, Travel API and frontend. The future source-specific
 retention policy remains intent only; no TTL, deletion or global evidence expiry
 is introduced. A live smoke test requires separate explicit owner authorization.
 
@@ -389,8 +389,53 @@ into the domain model. Known fields remain strictly validated. Missing/null reas
 means absence; a supplied reason string (including empty text) is preserved exactly.
 Empty line/status arrays remain empty and imply no operating-state conclusion.
 
-Interpretation is intentionally in-memory, with no table or migration. Persisted
-Travel Current State, meaningful Change History, approximately 72-hour cleanup,
-polling/scheduler, Travel read API and frontend Travel integration remain unimplemented.
+Interpretation remains in-memory. Issue #18 projects its supplied facts into
+persisted Current State below. Meaningful Change History, approximately 72-hour
+cleanup, polling/scheduler, Travel read API and frontend Travel integration remain
+unimplemented.
 Tests use authored offline fixtures and the existing isolated PostgreSQL harness;
 they do not access development evidence or contact TfL.
+
+## Persisted Underground Current State (Issue #18)
+
+TfL → qualified acquisition → immutable evidence → deterministic interpretation
+→ persisted latest-known Underground snapshot. `UndergroundCurrentStateProjector`
+accepts only a supplied `UndergroundStatusInterpretation`; it neither parses raw
+JSON, selects evidence, acquires data nor decides service freshness/importance.
+The internal `UndergroundCurrentStates.current()` returns immutable persisted facts.
+
+V4 adds one snapshot metadata row (created only on projection), lines keyed by
+exact TfL line ID, and statuses keyed by line ID/source ordinal. Explicit line and
+status ordinals preserve source order, including repeated status records. Display
+text, source severity and optional reasons remain exact; absent and empty reasons
+remain distinct. JDBC persistence uses the existing Spring/PostgreSQL stack.
+
+A newer observation atomically replaces the complete snapshot; absent lines and
+superseded statuses disappear. A newer empty interpretation replaces it with an
+explicitly empty snapshot, without inventing an operating-state conclusion. Before
+any projection, the read boundary returns absence, distinct from a projected empty
+snapshot. Older observations return `IGNORED_OLDER` without writes. Equal time and
+identical evidence/facts return `REPLAYED`; equal time with different evidence or
+inconsistent facts returns `CONFLICT`, leaving state unchanged. A newer timestamp
+reusing current evidence identity also conflicts. Conflicts require caller review;
+there is no implicit tie-break, retry or acquisition.
+
+First projection uses INSERT ON CONFLICT, followed by SELECT FOR UPDATE on the
+singleton. Writers compare observation time only after obtaining that lock, and
+hold it through replacement/commit. Projection owns one REQUIRES_NEW READ_COMMITTED
+transaction; failures roll back metadata and all line/status changes together.
+Internal reads use REQUIRES_NEW read-only REPEATABLE_READ so multi-query loading
+cannot combine committed versions. No network occurs inside either boundary.
+
+Provenance retains the scalar EvidenceArtifact UUID and exact observedAt. Time is
+stored as UTC Instant epoch seconds plus nanoseconds to avoid PostgreSQL timestamp
+rounding changing ordering/replay semantics. There is deliberately no foreign key
+to raw evidence, so future evidence expiry cannot delete or block Current State.
+Only superseded Current State rows are replaced; no evidence deletion, 72-hour
+Current State TTL or history is introduced. Current State persists across restarts
+until superseded by a successfully projected newer observation.
+
+Offline tests use isolated PostgreSQL for faithful persistence, rollback, competing
+writers, coherent reads, provenance, constraints and real application restart.
+Meaningful Change History, raw-evidence cleanup, polling/scheduler, public Travel
+API and frontend Travel integration remain NOT IMPLEMENTED.
