@@ -59,14 +59,14 @@ class BankHolidaysInterpretationPersistenceTest {
             firstBytes = input.readAllBytes();
         }
         byte[] laterBytes = new String(firstBytes, StandardCharsets.UTF_8).replace("2026", "2027").getBytes(StandardCharsets.UTF_8);
-        jdbc.update("UPDATE source_endpoint SET qualification_status='QUALIFIED', qualification_record='Offline fixture approval', use_retention_policy='Offline fixture retention'");
+        jdbc.update("UPDATE source_endpoint SET qualification_status='QUALIFIED', qualification_record='Offline fixture approval', use_retention_policy='Offline fixture retention' WHERE endpoint_key = 'gov-uk-bank-holidays-json'");
         UUID endpointId = jdbc.queryForObject("SELECT id FROM source_endpoint WHERE endpoint_key=?", UUID.class, SourceEndpoint.BANK_HOLIDAYS_KEY);
         EvidenceArtifact first = persist(endpointId, firstBytes, Instant.parse("2026-01-01T00:00:00Z"));
         EvidenceArtifact later = persist(endpointId, laterBytes, Instant.parse("2027-01-01T00:00:00Z"));
         String firstHash = first.getSha256();
         String laterHash = later.getSha256();
         // Current acquisition eligibility must not prevent interpretation of an old observation.
-        jdbc.update("UPDATE source_endpoint SET enabled=false");
+        jdbc.update("UPDATE source_endpoint SET enabled=false WHERE endpoint_key = 'gov-uk-bank-holidays-json'");
         entityManager.clear();
         String before = historySnapshot();
         EvidenceArtifact loadedFirst = artifacts.findById(first.getId()).orElseThrow();

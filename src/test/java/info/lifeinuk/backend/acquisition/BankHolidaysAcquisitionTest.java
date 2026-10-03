@@ -76,8 +76,8 @@ class BankHolidaysAcquisitionTest {
     void prepare() throws IOException {
         jdbc.execute("TRUNCATE evidence_artifact, ingestion_run");
         bootstrap.initialize();
-        jdbc.update("UPDATE source SET enabled = true");
-        jdbc.update("UPDATE source_endpoint SET enabled = true, qualification_status = 'QUALIFIED', qualification_record = 'Fixture owner approval', use_retention_policy = 'Approved fixture retention'");
+        jdbc.update("UPDATE source SET enabled = true WHERE source_key = 'gov-uk-bank-holidays'");
+        jdbc.update("UPDATE source_endpoint SET enabled = true, qualification_status = 'QUALIFIED', qualification_record = 'Fixture owner approval', use_retention_policy = 'Approved fixture retention' WHERE endpoint_key = 'gov-uk-bank-holidays-json'");
         server = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
         executor = Executors.newCachedThreadPool();
         server.setExecutor(executor);
@@ -103,7 +103,7 @@ class BankHolidaysAcquisitionTest {
         jdbc.execute("DROP FUNCTION IF EXISTS acquisition_test_reject()");
         jdbc.execute("TRUNCATE evidence_artifact, ingestion_run");
         bootstrap.initialize();
-        jdbc.update("UPDATE source_endpoint SET qualification_status = 'PENDING', qualification_record = NULL, enabled = true");
+        jdbc.update("UPDATE source_endpoint SET qualification_status = 'PENDING', qualification_record = NULL, enabled = true WHERE endpoint_key = 'gov-uk-bank-holidays-json'");
     }
 
     private void respond(HttpExchange exchange, int status, String type, byte[] body, boolean chunked) throws IOException {
@@ -137,7 +137,7 @@ class BankHolidaysAcquisitionTest {
         assertThat(serverFailure.get()).isNull();
         assertThat(state(id)).isEqualTo("SUCCESS");
         assertThat(client.transactionActive).isFalse();
-        assertThat(client.original.get().uri().toString()).isEqualTo(jdbc.queryForObject("SELECT url FROM source_endpoint", String.class));
+        assertThat(client.original.get().uri().toString()).isEqualTo(jdbc.queryForObject("SELECT url FROM source_endpoint WHERE endpoint_key='gov-uk-bank-holidays-json'", String.class));
         assertThat(jdbc.queryForObject("SELECT payload FROM evidence_artifact WHERE ingestion_run_id = ?", byte[].class, id)).containsExactly(RAW);
         assertThat(jdbc.queryForObject("SELECT media_type FROM evidence_artifact", String.class)).isEqualTo("application/json; charset=utf-8");
         assertThat(jdbc.queryForObject("SELECT sha256 FROM evidence_artifact", String.class)).isEqualTo(HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(RAW)));
@@ -146,9 +146,9 @@ class BankHolidaysAcquisitionTest {
 
     @ParameterizedTest
     @ValueSource(strings = {
-        "UPDATE source_endpoint SET qualification_status = 'PENDING', qualification_record = NULL",
-        "UPDATE source_endpoint SET enabled = false",
-        "UPDATE source SET enabled = false",
+        "UPDATE source_endpoint SET qualification_status = 'PENDING', qualification_record = NULL WHERE endpoint_key = 'gov-uk-bank-holidays-json'",
+        "UPDATE source_endpoint SET enabled = false WHERE endpoint_key = 'gov-uk-bank-holidays-json'",
+        "UPDATE source SET enabled = false WHERE source_key = 'gov-uk-bank-holidays'",
         "DELETE FROM source_endpoint"
     })
     void ineligibleConfigurationFailsBeforeRunAndNetwork(String change) {

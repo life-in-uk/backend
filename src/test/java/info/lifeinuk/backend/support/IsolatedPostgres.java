@@ -29,7 +29,10 @@ public final class IsolatedPostgres {
                     "spring.flyway.enabled=true",
                     "life-in-uk.source.bank-holidays.qualified=false",
                     "life-in-uk.source.bank-holidays.qualification-record=",
-                    "life-in-uk.source.bank-holidays.use-retention-policy=")
+                    "life-in-uk.source.bank-holidays.use-retention-policy=",
+                    "life-in-uk.source.tfl-underground.qualified=false",
+                    "life-in-uk.source.tfl-underground.qualification-record=",
+                    "life-in-uk.source.tfl-underground.use-retention-policy=")
                     .applyTo(context.getEnvironment());
         }
     }

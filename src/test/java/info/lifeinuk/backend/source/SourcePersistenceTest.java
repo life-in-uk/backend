@@ -27,7 +27,7 @@ class SourcePersistenceTest {
 
     @Test
     void flywayCreatesOnlyFoundationTablesAndHibernateValidatesThem() {
-        assertThat(jdbc.queryForObject("SELECT count(*) FROM flyway_schema_history WHERE success", Integer.class)).isEqualTo(2);
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM flyway_schema_history WHERE success", Integer.class)).isEqualTo(3);
         assertThat(jdbc.queryForList("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' ORDER BY table_name",
                 String.class)).containsExactly("evidence_artifact", "flyway_schema_history", "ingestion_run", "source", "source_endpoint");
         assertThat(sources.findByKey(Source.BANK_HOLIDAYS_KEY)).isPresent();
@@ -49,8 +49,8 @@ class SourcePersistenceTest {
         bootstrap.initialize();
         entityManager.clear();
         SourceEndpoint reloaded = endpoints.findByKey(SourceEndpoint.BANK_HOLIDAYS_KEY).orElseThrow();
-        assertThat(sources.count()).isEqualTo(1);
-        assertThat(endpoints.count()).isEqualTo(1);
+        assertThat(sources.count()).isEqualTo(2);
+        assertThat(endpoints.count()).isEqualTo(2);
         assertThat(reloaded.getId()).isEqualTo(endpointId);
         assertThat(reloaded.getSource().getId()).isEqualTo(sourceId);
         assertThat(reloaded.getSource().isEnabled()).isFalse();
@@ -104,56 +104,56 @@ class SourcePersistenceTest {
 
     @Test
     void databaseRequiresExistingSource() {
-        assertThatThrownBy(() -> jdbc.update("UPDATE source_endpoint SET source_id = ?", UUID.randomUUID()))
+        assertThatThrownBy(() -> jdbc.update("UPDATE source_endpoint SET source_id = ? WHERE endpoint_key = 'gov-uk-bank-holidays-json'", UUID.randomUUID()))
                 .isInstanceOf(DataIntegrityViolationException.class);
     }
 
     @Test
     void databaseRestrictsOfficialUrl() {
-        assertThatThrownBy(() -> jdbc.update("UPDATE source_endpoint SET url = 'https://example.com/arbitrary'"))
+        assertThatThrownBy(() -> jdbc.update("UPDATE source_endpoint SET url = 'https://example.com/arbitrary' WHERE endpoint_key = 'gov-uk-bank-holidays-json'"))
                 .isInstanceOf(DataIntegrityViolationException.class);
     }
 
     @Test
     void databaseRequiresQualificationRecord() {
-        assertThatThrownBy(() -> jdbc.update("UPDATE source_endpoint SET qualification_status = 'QUALIFIED'"))
+        assertThatThrownBy(() -> jdbc.update("UPDATE source_endpoint SET qualification_status = 'QUALIFIED' WHERE endpoint_key = 'gov-uk-bank-holidays-json'"))
                 .isInstanceOf(DataIntegrityViolationException.class);
     }
 
     @Test
     void databaseRequiresPolicy() {
-        assertThatThrownBy(() -> jdbc.update("UPDATE source_endpoint SET use_retention_policy = ' '"))
+        assertThatThrownBy(() -> jdbc.update("UPDATE source_endpoint SET use_retention_policy = ' ' WHERE endpoint_key = 'gov-uk-bank-holidays-json'"))
                 .isInstanceOf(DataIntegrityViolationException.class);
     }
 
     @Test
     void databaseRequiresPollingEligibility() {
-        assertThatThrownBy(() -> jdbc.update("UPDATE source_endpoint SET next_poll_at = NULL"))
+        assertThatThrownBy(() -> jdbc.update("UPDATE source_endpoint SET next_poll_at = NULL WHERE endpoint_key = 'gov-uk-bank-holidays-json'"))
                 .isInstanceOf(DataIntegrityViolationException.class);
     }
 
     @Test
     void databaseRestrictsCalendarScope() {
-        assertThatThrownBy(() -> jdbc.update("UPDATE source_endpoint SET calendar_scope = 'ALL_YEARS'"))
+        assertThatThrownBy(() -> jdbc.update("UPDATE source_endpoint SET calendar_scope = 'ALL_YEARS' WHERE endpoint_key = 'gov-uk-bank-holidays-json'"))
                 .isInstanceOf(DataIntegrityViolationException.class);
     }
 
     @Test
     void databaseRestrictsDailyPolling() {
-        assertThatThrownBy(() -> jdbc.update("UPDATE source_endpoint SET poll_interval_seconds = 0"))
+        assertThatThrownBy(() -> jdbc.update("UPDATE source_endpoint SET poll_interval_seconds = 0 WHERE endpoint_key = 'gov-uk-bank-holidays-json'"))
                 .isInstanceOf(DataIntegrityViolationException.class);
     }
 
     @ParameterizedTest
     @ValueSource(strings = {
-            "UPDATE source SET source_key = ''",
-            "UPDATE source SET display_name = ' '",
-            "UPDATE source SET version = -1",
-            "UPDATE source_endpoint SET endpoint_key = 'arbitrary-endpoint'",
-            "UPDATE source_endpoint SET qualification_status = 'UNKNOWN'",
-            "UPDATE source_endpoint SET qualification_status = 'QUALIFIED', qualification_record = ' '",
-            "UPDATE source_endpoint SET attribution_reference = ' '",
-            "UPDATE source_endpoint SET enabled = NULL"
+            "UPDATE source SET source_key = '' WHERE source_key = 'gov-uk-bank-holidays'",
+            "UPDATE source SET display_name = ' ' WHERE source_key = 'gov-uk-bank-holidays'",
+            "UPDATE source SET version = -1 WHERE source_key = 'gov-uk-bank-holidays'",
+            "UPDATE source_endpoint SET endpoint_key = 'arbitrary-endpoint' WHERE endpoint_key = 'gov-uk-bank-holidays-json'",
+            "UPDATE source_endpoint SET qualification_status = 'UNKNOWN' WHERE endpoint_key = 'gov-uk-bank-holidays-json'",
+            "UPDATE source_endpoint SET qualification_status = 'QUALIFIED', qualification_record = ' ' WHERE endpoint_key = 'gov-uk-bank-holidays-json'",
+            "UPDATE source_endpoint SET attribution_reference = ' ' WHERE endpoint_key = 'gov-uk-bank-holidays-json'",
+            "UPDATE source_endpoint SET enabled = NULL WHERE endpoint_key = 'gov-uk-bank-holidays-json'"
     })
     void databaseRejectsInvalidRequiredConfiguration(String statement) {
         assertThatThrownBy(() -> jdbc.update(statement)).isInstanceOf(DataIntegrityViolationException.class);
@@ -162,11 +162,11 @@ class SourcePersistenceTest {
     @Test
     void bootstrapPreservesUnrelatedSourceAndRejectsMismatchedEndpointOwnership() {
         Source other = sources.saveAndFlush(new Source("other-source", "Unrelated configuration"));
-        jdbc.update("UPDATE source_endpoint SET source_id = ?", other.getId());
+        jdbc.update("UPDATE source_endpoint SET source_id = ? WHERE endpoint_key = 'gov-uk-bank-holidays-json'", other.getId());
         assertThatIllegalStateException().isThrownBy(bootstrap::initialize)
                 .withMessage("Existing Bank Holidays endpoint belongs to a different source");
         assertThat(jdbc.queryForObject("SELECT display_name FROM source WHERE id = ?", String.class, other.getId()))
                 .isEqualTo("Unrelated configuration");
-        assertThat(jdbc.queryForObject("SELECT source_id FROM source_endpoint", UUID.class)).isEqualTo(other.getId());
+        assertThat(jdbc.queryForObject("SELECT source_id FROM source_endpoint WHERE endpoint_key='gov-uk-bank-holidays-json'", UUID.class)).isEqualTo(other.getId());
     }
 }

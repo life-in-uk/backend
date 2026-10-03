@@ -16,6 +16,8 @@ import java.util.UUID;
 public class Source {
     public static final String BANK_HOLIDAYS_KEY = "gov-uk-bank-holidays";
     public static final String BANK_HOLIDAYS_SCOPE = "UK_BANK_HOLIDAYS";
+    public static final String TFL_KEY = "transport-for-london";
+    public static final String TFL_UNDERGROUND_SCOPE = "TFL_UNDERGROUND_STATUS";
 
     @Id
     private UUID id;
@@ -45,6 +47,14 @@ public class Source {
     protected Source() { }
 
     public Source(String key, String displayName) {
+        this(key, displayName, BANK_HOLIDAYS_SCOPE);
+    }
+
+    public static Source tfl() {
+        return new Source(TFL_KEY, "Transport for London", TFL_UNDERGROUND_SCOPE);
+    }
+
+    private Source(String key, String displayName, String scope) {
         if (key == null || key.length() > 100 || !key.matches("[a-z0-9]+(?:-[a-z0-9]+)*")) {
             throw new IllegalArgumentException("A stable lower-case source key is required");
         }
@@ -54,7 +64,7 @@ public class Source {
         this.id = UUID.randomUUID();
         this.key = key;
         this.displayName = displayName;
-        this.scope = BANK_HOLIDAYS_SCOPE;
+        this.scope = scope;
         this.enabled = true;
     }
 

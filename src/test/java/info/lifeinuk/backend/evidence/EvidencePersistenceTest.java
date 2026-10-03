@@ -41,7 +41,7 @@ class EvidencePersistenceTest {
 
     private IngestionRun run() {
         // Test-only owner decision; evidence code uses only the source-owned read boundary.
-        jdbc.update("UPDATE source_endpoint SET qualification_status = 'QUALIFIED', qualification_record = 'Fixture owner approval', use_retention_policy = 'Fixture approved retention'");
+        jdbc.update("UPDATE source_endpoint SET qualification_status = 'QUALIFIED', qualification_record = 'Fixture owner approval', use_retention_policy = 'Fixture approved retention' WHERE endpoint_key = 'gov-uk-bank-holidays-json'");
         IngestionRun run = runs.save(IngestionRun.start(qualifiedEndpoints.requireQualified(endpointId()), START));
         em.flush();
         return run;
@@ -227,7 +227,7 @@ class EvidencePersistenceTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"UPDATE source_endpoint SET enabled = false", "UPDATE source SET enabled = false"})
+    @ValueSource(strings = {"UPDATE source_endpoint SET enabled = false WHERE endpoint_key = 'gov-uk-bank-holidays-json'", "UPDATE source SET enabled = false WHERE source_key = 'gov-uk-bank-holidays'"})
     void disabledConfigurationPreventsNewRunsButDoesNotEraseHistory(String disable) {
         IngestionRun historical = run();
         jdbc.update(disable);
