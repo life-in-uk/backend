@@ -1,0 +1,21 @@
+{
+  "england-and-wales": {
+    "division": "england-and-wales",
+    "events": [
+      {"title": " New Year’s Day ", "date": "2026-01-01", "notes": "", "bunting": true},
+      {"title": "Spring bank holiday", "date": "2026-05-25", "notes": "  Source note £  ", "bunting": false}
+    ]
+  },
+  "scotland": {
+    "division": "scotland",
+    "events": [
+      {"title": "2nd January", "date": "2026-01-02", "notes": "Substitute day", "bunting": true}
+    ]
+  },
+  "northern-ireland": {
+    "division": "northern-ireland",
+    "events": [
+      {"title": "St Patrick’s Day", "date": "2026-03-17", "notes": "", "bunting": false}
+    ]
+  }
+}

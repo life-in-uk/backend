@@ -127,3 +127,31 @@ destination; there is no production target override. Tests cover raw-byte fideli
 qualification, HTTP contract, limits, deadlines (including stalled body), redirect
 rejection, transaction boundaries, persistence rollback and independent observations.
 No automated test accesses GOV.UK or requires internet.
+
+## Deterministic Bank Holidays interpretation (Issue #8)
+
+`GovUkBankHolidaysParser.parse(EvidenceArtifact)` interprets one supplied artifact.
+It performs no acquisition, evidence selection, repository access or writes. The
+caller supplies the historical observation to interpret; current qualification or
+polling policy is not re-evaluated when interpreting already acquired evidence.
+Raw evidence remains immutable source truth. Interpretation is downstream and
+uses the existing Jackson 3 dependency, with no AI or HTTP involvement.
+
+The in-memory result carries the exact artifact UUID and an immutable list of
+facts: explicit division enum, unchanged title/notes, validated `LocalDate`, and
+boolean bunting. All three supported divisions must be present, with matching
+nested `division` identifiers and `events` arrays. Empty arrays and empty notes
+are valid; titles must be nonblank. Strings are not trimmed, events are not sorted
+or deduplicated, and no year filtering occurs. Division groups use fixed enum order.
+
+Validation requires exactly the supported root/division/event fields, rejects
+unknown fields/divisions, duplicate JSON keys, trailing documents, missing/null
+fields and wrong types, and accepts only valid `YYYY-MM-DD` dates. No scalar
+coercion or factual defaults are applied. Contract changes therefore require an
+explicit parser update. Errors identify a structural location without dumping
+source values or payloads.
+
+No durable interpreted records are required by Issue #8 or the accepted current
+architecture. Interpretation remains in memory; durable domain/publication
+persistence is intentionally deferred. No Flyway migration or parser repository
+is added. Parser fixtures are authored offline and never read development evidence.
