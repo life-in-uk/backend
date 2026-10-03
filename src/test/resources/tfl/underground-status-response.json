@@ -1,0 +1,9 @@
+[
+  {
+    "id": "fixture-line", "name": "Offline Underground fixture", "modeName": "tube",
+    "lineStatuses": [ { "statusSeverity": 9, "statusSeverityDescription": "Minor Delays",
+      "reason": "  Test only: delays — Café, £5; punctuation!  ",
+      "validityPeriods": [ { "fromDate": "2026-10-03T10:00:00Z", "isNow": true } ]
+    } ]
+  }
+]
