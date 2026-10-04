@@ -1,0 +1,479 @@
+{
+  "D2Payload": {
+    "version": "3.4",
+    "feedType": "SituationPublication",
+    "publicationTime": "2026-10-04T03:30:00.123Z",
+    "situation": [
+      {
+        "idG": "offline-situation",
+        "situationVersionTime": "2026-10-04T02:00:00Z",
+        "headerInformation": {
+          "confidentiality": "noRestriction",
+          "informationStatus": "real"
+        },
+        "situationRecord": [
+          {
+            "sitRoadOrCarriagewayOrLaneManagement": {
+              "idG": "offline-record",
+              "versionG": "007",
+              "situationRecordCreationTime": "2026-10-04T01:02:03.123456789Z",
+              "situationRecordVersionTime": "2026-10-04T02:02:03+01:00",
+              "probabilityOfOccurrence": "certain",
+              "complianceOption": "mandatory",
+              "source": {
+                "sourceIdentification": "Offline signals"
+              },
+              "roadOrCarriagewayOrLaneManagementType": {
+                "value": "laneClosures"
+              },
+              "validity": {
+                "validityStatus": "suspended",
+                "validityTimeSpecification": {
+                  "overallStartTime": "2026-10-04T00:00:00Z",
+                  "overallEndTime": "2026-10-04T03:00:00Z"
+                }
+              },
+              "cause": {
+                "causeType": "roadOrCarriagewayOrLaneManagement",
+                "detailedCauseType": {
+                  "roadOrCarriagewayOrLaneManagementType": {
+                    "value": "laneClosures"
+                  }
+                }
+              },
+              "generalPublicComment": [
+                {
+                  "comment": "  Offline closure — Café, £!  "
+                },
+                {
+                  "comment": "  Offline closure — Café, £!  "
+                }
+              ],
+              "locationReference": {
+                "locLinearLocation": {
+                  "gmlLineString": {
+                    "locGmlLineString": {
+                      "srsDimension": 2,
+                      "srsName": "ESPG::4326",
+                      "posList": "51.123456789012345 -1.50  51.20 -1.60\n51.123456789012345 -1.50"
+                    }
+                  },
+                  "supplementaryPositionalDescription": {
+                    "locationDescription": "  Offline M1 — Café!  ",
+                    "carriageway": [
+                      {
+                        "carriageway": {
+                          "value": "extendedG",
+                          "extendedValueG": "dualCarriageway"
+                        },
+                        "lane": [
+                          {
+                            "laneUsage": {
+                              "value": "extendedG",
+                              "extendedValueG": "cl2"
+                            },
+                            "laneNumber": 2,
+                            "laneExtensionG": {
+                              "impactOnLanes": {
+                                "impactExtensionG": {
+                                  "lanesStatus": "Closed",
+                                  "laneImpactDirection": "aligned"
+                                }
+                              }
+                            }
+                          },
+                          {
+                            "laneNumber": 1
+                          },
+                          {
+                            "laneNumber": 2
+                          }
+                        ],
+                        "carriagewayExtensionG": {
+                          "impactOnCarriageway": {
+                            "numberOfLanesRestricted": 2,
+                            "numberOfOperationalLanes": 1
+                          }
+                        }
+                      }
+                    ]
+                  }
+                },
+                "locSingleRoadLinearLocation": {
+                  "linearWithinLinearElement": [
+                    {
+                      "directionOnLinearSection": "northBound",
+                      "directionRelativeOnLinearSection": "aligned",
+                      "heightGradeOfLinearSection": {
+                        "value": "extendedG",
+                        "extendedValueG": "start1End1"
+                      },
+                      "linearElement": {
+                        "locLinearElementByCode": {
+                          "roadName": " M1 ",
+                          "linearElementReferenceModel": "The Network Model",
+                          "linearElementIdentifier": "offline-element",
+                          "linearElementByCodeExtensionG": {
+                            "linearElementType": "aCarriageway"
+                          }
+                        }
+                      },
+                      "fromPoint": {
+                        "locDistanceFromLinearElementStart": {
+                          "distanceAlong": 12.5
+                        }
+                      },
+                      "toPoint": {
+                        "locDistanceFromLinearElementStart": {
+                          "distanceAlong": 3.25
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "sitRoadOrCarriagewayOrLaneManagement": {
+              "idG": "offline-record",
+              "versionG": "007",
+              "situationRecordCreationTime": "2026-10-04T01:02:03.123456789Z",
+              "situationRecordVersionTime": "2026-10-04T02:02:03+01:00",
+              "probabilityOfOccurrence": "certain",
+              "complianceOption": "mandatory",
+              "source": {
+                "sourceIdentification": "Offline signals"
+              },
+              "roadOrCarriagewayOrLaneManagementType": {
+                "value": "laneClosures"
+              },
+              "validity": {
+                "validityStatus": "suspended",
+                "validityTimeSpecification": {
+                  "overallStartTime": "2026-10-04T00:00:00Z",
+                  "overallEndTime": "2026-10-04T03:00:00Z"
+                }
+              },
+              "cause": {
+                "causeType": "roadOrCarriagewayOrLaneManagement",
+                "detailedCauseType": {
+                  "roadOrCarriagewayOrLaneManagementType": {
+                    "value": "laneClosures"
+                  }
+                }
+              },
+              "generalPublicComment": [
+                {
+                  "comment": "  Offline closure — Café, £!  "
+                },
+                {
+                  "comment": "  Offline closure — Café, £!  "
+                }
+              ],
+              "locationReference": {
+                "locLinearLocation": {
+                  "gmlLineString": {
+                    "locGmlLineString": {
+                      "srsDimension": 2,
+                      "srsName": "ESPG::4326",
+                      "posList": "51.123456789012345 -1.50  51.20 -1.60\n51.123456789012345 -1.50"
+                    }
+                  },
+                  "supplementaryPositionalDescription": {
+                    "locationDescription": "  Offline M1 — Café!  ",
+                    "carriageway": [
+                      {
+                        "carriageway": {
+                          "value": "extendedG",
+                          "extendedValueG": "dualCarriageway"
+                        },
+                        "lane": [
+                          {
+                            "laneUsage": {
+                              "value": "extendedG",
+                              "extendedValueG": "cl2"
+                            },
+                            "laneNumber": 2,
+                            "laneExtensionG": {
+                              "impactOnLanes": {
+                                "impactExtensionG": {
+                                  "lanesStatus": "Closed",
+                                  "laneImpactDirection": "aligned"
+                                }
+                              }
+                            }
+                          },
+                          {
+                            "laneNumber": 1
+                          },
+                          {
+                            "laneNumber": 2
+                          }
+                        ],
+                        "carriagewayExtensionG": {
+                          "impactOnCarriageway": {
+                            "numberOfLanesRestricted": 2,
+                            "numberOfOperationalLanes": 1
+                          }
+                        }
+                      }
+                    ]
+                  }
+                },
+                "locSingleRoadLinearLocation": {
+                  "linearWithinLinearElement": [
+                    {
+                      "directionOnLinearSection": "northBound",
+                      "directionRelativeOnLinearSection": "aligned",
+                      "heightGradeOfLinearSection": {
+                        "value": "extendedG",
+                        "extendedValueG": "start1End1"
+                      },
+                      "linearElement": {
+                        "locLinearElementByCode": {
+                          "roadName": " M1 ",
+                          "linearElementReferenceModel": "The Network Model",
+                          "linearElementIdentifier": "offline-element",
+                          "linearElementByCodeExtensionG": {
+                            "linearElementType": "aCarriageway"
+                          }
+                        }
+                      },
+                      "fromPoint": {
+                        "locDistanceFromLinearElementStart": {
+                          "distanceAlong": 12.5
+                        }
+                      },
+                      "toPoint": {
+                        "locDistanceFromLinearElementStart": {
+                          "distanceAlong": 3.25
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        ]
+      },
+      {
+        "idG": "offline-group-situation",
+        "situationRecord": [
+          {
+            "sitRoadOrCarriagewayOrLaneManagement": {
+              "idG": "offline-group",
+              "versionG": "007",
+              "situationRecordCreationTime": "2026-10-04T01:02:03.123456789Z",
+              "situationRecordVersionTime": "2026-10-04T02:02:03+01:00",
+              "probabilityOfOccurrence": "certain",
+              "complianceOption": "mandatory",
+              "source": {
+                "sourceIdentification": "Offline signals"
+              },
+              "roadOrCarriagewayOrLaneManagementType": {
+                "value": "laneClosures"
+              },
+              "validity": {
+                "validityStatus": "suspended",
+                "validityTimeSpecification": {
+                  "overallStartTime": "2026-10-04T00:00:00Z",
+                  "overallEndTime": "2026-10-04T03:00:00Z"
+                }
+              },
+              "cause": {
+                "causeType": "roadOrCarriagewayOrLaneManagement",
+                "detailedCauseType": {
+                  "roadOrCarriagewayOrLaneManagementType": {
+                    "value": "laneClosures"
+                  }
+                }
+              },
+              "generalPublicComment": [
+                {
+                  "comment": "  Offline closure — Café, £!  "
+                },
+                {
+                  "comment": "  Offline closure — Café, £!  "
+                }
+              ],
+              "locationReference": {
+                "locLocationGroupByList": {
+                  "locationContainedInGroup": [
+                    {
+                      "locLinearLocation": {
+                        "gmlLineString": {
+                          "locGmlLineString": {
+                            "srsDimension": 2,
+                            "srsName": "ESPG::4326",
+                            "posList": "51.123456789012345 -1.50  51.20 -1.60\n51.123456789012345 -1.50"
+                          }
+                        },
+                        "supplementaryPositionalDescription": {
+                          "locationDescription": "  Offline M1 — Café!  ",
+                          "carriageway": [
+                            {
+                              "carriageway": {
+                                "value": "extendedG",
+                                "extendedValueG": "dualCarriageway"
+                              },
+                              "lane": [
+                                {
+                                  "laneUsage": {
+                                    "value": "extendedG",
+                                    "extendedValueG": "cl2"
+                                  },
+                                  "laneNumber": 2,
+                                  "laneExtensionG": {
+                                    "impactOnLanes": {
+                                      "impactExtensionG": {
+                                        "lanesStatus": "Closed",
+                                        "laneImpactDirection": "aligned"
+                                      }
+                                    }
+                                  }
+                                },
+                                {
+                                  "laneNumber": 1
+                                },
+                                {
+                                  "laneNumber": 2
+                                }
+                              ],
+                              "carriagewayExtensionG": {
+                                "impactOnCarriageway": {
+                                  "numberOfLanesRestricted": 2,
+                                  "numberOfOperationalLanes": 1
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      "locSingleRoadLinearLocation": {
+                        "linearWithinLinearElement": [
+                          {
+                            "directionOnLinearSection": "northBound",
+                            "directionRelativeOnLinearSection": "aligned",
+                            "heightGradeOfLinearSection": {
+                              "value": "extendedG",
+                              "extendedValueG": "start1End1"
+                            },
+                            "linearElement": {
+                              "locLinearElementByCode": {
+                                "roadName": " M1 ",
+                                "linearElementReferenceModel": "The Network Model",
+                                "linearElementIdentifier": "offline-element",
+                                "linearElementByCodeExtensionG": {
+                                  "linearElementType": "aCarriageway"
+                                }
+                              }
+                            },
+                            "fromPoint": {
+                              "locDistanceFromLinearElementStart": {
+                                "distanceAlong": 12.5
+                              }
+                            },
+                            "toPoint": {
+                              "locDistanceFromLinearElementStart": {
+                                "distanceAlong": 3.25
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "locLinearLocation": {
+                        "gmlLineString": {
+                          "locGmlLineString": {
+                            "srsDimension": 2,
+                            "srsName": "ESPG::4326",
+                            "posList": "51.123456789012345 -1.50  51.20 -1.60\n51.123456789012345 -1.50"
+                          }
+                        },
+                        "supplementaryPositionalDescription": {
+                          "locationDescription": "  Offline M1 — Café!  ",
+                          "carriageway": [
+                            {
+                              "carriageway": {
+                                "value": "extendedG",
+                                "extendedValueG": "dualCarriageway"
+                              },
+                              "lane": [
+                                {
+                                  "laneUsage": {
+                                    "value": "extendedG",
+                                    "extendedValueG": "cl2"
+                                  },
+                                  "laneNumber": 2,
+                                  "laneExtensionG": {
+                                    "impactOnLanes": {
+                                      "impactExtensionG": {
+                                        "lanesStatus": "Closed",
+                                        "laneImpactDirection": "aligned"
+                                      }
+                                    }
+                                  }
+                                },
+                                {
+                                  "laneNumber": 1
+                                },
+                                {
+                                  "laneNumber": 2
+                                }
+                              ],
+                              "carriagewayExtensionG": {
+                                "impactOnCarriageway": {
+                                  "numberOfLanesRestricted": 2,
+                                  "numberOfOperationalLanes": 1
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      "locSingleRoadLinearLocation": {
+                        "linearWithinLinearElement": [
+                          {
+                            "directionOnLinearSection": "northBound",
+                            "directionRelativeOnLinearSection": "aligned",
+                            "heightGradeOfLinearSection": {
+                              "value": "extendedG",
+                              "extendedValueG": "start1End1"
+                            },
+                            "linearElement": {
+                              "locLinearElementByCode": {
+                                "roadName": " M1 ",
+                                "linearElementReferenceModel": "The Network Model",
+                                "linearElementIdentifier": "offline-element",
+                                "linearElementByCodeExtensionG": {
+                                  "linearElementType": "aCarriageway"
+                                }
+                              }
+                            },
+                            "fromPoint": {
+                              "locDistanceFromLinearElementStart": {
+                                "distanceAlong": 12.5
+                              }
+                            },
+                            "toPoint": {
+                              "locDistanceFromLinearElementStart": {
+                                "distanceAlong": 3.25
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        ]
+      }
+    ]
+  }
+}
