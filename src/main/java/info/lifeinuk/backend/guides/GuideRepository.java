@@ -6,8 +6,13 @@ import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.data.jpa.repository.Lock;
+import jakarta.persistence.LockModeType;
 
 interface GuideRepository extends JpaRepository<Guide, UUID> {
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    Optional<Guide> findBySlug(String slug);
+
     @Query("""
             select new info.lifeinuk.backend.guides.GuideResponse$Metadata(
                 g.slug, g.category, g.title, g.summary, g.publishedAt, g.updatedAt)

@@ -832,7 +832,8 @@ internal ID is serialized. Unknown and unpublished slugs both return identical
 bounded 404 `GUIDE_NOT_FOUND` responses. Unexpected reads return bounded 500
 `GUIDES_READ_FAILED`. No CORS, authentication or dependency change is introduced.
 
-There is no production content seed or startup importer. Controlled test fixtures
+There is no production content seed or automatic startup importer. The explicit
+local importer is documented under Issue #36 below. Controlled test fixtures
 construct a Guide, add its source references, explicitly publish when appropriate,
 and save the aggregate through the package-private GuideRepository in a transaction.
 For owner-controlled initial content insertion, the same V8 schema can be populated
@@ -845,3 +846,80 @@ generic CMS import framework or public write endpoint is required.
 Tests use synthetic documents and isolated PostgreSQL only. Markdown rendering,
 Health & NHS articles, admin/editor APIs, editorial workflow, revisions, AI,
 source monitoring, search and frontend work are not implemented.
+
+## Controlled local Guide import (Issue #36)
+
+After owner review, import **one local UTF-8 JSON file per explicit command**:
+
+```bash
+java -jar target/backend-0.0.1-SNAPSHOT.jar \
+  --spring.main.web-application-type=none \
+  --import-guide=/absolute/path/to/reviewed-guide.json
+```
+
+Use the application's normal external database configuration. This command starts
+the normal Flyway/JPA lifecycle, imports once and exits. Success logs the slug and
+`CREATED`, `UPDATED` or `UNCHANGED`; invalid input, unreadable files or persistence
+failure fail the command with a nonzero exit. There is no public import endpoint.
+
+The runner acts **only** when `import-guide` occurs in the actual command-line
+arguments with exactly one nonblank path. Normal startup does not read/scan files
+or touch Guide content. An environment variable, application property or profile
+named similarly does not invoke it. No default file, directory scan, startup seed
+or scheduled job exists.
+
+The synthetic example at `src/test/resources/guides/synthetic-import.json` shows
+the complete format; it is test data, not real guidance:
+
+```json
+{
+  "slug": "synthetic-guide",
+  "category": "example-category",
+  "title": "Synthetic guide",
+  "summary": "Offline example only.",
+  "content": "# Synthetic document\n\nMarkdown **text**.\n",
+  "status": "DRAFT",
+  "publishedAt": null,
+  "updatedAt": "2026-10-04T12:00:00Z",
+  "sources": [
+    {
+      "organisation": "Offline organisation",
+      "title": "Example reference",
+      "url": "https://example.invalid/reference",
+      "accessedAt": "2026-10-01T12:00:00Z"
+    }
+  ]
+}
+```
+
+All root fields except `publishedAt` are required. `sources` may be empty; its
+array position is the authoritative, zero-based editorial order. There is no
+separate ordering field. Duplicate source entries are retained if explicitly
+supplied. Source fields are required. Strings must satisfy V8's nonblank/length
+requirements; slug/category are lower-case hyphenated keys. No text, Markdown,
+Unicode or URL value is trimmed, rewritten or fetched.
+
+`status` is exactly `DRAFT` or `PUBLISHED`. DRAFT requires absent/null `publishedAt`;
+PUBLISHED requires a supplied `publishedAt <= updatedAt`. The importer never
+invents publication/update timestamps or keeps a previous publication decision
+when the new input explicitly says DRAFT. Existing public filtering is unchanged.
+All timestamps require valid offset-aware ISO date-times in years 0001–9999, with
+at most six fractional digits (PostgreSQL microsecond precision). Offsets represent
+the same Instant; malformed dates, scalar coercion, unknown fields, duplicate JSON
+keys and trailing documents are rejected with field/source-index errors.
+
+Slug is the stable upsert identity. New slugs create a Guide with its sources;
+existing slugs keep the same Guide UUID and take all supplied content/publication
+values. Identical imports leave every row unchanged, including timestamps and
+source UUIDs. When the ordered source definition changes, old owned rows are
+removed and the exact new sequence is inserted; source UUIDs may then change.
+Metadata-only changes preserve unchanged source rows. Existing-guide imports lock
+that Guide row; competing first imports are constrained by the unique slug and
+may fail rather than retry. Operate one command at a time.
+
+Local file parsing and complete validation occur before persistence. One import
+uses one database transaction. Old source rows are flushed as deletions before
+their unique positions are reused, but deletion, Guide update and new source
+insertion commit together. Any failure rolls everything back, including a new
+Guide. No external operations occur. V8 remains unchanged; no new dependency,
+schema, CMS, admin/editor API, real Health content or frontend work is introduced.

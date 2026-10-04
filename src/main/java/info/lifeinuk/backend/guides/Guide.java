@@ -29,7 +29,7 @@ public class Guide {
     @Column(nullable = false, length = 20) private GuideStatus status;
     @Column(name = "published_at") private Instant publishedAt;
     @Column(name = "updated_at", nullable = false) private Instant updatedAt;
-    @OneToMany(mappedBy = "guide", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @OneToMany(mappedBy = "guide", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     @OrderBy("sourceOrder ASC")
     private List<GuideSource> sources = new ArrayList<>();
 
@@ -59,7 +59,29 @@ public class Guide {
         updatedAt = at;
     }
 
-    private static String key(String value, int max) {
+    /** Package-owned reviewed import operation, not a public editorial API. */
+    void replaceContent(String category, String title, String summary, String content,
+            GuideStatus status, Instant publishedAt, Instant updatedAt) {
+        this.category = key(category, 100);
+        this.title = text(title, 200);
+        this.summary = text(summary, 1000);
+        this.content = text(content, Integer.MAX_VALUE);
+        validatePublication(status, publishedAt, updatedAt);
+        this.status = status;
+        this.publishedAt = publishedAt;
+        this.updatedAt = updatedAt;
+    }
+
+    void clearSources() { sources.clear(); }
+
+    static void validatePublication(GuideStatus status, Instant publishedAt, Instant updatedAt) {
+        if (status == null || updatedAt == null || (status == GuideStatus.DRAFT && publishedAt != null)
+                || (status == GuideStatus.PUBLISHED && (publishedAt == null || updatedAt.isBefore(publishedAt)))) {
+            throw new IllegalArgumentException("DRAFT requires no publishedAt; PUBLISHED requires publishedAt <= updatedAt");
+        }
+    }
+
+    static String key(String value, int max) {
         if (value == null || value.length() > max || !value.matches("[a-z0-9]+(?:-[a-z0-9]+)*")) {
             throw new IllegalArgumentException("A lower-case hyphenated guide key is required");
         }

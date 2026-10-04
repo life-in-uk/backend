@@ -1,0 +1,24 @@
+{
+  "slug": "synthetic-guide",
+  "category": "example-category",
+  "title": "Synthetic guide — 示例",
+  "summary": "An offline importer fixture, not real guidance.",
+  "content": "# Synthetic document\n\n  Markdown **text** — £, 示例!  \n",
+  "status": "DRAFT",
+  "publishedAt": null,
+  "updatedAt": "2026-10-04T12:00:00.123456Z",
+  "sources": [
+    {
+      "organisation": "Offline organisation B",
+      "title": "First editorial reference",
+      "url": "https://example.invalid/reference-b",
+      "accessedAt": "2026-10-01T12:00:00Z"
+    },
+    {
+      "organisation": "Offline organisation A",
+      "title": "Second editorial reference",
+      "url": "https://example.invalid/reference-a",
+      "accessedAt": "2026-10-02T12:00:00Z"
+    }
+  ]
+}
