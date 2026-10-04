@@ -613,7 +613,53 @@ resembling credentials are rejected; page positions are unique per run; V2's app
 trigger makes them immutable. Payload JSON is never modified.
 
 Tests use a loopback server behind the real JDK client, a fixed acquisition instant,
-simulated pacing time and a fixture key. No National Highways request has been made; any
-live smoke needs separate owner authorization and may involve several requests. DATEX II
-parsing, Roads Current State, spatial search, public API, scheduling and planned closures
+simulated pacing time and a fixture key. The separately owner-authorized Issue #26
+live smoke succeeded with one HTTP 200 JSON page (101,448 bytes), verified SHA-256
+and no continuation. No additional provider request is part of interpretation.
+Roads Current State, spatial search, public API, scheduling and planned closures
 remain NOT IMPLEMENTED.
+
+## National Highways road-closure interpretation (Issue #28)
+
+`NationalHighwaysRoadClosuresParser` interprets one supplied immutable evidence
+page into in-memory `NationalHighwaysRoadClosuresInterpretation`. It validates the
+successful run, canonical source/endpoint/scope, current qualified/enabled source
+configuration and captured page provenance before reading JSON. Callers must
+initialize the run/endpoint/source associations before detaching the artifact;
+uninitialized provenance is rejected rather than causing implicit SQL. The parser
+has no repository, acquisition, network or persistence operation.
+
+The supported JSON envelope is `D2Payload` / `SituationPublication` with ordered
+`situation` and `situationRecord` arrays. Situation and record `idG` values are
+required. Source record `versionG`, lifecycle/header information, publication,
+creation/version/validity times, management/cause codes, source identification and
+public comments are retained when supplied. Provider timestamps require valid
+offset-aware ISO date-times; no observation time replaces missing business times.
+Malformed consumed fields, duplicate JSON keys and trailing documents fail.
+Unrelated additional metadata is ignored; missing optional values remain absent.
+Repeated situations, records, comments, locations and lanes are never deduplicated.
+
+Supported observed location forms are complementary `locLinearLocation` and
+`locSingleRoadLinearLocation`, plus ordered `locLocationGroupByList` members.
+They retain GML line geometry, source position-list text, exact decimal coordinate
+tuples, CRS name, location descriptions, carriageway/lane enums and extensions,
+lane numbers/status/direction, restricted/operational lane counts, road name,
+network reference/element identifiers, directions, height-grade codes and from/to
+distance offsets. Geometry and groups remain structured, with immutable nested
+collections. No geometry simplification, geocoding or relevance calculation occurs.
+
+The locally inspected source literally used `ESPG::4326`. This spelling and the
+ordinate order are preserved without correction or an assumed latitude/longitude
+axis mapping. Only the observed two-dimensional GML line form is supported;
+point locations, other coordinate dimensions/record variants and undocumented
+location forms are not silently converted or discarded. Vehicle restrictions or
+separate contraflow structures were not present in the inspected page and no
+speculative model for them is introduced.
+
+Each interpretation retains artifact UUID, logical IngestionRun UUID, page number,
+requestedAt, observedAt and credential-free request query. Pages from one run can
+therefore be grouped later; an individual page is not a complete source snapshot.
+No aggregation or projector is implemented here. Interpretation adds no table,
+migration or dependency. Deterministic synthetic fixtures and isolated PostgreSQL
+tests verify facts, detached two-page provenance and unchanged evidence/source
+history. The full production artifact is not a committed fixture.
