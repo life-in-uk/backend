@@ -13,6 +13,7 @@ import java.time.Instant;
 import java.util.HexFormat;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.regex.Pattern;
 import org.hibernate.annotations.Immutable;
 
 /** Exact observed bytes, with no parsing, normalization or payload deduplication. */
@@ -20,6 +21,8 @@ import org.hibernate.annotations.Immutable;
 @Immutable
 @Table(name = "evidence_artifact")
 public class EvidenceArtifact {
+    private static final Pattern CREDENTIAL_PARAMETER =
+            Pattern.compile("subscription-key|ocp-apim|api[-_]?key", Pattern.CASE_INSENSITIVE);
     @Id private UUID id;
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "ingestion_run_id", nullable = false, updatable = false)
@@ -32,6 +35,15 @@ public class EvidenceArtifact {
     private Instant observedAt;
     @Column(name = "sha256", nullable = false, updatable = false, length = 64)
     private String sha256;
+    // Optional request provenance: all present or all absent (enforced here and by V6).
+    @Column(name = "request_query", updatable = false, length = 2000)
+    private String requestQuery;
+    @Column(name = "page_number", updatable = false)
+    private Integer pageNumber;
+    @Column(name = "http_status", updatable = false)
+    private Integer httpStatus;
+    @Column(name = "requested_at", updatable = false)
+    private Instant requestedAt;
 
     protected EvidenceArtifact() { }
 
@@ -58,6 +70,33 @@ public class EvidenceArtifact {
         }
     }
 
+    /** A response captured with its request provenance; the payload remains provider-exact. */
+    public EvidenceArtifact(IngestionRun run, CapturedResponse response) {
+        this(run, Objects.requireNonNull(response, "Captured response is required").payload(),
+                response.mediaType(), response.observedAt());
+        String query = response.requestQuery();
+        if (query == null || query.isBlank() || query.length() > 2000) {
+            throw new IllegalArgumentException("Request query is required (max 2000)");
+        }
+        if (CREDENTIAL_PARAMETER.matcher(query).find()) {
+            throw new IllegalArgumentException("Request query must not carry credentials");
+        }
+        if (response.pageNumber() < 1) {
+            throw new IllegalArgumentException("Page number must be positive");
+        }
+        if (response.httpStatus() < 100 || response.httpStatus() > 599) {
+            throw new IllegalArgumentException("HTTP status is invalid");
+        }
+        Instant requested = response.requestedAt();
+        if (requested == null || requested.isAfter(observedAt) || requested.isBefore(run.getStartedAt())) {
+            throw new IllegalArgumentException("Request must be within the run interval and precede observation");
+        }
+        this.requestQuery = query;
+        this.pageNumber = response.pageNumber();
+        this.httpStatus = response.httpStatus();
+        this.requestedAt = requested;
+    }
+
     public UUID getId() { return id; }
     public IngestionRun getIngestionRun() { return ingestionRun; }
     public byte[] getPayload() { return payload.clone(); }
@@ -66,4 +105,8 @@ public class EvidenceArtifact {
     public String getMediaType() { return mediaType; }
     public Instant getObservedAt() { return observedAt; }
     public String getSha256() { return sha256; }
+    public String getRequestQuery() { return requestQuery; }
+    public Integer getPageNumber() { return pageNumber; }
+    public Integer getHttpStatus() { return httpStatus; }
+    public Instant getRequestedAt() { return requestedAt; }
 }

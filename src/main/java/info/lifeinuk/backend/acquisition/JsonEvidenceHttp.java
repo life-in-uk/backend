@@ -10,17 +10,23 @@ import java.nio.ByteBuffer;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Flow;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.regex.Pattern;
 import org.springframework.http.MediaType;
 
-/** Package-private bounded JSON transport shared by the two controlled acquisitions. */
+/** Package-private bounded JSON transport shared by the controlled acquisitions. */
 final class JsonEvidenceHttp {
     static final int MAX_BODY_BYTES = 1024 * 1024;
+    /** Unreserved and query-delimiter characters only: no encoding, spaces, '?', '#' or '%' escapes. */
+    private static final Pattern SAFE_QUERY = Pattern.compile("[A-Za-z0-9._~:=&-]{1,2000}");
+    private static final Pattern CREDENTIAL_PARAMETER =
+            Pattern.compile("subscription-key|ocp-apim|api[-_]?key", Pattern.CASE_INSENSITIVE);
     static final Duration RESPONSE_TIMEOUT = Duration.ofSeconds(20);
     private final String userAgent;
     private final HttpClient client;
@@ -47,9 +53,30 @@ final class JsonEvidenceHttp {
                 && !SourceEndpoint.TFL_UNDERGROUND_URL.equals(endpoint.getUrl())) {
             throw new IllegalArgumentException("Transport requires an approved canonical endpoint");
         }
-        HttpRequest request = HttpRequest.newBuilder(URI.create(endpoint.getUrl()))
+        return send(URI.create(endpoint.getUrl()), Map.of());
+    }
+
+    /**
+     * National Highways only: the fixed canonical resource plus a caller-built, credential-free query and
+     * the provider's required request headers. Callers still cannot choose the scheme, host or path.
+     */
+    Response receive(SourceEndpoint endpoint, String query, Map<String, String> headers) {
+        if (!SourceEndpoint.NATIONAL_HIGHWAYS_ROAD_CLOSURES_URL.equals(endpoint.getUrl())) {
+            throw new IllegalArgumentException("Parameterised transport requires the canonical road closures endpoint");
+        }
+        if (query == null || !SAFE_QUERY.matcher(query).matches() || CREDENTIAL_PARAMETER.matcher(query).find()) {
+            throw new IllegalArgumentException("Query must be bounded, unencoded and credential-free");
+        }
+        return send(URI.create(endpoint.getUrl() + "?" + query), headers);
+    }
+
+    private Response send(URI target, Map<String, String> headers) {
+        HttpRequest.Builder builder = HttpRequest.newBuilder(target)
                 .timeout(timeout).header("User-Agent", userAgent)
-                .header("Accept", "application/json").header("Accept-Encoding", "identity").GET().build();
+                .header("Accept", "application/json").header("Accept-Encoding", "identity");
+        headers.forEach(builder::header);
+        HttpRequest request = builder.GET().build();
+        Instant requestedAt = Instant.now();
         CompletableFuture<HttpResponse<byte[]>> pending = client.sendAsync(request, info -> {
             validateHeaders(info);
             return new LimitedBody();
@@ -60,7 +87,8 @@ final class JsonEvidenceHttp {
             if (response.body().length == 0) {
                 throw new AcquisitionFailure("EMPTY_BODY", "Response body was empty");
             }
-            return new Response(response.body(), response.headers().firstValue("Content-Type").orElseThrow(), Instant.now());
+            return new Response(response.body(), response.headers().firstValue("Content-Type").orElseThrow(),
+                    requestedAt, Instant.now(), response.headers().allValues("x-next"));
         } catch (TimeoutException timedOut) {
             pending.cancel(true);
             throw new AcquisitionFailure("TIMEOUT", "Response deadline exceeded");
@@ -107,7 +135,8 @@ final class JsonEvidenceHttp {
         }
     }
 
-    record Response(byte[] bytes, String mediaType, Instant observedAt) { }
+    /** {@code next} holds every x-next continuation header value, uninterpreted. */
+    record Response(byte[] bytes, String mediaType, Instant requestedAt, Instant observedAt, List<String> next) { }
 
     private static final class LimitedBody implements HttpResponse.BodySubscriber<byte[]> {
         private final CompletableFuture<byte[]> body = new CompletableFuture<>();

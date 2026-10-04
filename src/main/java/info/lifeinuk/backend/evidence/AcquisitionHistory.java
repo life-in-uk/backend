@@ -3,6 +3,8 @@ package info.lifeinuk.backend.evidence;
 import info.lifeinuk.backend.source.QualifiedSourceEndpoints;
 import jakarta.persistence.EntityManager;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
@@ -39,6 +41,24 @@ public class AcquisitionHistory {
         run.succeed(Instant.now());
         entityManager.flush();
         return artifact.getId();
+    }
+
+    /** All captured responses and SUCCESS commit together, or nothing does: no partial successful run. */
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public List<UUID> succeedWithResponses(UUID runId, List<CapturedResponse> responses) {
+        if (responses == null || responses.isEmpty()) {
+            throw new IllegalArgumentException("At least one captured response is required");
+        }
+        IngestionRun run = requireRun(runId);
+        var ids = new ArrayList<UUID>();
+        for (CapturedResponse response : responses) {
+            EvidenceArtifact artifact = new EvidenceArtifact(run, response);
+            artifacts.append(artifact);
+            ids.add(artifact.getId());
+        }
+        run.succeed(Instant.now());
+        entityManager.flush();
+        return List.copyOf(ids);
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
