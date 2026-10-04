@@ -805,3 +805,43 @@ Content-Type, identity encoding, and fixed error text (never the query, key, URL
 cached, profiled or associated with anyone, and they are sent only to OS Names. No geocoding cache exists;
 OGL places no caching restriction on OS OpenData, but V1 needs none. Tests mock the provider and never
 receive the real key.
+
+## Public curated guides (Issue #34)
+
+V8 adds `guide` and `guide_source`, mapped and validated by JPA. A guide has a unique
+lower-case hyphenated slug, a generic category key in the same format, title,
+summary and one Markdown `content` document. Source references contain organisation,
+title, URL, UTC `accessedAt` and an explicit editorial order. No source classification
+or article-section tables are needed. Reference URLs are metadata and are never
+fetched or checked by guide reads.
+
+Publication uses only `DRAFT` and `PUBLISHED`. New Guide objects are drafts;
+`publish(Instant)` explicitly sets publication/update timestamps. The database
+requires drafts to have no publication time and published guides to have one,
+with `updatedAt >= publishedAt`. Status is the public boundary; timestamps do not
+schedule publication. Timestamps use PostgreSQL timestamptz and public UTC ISO
+Instants, with PostgreSQL microsecond precision.
+
+`GET /api/guides` returns an array of `{slug, category, title, summary, publishedAt,
+updatedAt}` for published guides, newest publication first then slug ascending.
+The database query selects only these metadata fields, not Markdown or sources.
+An empty list is 200 with `[]`. `GET /api/guides/{slug}` returns the same metadata
+plus `content` and ordered `sources: [{organisation, title, url, accessedAt}]`.
+DTO mapping finishes inside a read-only transaction; no persistence entity or
+internal ID is serialized. Unknown and unpublished slugs both return identical
+bounded 404 `GUIDE_NOT_FOUND` responses. Unexpected reads return bounded 500
+`GUIDES_READ_FAILED`. No CORS, authentication or dependency change is introduced.
+
+There is no production content seed or startup importer. Controlled test fixtures
+construct a Guide, add its source references, explicitly publish when appropriate,
+and save the aggregate through the package-private GuideRepository in a transaction.
+For owner-controlled initial content insertion, the same V8 schema can be populated
+with a small reviewed SQL transaction: insert a DRAFT guide with a fixed UUID and
+slug, insert its sources with fixed UUIDs and zero-based `source_order`, then set
+`status='PUBLISHED'`, `published_at` and `updated_at` together only after the owner
+chooses publication. Slug uniqueness prevents accidental duplicate insertion. No
+generic CMS import framework or public write endpoint is required.
+
+Tests use synthetic documents and isolated PostgreSQL only. Markdown rendering,
+Health & NHS articles, admin/editor APIs, editorial workflow, revisions, AI,
+source monitoring, search and frontend work are not implemented.
