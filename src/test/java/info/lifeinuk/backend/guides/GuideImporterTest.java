@@ -47,7 +47,7 @@ class GuideImporterTest {
     void clear() {
         jdbc.execute("DROP TRIGGER IF EXISTS guide_import_fail ON guide_source");
         jdbc.execute("DROP FUNCTION IF EXISTS guide_import_fail()");
-        jdbc.execute("TRUNCATE guide_source,guide");
+        jdbc.execute("TRUNCATE guide_evidence_support,guide_evidence,guide_source,guide");
     }
     GuideImportDefinition fixture() throws Exception {
         return reader.parse(GuideImportReaderTest.fixture().getBytes(StandardCharsets.UTF_8));

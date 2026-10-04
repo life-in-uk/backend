@@ -30,7 +30,7 @@ class GuideImportReader {
         JsonNode root;
         try { root = json.readTree(bytes); }
         catch (JacksonException invalid) { throw new IllegalArgumentException("Import file must contain one valid JSON document", invalid); }
-        fields(root, Set.of("slug", "category", "title", "summary", "content", "status", "publishedAt", "updatedAt", "sources"), "guide");
+        fields(root, Set.of("slug", "category", "title", "summary", "content", "status", "publishedAt", "updatedAt", "sources", "evidence"), "guide");
         GuideStatus status;
         try { status = GuideStatus.valueOf(text(root, "status")); }
         catch (IllegalArgumentException invalid) { throw new IllegalArgumentException("status must be DRAFT or PUBLISHED"); }
@@ -40,17 +40,45 @@ class GuideImportReader {
         for (int index = 0; index < inputSources.size(); index++) {
             try {
                 var source = inputSources.get(index);
-                fields(source, Set.of("organisation", "title", "url", "accessedAt"), "source");
-                sources.add(new GuideImportDefinition.Source(text(source, "organisation"), text(source, "title"),
+                fields(source, Set.of("key", "organisation", "title", "url", "accessedAt"), "source");
+                sources.add(new GuideImportDefinition.Source(optionalText(source, "key"), text(source, "organisation"), text(source, "title"),
                         text(source, "url"), time(source, "accessedAt")));
             } catch (IllegalArgumentException invalid) {
                 throw new IllegalArgumentException("sources[" + index + "]: " + invalid.getMessage(), invalid);
             }
         }
+        java.util.List<GuideImportDefinition.Evidence> evidence = null;
+        if (root.has("evidence")) {
+            var entries = root.get("evidence");
+            if (!entries.isArray()) { throw new IllegalArgumentException("evidence must be an array"); }
+            evidence = new ArrayList<>();
+            for (int index = 0; index < entries.size(); index++) {
+                try {
+                    var entry = entries.get(index);
+                    fields(entry, Set.of("key", "statement", "supports"), "evidence");
+                    var links = entry.get("supports");
+                    if (links == null || !links.isArray()) { throw new IllegalArgumentException("supports must be an array"); }
+                    var supports = new ArrayList<GuideImportDefinition.Support>();
+                    for (int supportIndex = 0; supportIndex < links.size(); supportIndex++) {
+                        try {
+                            var link = links.get(supportIndex);
+                            fields(link, Set.of("sourceKey", "locator", "excerpt", "note"), "support");
+                            supports.add(new GuideImportDefinition.Support(text(link, "sourceKey"), optionalText(link, "locator"),
+                                    optionalText(link, "excerpt"), text(link, "note")));
+                        } catch (IllegalArgumentException invalid) {
+                            throw new IllegalArgumentException("supports[" + supportIndex + "]: " + invalid.getMessage(), invalid);
+                        }
+                    }
+                    evidence.add(new GuideImportDefinition.Evidence(text(entry, "key"), text(entry, "statement"), supports));
+                } catch (IllegalArgumentException invalid) {
+                    throw new IllegalArgumentException("evidence[" + index + "]: " + invalid.getMessage(), invalid);
+                }
+            }
+        }
         var published = root.get("publishedAt");
         return new GuideImportDefinition(text(root, "slug"), text(root, "category"), text(root, "title"),
                 text(root, "summary"), text(root, "content"), status,
-                published == null || published.isNull() ? null : time(root, "publishedAt"), time(root, "updatedAt"), sources);
+                published == null || published.isNull() ? null : time(root, "publishedAt"), time(root, "updatedAt"), sources, evidence);
     }
 
     private static void fields(JsonNode node, Set<String> allowed, String label) {
@@ -63,6 +91,11 @@ class GuideImportReader {
         var value = node.get(name);
         if (value == null || !value.isString()) { throw new IllegalArgumentException(name + " must be a string"); }
         return value.stringValue();
+    }
+    private static String optionalText(JsonNode node, String name) {
+        var value = node.get(name);
+        if (value == null || value.isNull()) { return null; }
+        return text(node, name);
     }
     private static Instant time(JsonNode node, String name) {
         String value = text(node, name);

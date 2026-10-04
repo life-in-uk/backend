@@ -33,6 +33,10 @@ public class Guide {
     @OrderBy("sourceOrder ASC")
     private List<GuideSource> sources = new ArrayList<>();
 
+    @OneToMany(mappedBy = "guide", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    @OrderBy("evidenceOrder ASC")
+    private List<GuideEvidence> evidence = new ArrayList<>();
+
     protected Guide() { }
 
     public Guide(String slug, String category, String title, String summary, String content, Instant updatedAt) {
@@ -49,6 +53,15 @@ public class Guide {
     public void addSource(String organisation, String title, String url, Instant accessedAt) {
         sources.add(new GuideSource(this, organisation, title, url, accessedAt, sources.size()));
     }
+
+    void addSource(GuideImportDefinition.Source source) {
+        sources.add(new GuideSource(this, source.key(), source.organisation(), source.title(), source.url(), source.accessedAt(), sources.size()));
+    }
+    void addEvidence(GuideImportDefinition.Evidence input) {
+        evidence.add(new GuideEvidence(this, input, evidence.size()));
+    }
+    void clearEvidence() { evidence.clear(); }
+    public List<GuideEvidence> getEvidence() { return List.copyOf(evidence); }
 
     public void publish(Instant at) {
         if (status != GuideStatus.DRAFT || at == null || at.isBefore(updatedAt)) {

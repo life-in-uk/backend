@@ -12,6 +12,7 @@ public class GuideQuery {
     private final GuideRepository guides;
     GuideQuery(GuideRepository guides) { this.guides = guides; }
     public List<GuideResponse.Metadata> list() { return List.copyOf(guides.publishedMetadata()); }
+    @Transactional(readOnly = true, isolation = org.springframework.transaction.annotation.Isolation.REPEATABLE_READ)
     public Optional<GuideResponse.Detail> detail(String slug) {
         return guides.publishedBySlug(slug).map(GuideResponse.Detail::from);
     }
