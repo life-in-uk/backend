@@ -38,6 +38,7 @@ public final class IsolatedPostgres {
                     "life-in-uk.source.national-highways.use-retention-policy=",
                     // Tests never need or receive the developer's real subscription key.
                     "life-in-uk.acquisition.national-highways.api-key=",
+                    "life-in-uk.places.os-names.api-key=",
                     "life-in-uk.acquisition.national-highways.roads-base-url=https://api.data.nationalhighways.co.uk/roads/v2.0")
                     .applyTo(context.getEnvironment());
         }

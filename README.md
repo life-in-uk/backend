@@ -742,3 +742,66 @@ Current State is latest-known provider data, not a guarantee that every incident
 still applies at query wall-clock time: the accepted #26 six-hour-window limitation
 remains. No scheduler/polling, planned roadworks, Change History, cleanup, relevance
 personalisation, routes, frontend, maps or AI is implemented.
+
+## Roads current/stale semantics (Issue #32)
+
+`GET /api/travel/roads` returns only disruptions that are current under the provider's own
+validity semantics. Roads Current State still stores the complete projected snapshot
+unchanged; `NationalHighwaysValidity` is applied at read time only, with an injectable clock.
+
+- National Highways Road and Lane Closures v2 contract: `validityStatus` is the
+  "Specification of validity, either explicitly overriding the validity time specification
+  or confirming it" (`active | planned | suspended | definedByValidityTimeSpec`).
+- DATEX II v3.4 Validity: `active` = "temporarily valid regardless of the validity time
+  specification"; `suspended` = "temporarily invalid regardless of the validity time
+  specification". DATEX II ValidityStatusEnum: `planned` = "currently planned regardless of
+  the definition of the validity time specification"; `definedByValidityTimeSpec` = "in
+  accordance with the definition of the validity time specification".
+
+Therefore `suspended` and `planned` records are withheld whatever their times; `active`
+records remain current after their `overallEndTime`; only `definedByValidityTimeSpec` is
+evaluated against its inclusive overall start/end at read time. Absent or unrecognised status
+is not treated as proof of non-currency. Provider values are matched exactly and never rewritten.
+A record missing from a later complete snapshot disappears through whole-snapshot replacement.
+
+No `endTime < now` rule is applied to `active` records: the retained smoke evidence contains
+`active` records whose 15-minute validity windows ended hours before the snapshot, and
+`suspended` records whose windows had not yet ended, so time alone does not decide currency.
+Current State age (no scheduler exists yet) is a separate concern exposed via `snapshotAt`.
+
+## Place search for Roads (Issue #32)
+
+`GET /api/places/search?q=<postcode, town or place>` resolves a user-entered place so the frontend can
+call `GET /api/travel/roads?lat=&lon=` with a chosen candidate. Browser geolocation stays optional. There is
+no autocomplete in V1: one search per explicit submit. Roads itself is unchanged.
+
+The backend calls the owner-approved **OS Names API** (`OS_NAMES_BASE_URL`, `OS_NAMES_API_KEY`); the browser
+never does. Request: `GET https://api.os.uk/search/names/v1/find?query=<encoded>&maxresults=10&fq=<types>&format=JSON`
+with the key only in the `key` header. `fq` restricts results to the documented `LOCAL_TYPE` values
+`Postcode`, `City`, `Town`, `Village`, `Hamlet`, `Suburban_Area` and `Other_Settlement`. Roads, POIs,
+landforms, addresses and UPRNs are out of scope, and any other returned type is dropped.
+
+Response: `{query, places[], attribution}`. Each place has `id` (OS ID), `label`, `name`,
+`type` (`postcode|city|town|village|hamlet|suburb|settlement`), `area`, `region`, `country`, `latitude`
+and `longitude`. Provider order is kept and at most 10 places are returned. No match is a 200 with an empty list.
+`attribution` is "Contains OS data © Crown copyright and database right <year>" (OS OpenData, OGL) and
+should be displayed with results. Errors are bounded: 400 `PLACE_QUERY_INVALID` (blank, control characters, or
+more than 100 characters), 503 `PLACES_NOT_CONFIGURED`, 502 `PLACES_UNAVAILABLE` (timeout, network, non-200)
+and 502 `PLACES_UPSTREAM_INVALID` (non-JSON, oversized or malformed). All responses are `Cache-Control: no-store`.
+
+**Coordinates.** OS Names returns British National Grid easting/northing (`GEOMETRY_X/Y`). `BritishNationalGrid`
+converts them to WGS84 using OS's documented method: the exact inverse Transverse Mercator on Airy 1830,
+followed by the OS-published 7-parameter Helmert OSGB36 → WGS84 shift and an exact geodetic conversion on GRS80.
+It is tested against the OS worked example (Caister Water Tower), where the TM step matches to 0.00005″.
+The Helmert step is OS-stated as accurate to about 3.5 m (95%); the measured residual against the ETRS89
+reference is 3.57 m. OS's definitive OSTN15 grid (~0.1 m) needs an external grid file and is not used.
+National Highways coordinate handling is unaffected.
+
+**HTTP safety.** HTTPS to the pinned canonical base only (other base URLs fail startup), no redirects, 5 s
+connect and 10 s total deadline covering headers and body, 512 KiB body cap, HTTP 200 only, exactly one JSON
+Content-Type, identity encoding, and fixed error text (never the query, key, URL or provider body).
+
+**Privacy.** Searches are geographic queries only. Queries and coordinates are not logged, persisted,
+cached, profiled or associated with anyone, and they are sent only to OS Names. No geocoding cache exists;
+OGL places no caching restriction on OS OpenData, but V1 needs none. Tests mock the provider and never
+receive the real key.
