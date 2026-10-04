@@ -14,3 +14,11 @@ spring:
 
   flyway:
     enabled: true
+
+life-in-uk:
+  acquisition:
+    national-highways:
+      # Must equal the canonical v2.0 production base; any other value fails startup.
+      roads-base-url: ${NATIONAL_HIGHWAYS_ROADS_BASE_URL:https://api.data.nationalhighways.co.uk/roads/v2.0}
+      # Secret: environment only. Never commit, persist, log or place it in a URL.
+      api-key: ${NATIONAL_HIGHWAYS_API_KEY:}

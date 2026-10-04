@@ -513,3 +513,51 @@ Only that command-line option activates replay; ordinary startup does nothing.
 Rejection fails startup with the bounded reason, and repeating a replay is safe
 (`REPLAYED`). There is no replay HTTP endpoint, scheduler or migration. Automatic
 TfL polling and raw-evidence cleanup remain NOT IMPLEMENTED.
+
+## National Highways road closures source foundation (Issue #24)
+
+National Highways is the third canonical provider: source key `national-highways`,
+display name `National Highways`, scope `NATIONAL_HIGHWAYS_ROAD_CLOSURES`. One
+endpoint belongs to it: `national-highways-road-closures`, the Road and Lane Closures
+Data Service (DATEX II) v2.0 `GET /closures` at
+`https://api.data.nationalhighways.co.uk/roads/v2.0/closures`. Planned and unplanned
+closures are query modes of this one endpoint, not separate identities. The URL has
+no query string or credential. No National Highways request was made.
+
+V5 only widens V3's controlled CHECK constraints to admit this key/URL pair and bind
+the new scope to the `national-highways` key. It seeds no rows and adds no credential
+column. V3's immutable key/URL, scope and observed-ownership triggers still apply, so
+existing TfL/Bank Holidays identities cannot be rewritten into the new pair.
+
+`NationalHighwaysBootstrap` inserts missing canonical configuration only, PENDING by
+default with an **unapproved draft** policy. `QualifiedSourceEndpoints
+.requireNationalHighwaysRoadClosures()` and `requireQualified(id)` require enablement,
+QUALIFIED status, a nonblank owner record and policy, and canonical ownership/scope/URL.
+New explicitly qualified configuration needs all three properties, exactly as for TfL:
+
+- `life-in-uk.source.national-highways.qualified=true`
+- `life-in-uk.source.national-highways.qualification-record=<explicit owner decision>`
+- `life-in-uk.source.national-highways.use-retention-policy=<owner-approved use/licence/retention decision>`
+
+Existing records survive restart and conflicting bootstrap properties; later approval
+uses `SourceEndpoint.qualify(record, policy)`. No approval is fabricated, and no
+retention duration, polling frequency or attribution wording is chosen. The stored
+attribution reference is the official Developer Portal licence agreement for National
+Highways Transport Data Feeds (`https://developer.data.nationalhighways.co.uk/terms`);
+the owner must review its attribution and other conditions before qualification.
+
+External access configuration binds to `NationalHighwaysRoadsProperties`
+(`life-in-uk.acquisition.national-highways`) from `NATIONAL_HIGHWAYS_ROADS_BASE_URL`
+and `NATIONAL_HIGHWAYS_API_KEY`. The base URL is not a destination override: anything
+other than the canonical v2.0 base (one trailing slash allowed) fails startup, so
+configuration cannot redirect the key. The key is optional while no acquisition
+exists, is never persisted, and is redacted from `toString()`. Later acquisition must
+send it only as `Ocp-Apim-Subscription-Key`, with `X-Response-MediaType:
+application/json` and `X-Data-Format: DATEXII` (recorded as constants). The existing
+JSON transport still accepts only the Bank Holidays and TfL URLs.
+
+Tests run offline on isolated PostgreSQL and never receive the developer's key; the
+isolated initializer pins it blank. Acquisition, explicit `closureType` selection,
+date-window semantics, `pageCursor`/`x-next` pagination, DATEX II parsing, Roads
+Current State, Change History, cleanup, scheduling and any public Roads API remain
+NOT IMPLEMENTED.

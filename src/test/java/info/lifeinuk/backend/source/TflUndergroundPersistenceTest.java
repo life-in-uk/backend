@@ -53,8 +53,8 @@ class TflUndergroundPersistenceTest {
         assertThat(loaded.hasCanonicalTflIdentity()).isTrue();
         assertThat(loaded.getQualificationStatus()).isEqualTo(QualificationStatus.PENDING);
         assertThat(loaded.getQualificationRecord()).isNull();
-        assertThat(sources.count()).isEqualTo(2);
-        assertThat(endpoints.count()).isEqualTo(2);
+        assertThat(sources.count()).isEqualTo(3);
+        assertThat(endpoints.count()).isEqualTo(3);
         assertThat(bankHolidaysSnapshot()).isEqualTo(before);
         assertThatIllegalStateException().isThrownBy(qualified::requireTflUnderground);
         assertThatIllegalStateException().isThrownBy(() -> qualified.requireQualified(id));
@@ -98,7 +98,7 @@ class TflUndergroundPersistenceTest {
         SourceEndpoint loaded = qualified.requireTflUnderground();
         assertThat(loaded.getQualificationRecord()).isEqualTo("Owner approval");
         assertThat(loaded.getUseRetentionPolicy()).isEqualTo(SourceEndpoint.TFL_USE_RETENTION_POLICY);
-        assertThat(endpoints.count()).isEqualTo(2);
+        assertThat(endpoints.count()).isEqualTo(3);
     }
 
     @ParameterizedTest

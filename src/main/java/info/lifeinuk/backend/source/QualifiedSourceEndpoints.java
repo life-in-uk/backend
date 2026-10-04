@@ -37,6 +37,17 @@ public class QualifiedSourceEndpoints {
     }
 
     @Transactional(readOnly = true)
+    public SourceEndpoint requireNationalHighwaysRoadClosures() {
+        SourceEndpoint endpoint = endpoints.findByKey(SourceEndpoint.NATIONAL_HIGHWAYS_ROAD_CLOSURES_KEY)
+                .orElseThrow(() -> new IllegalArgumentException("National Highways road closures endpoint does not exist"));
+        requireEligible(endpoint);
+        if (!endpoint.hasCanonicalNationalHighwaysIdentity()) {
+            throw new IllegalStateException("National Highways road closures endpoint must retain its approved identity");
+        }
+        return endpoint;
+    }
+
+    @Transactional(readOnly = true)
     public SourceEndpoint requireQualified(UUID id) {
         SourceEndpoint endpoint = endpoints.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Source endpoint does not exist"));

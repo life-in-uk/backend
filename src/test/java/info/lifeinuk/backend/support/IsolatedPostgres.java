@@ -32,7 +32,13 @@ public final class IsolatedPostgres {
                     "life-in-uk.source.bank-holidays.use-retention-policy=",
                     "life-in-uk.source.tfl-underground.qualified=false",
                     "life-in-uk.source.tfl-underground.qualification-record=",
-                    "life-in-uk.source.tfl-underground.use-retention-policy=")
+                    "life-in-uk.source.tfl-underground.use-retention-policy=",
+                    "life-in-uk.source.national-highways.qualified=false",
+                    "life-in-uk.source.national-highways.qualification-record=",
+                    "life-in-uk.source.national-highways.use-retention-policy=",
+                    // Tests never need or receive the developer's real subscription key.
+                    "life-in-uk.acquisition.national-highways.api-key=",
+                    "life-in-uk.acquisition.national-highways.roads-base-url=https://api.data.nationalhighways.co.uk/roads/v2.0")
                     .applyTo(context.getEnvironment());
         }
     }

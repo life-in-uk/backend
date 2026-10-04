@@ -42,6 +42,20 @@ public class SourceEndpoint {
             see https://tfl.gov.uk/corporate/terms-and-conditions/transport-data-service.
             This is policy only: no acquisition, current state, change history or cleanup is implemented.
             """;
+    public static final String NATIONAL_HIGHWAYS_ROADS_BASE_URL = "https://api.data.nationalhighways.co.uk/roads/v2.0";
+    public static final String NATIONAL_HIGHWAYS_ROAD_CLOSURES_KEY = "national-highways-road-closures";
+    public static final String NATIONAL_HIGHWAYS_ROAD_CLOSURES_URL = NATIONAL_HIGHWAYS_ROADS_BASE_URL + "/closures";
+    public static final String NATIONAL_HIGHWAYS_REFERENCE = "https://developer.data.nationalhighways.co.uk/terms";
+    public static final String NATIONAL_HIGHWAYS_USE_RETENTION_POLICY = """
+            Intended Life in UK Travel Live use: road and lane closures on the National Highways network.
+            Official contract: Road and Lane Closures Data Service (DATEX II) v2.0, GET /closures; planned and
+            unplanned closures are query modes of this one endpoint, requested as JSON DATEX II.
+            The subscription key is external configuration only: never persisted, logged, returned or placed in a URL.
+            No raw-evidence retention duration, polling frequency, republication or attribution wording is approved
+            by this draft. National Highways licence/terms, attribution and rate limits override product defaults
+            and must be reviewed and recorded by the owner before qualification.
+            This is policy only: no acquisition, parsing, current state, change history or cleanup is implemented.
+            """;
     public static final String ATTRIBUTION_REFERENCE = "https://www.gov.uk/bank-holidays";
     public static final int DAILY_POLL_SECONDS = 86_400;
     public static final String PENDING_POLICY = "Acquisition and retention are not approved until explicit qualification.";
@@ -136,10 +150,36 @@ public class SourceEndpoint {
         return endpoint;
     }
 
+    /** Road and Lane Closures v2: one endpoint for all closure query modes; no calendar or polling policy is invented. */
+    public static SourceEndpoint nationalHighwaysRoadClosures(Source source) {
+        Objects.requireNonNull(source, "Source is required");
+        if (!Source.NATIONAL_HIGHWAYS_KEY.equals(source.getKey())
+                || !Source.NATIONAL_HIGHWAYS_ROAD_CLOSURES_SCOPE.equals(source.getScope())) {
+            throw new IllegalArgumentException("Road closures require the canonical National Highways source and scope");
+        }
+        SourceEndpoint endpoint = new SourceEndpoint();
+        endpoint.id = UUID.randomUUID();
+        endpoint.source = source;
+        endpoint.key = NATIONAL_HIGHWAYS_ROAD_CLOSURES_KEY;
+        endpoint.url = NATIONAL_HIGHWAYS_ROAD_CLOSURES_URL;
+        endpoint.qualificationStatus = QualificationStatus.PENDING;
+        endpoint.attributionReference = NATIONAL_HIGHWAYS_REFERENCE;
+        endpoint.useRetentionPolicy = PENDING_POLICY + "\n" + NATIONAL_HIGHWAYS_USE_RETENTION_POLICY;
+        endpoint.enabled = true;
+        return endpoint;
+    }
+
     boolean hasCanonicalTflIdentity() {
         return TFL_UNDERGROUND_KEY.equals(key) && TFL_UNDERGROUND_URL.equals(url)
                 && Source.TFL_KEY.equals(source.getKey())
                 && Source.TFL_UNDERGROUND_SCOPE.equals(source.getScope())
+                && calendarScope == null && pollIntervalSeconds == null && nextPollAt == null;
+    }
+
+    boolean hasCanonicalNationalHighwaysIdentity() {
+        return NATIONAL_HIGHWAYS_ROAD_CLOSURES_KEY.equals(key) && NATIONAL_HIGHWAYS_ROAD_CLOSURES_URL.equals(url)
+                && Source.NATIONAL_HIGHWAYS_KEY.equals(source.getKey())
+                && Source.NATIONAL_HIGHWAYS_ROAD_CLOSURES_SCOPE.equals(source.getScope())
                 && calendarScope == null && pollIntervalSeconds == null && nextPollAt == null;
     }
 
@@ -158,7 +198,9 @@ public class SourceEndpoint {
                 && qualificationRecord != null && !qualificationRecord.isBlank()
                 && useRetentionPolicy != null && !useRetentionPolicy.isBlank()
                 && (!(TFL_UNDERGROUND_KEY.equals(key) || Source.TFL_KEY.equals(source.getKey()))
-                    || hasCanonicalTflIdentity());
+                    || hasCanonicalTflIdentity())
+                && (!(NATIONAL_HIGHWAYS_ROAD_CLOSURES_KEY.equals(key) || Source.NATIONAL_HIGHWAYS_KEY.equals(source.getKey()))
+                    || hasCanonicalNationalHighwaysIdentity());
     }
 
     public int calendarYear(Clock clock) {

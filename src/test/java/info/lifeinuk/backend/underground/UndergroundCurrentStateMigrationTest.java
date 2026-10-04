@@ -46,13 +46,13 @@ class UndergroundCurrentStateMigrationTest {
                     statement.execute("UPDATE ingestion_run SET status='SUCCESS',completed_at='2026-01-01T00:00:02Z'");
                 }
                 String before = snapshot(connection);
-                assertThat(Flyway.configure().dataSource(dataSource).schemas(schema).defaultSchema(schema).load().migrate().migrationsExecuted)
+                assertThat(Flyway.configure().dataSource(dataSource).schemas(schema).defaultSchema(schema).target("4").load().migrate().migrationsExecuted)
                         .isEqualTo(1);
                 assertThat(snapshot(connection)).isEqualTo(before);
                 try (var statement = connection.createStatement(); var rows = statement.executeQuery("SELECT count(*) FROM underground_current_snapshot")) {
                     rows.next(); assertThat(rows.getInt(1)).isZero();
                 }
-                assertThat(Flyway.configure().dataSource(dataSource).schemas(schema).defaultSchema(schema).load().migrate().migrationsExecuted)
+                assertThat(Flyway.configure().dataSource(dataSource).schemas(schema).defaultSchema(schema).target("4").load().migrate().migrationsExecuted)
                         .isZero();
             } finally { connection.setSchema(original); }
         }
