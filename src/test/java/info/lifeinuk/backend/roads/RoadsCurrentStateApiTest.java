@@ -369,6 +369,20 @@ class RoadsCurrentStateApiTest {
     }
 
     @Test
+    void suspendedRecordIsKeptInCurrentStateButNotReturnedAsACurrentDisruption() throws Exception {
+        String suspended=payload("suspended").replace("\"validityStatus\":\"active\"","\"validityStatus\":\"suspended\"");
+        assertThat(suspended).contains("\"validityStatus\":\"suspended\"");
+        projection.projectRun(run(START,true,List.of(payload("active"),suspended)));
+        // Provider facts are preserved unchanged in Current State.
+        assertThat(states.current().orElseThrow().closures()).extracting(r -> r.closure().id()).containsExactly("active","suspended");
+        assertThat(stored()).contains("\"suspended\"");
+        var records=json.readTree(get("?lat=52.193516&lon=-0.908380").body()).get("disruptions");
+        assertThat(records.size()).isEqualTo(1);
+        assertThat(records.get(0).get("recordId").asString()).isEqualTo("active");
+        verifyNoInteractions(acquisition);
+    }
+
+    @Test
     void unavailableEmptyAndOutsideRelevanceHaveDistinctCorrectHttpResults() throws Exception {
         assertThat(get("?lat=52&lon=-1").statusCode()).isEqualTo(404);
         var empty=run(START,true,List.of(empty()));projection.projectRun(empty);

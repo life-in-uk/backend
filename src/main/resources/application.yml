@@ -22,3 +22,9 @@ life-in-uk:
       roads-base-url: ${NATIONAL_HIGHWAYS_ROADS_BASE_URL:https://api.data.nationalhighways.co.uk/roads/v2.0}
       # Secret: environment only. Never commit, persist, log or place it in a URL.
       api-key: ${NATIONAL_HIGHWAYS_API_KEY:}
+  places:
+    os-names:
+      # Must equal the canonical OS Names v1 base; any other value fails startup.
+      base-url: ${OS_NAMES_BASE_URL:https://api.os.uk/search/names/v1}
+      # Secret: environment only. Never commit, persist, log or place it in a URL (sent as the 'key' header).
+      api-key: ${OS_NAMES_API_KEY:}
