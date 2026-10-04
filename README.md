@@ -561,3 +561,59 @@ isolated initializer pins it blank. Acquisition, explicit `closureType` selectio
 date-window semantics, `pageCursor`/`x-next` pagination, DATEX II parsing, Roads
 Current State, Change History, cleanup, scheduling and any public Roads API remain
 NOT IMPLEMENTED.
+
+## National Highways unplanned road closures acquisition (Issue #26)
+
+`NationalHighwaysRoadClosuresAcquisition.acquire()` is an internal, parameterless
+operation acquiring **current unplanned** closures once, centrally, for all users. It
+is never triggered by a user request, scheduled, retried or exposed publicly. Planned
+closures and `modifiedSinceDateTime` are deliberately out of scope (owner decision).
+
+Each run requires `QualifiedSourceEndpoints.requireNationalHighwaysRoadClosures()` and a
+header-safe `NATIONAL_HIGHWAYS_API_KEY` before any IngestionRun or HTTP request exists.
+Requests go only to the canonical `.../roads/v2.0/closures` over HTTPS through the shared
+bounded `JsonEvidenceHttp` (no redirects, 1 MiB per response, deadlines covering headers
+and body, exactly one `application/json` Content-Type, HTTP 200 only). Headers:
+`Ocp-Apim-Subscription-Key` (the only place the key appears), `X-Response-MediaType:
+application/json`, `X-Data-Format: DATEXII`, `Accept: application/json`. The key is never
+placed in a URL, message, log or persisted value.
+
+**Query window (owner V1 decision).** `closureType=unplanned`, `startDateTime =
+acquisitionNow - 6 hours`, `endDateTime = acquisitionNow`, both derived from one captured
+UTC instant and formatted `yyyy-MM-ddTHH:mm:ss` with no offset, per the official contract.
+This follows the contract's documented worked-example shape; National Highways does not
+guarantee these semantics. **Accepted V1 limitation:** if the provider filters unplanned
+closures by start time, an incident that began more than six hours before acquisition but
+is still active may be omitted. No larger undocumented lookback is invented.
+
+**Pagination.** The first request has no `pageCursor`. Continuation is followed only from
+the provider's `x-next` header, which must be a single HTTPS link to the canonical host and
+path carrying exactly one URL-safe `pageCursor`/`PageCursor`; that cursor is appended to
+the same window query. No/blank `x-next` ends the run. A repeated cursor fails as
+`PAGINATION_LOOP`; malformed or foreign continuation as `PAGINATION_INVALID`; more than 8
+pages as `PAGINATION_LIMIT` without making a ninth request. Pages are strictly sequential.
+
+**Rate limit.** The provider allows 10 requests/minute per key. A process-wide pacer keeps
+at least 7 seconds between requests, across pages and runs, so no rolling minute exceeds 9.
+A maximal 8-page run takes under a minute, compatible with the intended (not implemented)
+~10-minute cadence. HTTP 429 fails the run; there is no retry.
+
+**Evidence and run semantics.** Every page is kept as its exact response bytes with SHA-256.
+Pages are held in memory until the run finishes, then all artifacts and the SUCCESS
+transition commit in one short transaction (`AcquisitionHistory.succeedWithResponses`). Any
+failure on any page — HTTP, timeout, network, pagination, size or persistence — marks the
+run FAILED with a bounded `Unplanned page N: ...` message and persists **no** evidence, so a
+partial acquisition can never look like a complete snapshot. No transaction is open during
+network I/O.
+
+V6 adds generic, optional provenance beside the payload: `request_query` (the exact
+credential-free query sent, including window and cursor), `page_number`, `http_status` and
+`requested_at`. All four are present or all absent (existing evidence stays NULL); queries
+resembling credentials are rejected; page positions are unique per run; V2's append-only
+trigger makes them immutable. Payload JSON is never modified.
+
+Tests use a loopback server behind the real JDK client, a fixed acquisition instant,
+simulated pacing time and a fixture key. No National Highways request has been made; any
+live smoke needs separate owner authorization and may involve several requests. DATEX II
+parsing, Roads Current State, spatial search, public API, scheduling and planned closures
+remain NOT IMPLEMENTED.

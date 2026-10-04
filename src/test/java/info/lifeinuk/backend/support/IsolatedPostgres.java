@@ -62,7 +62,9 @@ public final class IsolatedPostgres {
                 port = socket.getLocalPort();
             }
             server = new ProcessBuilder(bin.resolve("postgres").toString(), "-D", data.toString(),
-                    "-h", "127.0.0.1", "-p", Integer.toString(port), "-k", root.toString(), "-F")
+                    "-h", "127.0.0.1", "-p", Integer.toString(port), "-k", root.toString(), "-F",
+                    // Cached Spring test contexts each keep a connection pool open for the whole run.
+                    "-c", "max_connections=300")
                     .redirectErrorStream(true).redirectOutput(log.toFile()).start();
             String url = "jdbc:postgresql://127.0.0.1:" + port + "/postgres?connectTimeout=1";
             long deadline = System.nanoTime() + Duration.ofSeconds(20).toNanos();
