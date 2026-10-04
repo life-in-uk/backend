@@ -923,3 +923,96 @@ their unique positions are reused, but deletion, Guide update and new source
 insertion commit together. Any failure rolls everything back, including a new
 Guide. No external operations occur. V8 remains unchanged; no new dependency,
 schema, CMS, admin/editor API, real Health content or frontend work is introduced.
+
+## Claim-level Guide evidence (Issue #38)
+
+V9 adds optional Guide-scoped source editorial keys, Guide-owned evidence records
+and ordered evidence-to-source links. Markdown remains one document. Human review
+identifies actionable claims and checks whether the official support justifies
+our wording; this model does not decide whether a statement is true or an
+entitlement. No strength enum, remote verification or automatic publishing exists.
+
+The existing explicit `--import-guide=/absolute/path/to/reviewed-guide.json`
+command accepts the extended format demonstrated by the synthetic fixture
+`src/test/resources/guides/synthetic-evidence-import.json`. No normal application
+startup imports content. The original synthetic fixture remains valid unchanged.
+
+Add an optional `key` to each source used as evidence. Keys are human-assigned,
+lower-case hyphenated values (up to 160 characters), unique within their Guide.
+They identify the editorial source, not its URL, array position or database UUID.
+Keep the key when the same official document changes URL; deliberately update
+references when replacing it with a different document. Keyed URLs must be
+absolute HTTP(S) with a host and no embedded credentials. URLs are never fetched.
+Legacy unkeyed references retain their existing import behavior.
+
+An optional root `evidence` array contains:
+
+```json
+"evidence": [
+  {
+    "key": "example-application",
+    "statement": "Human-reviewed proposition, synthetic example only.",
+    "supports": [
+      {
+        "sourceKey": "official-example",
+        "locator": "Application section",
+        "excerpt": null,
+        "note": "Explain the source wording strength, conditions and limitations."
+      }
+    ]
+  }
+]
+```
+
+The referenced `sources` entry supplies `key`, organisation, title, URL and
+accessedAt. Every evidence record needs at least one support. Each link needs a
+nonblank note and at least one nonblank locator or exact excerpt; the other may
+be absent/null. Limits are 10,000 characters for statement, locator and note,
+and 20,000 for excerpt. Excerpts are editorially checked, not fetched or verified.
+One source can support several evidence records and one record can cite several
+sources. Source, evidence and support arrays independently specify ordering;
+explicit repeated supports are retained. Missing sources, duplicate keys, wrong
+field types and unknown fields fail before mutation.
+
+Place a standard Markdown link beside the supported wording:
+
+```markdown
+人工审核的具体陈述。[查看官方依据](#guide-evidence-example-application)
+```
+
+CommonMark link nodes are validated using the reserved `#guide-evidence-`
+fragment namespace. Inline and reference-style links work; repeated references
+are allowed. Malformed/unknown keys and evidence definitions without a reference
+fail. Fenced/indented code, inline code, escaped examples and HTML comments do not
+count as links. Raw HTML and images do not establish evidence references. The
+validator neither renders nor rewrites Markdown. A future frontend renderer must
+resolve these links; it is not implemented here.
+
+Evidence keys survive prose edits, heading changes and paragraph movement. They
+must not be derived from content, hashes or offsets. If the proposition materially
+changes, editors decide whether to create a new key and re-review support. A
+locator, excerpt and note belong to the specific evidence-source link, not the
+whole source. accessedAt records consultation time, not a captured historical
+copy of the official page.
+
+Legacy imports without evidence remain valid. Once a Guide has evidence, omission
+of `evidence` fails rather than deleting associations silently. Deliberate removal
+requires `evidence: []` and removal of its Markdown references. Sources still
+referenced by the supplied evidence cannot be removed; update references in the
+same import. Synchronization deletes old links before replacing source rows and
+commits the complete aggregate atomically. Identical replay leaves every row
+unchanged. Copy-only edits retain evidence/source rows; changed definitions can
+recreate rows while preserving editorial keys and the Guide UUID. Any failure
+rolls back content, publication, sources and evidence together.
+
+`GET /api/guides` is unchanged. Published detail adds `key` (null for legacy
+references) to source DTOs and `evidence: [{key, statement, supports:
+[{sourceKey, locator, excerpt, note}]}]`. Resolve support sourceKey against the
+ordered sources list for organisation/title/URL/accessedAt. No persistence IDs
+are exposed. Empty evidence is `[]`; drafts remain hidden. Detail mapping uses a
+read-only repeatable-read transaction so references and their metadata belong to
+one committed Guide snapshot. Public reads remain database-only.
+
+This does not add a CMS, admin API, source monitoring/fetching, AI, history or
+frontend implementation. Source-to-evidence relationships leave future affected
+claim discovery possible, without implementing monitoring or a global catalogue.

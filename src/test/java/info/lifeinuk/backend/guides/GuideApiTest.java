@@ -56,7 +56,7 @@ class GuideApiTest {
     @BeforeEach
     void clear() {
         reset(query);
-        jdbc.execute("TRUNCATE guide_source, guide");
+        jdbc.execute("TRUNCATE guide_evidence_support, guide_evidence, guide_source, guide");
     }
     @AfterEach
     void noAcquisitionDependency() { verifyNoInteractions(bankHolidays, underground, roads); }
@@ -115,10 +115,10 @@ class GuideApiTest {
         assertThatThrownBy(()->jdbc.update("UPDATE guide SET status='PUBLISHED',published_at=?,updated_at=? WHERE id=?",
                 java.sql.Timestamp.from(TIME),java.sql.Timestamp.from(TIME.minusSeconds(1)),guide.getId()))
                 .isInstanceOf(org.springframework.dao.DataIntegrityViolationException.class);
-        assertThatThrownBy(()->jdbc.update("INSERT INTO guide_source VALUES (gen_random_uuid(),?,'Org','Title','https://example.invalid',?,-1)",guide.getId(),java.sql.Timestamp.from(TIME)))
+        assertThatThrownBy(()->jdbc.update("INSERT INTO guide_source (id,guide_id,organisation,title,url,accessed_at,source_order) VALUES (gen_random_uuid(),?,'Org','Title','https://example.invalid',?,-1)",guide.getId(),java.sql.Timestamp.from(TIME)))
                 .isInstanceOf(org.springframework.dao.DataIntegrityViolationException.class);
-        jdbc.update("INSERT INTO guide_source VALUES (gen_random_uuid(),?,'Org','Title','https://example.invalid',?,0)",guide.getId(),java.sql.Timestamp.from(TIME));
-        assertThatThrownBy(()->jdbc.update("INSERT INTO guide_source VALUES (gen_random_uuid(),?,'Org','Other','https://example.invalid',?,0)",guide.getId(),java.sql.Timestamp.from(TIME)))
+        jdbc.update("INSERT INTO guide_source (id,guide_id,organisation,title,url,accessed_at,source_order) VALUES (gen_random_uuid(),?,'Org','Title','https://example.invalid',?,0)",guide.getId(),java.sql.Timestamp.from(TIME));
+        assertThatThrownBy(()->jdbc.update("INSERT INTO guide_source (id,guide_id,organisation,title,url,accessed_at,source_order) VALUES (gen_random_uuid(),?,'Org','Other','https://example.invalid',?,0)",guide.getId(),java.sql.Timestamp.from(TIME)))
                 .isInstanceOf(org.springframework.dao.DataIntegrityViolationException.class);
     }
 

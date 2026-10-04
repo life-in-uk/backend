@@ -1,0 +1,29 @@
+{
+  "slug": "synthetic-evidence-guide",
+  "category": "example-category",
+  "title": "Synthetic evidence guide",
+  "summary": "Offline provenance example only.",
+  "content": "# Example\n\n经过人工审核的示例陈述。[查看官方依据](#guide-evidence-example-application)\n\n第二项示例。[查看官方依据](#guide-evidence-example-condition)\n",
+  "status": "DRAFT",
+  "publishedAt": null,
+  "updatedAt": "2026-10-04T12:00:00Z",
+  "sources": [
+    {"key":"official-b","organisation":"Example B","title":"Reference B","url":"https://example.invalid/b","accessedAt":"2026-10-04T10:00:00Z"},
+    {"key":"official-a","organisation":"Example A","title":"Reference A","url":"https://example.invalid/a","accessedAt":"2026-10-04T10:00:00Z"}
+  ],
+  "evidence": [
+    {
+      "key":"example-application",
+      "statement":"人工审核的示例主张。",
+      "supports":[
+        {"sourceKey":"official-a","locator":"Application section","excerpt":null,"note":"说明规则的强度与限制。"},
+        {"sourceKey":"official-b","locator":null,"excerpt":"Synthetic quotation only.","note":"Additional conditions — 示例。"}
+      ]
+    },
+    {
+      "key":"example-condition",
+      "statement":"另一项示例主张。",
+      "supports":[{"sourceKey":"official-a","locator":"Conditions","note":"Preserve the source qualification."}]
+    }
+  ]
+}
