@@ -616,8 +616,8 @@ Tests use a loopback server behind the real JDK client, a fixed acquisition inst
 simulated pacing time and a fixture key. The separately owner-authorized Issue #26
 live smoke succeeded with one HTTP 200 JSON page (101,448 bytes), verified SHA-256
 and no continuation. No additional provider request is part of interpretation.
-Roads Current State, spatial search, public API, scheduling and planned closures
-remain NOT IMPLEMENTED.
+Roads Current State and the location-aware read API are described under Issue #30
+below. Scheduling and planned closures remain NOT IMPLEMENTED.
 
 ## National Highways road-closure interpretation (Issue #28)
 
@@ -663,3 +663,82 @@ No aggregation or projector is implemented here. Interpretation adds no table,
 migration or dependency. Deterministic synthetic fixtures and isolated PostgreSQL
 tests verify facts, detached two-page provenance and unchanged evidence/source
 history. The full production artifact is not a committed fixture.
+
+## National Highways Roads Current State and location-aware API (Issue #30)
+
+The implemented path is successful logical IngestionRun → all retained pages →
+the #28 parser → durable normalized Roads Current State → location relevance →
+`GET /api/travel/roads?lat=<latitude>&lon=<longitude>`. GET never acquires, parses
+evidence, projects state or joins back to evidence. Latitude and longitude are
+required, finite and within geographic ranges; missing/invalid input returns a
+bounded 400, never a nationwide dump. No CORS, authentication or caching changes
+are introduced.
+
+One successful #26 run is one snapshot. The evidence-owned loader checks canonical
+qualified National Highways provenance, all available pages numbered contiguously
+from one (at most eight), and the same six-hour unplanned window. The first page
+has no cursor; later pages have captured continuations. #26 commits all pages and
+SUCCESS together, and existing evidence is append-only. Parsing every page must
+succeed before replacement. Page, situation and record order, repeated records,
+source text, lifecycle/time/road/lane facts and nested geometry remain preserved.
+
+V7 adds only `roads_current_snapshot`: a singleton row containing scalar run and
+endpoint UUIDs, run start time as epoch seconds/nanoseconds, projected time, page
+count and JSONB **normalized facts**, not raw DATEX II. Run start time is the
+ordering/acquisition timestamp; neither projection wall-clock time nor provider
+record times decide which snapshot wins. There is no foreign key to raw evidence,
+run or endpoint, so future raw retention cannot erase or block Current State.
+Current State has no TTL. No cleanup is implemented. Future cleanup must consider
+complete logical runs; replay requires the complete retained page set.
+
+`INSERT ... ON CONFLICT DO NOTHING` followed by `SELECT ... FOR UPDATE` serializes
+first and subsequent projectors. Comparison and complete replacement share one
+transaction. Older snapshots are ignored; same-run/time/facts replay makes no
+change; equal-time different runs or inconsistent same-run replay return CONFLICT.
+A newer snapshot removes all absent records. A newer empty snapshot persists new
+provenance with zero records, distinct from never-projected state. A failed
+replacement rolls back. One SELECT reads all metadata/facts from a coherent
+committed snapshot, including during a concurrent writer.
+
+**Endpoint-specific coordinate decision.** The owner explicitly approved the
+observed National Highways Road & Lane Closures two-dimensional GML representation
+whose literal CRS is `ESPG::4326`: first ordinate = latitude, second = longitude.
+The stored smoke example `(52.193516, -0.908380)` belongs to “M1 northbound between
+J15 and J15A”. This mapping is specific to this endpoint and representation,
+**not** inferred from a generic CRS identifier. #28 retains the original spelling,
+ordinate ordering and decimal values unchanged. Other CRS labels, invalid
+coordinates, missing geometry and ambiguous antipodal segments are not given
+invented relevance. A record with no usable component is excluded.
+
+**V1 relevance:** inclusive 15,000 metres, owned by the backend (no caller radius).
+Distance is the minimum distance to any minor great-circle segment of any usable
+polyline, including endpoints and all grouped locations, on a mean-radius sphere
+(6,371,008.8 metres). This is straight-line proximity, not driving distance or route
+planning. No vertex-only shortcut, description matching, geocoding, simplification
+or inferred coordinates are used. Calculation uses double precision after the
+source geometry has been preserved. Results sort by distance, situation ID, then
+record ID; exact ties retain source order and duplicates.
+
+The response is `{snapshotAt, relevanceRadiusMeters, disruptions: [...]}`. Each
+disruption exposes provider situation/record ID and version, ordered descriptions,
+type/cause/status, optional start/end times, `distanceMeters` and supported location
+components with source descriptions, roads/directions and explicit latitude/
+longitude coordinates. Missing optional values are null. Internal run/endpoint/
+evidence IDs and raw payloads are not exposed. Source text is not rewritten.
+Snapshot time is a UTC ISO Instant. Valid location with no relevant records or a
+persisted empty snapshot returns 200 with `disruptions: []`; never-projected state
+returns bounded 404 `ROADS_UNAVAILABLE`; unexpected failures return bounded 500
+`ROADS_READ_FAILED` without diagnostics.
+
+Owner-controlled offline replay uses the command-line option
+`--project-roads-run=<successful-run-uuid>`, analogous to Underground replay. Normal
+startup does nothing; the option invokes only persisted evidence lookup, #28 parsing
+and projection. There is no public replay API or network dependency. If raw pages
+are unavailable/invalid, replay fails rather than acquiring replacements. Existing
+Current State continues to serve after raw evidence is removed.
+
+Tests are offline on the isolated PostgreSQL harness and synthetic fixtures.
+Current State is latest-known provider data, not a guarantee that every incident
+still applies at query wall-clock time: the accepted #26 six-hour-window limitation
+remains. No scheduler/polling, planned roadworks, Change History, cleanup, relevance
+personalisation, routes, frontend, maps or AI is implemented.
