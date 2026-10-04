@@ -18,6 +18,8 @@ public class Source {
     public static final String BANK_HOLIDAYS_SCOPE = "UK_BANK_HOLIDAYS";
     public static final String TFL_KEY = "transport-for-london";
     public static final String TFL_UNDERGROUND_SCOPE = "TFL_UNDERGROUND_STATUS";
+    public static final String NATIONAL_HIGHWAYS_KEY = "national-highways";
+    public static final String NATIONAL_HIGHWAYS_ROAD_CLOSURES_SCOPE = "NATIONAL_HIGHWAYS_ROAD_CLOSURES";
 
     @Id
     private UUID id;
@@ -52,6 +54,10 @@ public class Source {
 
     public static Source tfl() {
         return new Source(TFL_KEY, "Transport for London", TFL_UNDERGROUND_SCOPE);
+    }
+
+    public static Source nationalHighways() {
+        return new Source(NATIONAL_HIGHWAYS_KEY, "National Highways", NATIONAL_HIGHWAYS_ROAD_CLOSURES_SCOPE);
     }
 
     private Source(String key, String displayName, String scope) {

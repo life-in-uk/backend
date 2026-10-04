@@ -47,8 +47,8 @@ class SourceRestartTest {
                 assertThat(endpoint.getSource().isEnabled()).isFalse();
                 assertThat(endpoint.getNextPollAt()).isEqualTo(nextPoll);
                 assertThat(endpoint.getVersion()).isPositive();
-                assertThat(endpoints.count()).isEqualTo(2);
-                assertThat(second.getBean(SourceRepository.class).count()).isEqualTo(2);
+                assertThat(endpoints.count()).isEqualTo(3);
+                assertThat(second.getBean(SourceRepository.class).count()).isEqualTo(3);
             });
         }
     }

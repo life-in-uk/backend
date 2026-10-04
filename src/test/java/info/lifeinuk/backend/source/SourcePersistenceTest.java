@@ -27,7 +27,7 @@ class SourcePersistenceTest {
 
     @Test
     void flywayCreatesAcceptedSchemaAndHibernateValidatesIt() {
-        assertThat(jdbc.queryForObject("SELECT count(*) FROM flyway_schema_history WHERE success", Integer.class)).isEqualTo(4);
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM flyway_schema_history WHERE success", Integer.class)).isEqualTo(5);
         assertThat(jdbc.queryForList("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' ORDER BY table_name",
                 String.class)).containsExactly("evidence_artifact", "flyway_schema_history", "ingestion_run", "source", "source_endpoint",
                         "underground_current_line", "underground_current_snapshot", "underground_current_status");
@@ -50,8 +50,8 @@ class SourcePersistenceTest {
         bootstrap.initialize();
         entityManager.clear();
         SourceEndpoint reloaded = endpoints.findByKey(SourceEndpoint.BANK_HOLIDAYS_KEY).orElseThrow();
-        assertThat(sources.count()).isEqualTo(2);
-        assertThat(endpoints.count()).isEqualTo(2);
+        assertThat(sources.count()).isEqualTo(3);
+        assertThat(endpoints.count()).isEqualTo(3);
         assertThat(reloaded.getId()).isEqualTo(endpointId);
         assertThat(reloaded.getSource().getId()).isEqualTo(sourceId);
         assertThat(reloaded.getSource().isEnabled()).isFalse();

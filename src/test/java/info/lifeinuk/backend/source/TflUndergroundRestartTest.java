@@ -42,8 +42,8 @@ class TflUndergroundRestartTest {
                 assertThat(endpoint.getCalendarScope()).isNull();
                 assertThat(endpoint.getPollIntervalSeconds()).isNull();
                 assertThat(endpoint.getNextPollAt()).isNull();
-                assertThat(endpoints.count()).isEqualTo(2);
-                assertThat(second.getBean(SourceRepository.class).count()).isEqualTo(2);
+                assertThat(endpoints.count()).isEqualTo(3);
+                assertThat(second.getBean(SourceRepository.class).count()).isEqualTo(3);
                 assertThat(endpoints.findByKey(SourceEndpoint.BANK_HOLIDAYS_KEY).orElseThrow().getUseRetentionPolicy())
                         .isEqualTo(SourceEndpoint.PENDING_POLICY);
             });
