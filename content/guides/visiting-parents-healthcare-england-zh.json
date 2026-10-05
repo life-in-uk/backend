@@ -1,0 +1,483 @@
+{
+  "slug": "visiting-parents-healthcare-england",
+  "category": "health-nhs",
+  "title": "父母来英国探亲，生病了怎么办？GP、A&E、NHS 收费和保险怎么处理",
+  "summary": "持访问签证来英格兰探亲的父母如何看 GP、急诊和 111，哪些医院治疗要按 150% 收费，以及保险、用药、口译和未付账单的影响。",
+  "content": "# 父母来英国探亲，生病了怎么办？GP、A&E、NHS 收费和保险怎么处理\n\n> 这篇讲的是**英格兰（England）**。苏格兰、威尔士和北爱尔兰对来访人员看病、收费的规定不一样，以后单独写。\n\n爸妈难得来一趟，一住就是几个月，家里最担心的往往不是吃住，而是万一中途生了病怎么办。\n\n先把大的框架说清楚：在英格兰，来探亲的父母可以找 GP 看病，也可以去急诊。但\"能看\"和\"看了不花钱\"是两回事。GP 问诊和急诊本身一般不收费，到了医院后续的治疗，比如住院、复诊，除非属于免费的情况，来访人员就要付费了。\n\n## 你交了 IHS，不等于爸妈也有\n\n这一点最好一开始就弄明白。你办签证时交的 IHS，换来的是你自己在签证有效期内像长期居民一样用 NHS。它不会延伸到来探亲的父母身上。\n\n父母拿的是访问签证（visitor visa），不用交 IHS，也就没有 IHS 带来的那份待遇。他们在英国看病，是按\"海外来访人员\"的规则来算的。下面讲的都是这套规则。[查看官方依据](#guide-evidence-ihs-does-not-cover-visiting-parents)\n\n## 小病小痛：可以去 GP\n\n在英格兰，任何人都有资格在 GP 注册、看诊，问诊不收钱，来访的人也一样。注册时不要求有 NHS Number，也没有规定要先在英国住满多长时间。[查看官方依据](#guide-evidence-gp-free-for-any-visitor)\n\n如果他们会在你家附近住一段时间——超过 24 小时、少于 3 个月——可以向那里的 GP practice 申请 temporary registration（临时注册）。NHS England 给诊所的指引是：住在诊所服务范围内、时间在这个区间的人，诊所应当给他们临时注册这个选择。可以打电话或者直接去诊所问，跟前台说明是来探亲的父母，想申请临时注册。具体手续各家诊所可能不一样；诊所也可以拒绝，但需要有合理的理由。[查看官方依据](#guide-evidence-temporary-registration-for-visitors)\n\n就算没注册上，如果医生判断临床上需要马上处理，GP 诊所也有义务提供紧急或必须马上做的治疗，不论国籍和移民身份；按 NHS England 的指引，在这之后诊所还要提供 14 天的后续照看。[查看官方依据](#guide-evidence-gp-immediately-necessary-treatment)\n\n注册 GP 只是说明他们可以在这家诊所看病，并不代表以后去医院也能免费。GP 把病人转去医院时，是否免费由医院那边另外判断。这两件事要分开看。[查看官方依据](#guide-evidence-gp-registration-separate-from-hospital-charges)\n\n另外，GP 问诊免费，不等于后面的东西都免费。NHS 官网的说法是，来访的人通常要自己付处方药、看牙和验光的费用。英格兰的处方药每种 £9.90。[查看官方依据](#guide-evidence-visitors-pay-prescriptions-dental-eye-tests)\n\n## 急症：A&E 和 999\n\n如果是严重受伤或危及生命的紧急情况，直接去 A&E（急诊），不用预约，也不需要 NHS Number 或者先注册 GP。按英格兰对来访人员的收费规定，A&E 的急诊服务不收费，只要来英国不是专门为了看病。walk-in centre、minor injuries unit、urgent care centre 提供的急诊服务也一样。[查看官方依据](#guide-evidence-ae-free-unless-travelled-for-treatment)\n\n如果情况可能危及生命，直接打 999。同一条规定也写明，急救车（emergency ambulance）同样属于不收费的急诊服务，前提一样：来英国不是为了看病。[查看官方依据](#guide-evidence-call-999-and-emergency-ambulance)\n\n不管是付钱的顾虑还是身份的顾虑，都不应该成为耽误打 999 或者去急诊的理由。英格兰的规定是，医生判断为紧急或必须马上做的治疗，绝不能因为收费问题被拖延或拒绝，即使病人付不起或者不愿意付。[查看官方依据](#guide-evidence-urgent-care-never-withheld)\n\n拿不准该不该去急诊，可以先打 111 或者上 111.nhs.uk 问。打 111 本身不收费。[查看官方依据](#guide-evidence-nhs-111-when-unsure)\n\n## 急诊看完要住院，情况就变了\n\n这是最需要心里有数的一段。\n\n急诊免费，指的是在 A&E 里的那部分。如果医生决定让爸妈住院（正式转为 inpatient），或者让他们之后回医院复诊（follow-up outpatient appointment），这些就不再算免费的急诊服务了，除非符合某项免费规定，否则要收费。对需要付费的来访人员，医院按 NHS 治疗费用的 150% 收取（少数适用特定协议的人是 100%）。[查看官方依据](#guide-evidence-inpatient-and-follow-up-charges)\n\n这里有几点容易混在一起：\n\n- **医生判断为紧急或必须马上做的治疗，会先做**，不会因为钱的问题拖着；[查看官方依据](#guide-evidence-urgent-care-never-withheld)\n- **但先做不等于免费**。如果不在免费范围，治疗完之后医院仍然要开账单收费；\n- **如果医生判断不是紧急治疗**，规定是要先付费、再治疗；不付费的话，按规定医院不能提供这类非紧急治疗。[查看官方依据](#guide-evidence-non-urgent-treatment-paid-in-advance)\n\n医生也可能先把病情稳定下来，让病人可以安全出院、回国继续治疗，以免在英国产生更多费用。[查看官方依据](#guide-evidence-stabilise-and-return-home)\n\n也有一些情况不收费，比如某些传染病的诊断和治疗；各项免费规定都有自己的条件。医院会有专门负责来访人员收费的工作人员（overseas visitor manager）来判断是否收费，过程中可能会问到身份和签证情况。确定要收费的，医院应当给你们书面说明：为什么收费、预计多少钱、怎么付。有疑问可以直接问他们。[查看官方依据](#guide-evidence-other-exemptions-and-written-charge-statement)\n\n## 保险为什么重要\n\nNHS 官方的建议很明确：来访的人在英国期间，整段时间都应该有个人医疗保险或者旅行保险。[查看官方依据](#guide-evidence-visitor-insurance-whole-visit)\n\n原因就在上面：GP 和急诊一般免费，但真到了住院这一步，费用可能不低，而且来访人员通常要自己承担。\n\n保险具体保什么、怎么理赔、已有的慢性病算不算、国内买的保险在英国能不能用，都要看保单条款本身，各家差别很大。出发前最好把保单看清楚，有疑问直接问保险公司。这些细节我们这篇不展开。\n\n## 平时吃的药\n\n很多老人家每天都要吃药。来之前最好把要吃的药带够，同时把药名、剂量写下来，最好写上药的通用名（也就是有效成分的名字）。英国开药一般用的就是通用名，中国的商品名在这边不一定能对得上。\n\n如果带的药里有管制类药物（controlled drugs），规定要严格一些：最多只能带 3 个月的用量，超出的部分会被没收（特殊情况可以提前申请个人许可）；还要随身带上证明药是开给本人的医生信，写明姓名、出行日期、药品和剂量，并有开药医生的签名。普通的、不属于管制类的药，我们没有查到官方给出的统一数量上限，所以这里不给具体的数字，按实际需要带、放在原包装里比较稳妥。[查看官方依据](#guide-evidence-controlled-drugs-for-visitors)\n\n药快吃完了，最好提前联系已经临时注册的 GP，或者用 111 问怎么办，不要等到完全断药。英格兰的药房有时也能在没有处方的情况下给一些应急用的药，但可能要自己付钱。能不能开、开什么，由英国的医生或药剂师判断。[查看官方依据](#guide-evidence-running-out-of-medicine)\n\n## 不会说英语怎么办\n\n在 GP 诊所看病，可以在预约的时候要求 interpreter（口译），说明需要哪种语言。按 NHS England 的指引，口译应当免费提供，诊所不应该让病人付钱，也不应该让病人自己找翻译。打 111 的时候也可以要求口译。[查看官方依据](#guide-evidence-gp-interpreter-free)\n\nNHS England 的指引不建议靠家人朋友翻译，更不应该让 16 岁以下的孩子来翻，除非情况紧急。所以孙子孙女英语再好，也最好不要让他们在诊室里当翻译。[查看官方依据](#guide-evidence-family-and-child-interpreters)\n\n医院这边，Healthwatch（英格兰代表病人意见的法定机构）的说法是，病人在看病的各个环节都可以要求专业口译，也不应该为此付钱；不过具体怎么安排，各家医院会有自己的做法。到了医院可以直接说需要中文口译。[查看官方依据](#guide-evidence-hospital-interpreter)\n\n## 账单没付会有什么影响\n\n这个需要知道，但不必因此害怕去看病。\n\n医院的账单一般由接受治疗的病人本人承担。如果账单一直没付，欠款超过 £500、从开账单起已经超过两个月、又没有约定分期付款，医院要把这笔欠款上报，经英国卫生与社会保障部（DHSC）转给 Home Office，同时应当告诉病人欠款已被上报。[查看官方依据](#guide-evidence-nhs-debt-reporting)\n\n按现在的英国移民规则（Part Suitability 里的 SUI 16.1），未付的这类医疗费达到 £500 的，以后申请英国签证时可能因此被拒。这是\"可能\"，不是\"一定\"：Home Office 的工作指引写明不能自动拒签，要看具体情况。已经付清，或者跟医院约好分期、并且一直按时在还，提供医院的书面证明，都会被考虑进去。[查看官方依据](#guide-evidence-nhs-debt-discretionary-refusal)\n\n所以收到账单后如果一时付不起，主动联系医院商量分期，比放着不管要好——已经约好分期的欠款，本来就不在上报的范围里。[查看官方依据](#guide-evidence-nhs-debt-reporting)\n\n## 爸妈来之前，可以准备好这些\n\n- 每种药的通用名、剂量和吃法，最好有英文；\n- 过敏史，以及主要的病史和正在治疗的情况；\n- 保单，以及保险公司的联系方式、紧急联系方式；\n- 你家附近 GP practice 的名称和电话，想好是否需要申请临时注册；\n- 记住几个号码：生命危险打 999，拿不准的时候打 111（也可以上 111.nhs.uk）。\n\n## 官方资料\n\n以下资料访问日期均为 2026 年 10 月 5 日。\n\n- NHS（NHS.uk）— *How to access NHS services in England if you are visiting from abroad* — https://www.nhs.uk/nhs-services/visiting-or-moving-to-england/how-to-access-nhs-services-in-england-if-you-are-visiting-from-abroad/\n- NHS（NHS.uk）— *Visitors from outside the European Economic Area (EEA)* — https://www.nhs.uk/nhs-services/visiting-or-moving-to-england/visitors-from-outside-the-european-economic-area-eea/\n- Department of Health and Social Care（GOV.UK）— *Charging overseas visitors in England: guidance for providers of NHS services* — https://www.gov.uk/government/publications/nhs-cost-recovery-overseas-visitors/charging-overseas-visitors-in-england-guidance-for-providers-of-nhs-services\n- GOV.UK — *NHS entitlements: migrant health guide* — https://www.gov.uk/guidance/nhs-entitlements-migrant-health-guide\n- GOV.UK — *Pay for UK healthcare as part of your immigration application: who needs to pay* — https://www.gov.uk/healthcare-immigration-application/who-needs-pay\n- NHS（NHS.uk）— *How to register with a GP surgery* — https://www.nhs.uk/nhs-services/gps/how-to-register-with-a-gp-surgery/\n- NHS England — *Primary medical services policy and guidance manual (PGM)*，第 4 章 — https://www.england.nhs.uk/long-read/primary-medical-services-policy-and-guidance-manual-pgm-2/\n- British Medical Association（BMA）— *Patient registration* — https://www.bma.org.uk/advice-and-support/gp-practices/managing-your-practice-list/patient-registration\n- NHS（NHS.uk）— *When to call 999* — https://www.nhs.uk/nhs-services/urgent-and-emergency-care-services/when-to-call-999/\n- NHS（NHS.uk）— *When to use 111* — https://www.nhs.uk/nhs-services/urgent-and-emergency-care-services/when-to-use-111/\n- GOV.UK — *Travelling with medicine containing controlled drugs* — https://www.gov.uk/guidance/controlled-drugs-personal-licences\n- GOV.UK — *Take medicine in or out of the UK* — https://www.gov.uk/take-medicine-in-or-out-uk\n- NHS（NHS.uk）— *Emergency prescriptions* — https://www.nhs.uk/nhs-services/prescriptions/emergency-prescriptions/\n- NHS（NHS.uk）— *NHS prescription charges* — https://www.nhs.uk/nhs-services/prescriptions/nhs-prescription-charges/\n- NHS England — *You and your general practice*（中文版）— https://www.england.nhs.uk/long-read/you-and-your-general-practice-chinese/\n- NHS England — *Guidance for commissioners: Interpreting and Translation Services in Primary Care* — https://www.england.nhs.uk/wp-content/uploads/2018/09/guidance-for-commissioners-interpreting-and-translation-services-in-primary-care.pdf\n- Healthwatch England — *Does the NHS provide an interpreter?* — https://www.healthwatch.co.uk/advice-and-information/2025-07-02/does-nhs-provide-interpreter\n- GOV.UK — *Immigration Rules: Part Suitability*（SUI 16.1）— https://www.gov.uk/guidance/immigration-rules/immigration-rules-part-suitability\n- Home Office — *Suitability: debt to the NHS*（第 4.0 版，2026 年 3 月 18 日）— https://assets.publishing.service.gov.uk/media/6398add08fa8f553092e680d/Suitability_Debt_to_the_NHS.pdf\n\n最后更新：2026 年 10 月 5 日\n",
+  "status": "PUBLISHED",
+  "publishedAt": "2026-10-05T06:17:00Z",
+  "updatedAt": "2026-10-05T06:17:00Z",
+  "sources": [
+    {
+      "key": "nhs-visiting-from-abroad",
+      "organisation": "NHS（NHS.uk）",
+      "title": "How to access NHS services in England if you are visiting from abroad",
+      "url": "https://www.nhs.uk/nhs-services/visiting-or-moving-to-england/how-to-access-nhs-services-in-england-if-you-are-visiting-from-abroad/",
+      "accessedAt": "2026-10-05T05:58:15Z"
+    },
+    {
+      "key": "nhs-visitors-from-outside-eea",
+      "organisation": "NHS（NHS.uk）",
+      "title": "Visitors from outside the European Economic Area (EEA)",
+      "url": "https://www.nhs.uk/nhs-services/visiting-or-moving-to-england/visitors-from-outside-the-european-economic-area-eea/",
+      "accessedAt": "2026-10-05T05:58:15Z"
+    },
+    {
+      "key": "dhsc-overseas-visitor-charging",
+      "organisation": "Department of Health and Social Care（GOV.UK）",
+      "title": "Charging overseas visitors in England: guidance for providers of NHS services",
+      "url": "https://www.gov.uk/government/publications/nhs-cost-recovery-overseas-visitors/charging-overseas-visitors-in-england-guidance-for-providers-of-nhs-services",
+      "accessedAt": "2026-10-05T05:58:15Z"
+    },
+    {
+      "key": "govuk-migrant-health-entitlements",
+      "organisation": "GOV.UK — Office for Health Improvement and Disparities",
+      "title": "NHS entitlements: migrant health guide",
+      "url": "https://www.gov.uk/guidance/nhs-entitlements-migrant-health-guide",
+      "accessedAt": "2026-10-05T05:58:15Z"
+    },
+    {
+      "key": "govuk-ihs-who-needs-to-pay",
+      "organisation": "GOV.UK",
+      "title": "Pay for UK healthcare as part of your immigration application: who needs to pay",
+      "url": "https://www.gov.uk/healthcare-immigration-application/who-needs-pay",
+      "accessedAt": "2026-10-05T05:58:15Z"
+    },
+    {
+      "key": "nhs-gp-registration",
+      "organisation": "NHS（NHS.uk）",
+      "title": "How to register with a GP surgery",
+      "url": "https://www.nhs.uk/nhs-services/gps/how-to-register-with-a-gp-surgery/",
+      "accessedAt": "2026-10-05T05:58:15Z"
+    },
+    {
+      "key": "nhs-england-pgm",
+      "organisation": "NHS England",
+      "title": "Primary medical services policy and guidance manual (PGM)",
+      "url": "https://www.england.nhs.uk/long-read/primary-medical-services-policy-and-guidance-manual-pgm-2/",
+      "accessedAt": "2026-10-05T05:58:15Z"
+    },
+    {
+      "key": "bma-patient-registration",
+      "organisation": "British Medical Association（BMA）",
+      "title": "Patient registration",
+      "url": "https://www.bma.org.uk/advice-and-support/gp-practices/managing-your-practice-list/patient-registration",
+      "accessedAt": "2026-10-05T05:58:15Z"
+    },
+    {
+      "key": "nhs-call-999",
+      "organisation": "NHS（NHS.uk）",
+      "title": "When to call 999",
+      "url": "https://www.nhs.uk/nhs-services/urgent-and-emergency-care-services/when-to-call-999/",
+      "accessedAt": "2026-10-05T05:58:15Z"
+    },
+    {
+      "key": "nhs-111",
+      "organisation": "NHS（NHS.uk）",
+      "title": "When to use 111",
+      "url": "https://www.nhs.uk/nhs-services/urgent-and-emergency-care-services/when-to-use-111/",
+      "accessedAt": "2026-10-05T05:58:15Z"
+    },
+    {
+      "key": "govuk-controlled-drugs-travel",
+      "organisation": "GOV.UK",
+      "title": "Travelling with medicine containing controlled drugs",
+      "url": "https://www.gov.uk/guidance/controlled-drugs-personal-licences",
+      "accessedAt": "2026-10-05T05:58:15Z"
+    },
+    {
+      "key": "govuk-take-medicine-in-or-out",
+      "organisation": "GOV.UK",
+      "title": "Take medicine in or out of the UK",
+      "url": "https://www.gov.uk/take-medicine-in-or-out-uk",
+      "accessedAt": "2026-10-05T05:58:15Z"
+    },
+    {
+      "key": "nhs-emergency-prescriptions",
+      "organisation": "NHS（NHS.uk）",
+      "title": "Emergency prescriptions",
+      "url": "https://www.nhs.uk/nhs-services/prescriptions/emergency-prescriptions/",
+      "accessedAt": "2026-10-05T05:58:15Z"
+    },
+    {
+      "key": "nhs-prescription-charges",
+      "organisation": "NHS（NHS.uk）",
+      "title": "NHS prescription charges",
+      "url": "https://www.nhs.uk/nhs-services/prescriptions/nhs-prescription-charges/",
+      "accessedAt": "2026-10-05T05:58:15Z"
+    },
+    {
+      "key": "nhs-england-general-practice-zh",
+      "organisation": "NHS England",
+      "title": "You and your general practice",
+      "url": "https://www.england.nhs.uk/long-read/you-and-your-general-practice-chinese/",
+      "accessedAt": "2026-10-05T05:58:15Z"
+    },
+    {
+      "key": "nhs-england-interpreting-guidance",
+      "organisation": "NHS England",
+      "title": "Guidance for commissioners: Interpreting and Translation Services in Primary Care",
+      "url": "https://www.england.nhs.uk/wp-content/uploads/2018/09/guidance-for-commissioners-interpreting-and-translation-services-in-primary-care.pdf",
+      "accessedAt": "2026-10-05T05:58:15Z"
+    },
+    {
+      "key": "healthwatch-nhs-interpreter",
+      "organisation": "Healthwatch England",
+      "title": "Does the NHS provide an interpreter?",
+      "url": "https://www.healthwatch.co.uk/advice-and-information/2025-07-02/does-nhs-provide-interpreter",
+      "accessedAt": "2026-10-05T05:58:15Z"
+    },
+    {
+      "key": "immigration-rules-part-suitability",
+      "organisation": "GOV.UK",
+      "title": "Immigration Rules: Part Suitability",
+      "url": "https://www.gov.uk/guidance/immigration-rules/immigration-rules-part-suitability",
+      "accessedAt": "2026-10-05T05:58:15Z"
+    },
+    {
+      "key": "home-office-nhs-debt-guidance",
+      "organisation": "Home Office",
+      "title": "Suitability: debt to the NHS",
+      "url": "https://assets.publishing.service.gov.uk/media/6398add08fa8f553092e680d/Suitability_Debt_to_the_NHS.pdf",
+      "accessedAt": "2026-10-05T05:58:15Z"
+    }
+  ],
+  "evidence": [
+    {
+      "key": "ihs-does-not-cover-visiting-parents",
+      "statement": "持 visitor visa 的父母不交 IHS，也不享有 IHS 带来的待遇，看病按海外来访人员规则处理。",
+      "supports": [
+        {
+          "sourceKey": "govuk-ihs-who-needs-to-pay",
+          "locator": "Visitor visas and short-term visas",
+          "excerpt": null,
+          "note": "visitor visa 不用交 IHS；\"You will need to pay for any NHS care you get at the point you use it - unless it’s a service that’s free.\""
+        }
+      ]
+    },
+    {
+      "key": "gp-free-for-any-visitor",
+      "statement": "在英格兰任何人都可以免费在 GP 注册和看诊，来访者也一样；注册不要求 NHS Number。",
+      "supports": [
+        {
+          "sourceKey": "bma-patient-registration",
+          "locator": "页面导语；Temporary visitors and tourists",
+          "excerpt": null,
+          "note": "\"anyone, regardless of nationality and residential status, may register and consult with a GP without charge\"。"
+        },
+        {
+          "sourceKey": "nhs-gp-registration",
+          "locator": "What you need to register with a GP surgery",
+          "excerpt": null,
+          "note": "\"you do not need one [NHS number] to register\"；也不需要身份或住址证明。"
+        },
+        {
+          "sourceKey": "govuk-migrant-health-entitlements",
+          "locator": "GP services",
+          "excerpt": null,
+          "note": "\"Anyone in England can register and consult with a GP without charge.\""
+        }
+      ]
+    },
+    {
+      "key": "temporary-registration-for-visitors",
+      "statement": "在诊所范围内居住超过 24 小时且少于 3 个月的人，诊所应当提供临时注册选项；拒绝需要有合理理由。",
+      "supports": [
+        {
+          "sourceKey": "nhs-england-pgm",
+          "locator": "Chapter 4, §4.4.9；Chapter 3, §3.2.4",
+          "excerpt": null,
+          "note": "\"Patients should be offered the option of registering as a temporary resident if they are resident in the practice area for more than 24 hours but less than 3 months\"；拒绝须有合理理由并书面说明。"
+        }
+      ]
+    },
+    {
+      "key": "gp-immediately-necessary-treatment",
+      "statement": "GP 诊所有义务在临床需要时提供紧急或立即必要的治疗，不论国籍和移民身份，并在之后提供 14 天的后续照看。",
+      "supports": [
+        {
+          "sourceKey": "nhs-england-pgm",
+          "locator": "Chapter 4, §4.5.1–4.5.2",
+          "excerpt": null,
+          "note": "\"duty to provide emergency or immediately necessary treatment, where clinically necessary, irrespective of nationality or immigration status\"；\"required to provide 14 days of further cover\"。"
+        }
+      ]
+    },
+    {
+      "key": "gp-registration-separate-from-hospital-charges",
+      "statement": "可以注册 GP 不代表医院治疗免费；医院是否收费另行判断。",
+      "supports": [
+        {
+          "sourceKey": "nhs-england-pgm",
+          "locator": "Chapter 4, §4.4.8",
+          "excerpt": null,
+          "note": "来访者 \"are eligible to register with a GP practice even if those visitors are not eligible for secondary care (hospital care) services\"。"
+        }
+      ]
+    },
+    {
+      "key": "visitors-pay-prescriptions-dental-eye-tests",
+      "statement": "来访者通常要自付处方药、牙科和验光费用；英格兰处方费每项 £9.90。",
+      "supports": [
+        {
+          "sourceKey": "nhs-visiting-from-abroad",
+          "locator": "页面中 \"You will need to pay for some things\" 段落",
+          "excerpt": null,
+          "note": "\"You will need to pay for some things such as eye tests, dental treatment and prescriptions, just like people who live in England.\""
+        },
+        {
+          "sourceKey": "nhs-prescription-charges",
+          "locator": "NHS prescription charges",
+          "excerpt": null,
+          "note": "\"£9.90 per item\"。"
+        }
+      ]
+    },
+    {
+      "key": "ae-free-unless-travelled-for-treatment",
+      "statement": "A&E 急诊服务（包括 walk-in centre、minor injuries unit、urgent care centre）对来访者不收费，前提是不是专程来英国求医；不需要 NHS Number 或先注册 GP。",
+      "supports": [
+        {
+          "sourceKey": "dhsc-overseas-visitor-charging",
+          "locator": "Relevant services exempt from charges (regulation 9)",
+          "excerpt": null,
+          "note": "\"accident and emergency services, providing the purpose of the visit was not for seeking treatment\"，并列出 walk-in centre、minor injuries unit、urgent care centre。"
+        },
+        {
+          "sourceKey": "govuk-migrant-health-entitlements",
+          "locator": "Free services；Hospital treatment",
+          "excerpt": null,
+          "note": "免费服务以 \"have not travelled to the UK for the purpose of seeking that treatment\" 为条件；不取决于是否注册 GP 或有 NHS number。"
+        }
+      ]
+    },
+    {
+      "key": "call-999-and-emergency-ambulance",
+      "statement": "危及生命时应拨打 999；急救车服务同样属于免收费的急诊服务，前提同样是不是专程来求医。",
+      "supports": [
+        {
+          "sourceKey": "nhs-call-999",
+          "locator": "When to call 999",
+          "excerpt": null,
+          "note": "999 用于危及生命的紧急情况。"
+        },
+        {
+          "sourceKey": "dhsc-overseas-visitor-charging",
+          "locator": "Relevant services exempt from charges (regulation 9)",
+          "excerpt": null,
+          "note": "\"This includes emergency ambulance services and all accident and emergency services provided at an NHS hospital\"。"
+        }
+      ]
+    },
+    {
+      "key": "urgent-care-never-withheld",
+      "statement": "医生判断为紧急或立即必要的治疗绝不能因收费问题被拖延或拒绝，即使病人无法或不愿付款；但不免除收费。",
+      "supports": [
+        {
+          "sourceKey": "dhsc-overseas-visitor-charging",
+          "locator": "Charging overview；Immediately necessary treatment",
+          "excerpt": null,
+          "note": "\"Urgent or immediately necessary care must never be withheld or delayed, even if the patient is unable or unwilling to pay, although they remain liable for the charges\"。"
+        }
+      ]
+    },
+    {
+      "key": "nhs-111-when-unsure",
+      "statement": "拿不准是否去急诊时可以用 111；NHS 111 本身不收费。",
+      "supports": [
+        {
+          "sourceKey": "nhs-111",
+          "locator": "When to use NHS 111 online or call 111",
+          "excerpt": null,
+          "note": "\"NHS 111 can help if you think you need medical help right now.\""
+        },
+        {
+          "sourceKey": "govuk-migrant-health-entitlements",
+          "locator": "Free services",
+          "excerpt": null,
+          "note": "免费服务列表包括 \"services that are provided as part of the NHS 111 telephone advice line\"。"
+        }
+      ]
+    },
+    {
+      "key": "inpatient-and-follow-up-charges",
+      "statement": "正式收治住院后或复诊门诊不再属于免费急诊服务，除非另有豁免；对需付费的来访者按 150%（少数协议适用者 100%）收取。",
+      "supports": [
+        {
+          "sourceKey": "dhsc-overseas-visitor-charging",
+          "locator": "Relevant services exempt from charges (regulation 9)；Charging overview",
+          "excerpt": null,
+          "note": "A&E 豁免不含收治住院后和复诊门诊；\"recover 150% of the cost of treatment\"，Withdrawal Agreement 或相关国家协议适用者为 100%。"
+        },
+        {
+          "sourceKey": "nhs-visitors-from-outside-eea",
+          "locator": "Visitors from outside the EEA",
+          "excerpt": null,
+          "note": "\"charged for NHS secondary care at 150% of the standard NHS rate\"；A&E 免费 \"not including emergency treatment if admitted to hospital\"。"
+        }
+      ]
+    },
+    {
+      "key": "non-urgent-treatment-paid-in-advance",
+      "statement": "非紧急治疗需先付清预估费用；未付款时，按规定医院不能提供此类非紧急治疗；先做的紧急治疗之后仍会收费。",
+      "supports": [
+        {
+          "sourceKey": "dhsc-overseas-visitor-charging",
+          "locator": "Non-urgent treatment",
+          "excerpt": null,
+          "note": "\"Relevant bodies must not provide non-urgent treatment until the estimated full cost of treatment has been paid in advance.\""
+        }
+      ]
+    },
+    {
+      "key": "stabilise-and-return-home",
+      "statement": "立即必要治疗时，医生可能先稳定病情，让病人安全出院、回国继续治疗，以免产生更多费用。",
+      "supports": [
+        {
+          "sourceKey": "dhsc-overseas-visitor-charging",
+          "locator": "Immediately necessary treatment",
+          "excerpt": null,
+          "note": "\"may be able to be stabilised, allowing them to be safely discharged and giving them time to return home for further treatment\"；用 \"may\"。"
+        }
+      ]
+    },
+    {
+      "key": "other-exemptions-and-written-charge-statement",
+      "statement": "部分服务（如某些传染病诊治）另有免费规定；医院的 overseas visitor manager 判断是否收费，确定收费时应书面说明原因、预估金额和付款方式。",
+      "supports": [
+        {
+          "sourceKey": "dhsc-overseas-visitor-charging",
+          "locator": "Audience；Relevant services exempt from charges；Charging overview",
+          "excerpt": null,
+          "note": "指引面向 OVMs；列出传染病等豁免；决定收费时须提供 \"a written statement confirming why charges apply, what the charge is estimated to be … and how they can pay\"。"
+        }
+      ]
+    },
+    {
+      "key": "visitor-insurance-whole-visit",
+      "statement": "NHS 建议来访者整段行程都有个人医疗或旅行保险。",
+      "supports": [
+        {
+          "sourceKey": "nhs-visitors-from-outside-eea",
+          "locator": "Visitors from outside the EEA",
+          "excerpt": null,
+          "note": "\"Make sure you're covered for healthcare through personal medical or travel insurance for all of your visit.\""
+        }
+      ]
+    },
+    {
+      "key": "controlled-drugs-for-visitors",
+      "statement": "非英国居民携带含管制成分的药物，最多带 3 个月用量，过量会被扣押（特殊情况可提前申请许可），并需携带写明姓名、出行日期、药品剂量且有开药者签名的证明信。",
+      "supports": [
+        {
+          "sourceKey": "govuk-take-medicine-in-or-out",
+          "locator": "Bringing medicine to the UK",
+          "excerpt": null,
+          "note": "非英国居民 \"will need to carry a letter of proof\"，信件 \"must include\" 姓名、出行日期、药品和剂量、开药者签名；\"You can only bring up to 3 months supply\"。"
+        },
+        {
+          "sourceKey": "govuk-controlled-drugs-travel",
+          "locator": "Temporary residents…；Exceptional circumstances",
+          "excerpt": null,
+          "note": "过量携带 \"will be seized\"；超过 3 个月用量的许可仅限特殊情况，需提前 1 个月申请。"
+        }
+      ]
+    },
+    {
+      "key": "running-out-of-medicine",
+      "statement": "药快吃完时可联系 GP 或用 111；药房可在没有处方时提供某些应急药物，但可能需付费。",
+      "supports": [
+        {
+          "sourceKey": "nhs-emergency-prescriptions",
+          "locator": "How to get emergency prescription medicine",
+          "excerpt": null,
+          "note": "\"Pharmacies can provide certain emergency medicines … even if they don't have a prescription, but you may need to pay.\""
+        }
+      ]
+    },
+    {
+      "key": "gp-interpreter-free",
+      "statement": "在 GP 诊所可在预约时要求口译；口译应免费提供，不应让病人付费或自带翻译；打 111 时也可要求口译。",
+      "supports": [
+        {
+          "sourceKey": "nhs-england-interpreting-guidance",
+          "locator": "Principle 1",
+          "excerpt": null,
+          "note": "\"should be provided free at the point of delivery\"；\"Patients should not be asked to pay for interpreting services or to provide their own interpreter\"。"
+        },
+        {
+          "sourceKey": "nhs-england-general-practice-zh",
+          "locator": "如果您需要额外帮助，该怎么办？",
+          "excerpt": null,
+          "note": "不会说英语可以在预约时要求口译。"
+        },
+        {
+          "sourceKey": "nhs-111",
+          "locator": "Help in other languages",
+          "excerpt": null,
+          "note": "\"Call 111 and ask for an interpreter.\""
+        }
+      ]
+    },
+    {
+      "key": "family-and-child-interpreters",
+      "statement": "不建议依靠家人朋友口译；16 岁以下者只在需要立即必要治疗时例外。",
+      "supports": [
+        {
+          "sourceKey": "nhs-england-interpreting-guidance",
+          "locator": "Principle 4 §§6, 8",
+          "excerpt": null,
+          "note": "\"Reliance on family, friends or unqualified interpreters is strongly discouraged\"；16 岁以下 \"not acceptable in any circumstance other than when immediate and necessary treatment is required\"。"
+        }
+      ]
+    },
+    {
+      "key": "hospital-interpreter",
+      "statement": "Healthwatch 指出病人在就医各环节都有权获得专业口译，不应为此付费。",
+      "supports": [
+        {
+          "sourceKey": "healthwatch-nhs-interpreter",
+          "locator": "Do you have a right to an NHS interpreter?；What should I expect?",
+          "excerpt": null,
+          "note": "\"right to have a professional interpreter help you at every stage\"；\"You should never have to pay for language interpreting and translation services.\""
+        }
+      ]
+    },
+    {
+      "key": "nhs-debt-reporting",
+      "statement": "超过 £500、开出满两个月且没有分期约定的欠款会经 DHSC 上报给 Home Office，并应告知病人；已约定分期的欠款不上报。",
+      "supports": [
+        {
+          "sourceKey": "dhsc-overseas-visitor-charging",
+          "locator": "Debt reporting",
+          "excerpt": null,
+          "note": "NHS bodies 须向 DHSC 上报 \"more than £500 … outstanding for more than 2 months\"；\"should inform the patient that their debt has been reported\"。"
+        },
+        {
+          "sourceKey": "home-office-nhs-debt-guidance",
+          "locator": "Consideration of NHS debt",
+          "excerpt": null,
+          "note": "\"will only notify the Home Office once the debt has been outstanding for 2 months or more … and there is no agreement in place to pay by instalments\"。"
+        }
+      ]
+    },
+    {
+      "key": "nhs-debt-discretionary-refusal",
+      "statement": "未付 NHS 欠款达 £500 时，以后的签证申请可能（而非必然）被拒；Home Office 不得自动拒签，会考虑已付清或按约分期还款的书面证明。",
+      "supports": [
+        {
+          "sourceKey": "immigration-rules-part-suitability",
+          "locator": "SUI 16.1",
+          "excerpt": null,
+          "note": "\"may be refused where … the outstanding charges have a total value of at least £500\"。"
+        },
+        {
+          "sourceKey": "home-office-nhs-debt-guidance",
+          "locator": "Consideration of an application where there is an NHS debt",
+          "excerpt": null,
+          "note": "\"you must not automatically refuse\"；接受医疗机构关于已付清或 \"an agreed schedule of payment by instalment which is being maintained\" 的书面证明。"
+        }
+      ]
+    }
+  ]
+}

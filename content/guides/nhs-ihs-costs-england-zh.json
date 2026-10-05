@@ -1,0 +1,431 @@
+{
+  "slug": "nhs-ihs-costs-england",
+  "category": "health-nhs",
+  "title": "刚来英国，我能用 NHS 吗？IHS 交了以后哪些还要自己付钱？",
+  "summary": "在英格兰交了 IHS 后可以免费使用哪些 NHS 服务、哪些仍需自付，以及没交 IHS 的访客和永居者的情况。",
+  "content": "# 刚来英国，我能用 NHS 吗？IHS 交了以后哪些还要自己付钱？\n\n> 这篇主要讲**英格兰（England）**。英国的医疗是分开管的，处方、看牙、配镜这些收费规定，苏格兰、威尔士和北爱尔兰都不一样，以后会分别写。\n\n办签证的时候交了一大笔 IHS，很多人自然会觉得，以后在英国看病应该都不用花钱了。等到第一次拿处方药被收了钱，或者看牙收到账单，才发现不是这么回事。\n\n其实 IHS 买到的，是\"跟长期住在英国的人差不多一样地使用 NHS\"。英国本地人看病有些也是要付钱的，所以你交了 IHS，这部分钱一样要付。弄明白这一点，后面的问题基本都顺了。\n\n## IHS 是什么，谁要交\n\nIHS 的全称是 Immigration Health Surcharge，是申请签证时连同签证费一起交的医疗附加费。一般来说：\n\n- 从英国境外申请超过 6 个月的签证，要交；\n- 在英国境内申请，不管多长时间，都要交；\n- 旅游、探亲这类 visitor visa 不用交，申请永久居留也不用交；\n- 也有一些人可以免交，比如 Health and Care Worker 签证的持有人和他们的家属。\n\n就算你自己买了私人医疗保险，IHS 也还是要交。[查看官方依据](#guide-evidence-ihs-who-needs-to-pay)\n\n钱是按签证年限一次交清的。现在的标准是：\n\n- **每年 £776**：学生、**学生的家属**、Youth Mobility Scheme 签证，以及申请时未满 18 岁的人；\n- **每年 £1,035**：其他所有签证申请。\n\n这里要分清楚：£776 这个价，只给学生本人和学生的家属。如果你是 Skilled Worker 或者配偶签证，你的家属一般按 £1,035 交，除非他们申请时不到 18 岁，或者本身属于免交的情况。家属办签证时交的是他们自己那一份，不是跟着主申请人\"捎带\"上的。[查看官方依据](#guide-evidence-ihs-rates-and-dependants)\n\n## 交了 IHS 之后，哪些不用另外付钱\n\n签证一开始生效，你就可以按 IHS 的待遇用 NHS 了。不过如果 Home Office 还没批下来你的签证，这段时间看病可能需要付费。看病时如果被问到身份，有电子身份（eVisa）的人可能需要用 share code 在网上证明。[查看官方依据](#guide-evidence-ihs-start-date-and-share-code)\n\n交了 IHS 以后，你用 NHS 基本跟本地居民一样：\n\n- **看 GP**：问诊不收钱；\n- **A&E 急诊**：不收钱；\n- **医院的治疗**：包括转诊到医院看专科、住院，一般不另外收费。[查看官方依据](#guide-evidence-ihs-covered-services)\n\n这些待遇跟着签证走。签证到期失效，这份待遇也就结束了；如果你在签证到期前已经递交了续签申请、还在等结果，这段时间能否继续按 IHS 待遇免费，要看续签最后是否获批。具体到个人情况比较复杂，拿不准的话问医院负责收费的工作人员，或者看 GOV.UK 的说明。[查看官方依据](#guide-evidence-ihs-cover-ends-and-in-time-extension)\n\n另外，能不能免费用医院的服务，看的是你在英国的居留身份，跟国籍没有关系。拿了中国护照不会因此吃亏，也不会因此占便宜。[查看官方依据](#guide-evidence-entitlement-not-nationality)\n\n## 交了 IHS，这些还是要自己付钱\n\nGOV.UK 上写得很直接：交了 IHS 以后，处方药、看牙、验光（eye test），还有辅助生育治疗，还是要自己付钱。[查看官方依据](#guide-evidence-ihs-still-pay-for)\n\n### 处方药\n\n在英格兰，GP 给你开了处方，到药房取药是按\"每种药\"收费的，现在是每种 **£9.90**，2026/27 年度没有涨。一张处方上开了三种药，就要付三次。避孕药，还有住院期间用的药，是免费的。[查看官方依据](#guide-evidence-prescription-charge-per-item)\n\n有些人可以免费拿处方药，跟年龄、怀孕或刚生完孩子、某些疾病、收入低等情况有关。交了 IHS 本身不算免费的理由；学生也不会因为是学生就自动免费。自己是否符合，可以在 NHSBSA（负责处理这些费用的 NHS 机构）的网站上查。[查看官方依据](#guide-evidence-prescription-exemptions-not-ihs)\n\n如果需要长期吃好几种药，可以了解一下 Prescription Prepayment Certificate（PPC），相当于处方药的\"包年\"：3 个月 £32.05，12 个月 £114.50。按 NHSBSA 的说法，三个月里超过 3 种、或者一年里超过 11 种处方药，买这个通常更划算。[查看官方依据](#guide-evidence-prescription-prepayment-certificate)\n\n### 看牙\n\n这一项最容易让人意外。交了 IHS，看 NHS 牙医照样要付钱。英格兰的 NHS 牙科按档收费，从 2026 年 4 月 1 日起是：\n\n- **Band 1，£27.90**：检查、诊断（包括拍片）、预防建议，医生认为有必要时洗牙；\n- **Band 2，£76.60**：Band 1 的内容，再加补牙、根管治疗、拔牙等；\n- **Band 3，£332.10**：前两档的内容，再加牙冠、假牙、牙桥等；\n- **急诊看牙，£27.90**。[查看官方依据](#guide-evidence-nhs-dental-charge-bands)\n\n能免费看 NHS 牙医的，主要是 18 岁以下、19 岁以下且还在全日制上学的人，怀孕或者最近 12 个月内生过孩子的人，以及领取某些福利或者通过低收入补助申请到相关证明的人。IHS 不在里面；学生也是一样，过了这个年龄就要付钱。[查看官方依据](#guide-evidence-free-nhs-dental-treatment)\n\n怎么找 NHS 牙医、私人牙医大概多少钱，我们会另写一篇。\n\n### 验光\n\n验光（eye test）交了 IHS 也一般要自己付钱。配眼镜的费用、哪些人可以免费验光，我们这次没有核实到足够可靠的资料，这里先不展开。[查看官方依据](#guide-evidence-eye-tests-charged)\n\n### 辅助生育（IVF 等）\n\n在英格兰，交 IHS 换来的免费医院治疗，**不包括**辅助生育服务，比如 IVF。这是英格兰规定里明文写出来的例外。苏格兰和威尔士的规定不一样，不能直接套用，以后会单独写。[查看官方依据](#guide-evidence-assisted-conception-excluded)\n\n## 没交 IHS 的人，就不能用 NHS 了吗？\n\n不是。有两样东西，不管你交没交 IHS、是什么身份，在英格兰都是免费的：\n\n- **看 GP**：任何人都可以在 GP 注册、看诊，问诊不收钱；\n- **A&E 急诊**本身（专程为了看病来英国的除外）。[查看官方依据](#guide-evidence-gp-and-ae-free-for-everyone)\n\n区别主要在医院这一块。没有交 IHS、也不属于免费情况的人，比如来短期探亲、旅游的，如果从急诊转成住院，或者要回医院复诊，就可能要收费，一般按 NHS 标准价的 150% 算。不过真正紧急、必须马上做的治疗，医院不会因为病人一时付不起钱就拖着不做或者不给做。[查看官方依据](#guide-evidence-visitor-hospital-charges)\n\n拿了 indefinite leave to remain（ILR，永居）的人不用再交 IHS，用医院也不收费；但处方、看牙这些本地人要付的钱，照样要付。[查看官方依据](#guide-evidence-ilr-holders)\n\n## 父母来探亲，算哪一种？\n\n父母拿 visitor visa 来住几个月，不交 IHS，也不会因为你交了 IHS 就跟着享受同样的待遇。他们看 GP、去急诊是免费的，但住院、复诊这些医院治疗通常要付费。NHS 建议来访的人整段行程都买好医疗或旅行保险。[查看官方依据](#guide-evidence-visiting-parents-coverage-and-insurance)\n\n还有一点要知道：医院的账单如果欠着不付，金额在 £500 以上、开出后超过两个月、又没有约定分期付款，医院要把这笔欠款上报，最后会到 Home Office 那里。按现在的移民规定，这样的欠款以后申请签证时可以成为拒签的理由——是\"可以\"，不是一定会拒。[查看官方依据](#guide-evidence-nhs-debt-reporting-and-refusal)\n\n父母来英国看病的事情比较多，我们会专门写一篇。\n\n## 交了 IHS，到底意味着什么\n\n- 签证有效期间，你可以像长期住在英国的人一样用 NHS：看 GP、急诊、医院治疗都不用另外付钱。\n- 本地人要付的钱，你也要付：在英格兰主要是处方药、看牙和验光。\n- 在英格兰，IVF 这类辅助生育治疗不在 IHS 的免费范围里。[查看官方依据](#guide-evidence-assisted-conception-excluded)\n- 家属要交自己的 IHS；£776 的价钱只给学生和学生的家属，其他签证的家属一般是 £1,035。\n- 没交 IHS 不等于不能看病：GP 和急诊一般对谁都免费，收费的是医院后续治疗。[查看官方依据](#guide-evidence-gp-and-ae-free-for-everyone)\n- 来探亲的父母不跟着你的 IHS 走，最好提前买保险。[查看官方依据](#guide-evidence-visiting-parents-coverage-and-insurance)\n\n## 官方资料\n\n以下资料访问日期均为 2026 年 10 月 5 日。\n\n- GOV.UK — *Pay for UK healthcare as part of your immigration application*（包括 \"Who needs to pay\" 和 \"How much you have to pay\" 两页）— https://www.gov.uk/healthcare-immigration-application\n- Department of Health and Social Care（GOV.UK）— *Charging overseas visitors in England: guidance for providers of NHS services* — https://www.gov.uk/government/publications/nhs-cost-recovery-overseas-visitors/charging-overseas-visitors-in-england-guidance-for-providers-of-nhs-services\n- legislation.gov.uk — *The National Health Service (Charges to Overseas Visitors) Regulations 2015*，regulation 10 — https://www.legislation.gov.uk/uksi/2015/238/regulation/10\n- GOV.UK — *NHS entitlements: migrant health guide* — https://www.gov.uk/guidance/nhs-entitlements-migrant-health-guide\n- NHS（NHS.uk）— *Moving to England from outside the European Economic Area (EEA)* — https://www.nhs.uk/nhs-services/visiting-or-moving-to-england/moving-to-england-from-outside-the-european-economic-area-eea/\n- NHS（NHS.uk）— *Visitors from outside the European Economic Area (EEA)* — https://www.nhs.uk/nhs-services/visiting-or-moving-to-england/visitors-from-outside-the-european-economic-area-eea/\n- Department of Health and Social Care（GOV.UK）— *Chancellor freezes charges to keep prescriptions under a tenner*（2025 年 11 月 21 日）— https://www.gov.uk/government/news/chancellor-freezes-charges-to-keep-prescriptions-under-a-tenner\n- NHS（NHS.uk）— *NHS prescription charges* — https://www.nhs.uk/nhs-services/prescriptions/nhs-prescription-charges/\n- NHS Business Services Authority（NHSBSA）— *Free NHS prescriptions* — https://www.nhsbsa.nhs.uk/help-nhs-prescription-costs/free-nhs-prescriptions\n- NHS Business Services Authority（NHSBSA）— *Prescription prepayment certificates* — https://www.nhsbsa.nhs.uk/PPC\n- NHS Business Services Authority（NHSBSA）— *Current NHS dental charges*（FAQ KA-02003）— https://faq.nhsbsa.nhs.uk/knowledgebase/article/KA-02003\n- NHS（NHS.uk）— *Understanding NHS dental charges* — https://www.nhs.uk/nhs-services/dentists/dental-costs/understanding-nhs-dental-charges/\n- NHS Business Services Authority（NHSBSA）— *Free NHS dental treatment* — https://nhsbsa.nhs.uk/help-nhs-dental-costs/free-nhs-dental-treatment\n- GOV.UK — *Immigration Rules: Part Suitability*（SUI 16.1）— https://www.gov.uk/guidance/immigration-rules/immigration-rules-part-suitability\n- Home Office — *Suitability: debt to the NHS*（第 4.0 版，2026 年 3 月 18 日）— https://assets.publishing.service.gov.uk/media/6398add08fa8f553092e680d/Suitability_Debt_to_the_NHS.pdf\n\n最后更新：2026 年 10 月 5 日\n",
+  "status": "PUBLISHED",
+  "publishedAt": "2026-10-05T05:59:00Z",
+  "updatedAt": "2026-10-05T05:59:00Z",
+  "sources": [
+    {
+      "key": "govuk-ihs",
+      "organisation": "GOV.UK",
+      "title": "Pay for UK healthcare as part of your immigration application",
+      "url": "https://www.gov.uk/healthcare-immigration-application",
+      "accessedAt": "2026-10-05T05:58:15Z"
+    },
+    {
+      "key": "dhsc-overseas-visitor-charging",
+      "organisation": "Department of Health and Social Care（GOV.UK）",
+      "title": "Charging overseas visitors in England: guidance for providers of NHS services",
+      "url": "https://www.gov.uk/government/publications/nhs-cost-recovery-overseas-visitors/charging-overseas-visitors-in-england-guidance-for-providers-of-nhs-services",
+      "accessedAt": "2026-10-05T05:58:15Z"
+    },
+    {
+      "key": "legislation-overseas-visitor-charging-regulation-10",
+      "organisation": "legislation.gov.uk",
+      "title": "The National Health Service (Charges to Overseas Visitors) Regulations 2015, regulation 10",
+      "url": "https://www.legislation.gov.uk/uksi/2015/238/regulation/10",
+      "accessedAt": "2026-10-05T05:58:15Z"
+    },
+    {
+      "key": "govuk-migrant-health-entitlements",
+      "organisation": "GOV.UK — Office for Health Improvement and Disparities",
+      "title": "NHS entitlements: migrant health guide",
+      "url": "https://www.gov.uk/guidance/nhs-entitlements-migrant-health-guide",
+      "accessedAt": "2026-10-05T05:58:15Z"
+    },
+    {
+      "key": "nhs-moving-from-outside-eea",
+      "organisation": "NHS（NHS.uk）",
+      "title": "Moving to England from outside the European Economic Area (EEA)",
+      "url": "https://www.nhs.uk/nhs-services/visiting-or-moving-to-england/moving-to-england-from-outside-the-european-economic-area-eea/",
+      "accessedAt": "2026-10-05T05:58:15Z"
+    },
+    {
+      "key": "nhs-visitors-from-outside-eea",
+      "organisation": "NHS（NHS.uk）",
+      "title": "Visitors from outside the European Economic Area (EEA)",
+      "url": "https://www.nhs.uk/nhs-services/visiting-or-moving-to-england/visitors-from-outside-the-european-economic-area-eea/",
+      "accessedAt": "2026-10-05T05:58:15Z"
+    },
+    {
+      "key": "dhsc-prescription-charge-freeze",
+      "organisation": "Department of Health and Social Care（GOV.UK）",
+      "title": "Chancellor freezes charges to keep prescriptions under a tenner",
+      "url": "https://www.gov.uk/government/news/chancellor-freezes-charges-to-keep-prescriptions-under-a-tenner",
+      "accessedAt": "2026-10-05T05:58:15Z"
+    },
+    {
+      "key": "nhs-prescription-charges",
+      "organisation": "NHS（NHS.uk）",
+      "title": "NHS prescription charges",
+      "url": "https://www.nhs.uk/nhs-services/prescriptions/nhs-prescription-charges/",
+      "accessedAt": "2026-10-05T05:58:15Z"
+    },
+    {
+      "key": "nhsbsa-free-prescriptions",
+      "organisation": "NHS Business Services Authority（NHSBSA）",
+      "title": "Free NHS prescriptions",
+      "url": "https://www.nhsbsa.nhs.uk/help-nhs-prescription-costs/free-nhs-prescriptions",
+      "accessedAt": "2026-10-05T05:58:15Z"
+    },
+    {
+      "key": "nhsbsa-ppc",
+      "organisation": "NHS Business Services Authority（NHSBSA）",
+      "title": "Prescription prepayment certificates",
+      "url": "https://www.nhsbsa.nhs.uk/PPC",
+      "accessedAt": "2026-10-05T05:58:15Z"
+    },
+    {
+      "key": "nhsbsa-dental-charges",
+      "organisation": "NHS Business Services Authority（NHSBSA）",
+      "title": "Current NHS dental charges",
+      "url": "https://faq.nhsbsa.nhs.uk/knowledgebase/article/KA-02003",
+      "accessedAt": "2026-10-05T05:58:15Z"
+    },
+    {
+      "key": "nhs-dental-charges",
+      "organisation": "NHS（NHS.uk）",
+      "title": "Understanding NHS dental charges",
+      "url": "https://www.nhs.uk/nhs-services/dentists/dental-costs/understanding-nhs-dental-charges/",
+      "accessedAt": "2026-10-05T05:58:15Z"
+    },
+    {
+      "key": "nhsbsa-free-dental-treatment",
+      "organisation": "NHS Business Services Authority（NHSBSA）",
+      "title": "Free NHS dental treatment",
+      "url": "https://nhsbsa.nhs.uk/help-nhs-dental-costs/free-nhs-dental-treatment",
+      "accessedAt": "2026-10-05T05:58:15Z"
+    },
+    {
+      "key": "immigration-rules-part-suitability",
+      "organisation": "GOV.UK",
+      "title": "Immigration Rules: Part Suitability",
+      "url": "https://www.gov.uk/guidance/immigration-rules/immigration-rules-part-suitability",
+      "accessedAt": "2026-10-05T05:58:15Z"
+    },
+    {
+      "key": "home-office-nhs-debt-guidance",
+      "organisation": "Home Office",
+      "title": "Suitability: debt to the NHS",
+      "url": "https://assets.publishing.service.gov.uk/media/6398add08fa8f553092e680d/Suitability_Debt_to_the_NHS.pdf",
+      "accessedAt": "2026-10-05T05:58:15Z"
+    }
+  ],
+  "evidence": [
+    {
+      "key": "ihs-who-needs-to-pay",
+      "statement": "一般来说，从境外申请超过 6 个月或在境内申请任何时长的签证需交 IHS；visitor visa 和永居申请不用交；部分人群（如 Health and Care Worker 及家属）免交；有私人医疗保险也要交。",
+      "supports": [
+        {
+          "sourceKey": "govuk-ihs",
+          "locator": "Who needs to pay；Who does not need to pay",
+          "excerpt": null,
+          "note": "原文 \"You usually need to pay\"；列出 visitor visa、indefinite leave、Health and Care Worker 及其家属等免交情形；\"You still need to pay even if you have private medical insurance.\""
+        }
+      ]
+    },
+    {
+      "key": "ihs-rates-and-dependants",
+      "statement": "IHS 按签证年限预先交清；学生、学生家属、Youth Mobility Scheme 和申请时未满 18 岁者每年 £776，其他申请每年 £1,035；18 岁及以上家属通常与主申请人交相同金额。",
+      "supports": [
+        {
+          "sourceKey": "govuk-ihs",
+          "locator": "How much you have to pay — Cost for a year；Paying for dependants",
+          "excerpt": null,
+          "note": "金额逐项一致；\"Dependants aged 18 or over usually need to pay the same amount as you.\""
+        },
+        {
+          "sourceKey": "nhs-moving-from-outside-eea",
+          "locator": "Immigration health surcharge",
+          "excerpt": null,
+          "note": "\"will be paid upfront for the duration of your visa\"。"
+        }
+      ]
+    },
+    {
+      "key": "ihs-start-date-and-share-code",
+      "statement": "签证开始生效起即可免费使用 NHS；Home Office 尚未作出决定时看病可能需付费；有电子身份者可能需用 share code 证明身份。",
+      "supports": [
+        {
+          "sourceKey": "govuk-ihs",
+          "locator": "Overview — When you can start to use the NHS free of charge",
+          "excerpt": null,
+          "note": "\"from the date your visa starts\"；\"You may need to pay for NHS treatment if the Home Office has not made a decision\"；share code 用 \"may\"。"
+        }
+      ]
+    },
+    {
+      "key": "ihs-covered-services",
+      "statement": "交了 IHS 后，看 GP、A&E 和医院治疗一般不另外收费（辅助生育除外）。",
+      "supports": [
+        {
+          "sourceKey": "dhsc-overseas-visitor-charging",
+          "locator": "Immigration health charge (regulation 10)",
+          "excerpt": null,
+          "note": "regulation 10 豁免覆盖 \"all relevant services (except for assisted conception services)\"，前提是签证已获批。"
+        },
+        {
+          "sourceKey": "govuk-migrant-health-entitlements",
+          "locator": "Free services",
+          "excerpt": null,
+          "note": "GP 和 A&E 对所有人免费（A&E 附带非专程求医的条件）。"
+        }
+      ]
+    },
+    {
+      "key": "ihs-cover-ends-and-in-time-extension",
+      "statement": "签证到期后 IHS 待遇结束；到期前递交的续签申请等待期间，能否继续免费取决于续签是否获批。",
+      "supports": [
+        {
+          "sourceKey": "dhsc-overseas-visitor-charging",
+          "locator": "In-time applications to extend permission to be in the UK",
+          "excerpt": null,
+          "note": "许可到期后即需付费；in-time 申请产生 3C leave，但 \"They will only continue to be exempt … if their visa extension is granted and they're still considered to have paid the IHS\"。"
+        }
+      ]
+    },
+    {
+      "key": "entitlement-not-nationality",
+      "statement": "能否免费使用医院服务取决于居留身份，与国籍无关。",
+      "supports": [
+        {
+          "sourceKey": "govuk-migrant-health-entitlements",
+          "locator": "Hospital treatment（ordinarily resident）",
+          "excerpt": null,
+          "note": "\"This does not depend on nationality …\""
+        }
+      ]
+    },
+    {
+      "key": "ihs-still-pay-for",
+      "statement": "交了 IHS 后，处方药、牙科、验光和辅助生育仍需付费。",
+      "supports": [
+        {
+          "sourceKey": "govuk-ihs",
+          "locator": "Overview",
+          "excerpt": null,
+          "note": "\"You’ll still need to pay for certain types of services, such as prescriptions, dental treatment, eye tests and assisted conception.\""
+        }
+      ]
+    },
+    {
+      "key": "prescription-charge-per-item",
+      "statement": "英格兰处方费每项 £9.90，2026/27 年度冻结；避孕药和住院病人用药始终免费。",
+      "supports": [
+        {
+          "sourceKey": "nhs-prescription-charges",
+          "locator": "NHS prescription charges",
+          "excerpt": null,
+          "note": "\"£9.90 per item\"，按项而非按处方收费；\"Some items are always free, including contraception and medicines prescribed for hospital inpatients.\""
+        },
+        {
+          "sourceKey": "dhsc-prescription-charge-freeze",
+          "locator": "新闻稿正文（2025 年 11 月 21 日）",
+          "excerpt": null,
+          "note": "处方费 \"will remain frozen next year\" 于 £9.90。"
+        }
+      ]
+    },
+    {
+      "key": "prescription-exemptions-not-ihs",
+      "statement": "免费处方与年龄、怀孕或近 12 个月生育、某些疾病和低收入等条件有关；交 IHS 本身不是免费理由；可在 NHSBSA 网站查询。",
+      "supports": [
+        {
+          "sourceKey": "nhsbsa-free-prescriptions",
+          "locator": "Age；Benefits；Certificates",
+          "excerpt": null,
+          "note": "列出年龄、福利/低收入、孕产（需 maternity exemption certificate）和医疗豁免证明（需 medical exemption certificate）。"
+        },
+        {
+          "sourceKey": "govuk-ihs",
+          "locator": "Overview",
+          "excerpt": null,
+          "note": "IHS 付费者仍需支付处方费。"
+        }
+      ]
+    },
+    {
+      "key": "prescription-prepayment-certificate",
+      "statement": "PPC 3 个月 £32.05、12 个月 £114.50；3 个月超过 3 项或 12 个月 11 项以上通常更省钱。",
+      "supports": [
+        {
+          "sourceKey": "nhsbsa-ppc",
+          "locator": "NHS Prescription Prepayment Certificate (PPC)",
+          "excerpt": null,
+          "note": "价格一致；\"You will save money if you need more than 3 items in 3 months, or 11 items in 12 months.\""
+        }
+      ]
+    },
+    {
+      "key": "nhs-dental-charge-bands",
+      "statement": "自 2026 年 4 月 1 日起英格兰 NHS 牙科收费：Band 1 £27.90、Band 2 £76.60、Band 3 £332.10、急诊 £27.90；各档包含的项目如列表所述。",
+      "supports": [
+        {
+          "sourceKey": "nhsbsa-dental-charges",
+          "locator": "England — From 1 April 2026",
+          "excerpt": null,
+          "note": "金额逐项一致；急诊对应 \"Unscheduled Care: £27.90\"。"
+        },
+        {
+          "sourceKey": "nhs-dental-charges",
+          "locator": "Band 1；Band 2；Band 3",
+          "excerpt": null,
+          "note": "Band 1 含检查、建议、必要时 X 光和 scaling；Band 2 在 Band 1 基础上 \"may include\" 补牙、根管、拔牙；Band 3 含牙冠、假牙、牙桥。"
+        }
+      ]
+    },
+    {
+      "key": "free-nhs-dental-treatment",
+      "statement": "可免费看 NHS 牙医的主要是 18 岁以下、19 岁以下全日制在读、怀孕或 12 个月内生育者，以及符合福利或低收入条件者；IHS 不在其中。",
+      "supports": [
+        {
+          "sourceKey": "nhsbsa-free-dental-treatment",
+          "locator": "Age；Benefits；If you are pregnant or have had a baby in the last 12 months",
+          "excerpt": null,
+          "note": "年龄和孕产条件按开始治疗/被接收治疗时判断；福利条件有具体限定，部分需通过 NHS Low Income Scheme。"
+        },
+        {
+          "sourceKey": "govuk-ihs",
+          "locator": "Overview",
+          "excerpt": null,
+          "note": "IHS 付费者仍需支付牙科费用。"
+        }
+      ]
+    },
+    {
+      "key": "eye-tests-charged",
+      "statement": "交了 IHS 后验光一般仍需自付。",
+      "supports": [
+        {
+          "sourceKey": "govuk-ihs",
+          "locator": "Overview",
+          "excerpt": null,
+          "note": "\"eye tests\" 列在仍需付费的服务中。"
+        }
+      ]
+    },
+    {
+      "key": "assisted-conception-excluded",
+      "statement": "在英格兰，IHS 对应的免费医院服务不包括辅助生育服务（如 IVF）。",
+      "supports": [
+        {
+          "sourceKey": "legislation-overseas-visitor-charging-regulation-10",
+          "locator": "Regulation 10(2A)",
+          "excerpt": null,
+          "note": "\"Paragraph (2) does not apply in respect of chargeable assisted conception services.\""
+        },
+        {
+          "sourceKey": "dhsc-overseas-visitor-charging",
+          "locator": "Immigration health charge (regulation 10)",
+          "excerpt": null,
+          "note": "\"all relevant services (except for assisted conception services)\"。"
+        }
+      ]
+    },
+    {
+      "key": "gp-and-ae-free-for-everyone",
+      "statement": "在英格兰任何人都可以免费注册和看 GP；A&E 急诊服务对所有人免费，但不适用于专程来英国求医的情况，收治住院后另计。",
+      "supports": [
+        {
+          "sourceKey": "govuk-migrant-health-entitlements",
+          "locator": "GP services；Free services",
+          "excerpt": null,
+          "note": "\"Anyone in England can register and consult with a GP without charge\"；A&E 免费 \"as long as they have not travelled to the UK for the purpose of seeking that treatment\"。"
+        },
+        {
+          "sourceKey": "dhsc-overseas-visitor-charging",
+          "locator": "Relevant services exempt from charges (regulation 9)",
+          "excerpt": null,
+          "note": "A&E 豁免 \"providing the purpose of the visit was not for seeking treatment\"，不含住院后和复诊门诊。"
+        }
+      ]
+    },
+    {
+      "key": "visitor-hospital-charges",
+      "statement": "不享受免费的访客，从急诊转住院或回医院复诊可能要付费，一般按 NHS 标准价 150%；紧急或必须立即提供的治疗不会因付不起钱而被拒或拖延。",
+      "supports": [
+        {
+          "sourceKey": "nhs-visitors-from-outside-eea",
+          "locator": "Visitors from outside the EEA",
+          "excerpt": null,
+          "note": "\"charged for NHS secondary care at 150% of the standard NHS rate, unless an exemption … applies\"；A&E 不含住院后治疗；紧急治疗可事后付款。"
+        },
+        {
+          "sourceKey": "dhsc-overseas-visitor-charging",
+          "locator": "Charging overview；regulation 9",
+          "excerpt": null,
+          "note": "\"Urgent or immediately necessary care must never be withheld or delayed, even if the patient is unable or unwilling to pay\"，但仍需承担费用。"
+        }
+      ]
+    },
+    {
+      "key": "ilr-holders",
+      "statement": "申请 ILR 不需交 IHS；有 ILR 的人可视为 ordinarily resident，医院治疗免费，但处方和牙科等仍按本地规则付费。",
+      "supports": [
+        {
+          "sourceKey": "govuk-ihs",
+          "locator": "Who does not need to pay",
+          "excerpt": null,
+          "note": "\"you’re applying for indefinite leave to enter or remain\"。"
+        },
+        {
+          "sourceKey": "dhsc-overseas-visitor-charging",
+          "locator": "Ordinary residence",
+          "excerpt": null,
+          "note": "受移民管制者 \"cannot be ordinarily resident in the UK unless they have indefinite leave to remain\" 等；ordinarily resident 者医院治疗免费。"
+        }
+      ]
+    },
+    {
+      "key": "visiting-parents-coverage-and-insurance",
+      "statement": "持 visitor visa 的父母不交 IHS，看病时按使用时付费（免费服务除外），住院和复诊通常收费；NHS 建议访客整段行程购买医疗或旅行保险。",
+      "supports": [
+        {
+          "sourceKey": "govuk-ihs",
+          "locator": "Visitor visas and short-term visas",
+          "excerpt": null,
+          "note": "visitor visa 不交 IHS；\"You will need to pay for any NHS care you get at the point you use it - unless it’s a service that’s free.\""
+        },
+        {
+          "sourceKey": "nhs-visitors-from-outside-eea",
+          "locator": "Visitors from outside the EEA",
+          "excerpt": null,
+          "note": "\"Make sure you're covered for healthcare through personal medical or travel insurance for all of your visit.\""
+        }
+      ]
+    },
+    {
+      "key": "nhs-debt-reporting-and-refusal",
+      "statement": "£500 以上、开出后超过两个月且没有约定分期付款的 NHS 欠款会被上报并可能被 Home Office 使用；按 Immigration Rules，此类欠款可以（而非必然）成为拒签理由。",
+      "supports": [
+        {
+          "sourceKey": "nhs-visitors-from-outside-eea",
+          "locator": "Visitors from outside the EEA",
+          "excerpt": null,
+          "note": "\"Debts for NHS treatment of £500 or more, that have been unpaid for at least 2 months, will be reported to the Home Office.\""
+        },
+        {
+          "sourceKey": "dhsc-overseas-visitor-charging",
+          "locator": "Debt reporting；Immigration Rules and NHS debt",
+          "excerpt": null,
+          "note": "要求上报 \"more than £500 … outstanding for more than 2 months\" 的欠款；qualifying debts 为 \"£500 or more … 2 months or more\"；可被 Home Office 用于移民决定。"
+        },
+        {
+          "sourceKey": "immigration-rules-part-suitability",
+          "locator": "SUI 16.1（Debt to the NHS grounds）",
+          "excerpt": null,
+          "note": "\"An application … may be refused where … the outstanding charges have a total value of at least £500.\" 用 \"may\"。"
+        },
+        {
+          "sourceKey": "home-office-nhs-debt-guidance",
+          "locator": "Consideration of NHS debt",
+          "excerpt": null,
+          "note": "NHS bodies \"will only notify the Home Office once the debt has been outstanding for 2 months or more from the date of invoice and there is no agreement in place to pay by instalments\"；\"NHS debt is a discretionary ground for refusal, so you must not automatically refuse\"。"
+        }
+      ]
+    }
+  ]
+}
