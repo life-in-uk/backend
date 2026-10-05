@@ -1,0 +1,260 @@
+{
+  "slug": "nhs-dentist-england",
+  "category": "health-nhs",
+  "title": "英国牙医到底怎么看？NHS、Private、收费和怎么找牙医",
+  "summary": "在英格兰如何找 NHS 牙医、NHS 与自费治疗的区别、2026 年 4 月起的 NHS 牙科收费档次、免费条件，以及自费价格举例。",
+  "content": "# 英国牙医到底怎么看？NHS、Private、收费和怎么找牙医\n\n> 这篇讲的是**英格兰（England）**的日常看牙。苏格兰、威尔士和北爱尔兰的牙科收费和安排都不一样，以后单独写。\n\n在英格兰注册了 GP 以后，很多人会以为牙医也是一样的：找一家附近的诊所登记一下，以后就由它管了，而且交过 IHS 应该不用付钱。实际上看牙跟看 GP 是两套安排，规则差别不小。\n\n## 牙医跟 GP 不是一回事\n\nGP 是你在一家诊所注册以后，固定在那里看病。牙医不太一样。\n\nNHS 官网的说法是：你可以联系任何一家 NHS 牙医诊所，请他们给你约诊。有的诊所会让你填一张表，看起来像\"注册\"，但这**并不代表你以后一定能一直在这家诊所看 NHS 牙科**。有些诊所新接 NHS 病人还要排队。[查看官方依据](#guide-evidence-contact-any-nhs-dentist)\n\n所以，不要把牙医诊所想成 GP 那样\"注册了就算有着落\"。能不能在某家诊所看 NHS 牙科，要看那家诊所的安排。\n\n## 怎么找能看 NHS 的牙医\n\n一般这样做：\n\n1. 在 NHS 官网上用 \"Find an NHS dentist\" 查你附近的牙医诊所；\n2. 打电话或者去诊所问：现在接不接新的 NHS 病人；\n3. 如果诊所既做 NHS 也做 private（自费），要说清楚你想约的是 NHS 的号。\n\n问了几家都说不接 NHS 新病人，NHS 官网建议你联系当地的 integrated care board（ICB），它负责安排当地的牙科服务，可能会告诉你哪里有空位。这不代表一定能马上找到，有些地方确实不容易约。[查看官方依据](#guide-evidence-finding-dentist-and-icb)\n\n## 同一家诊所，有 NHS 也有 Private\n\n不少牙医诊所两种都做，所以\"这是一家 NHS 牙医\"不等于在这家做的所有治疗都是 NHS 的。\n\n英国牙医监管机构 General Dental Council（GDC）的说法是：牙医认为为了达到和保持口腔健康、临床上必要的治疗，都应该能在 NHS 下提供。这句话讲的是临床上必要的治疗；其他选择是否在 NHS 范围里，可以直接问牙医。[查看官方依据](#guide-evidence-clinically-necessary-on-nhs)\n\n如果同一个疗程里，一部分是 NHS、一部分是自费，NHSBSA（负责处理 NHS 费用的机构）的说明是：\n\n- 如果 NHS 和自费两种选择都跟你讨论过，而那部分治疗按 NHS 的规定提供不了，牙医可以在同一个疗程里把两种混在一起；\n- 这时诊所**必须**给你一份 FP17DC 表格或类似的书面计划，写清楚哪些是 NHS、哪些是自费；\n- 牙齿矫正（orthodontics）不能混着来，要么全部 NHS，要么全部自费。[查看官方依据](#guide-evidence-mixing-nhs-and-private)\n\n所以，牙医建议你做某项治疗时，可以直接问：\"这是 NHS 的，还是 private 的？要多少钱？\" 有混合的话，记得要那份书面计划。\n\n## 交了 IHS、当学生，看牙还要付钱吗\n\n要。交了 IHS，你看 NHS 的规矩跟本地居民差不多，但本地居民看牙也要付钱，所以你也一样。GOV.UK 写得很明白：交了 IHS 以后，看牙还是要自己付费。[查看官方依据](#guide-evidence-ihs-and-students-pay-dental)\n\n学生身份本身也不会让看牙免费。下面免费的条件里，跟学生有关的只有\"19 岁以下、还在全日制上学\"这一条，过了这个年龄就要付钱，除非符合其他条件。[查看官方依据](#guide-evidence-ihs-and-students-pay-dental)\n\n## 谁可以免费看 NHS 牙医\n\n按 NHSBSA 的规定，在英格兰下面这些人可以免费看 NHS 牙医：\n\n- **18 岁以下**；\n- **19 岁以下、还在全日制上学**；\n- **正在怀孕，或者最近 12 个月内生过孩子**；\n- 领取 **Pension Credit Guarantee Credit** 等特定福利的人；\n- 持有 NHS 低收入补助（NHS Low Income Scheme）**HC2 证明**的人；持有 **HC3** 的可以减免一部分，具体看证明上写的；\n- 另外还有因战争伤残等特殊情况的少数人。[查看官方依据](#guide-evidence-free-nhs-dental-treatment)\n\n需要的时候要出示证明，比如怀孕或产后要用 MAT B1 表或者 maternity exemption certificate（孕产期免费证明），低收入的用 HC2 或 HC3，Pension Credit 用福利的决定通知。[查看官方依据](#guide-evidence-free-nhs-dental-treatment)\n\n如果不符合条件却按免费来报，NHSBSA 提醒可能会被罚款，最高 £100。拿不准就先问清楚，不要随便勾选。[查看官方依据](#guide-evidence-wrong-free-claim-penalty)\n\n## NHS 看牙要多少钱\n\n不符合免费条件的话，英格兰的 NHS 牙科按三个档次收费。从 **2026 年 4 月 1 日**起是：\n\n- **Band 1：£27.90**。检查、诊断（包括需要时拍片）、预防建议，医生认为临床上需要时洗牙。就是一般的定期检查。\n- **Band 2：£76.60**。包含 Band 1 的内容，再加上补牙、根管治疗、拔牙、牙周治疗等。\n- **Band 3：£332.10**。包含前两档的内容，再加上牙冠、假牙、牙桥等更复杂的治疗。\n- **紧急治疗：£27.90**。[查看官方依据](#guide-evidence-nhs-dental-bands)\n\n可以看出，每一档都把前一档的内容包含在里面。一些事情是不收费的，比如拆线、拔牙后止血，以及能修好的假牙送去修理。[查看官方依据](#guide-evidence-nhs-dental-bands)\n\n这些是 NHS 的统一收费，只有在按 NHS 治疗时才适用。\n\n## 自费看牙大概多少钱\n\n自费（private）没有全国统一的价格。GDC 的说法是，诊所自费项目的收费没有上限，诊所应当在前台或候诊区把一份简单的价目表放在显眼的地方。[查看官方依据](#guide-evidence-private-fees-no-cap)\n\n为了让你有个大概印象，下面是我们 2026 年 10 月查到的几家英格兰诊所自己公布的价格。这只是举例，不是官方价格，也不代表平均水平；\"起\"的意思是最低价，复杂一点的情况会更贵：\n\n- 伦敦的 Whites Dental：检查 £65，白色补牙 £160 起，牙冠 £800 起；\n- 萨默塞特郡的 SpaDental Glastonbury（非会员价）：常规检查 £82.50，白色补牙 £184.20 起，牙冠 £1,037.80 起；\n- 曼彻斯特的 Collegiate Dental：检查 £83 起，补牙 £167 起；\n- 连锁品牌 mydentist 公布的英格兰和威尔士标准价：白色补牙 £174 起，根管治疗 £436 起，牙冠 £826。[查看官方依据](#guide-evidence-private-fee-examples)\n\n不同诊所、不同城市、不同治疗难度，价格差别很大。决定做自费治疗之前，最好先拿到书面的治疗方案和报价，问清楚包含哪些步骤、之后还有没有额外费用，再决定。\n\n## 想换牙医\n\n前面说过，NHS 牙医不像 GP 那样固定注册，所以想换的话，可以照样去联系别的诊所，问他们接不接 NHS 病人。能不能约上，要看那家诊所的情况。\n\n## 牙疼得厉害怎么办\n\n这篇讲的是日常看牙。突然剧烈牙疼、脸肿这类急事，是另一条路：可以先联系你常去的牙医诊所，没有的话打 NHS 111，它会告诉你该怎么办。GP 不能给你治牙。具体怎么判断、什么时候该去 A&E，我们会在《突然牙疼怎么办》那篇里单独讲。[查看官方依据](#guide-evidence-toothache-route)\n\n## 官方资料\n\n以下资料访问日期均为 2026 年 10 月 5 日。\n\n- NHS（NHS.uk）— *How to find an NHS dentist* — https://www.nhs.uk/nhs-services/dentists/how-to-find-an-nhs-dentist/\n- NHS（NHS.uk）— *Understanding NHS dental charges* — https://www.nhs.uk/nhs-services/dentists/dental-costs/understanding-nhs-dental-charges/\n- NHS Business Services Authority（NHSBSA）— *Current NHS dental charges*（FAQ KA-02003）— https://faq.nhsbsa.nhs.uk/knowledgebase/article/KA-02003\n- NHS Business Services Authority（NHSBSA）— *Free NHS dental treatment* — https://nhsbsa.nhs.uk/help-nhs-dental-costs/free-nhs-dental-treatment\n- NHS Business Services Authority（NHSBSA）— *Mixing NHS and private dental treatment*（FAQ KA-02022）— https://faq.nhsbsa.nhs.uk/knowledgebase/article/KA-02022/en-us\n- General Dental Council — *Dental costs* — https://www.gdc-uk.org/standards-guidance/information-for-patients-public/dental-costs\n- GOV.UK — *Pay for UK healthcare as part of your immigration application* — https://www.gov.uk/healthcare-immigration-application\n- NHS（NHS.uk）— *Toothache* — https://www.nhs.uk/conditions/toothache/\n\n**自费价格举例的来源**（诊所自己公布的价格，仅作举例，不是官方资料）：\n\n- Whites Dental（伦敦）— https://www.whitesdental.co.uk/fees/\n- SpaDental Glastonbury（萨默塞特郡）— https://spadental.co.uk/glastonbury/fees/private-fees\n- Collegiate Dental Practice（曼彻斯特，Rodericks Dental Partners）— https://rodericksdentalpartners.co.uk/our-practices/collegiate-dental-practice/pricing\n- mydentist（标准价）— https://www.mydentist.co.uk/patient-information/teeth-straightening/pricing/mydentist-standard-prices\n\n最后更新：2026 年 10 月 5 日\n",
+  "status": "PUBLISHED",
+  "publishedAt": "2026-10-05T06:13:00Z",
+  "updatedAt": "2026-10-05T06:13:00Z",
+  "sources": [
+    {
+      "key": "nhs-find-dentist",
+      "organisation": "NHS（NHS.uk）",
+      "title": "How to find an NHS dentist",
+      "url": "https://www.nhs.uk/nhs-services/dentists/how-to-find-an-nhs-dentist/",
+      "accessedAt": "2026-10-05T06:11:45Z"
+    },
+    {
+      "key": "nhs-dental-charges",
+      "organisation": "NHS（NHS.uk）",
+      "title": "Understanding NHS dental charges",
+      "url": "https://www.nhs.uk/nhs-services/dentists/dental-costs/understanding-nhs-dental-charges/",
+      "accessedAt": "2026-10-05T06:11:45Z"
+    },
+    {
+      "key": "nhsbsa-dental-charges",
+      "organisation": "NHS Business Services Authority（NHSBSA）",
+      "title": "What are the NHS dental charges?（FAQ KA-02003）",
+      "url": "https://faq.nhsbsa.nhs.uk/knowledgebase/article/KA-02003",
+      "accessedAt": "2026-10-05T06:11:45Z"
+    },
+    {
+      "key": "nhsbsa-free-dental-treatment",
+      "organisation": "NHS Business Services Authority（NHSBSA）",
+      "title": "Free NHS dental treatment",
+      "url": "https://nhsbsa.nhs.uk/help-nhs-dental-costs/free-nhs-dental-treatment",
+      "accessedAt": "2026-10-05T06:11:45Z"
+    },
+    {
+      "key": "nhsbsa-mixing-nhs-private-dental",
+      "organisation": "NHS Business Services Authority（NHSBSA）",
+      "title": "Can I provide a mix of NHS and private dental treatment on the same tooth?（FAQ KA-02022）",
+      "url": "https://faq.nhsbsa.nhs.uk/knowledgebase/article/KA-02022/en-us",
+      "accessedAt": "2026-10-05T06:11:45Z"
+    },
+    {
+      "key": "gdc-dental-costs",
+      "organisation": "General Dental Council",
+      "title": "Dental costs",
+      "url": "https://www.gdc-uk.org/standards-guidance/information-for-patients-public/dental-costs",
+      "accessedAt": "2026-10-05T06:11:45Z"
+    },
+    {
+      "key": "govuk-ihs",
+      "organisation": "GOV.UK",
+      "title": "Pay for UK healthcare as part of your immigration application",
+      "url": "https://www.gov.uk/healthcare-immigration-application",
+      "accessedAt": "2026-10-05T06:11:45Z"
+    },
+    {
+      "key": "nhs-toothache",
+      "organisation": "NHS（NHS.uk）",
+      "title": "Toothache",
+      "url": "https://www.nhs.uk/conditions/toothache/",
+      "accessedAt": "2026-10-05T06:11:45Z"
+    },
+    {
+      "key": "example-whites-dental-fees",
+      "organisation": "Whites Dental（伦敦）",
+      "title": "Fees（诊所自行公布的价格，仅作举例）",
+      "url": "https://www.whitesdental.co.uk/fees/",
+      "accessedAt": "2026-10-05T06:11:45Z"
+    },
+    {
+      "key": "example-spadental-glastonbury-fees",
+      "organisation": "SpaDental Glastonbury（萨默塞特郡）",
+      "title": "Private fees（诊所自行公布的价格，仅作举例）",
+      "url": "https://spadental.co.uk/glastonbury/fees/private-fees",
+      "accessedAt": "2026-10-05T06:11:45Z"
+    },
+    {
+      "key": "example-collegiate-dental-pricing",
+      "organisation": "Collegiate Dental Practice（曼彻斯特，Rodericks Dental Partners）",
+      "title": "Pricing（诊所自行公布的价格，仅作举例）",
+      "url": "https://rodericksdentalpartners.co.uk/our-practices/collegiate-dental-practice/pricing",
+      "accessedAt": "2026-10-05T06:11:45Z"
+    },
+    {
+      "key": "example-mydentist-standard-prices",
+      "organisation": "mydentist",
+      "title": "mydentist standard prices（诊所自行公布的价格，仅作举例）",
+      "url": "https://www.mydentist.co.uk/patient-information/teeth-straightening/pricing/mydentist-standard-prices",
+      "accessedAt": "2026-10-05T06:11:45Z"
+    }
+  ],
+  "evidence": [
+    {
+      "key": "contact-any-nhs-dentist",
+      "statement": "可以联系任何一家 NHS 牙医诊所约诊；填表登记不代表以后一定能在该诊所看 NHS 牙科；有些诊所需要排队。",
+      "supports": [
+        {
+          "sourceKey": "nhs-find-dentist",
+          "locator": "How to find an NHS dentist",
+          "excerpt": null,
+          "note": "\"You can contact any NHS dentist\"；\"You may be asked to join a waiting list\"；表格 \"does not mean you'll always be able to get NHS dental care at the same dental practice in the future\"。"
+        }
+      ]
+    },
+    {
+      "key": "finding-dentist-and-icb",
+      "statement": "找不到 NHS 牙医时可以联系当地 ICB，ICB 可能告诉你哪里可以约诊。",
+      "supports": [
+        {
+          "sourceKey": "nhs-find-dentist",
+          "locator": "If you cannot get an NHS dental appointment",
+          "excerpt": null,
+          "note": "ICB \"may be able to tell you where you can get a local dental appointment\"。"
+        }
+      ]
+    },
+    {
+      "key": "clinically-necessary-on-nhs",
+      "statement": "牙医认为为达到和保持口腔健康而临床必要的治疗，应能在 NHS 下提供。",
+      "supports": [
+        {
+          "sourceKey": "gdc-dental-costs",
+          "locator": "NHS treatment",
+          "excerpt": null,
+          "note": "\"Any treatment that your dentist believes is clinically necessary to achieve and maintain good oral health should be available on the NHS.\""
+        }
+      ]
+    },
+    {
+      "key": "mixing-nhs-and-private",
+      "statement": "讨论过两种选择且该部分 NHS 不能提供时可混合 NHS 与自费；必须提供 FP17DC 或同等书面计划；正畸必须全部 NHS 或全部自费。",
+      "supports": [
+        {
+          "sourceKey": "nhsbsa-mixing-nhs-private-dental",
+          "locator": "KA-02022",
+          "excerpt": null,
+          "note": "\"The patient must be issued with a FP17DC form or equivalent\"；\"Orthodontic provision must be entirely private or NHS.\""
+        }
+      ]
+    },
+    {
+      "key": "ihs-and-students-pay-dental",
+      "statement": "交了 IHS 仍需支付牙科费用；学生只有在 19 岁以下且全日制在读等条件下才免费。",
+      "supports": [
+        {
+          "sourceKey": "govuk-ihs",
+          "locator": "Overview",
+          "excerpt": null,
+          "note": "\"You’ll still need to pay for … dental treatment\"。"
+        },
+        {
+          "sourceKey": "nhsbsa-free-dental-treatment",
+          "locator": "Age",
+          "excerpt": null,
+          "note": "\"under 19 and in full time education\"。"
+        }
+      ]
+    },
+    {
+      "key": "free-nhs-dental-treatment",
+      "statement": "18 岁以下、19 岁以下全日制在读、怀孕或 12 个月内生育、领取 Pension Credit Guarantee Credit 等特定福利、持 HC2 者可免费看 NHS 牙医；HC3 可部分减免；战争养老金等情况可申请退款；需出示相应证明。",
+      "supports": [
+        {
+          "sourceKey": "nhsbsa-free-dental-treatment",
+          "locator": "Age；Benefits；Pregnancy；Low income (HC2/HC3)；War Pension Scheme",
+          "excerpt": null,
+          "note": "各项条件一致；HC3 \"may be entitled to help\"；战争养老金/AFCS 为 \"claim money back\"；孕产可用 MAT B1 或 maternity exemption certificate 等证明。"
+        }
+      ]
+    },
+    {
+      "key": "wrong-free-claim-penalty",
+      "statement": "不符合条件却申报免费，可能被处以最高 £100 的罚款。",
+      "supports": [
+        {
+          "sourceKey": "nhsbsa-free-dental-treatment",
+          "locator": "Do not claim free dental treatment unless you are certain you are entitled to it",
+          "excerpt": null,
+          "note": "\"You may be subject to a penalty charge of up to £100\"。"
+        }
+      ]
+    },
+    {
+      "key": "nhs-dental-bands",
+      "statement": "自 2026 年 4 月 1 日起英格兰 NHS 牙科收费为 Band 1 £27.90、Band 2 £76.60、Band 3 £332.10、紧急 £27.90；高档包含低档内容；拆线、止血和可修理的假牙修理免费。",
+      "supports": [
+        {
+          "sourceKey": "nhsbsa-dental-charges",
+          "locator": "England — From 1 April 2026",
+          "excerpt": null,
+          "note": "金额一致；紧急对应 \"Unscheduled Care\"。"
+        },
+        {
+          "sourceKey": "nhs-dental-charges",
+          "locator": "Band 1；Band 2；Band 3；Dental treatments available for free",
+          "excerpt": null,
+          "note": "Band 2/3 \"includes all items in Band 1/2\"；免费项目含拆线、止血、假牙修理（无法修理则需付费）。"
+        }
+      ]
+    },
+    {
+      "key": "private-fees-no-cap",
+      "statement": "自费牙科收费没有设定上限，诊所须在前台或候诊区显眼处展示简单价目表。",
+      "supports": [
+        {
+          "sourceKey": "gdc-dental-costs",
+          "locator": "Private treatment",
+          "excerpt": null,
+          "note": "\"There are no set limits on what practices can charge\"；价目表 \"must\" \"clearly displayed in the reception or waiting area\"。"
+        }
+      ]
+    },
+    {
+      "key": "private-fee-examples",
+      "statement": "2026 年 10 月几家英格兰诊所自行公布的自费价格举例（非官方价格，不代表平均水平）。",
+      "supports": [
+        {
+          "sourceKey": "example-whites-dental-fees",
+          "locator": "General treatments；Crowns",
+          "excerpt": null,
+          "note": "Dental Examination £65；White Fillings from £160；Porcelain bonded crown from £800。"
+        },
+        {
+          "sourceKey": "example-spadental-glastonbury-fees",
+          "locator": "Indicative Treatment Fees（Guests）",
+          "excerpt": null,
+          "note": "Routine Examination £82.50；Composite Filling from £184.20；Crown from £1,037.80。"
+        },
+        {
+          "sourceKey": "example-collegiate-dental-pricing",
+          "locator": "Private Pricing — General",
+          "excerpt": null,
+          "note": "Dental Check Ups from £83.00；Fillings from £167.00。"
+        },
+        {
+          "sourceKey": "example-mydentist-standard-prices",
+          "locator": "Price - England / Wales",
+          "excerpt": null,
+          "note": "White Filling from £174；Root Canal Treatment from £436；Crown £826。"
+        }
+      ]
+    },
+    {
+      "key": "toothache-route",
+      "statement": "急性牙痛可先联系常去的牙医诊所，没有的话打 NHS 111 获取建议；GP 不能提供牙科治疗。",
+      "supports": [
+        {
+          "sourceKey": "nhs-toothache",
+          "locator": "If you need to see a dentist；Non-urgent advice",
+          "excerpt": null,
+          "note": "\"call 111 or visit 111 online – they can advise you what to do\"；\"Do not go to your GP as they will not be able to give you dental treatment.\""
+        }
+      ]
+    }
+  ]
+}
