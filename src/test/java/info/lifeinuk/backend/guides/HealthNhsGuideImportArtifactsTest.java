@@ -2,7 +2,6 @@ package info.lifeinuk.backend.guides;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.time.Instant;
@@ -86,16 +85,10 @@ class HealthNhsGuideImportArtifactsTest {
         assertThat(input.summary()).doesNotContain("最", "！");
     }
 
+    // Corpus-wide validation and slug uniqueness live in ProductionGuideArtifactsTest.
     @Test
-    void everyProductionGuideArtifactHasAUniqueSlugAndValidates() throws IOException {
-        var slugs = new HashSet<String>();
-        try (var files = Files.list(DIRECTORY)) {
-            for (Path file : files.filter(path -> path.toString().endsWith(".json")).sorted().toList()) {
-                var input = new GuideImportReader().read(file);
-                assertThat(slugs.add(input.slug())).as("unique slug %s", input.slug()).isTrue();
-                assertThat(file.getFileName().toString()).isEqualTo(input.slug() + "-zh.json");
-            }
-        }
+    void everyReviewedHealthGuideIsPartOfTheProductionCorpus() throws IOException {
+        var slugs = ProductionGuideArtifactsTest.productionSlugs();
         assertThat(slugs).contains("registering-with-a-gp-england");
         assertThat(slugs).containsAll(reviewed().map(Reviewed::slug).toList());
     }
