@@ -1,28 +1,42 @@
 # Guide legal review and publication workflow: architecture (Issue #46)
 
-> **Status: design proposal only.** Nothing in this document is implemented. No state,
-> table, command, endpoint, role or index described as *proposed* exists in this
-> repository. It is not legal advice, and it does not claim that any workflow meets a
-> legal or regulatory standard. Those judgements need qualified human review.
+> **Status: design proposal only (revision 2).** Nothing in this document is implemented.
+> No state, table, function, command, endpoint, role or index described as *proposed*
+> exists in this repository. It is not legal advice, and it doesn't claim that any workflow
+> meets a legal or regulatory standard. Those judgements need qualified human review.
 
 **Legend.** Each section marks its content as one of two kinds:
 
-- **Existing:** verified against the code on `main` at `dfa48dd`.
+- **Existing:** verified against the code and migrations on `main` at `dfa48dd`.
 - **Proposed:** design for future Issues. It does not exist yet.
+
+**Revision 2** corrects five review findings: approval expiry, importer bypass during rollout, database identity, state consistency, and the split between the MVP and later work. The three layers and the two-digest design from revision 1 are unchanged.
 
 ## Contents
 
 1. [Existing architecture findings](#1-existing-architecture-findings)
-2. [Proposed architecture and rationale](#2-proposed-architecture-and-rationale)
+2. [Proposed architecture, product policy and rationale](#2-proposed-architecture-product-policy-and-rationale)
 3. [Lifecycle state transition table](#3-lifecycle-state-transition-table)
-4. [Roles and permissions matrix](#4-roles-and-permissions-matrix)
+4. [Roles, authentication and permissions](#4-roles-authentication-and-permissions)
 5. [Digest and versioning strategy](#5-digest-and-versioning-strategy)
 6. [Proposed data model and API boundaries](#6-proposed-data-model-and-api-boundaries)
-7. [Publication and withdrawal sequences](#7-publication-and-withdrawal-sequences)
+7. [Publication, review-deadline and withdrawal sequences](#7-publication-review-deadline-and-withdrawal-sequences)
 8. [Security invariants and failure scenarios](#8-security-invariants-and-failure-scenarios)
 9. [Testing strategy](#9-testing-strategy)
 10. [Phased implementation roadmap](#10-phased-implementation-roadmap)
 11. [Open decisions requiring human approval](#11-open-decisions-requiring-human-approval)
+
+**Terminology used throughout**
+
+| Term | Meaning |
+|---|---|
+| **Immutable revision content** | A revision's editorial content: canonical form, review digest, slug, author, AI-assistance record, base revision, creation time. It can never be updated or deleted. A revision's lifecycle metadata (its cached review state) is *not* covered by "immutable". |
+| **Review-state projection** | A mutable cache of a revision's current review state (`review_state`, `state_version`) stored on the revision row. It is derived, not authoritative. |
+| **Review transition ledger** | Append-only rows recording every review transition: submit, retract, request changes, approve, revoke and confirm. This is the **authoritative** source of review state. Human reviewer decisions are the ledger rows with legal significance. |
+| **Audit event log** | An append-only forensic log of every successful workflow action, including publication, withdrawal and role changes. It is not used to compute state. |
+| **Publication record** | One row per time a revision went public. Its identifying columns are immutable, and its lifecycle columns (superseded, withdrawn) can be written once each and only in a forward direction. |
+| **Projection** | The existing `guide` table and its child tables. They hold only live public content and are written only by workflow functions once the workflow is active. |
+| **Review class** | A risk classification per category. `HIGH` means independent qualified legal review. `STANDARD` means independent human review. |
 
 ---
 
@@ -32,110 +46,108 @@ All of this section describes **existing** behaviour.
 
 ### 1.1 Storage model
 
-- **One mutable aggregate per slug.**
-  - The `guide` table (V8) has a UUID `id` and a `UNIQUE` `slug`, plus category, title, summary, Markdown content, `status`, `published_at` and `updated_at`.
-  - It has owned children: `guide_source` (V8, plus a nullable `editorial_key` added in V9), `guide_evidence` (V9) and `guide_evidence_support` (V9). Each child has explicit order columns and composite foreign keys, so a support can only reference a keyed source of the same Guide.
-- **No history.** An import overwrites the row in place, and changed source and evidence rows are deleted and reinserted. Earlier versions, their sources and their evidence are not kept anywhere in the database.
-- **Publication state is two values.**
+- **One mutable aggregate per slug.** The `guide` table (V8) has a UUID `id` and a `UNIQUE` `slug`, plus category, title, summary, Markdown `content`, `status`, `published_at` and `updated_at`. It has owned children: `guide_source` (V8, plus a nullable `editorial_key` from V9), `guide_evidence` (V9) and `guide_evidence_support` (V9), with explicit order columns and composite foreign keys.
+- **No history.** An import overwrites the row in place. Earlier content, sources and evidence are not kept.
+- **Two-value status.**
   - `GuideStatus` is `DRAFT` or `PUBLISHED`.
-  - A database `CHECK` and `Guide.validatePublication` enforce the same rule: `DRAFT` has a null `published_at`, and `PUBLISHED` needs `published_at ≤ updated_at`.
+  - A database `CHECK` and `Guide.validatePublication` enforce that `DRAFT` has a null `published_at` and `PUBLISHED` needs `published_at ≤ updated_at`.
   - `Guide.publish(at)` needs a `DRAFT` and `at ≥ updatedAt`, then sets `publishedAt = updatedAt = at`.
-  - There is no workflow state and no record of who did anything.
+  - `publicationIsExplicitAndDoesNotDependOnReadTime` fixes the principle that publication is an explicit act and never a function of read time.
+- **Trigger precedent.** V2 and V3 already use PL/pgSQL triggers to protect evidence history and endpoint identity, so database-enforced invariants are an established pattern here.
 
-### 1.2 Write path
+### 1.2 Write path and identity
 
-- **`--import-guide=<path>` (`GuideImportCommand`) is the only writer.**
-  - It runs only when that literal command-line option is present.
-  - `GuideImportReader` validates the whole file before any transaction opens. It rejects unknown and duplicate fields, uses strict timestamp formats, and checks every evidence reference through `GuideImportDefinition` and `GuideEvidenceReferences`.
-- **`GuideImporter.apply` runs in one transaction.**
-  - It locks an existing row (`PESSIMISTIC_WRITE` on `findBySlug`) and upserts by slug.
-  - It returns `CREATED`, `UPDATED` or `UNCHANGED`. An identical replay changes no rows.
-- **The file decides publication.**
-  - `status`, `publishedAt` and `updatedAt` come straight from the file, so the importer can create a `DRAFT`, publish, or return a published Guide to `DRAFT`. The last case is covered by `draftPublishedAndExplicitReturnToDraftUseUnchangedPublicApiSemantics`.
-  - Nothing records who imported or why. Anyone with the database credentials and the jar can publish.
-- **Absent versus empty evidence.**
-  - For an existing Guide that already has evidence, an absent `evidence` collection is rejected and `evidence: []` deletes the evidence.
-  - For a new Guide, or one without evidence, the two give the same stored rows.
-- **No HTTP writes.** No write endpoint exists (`noPublicWriteMethodsExist`), and there is no Spring Security, user model or role model.
+- **`--import-guide=<path>` (`GuideImportCommand`, an `ApplicationRunner`) is the only Guide writer.**
+  - `GuideImportReader` validates the whole file before any transaction opens.
+  - `GuideImporter.apply` upserts by slug in one transaction, locks an existing row (`PESSIMISTIC_WRITE`), and returns `CREATED`, `UPDATED` or `UNCHANGED`.
+- **The file decides publication.** `status`, `publishedAt` and `updatedAt` come from the file, so one command can publish or return a Guide to `DRAFT`. No actor is recorded.
+- **One database account for everything.**
+  - `application.yml` configures one datasource (`DB_URL`, `DB_USERNAME` defaulting to `life_in_uk_app`, `DB_PASSWORD`) with Spring Boot's default connection pool.
+  - There is no separate Flyway user (`spring.flyway.user` isn't set), so Flyway migrations, the web application and every command run as the **same role**. That role creates, and therefore owns, the schema.
+- **Other startup runners can write.** Bootstrap runners such as `BankHolidaysBootstrap` and `NationalHighwaysBootstrap`, and replay runners, are also `ApplicationRunner`s and start with every process, including command runs.
+- **No authentication or authorization.** No Spring Security, user, role or principal model exists. No HTTP write endpoint exists (`noPublicWriteMethodsExist`).
 
 ### 1.3 Read path
 
-- `GET /api/guides` and `GET /api/guides/{slug}` (`GuideController` → `GuideQuery` → `GuideRepository`) query only `status = PUBLISHED`.
-- Unknown and unpublished slugs return the same 404, `GUIDE_NOT_FOUND`.
-- Detail reads use a `REPEATABLE_READ` read-only transaction. Responses never include internal IDs.
-- **Draft rows share the table that public reads use.** Keeping them hidden depends entirely on the `status` filter in two queries.
-- **The Guide endpoints set no `Cache-Control` header.** `PlacesController` uses `no-store`, but the Guide endpoints don't, so an intermediary could keep withdrawn content.
+- **Public queries filter on status.** `GET /api/guides` and `GET /api/guides/{slug}` query only `status = PUBLISHED`. Unknown and unpublished slugs return the same 404 `GUIDE_NOT_FOUND`. Detail reads use `REPEATABLE_READ`.
+- **Drafts share the table public reads use.** Their secrecy depends only on that filter.
+- **No `Cache-Control` header on Guide responses.** `PlacesController` uses `no-store`, but the Guide endpoints set nothing.
 
 ### 1.4 Content digest (Issue #44, `GuideContentDigest`)
 
-- **Input:** a SHA-256 hex digest using canonicalization `guide-content-v1`, computed from a validated `GuideImportDefinition`. It never uses raw bytes or database rows.
-- **Covers:** slug, category, title, summary, content, **status**, **publishedAt**, **updatedAt**, ordered sources and ordered evidence with supports.
-- **Absent `evidence` → `null` and `evidence: []` → `[]`,** so the two give different digests.
-- **Moving `DRAFT` to `PUBLISHED` changes the digest,** because status and timestamps are covered.
-- **Not used anywhere yet.** It isn't persisted, exposed or wired into the importer.
-- **Can't be recomputed from stored rows alone.** The stored aggregate can't tell absent evidence from `[]` when there is no evidence.
+- **What it is:** a lower-case hex SHA-256 using canonicalization `guide-content-v1`, computed from a validated `GuideImportDefinition`.
+- **What it covers:** slug, category, title, summary, content, **status**, **publishedAt**, **updatedAt**, ordered sources and ordered evidence with supports.
+- **Absent versus empty evidence:** absent `evidence` → `null` and `evidence: []` → `[]`, so their digests differ.
+- **The canonical form is itself compact JSON.** Its property order is fixed, and only `"`, `\`, control characters and unpaired surrogates are escaped.
+- **Not used anywhere yet,** and it can't be recomputed from the stored rows alone, because rows can't tell `null` evidence from `[]`.
 
 ### 1.5 Content in version control
 
-- Published artifacts live in `content/guides/<slug>-zh.json`. `ProductionGuideArtifactsTest` validates every one with the production reader and checks that slugs are unique.
+- Published artifacts live in `content/guides/<slug>-zh.json` and are validated by `ProductionGuideArtifactsTest`.
 - Unpublished drafts are kept outside version control. This document doesn't reference or reproduce any of them.
 
 ### 1.6 Gaps this design closes
 
 | Gap (existing) | Consequence |
 |---|---|
-| No immutable versions | Approval can't be tied to exact content, and nothing shows what was approved |
-| No actor identity | Approval and publication can't be attributed to a person |
-| Importer can publish directly | Unreviewed wording can go live with one command |
-| Drafts share the public table | Draft secrecy depends on one query filter |
-| No withdrawal record | Returning to `DRAFT` is silent, and a later import can republish by accident |
-| No cache policy on Guide reads | Withdrawn content can persist downstream |
-| Digest not bound to anything | Nothing yet guarantees the approved version equals the live version |
+| No immutable versions | Approval can't be tied to exact content |
+| One shared database role that owns the schema | Any process with the credentials can do anything, including disabling triggers. Database privileges can't currently constrain the application. |
+| No actor identity | Nothing can be attributed to a person |
+| Importer publishes directly | Unreviewed wording can go live with one command |
+| Drafts share the public table | Secrecy depends on one filter |
+| No withdrawal or review-currency record | Stale or withdrawn content isn't tracked, and a re-import can silently republish |
+| No cache policy | Withdrawn content can persist downstream |
 
 ---
 
-## 2. Proposed architecture and rationale
+## 2. Proposed architecture, product policy and rationale
 
 **Everything in this section is proposed.**
 
-### 2.1 Core idea: three layers, one writer per layer
+### 2.1 Three layers (unchanged from revision 1)
 
 ```mermaid
 flowchart LR
-    A[Author file<br/>GuideImportDefinition] -->|create revision| R[(guide_revision<br/>immutable, append-only)]
-    R -->|human review decisions| D[(guide_review_decision<br/>append-only)]
-    R -->|publish approved revision| P[(guide_publication<br/>one LIVE per slug)]
-    P -->|same transaction| G[(guide + children<br/>public projection)]
-    G -->|unchanged queries| API[GET /api/guides...]
-    E[(guide_workflow_event<br/>append-only audit)]
-    R -.-> E
-    D -.-> E
+    A[Human author<br/>validated file] -->|wf_create_revision| R[(guide_revision<br/>immutable content<br/>+ review-state cache)]
+    R -->|wf_* review functions| L[(guide_review_transition<br/>authoritative ledger)]
+    R -->|wf_publish| P[(guide_publication)]
+    P -->|same transaction:<br/>copy approved canonical form| G[(guide + children<br/>projection)]
+    G -->|unchanged public queries| API[GET /api/guides…]
+    E[(guide_workflow_event<br/>audit log)]
+    L -.-> E
     P -.-> E
 ```
 
-1. **Revisions** are immutable snapshots of a validated import definition, identified by a UUID and a `guide-content-v1` **review digest**. Editing always creates a new revision. Nothing edits one in place.
-2. **Review decisions** are append-only records that a named human made a decision about one revision and one digest.
-3. **Publications** record that an approved revision went live at a time, with its own **published digest**. The existing `guide` table becomes a **projection** that holds only live content and is written only by the publication service.
+1. **Immutable revisions.** A revision's content is the exact `guide-content-v1` canonical text and its **review digest**.
+2. **Human review decisions.** They are recorded in an append-only transition ledger, against a revision and its digest.
+3. **Transactional publication.** It creates a publication record and rewrites the projection from the **approved canonical form itself** in one transaction, with a separate **published digest**.
 
-### 2.2 Why this shape
+### 2.2 Where the logic lives: database functions as the trust boundary
 
-- **Approval can't move to other content.** It references a revision ID and that revision's digest, and revisions can't change, so editing produces a new revision with no approval.
-- **The public read path doesn't change.**
-  - Public queries keep reading `guide WHERE status = PUBLISHED`.
-  - Drafts move out of the `guide` table into revision tables that the runtime role can't read (§8, I-3). The status filter stays as a second safeguard.
-- **Two kinds of state are kept apart.** Editorial review state belongs to a revision. Public publication state belongs to a slug. A revision can be approved and never published, and a published revision can later be superseded or withdrawn without rewriting its review history.
-- **It reuses what exists.**
-  - The reader and validation produce revisions.
-  - `GuideImporter.apply` writes the projection inside the publication transaction.
-  - The `Guide.publish(at)` rule gives the published-definition derivation (§5).
-  - Isolated-Postgres tests cover all of it.
-- **Minimal infrastructure.** PostgreSQL constraints, two small triggers and command-line operations are enough for the first phases. An authenticated HTTP admin API and UI come later, on top of the same service layer.
+- **Operators get no direct write access.** Workflow writes are done only by a small set of `SECURITY DEFINER` PL/pgSQL functions (`wf_*`), owned by a schema-owner role. Operators may `EXECUTE` those functions and `SELECT` workflow tables, nothing more.
+- **Why in the database:** the Java command can't be the trust boundary. Anyone holding a database login could skip it with `psql`. The functions:
+  - resolve the actor from the authenticated database session (§4);
+  - check permissions, separation of duties, digests and state;
+  - write the ledger, publication, projection and audit event together.
+- **Java's role:** the Java commands parse and validate files with the existing `GuideImportReader` and `GuideContentDigest`, display canonical content and digests to humans, and call the functions. `--guide-verify` re-checks everything from Java independently (§6.6).
+- **The cost:** some mapping logic (canonical JSON → projection rows) is implemented once in SQL. A differential test (§9) pins it to `GuideImporter`'s mapping.
 
-### 2.3 What deliberately does not change
+### 2.3 Product policy (direction recorded for this design)
 
-- **Public API:** the `GET /api/guides` and `GET /api/guides/{slug}` response contracts stay the same.
-- **Digest:** `guide-content-v1` is unchanged. This design adds no new canonicalization (see §11, D-9).
-- **Migration:** existing published Guides keep serving during and after it (§6.6).
+| Policy | Design consequence |
+|---|---|
+| Family & Visa content requires **independent qualified human review** before publication | Category `family-visa` is seeded as review class `HIGH`. A `HIGH` approval needs a reviewer holding `REVIEWER(HIGH)`, with a recorded qualification reference, who is not the author. |
+| **No single-person exception** is automatically approved for Family & Visa | For `HIGH`: author ≠ reviewer ≠ publisher, enforced with no override flag. Any future exception would need a new, explicit policy decision and a migration. |
+| **AI** may assist drafting, research and consistency checks, but **can't approve** | AI is never a principal that can hold a role. AI assistance is recorded on the revision by the responsible human author. |
+| Other categories use **risk-based classification**, not mandatory legal review for everything | Review class `STANDARD` means an independent human reviewer, with qualification requirements set per category. Unclassified categories can't be published (fail closed). |
+| Qualifications, reviewer availability and any regulated-advice implications need **human/legal confirmation** | These are open decisions D-2 and D-4. This design records qualification evidence but doesn't define the standard. |
+
+### 2.4 What deliberately does not change
+
+- **Public API:** the response contracts of `GET /api/guides` and `GET /api/guides/{slug}` are unchanged. `Cache-Control: no-store` is added.
+- **Digest:** `guide-content-v1` is unchanged, and no new canonicalization is added (D-9).
+- **Read-time principle:** publication and withdrawal stay explicit, audited acts. Content is never hidden by comparing read time to a deadline (§3.4, §7.3).
+- **Existing published Guides** keep serving through activation unchanged (§10, MVP-8).
 
 ---
 
@@ -143,125 +155,200 @@ flowchart LR
 
 **All states in this section are proposed.** They are not values of the existing `GuideStatus` enum, which stays as the projection's `DRAFT`/`PUBLISHED`.
 
-The seven lifecycle states fall into two separate state machines.
+| Kind | States | Belongs to | Authoritative source |
+|---|---|---|---|
+| Review state | `DRAFT`, `IN_REVIEW`, `CHANGES_REQUESTED`, `APPROVED` | a revision | `guide_review_transition` ledger. `guide_revision.review_state` is a cache. |
+| Publication state | `PUBLISHED`, `SUPERSEDED`, `WITHDRAWN` | a publication record | Derived from write-once columns: `PUBLISHED` while both `superseded_at` and `withdrawn_at` are null, `SUPERSEDED` when `superseded_at` is set, `WITHDRAWN` when `withdrawn_at` is set |
 
-| Kind | States | Belongs to |
-|---|---|---|
-| Review state | `DRAFT`, `IN_REVIEW`, `CHANGES_REQUESTED`, `APPROVED` | a revision |
-| Publication state | `PUBLISHED`, `SUPERSEDED`, `WITHDRAWN` | a publication record |
-
-A revision's overall lifecycle is its review state until it is first published, then the state of its latest publication.
+A revision's **overall lifecycle** is its review state until it is first published. After that it is the state of its latest publication record.
 
 ```mermaid
 stateDiagram-v2
-    [*] --> DRAFT: author creates revision
-    DRAFT --> IN_REVIEW: author submits (digest echoed)
-    IN_REVIEW --> DRAFT: author retracts
-    IN_REVIEW --> CHANGES_REQUESTED: reviewer requests changes
-    IN_REVIEW --> APPROVED: human reviewer approves (digest echoed)
-    APPROVED --> CHANGES_REQUESTED: reviewer revokes approval (before publication)
-    APPROVED --> PUBLISHED: publisher publishes
-    PUBLISHED --> SUPERSEDED: another revision of the slug is published
-    PUBLISHED --> WITHDRAWN: publisher/admin withdraws
-    SUPERSEDED --> PUBLISHED: explicit rollback (approval still valid)
-    SUPERSEDED --> WITHDRAWN: retire from rollback eligibility
-    CHANGES_REQUESTED --> [*]: terminal for this revision; author creates a new revision
+    [*] --> DRAFT: T1 author creates revision
+    DRAFT --> IN_REVIEW: T2 author submits (digest echoed)
+    IN_REVIEW --> DRAFT: T3 author retracts
+    IN_REVIEW --> CHANGES_REQUESTED: T4 reviewer requests changes
+    IN_REVIEW --> APPROVED: T5 qualified human reviewer approves (digest echoed)
+    APPROVED --> CHANGES_REQUESTED: T6 reviewer revokes (unpublished)
+    APPROVED --> PUBLISHED: T7 publisher publishes within publish window
+    PUBLISHED --> PUBLISHED: T12 reviewer confirms review currency
+    PUBLISHED --> SUPERSEDED: T8 another revision of the slug published
+    PUBLISHED --> WITHDRAWN: T10 withdraw (routine / emergency / deadline / revocation)
+    SUPERSEDED --> WITHDRAWN: T11 retire
+    SUPERSEDED --> PUBLISHED: T9 explicit rollback (LATER, L-2)
+    CHANGES_REQUESTED --> [*]: terminal for this revision
     WITHDRAWN --> [*]: terminal; never republished
 ```
 
 ### 3.1 Allowed transitions
 
-| # | From | To | Actor | Preconditions (all must hold) | Side effects |
-|---|---|---|---|---|---|
-| T1 | (none) | `DRAFT` | Author (human) | File passes `GuideImportReader`. `status=DRAFT`, `publishedAt=null`, `evidence` present (D-10). No revision of the slug already has this digest (I-11). | Store the canonical form and review digest. Audit `REVISION_CREATED`. |
-| T2 | `DRAFT` | `IN_REVIEW` | Author | Echoed digest equals the stored review digest. No other revision of the slug is `IN_REVIEW`. | Audit `REVIEW_SUBMITTED`. |
-| T3 | `IN_REVIEW` | `DRAFT` | Author | Echoed digest matches. | Audit `REVIEW_RETRACTED`. |
-| T4 | `IN_REVIEW` | `CHANGES_REQUESTED` | Reviewer | Reviewer is human, holds the reviewer role, and is not the author. Reason is not blank. | Append a decision. Audit `CHANGES_REQUESTED`. |
-| T5 | `IN_REVIEW` | `APPROVED` | Reviewer | Reviewer is human, holds the reviewer role, and is not the revision author (I-6). The echoed digest equals the stored digest, which is recomputed from the stored canonical form. A review reference and scope are recorded. | Append an `APPROVED` decision with its expiry (D-3). Audit `APPROVED`. |
-| T6 | `APPROVED` | `CHANGES_REQUESTED` | Reviewer (any qualified reviewer) | Revision never published. Reason is not blank. | Append a `REVOKED` decision. Audit `APPROVAL_REVOKED`. |
-| T7 | `APPROVED` | `PUBLISHED` | Publisher | See §7.1: all of I-1 to I-10. | Projection replaced. The previous publication becomes `SUPERSEDED`. Audit `PUBLISHED`. |
-| T8 | `PUBLISHED` | `SUPERSEDED` | System, inside T7 or T9 | Another revision of the same slug became live in the same transaction. | Audit `SUPERSEDED`. |
-| T9 | `SUPERSEDED` | `PUBLISHED` | Publisher (explicit rollback command) | Approval not revoked and not expired. Revision never withdrawn. The expected current live publication matches. | As T7, recorded as `ROLLED_BACK`. |
-| T10 | `PUBLISHED` | `WITHDRAWN` | Publisher, or Admin in an emergency | The expected live publication matches. Reason is not blank. | Projection removed (D-6). Audit `WITHDRAWN`. |
-| T11 | `SUPERSEDED` | `WITHDRAWN` | Publisher or Reviewer | Reason is not blank. | Rollback to this revision is no longer possible. Audit `WITHDRAWN`. |
+"Reviewer(C)" means a human holding `REVIEWER` for review class C of the revision's category. "Echo" means the caller passes the digest they were shown, and the function compares it with the stored one.
+
+| # | From → To | Actor | Preconditions (all must hold) | Writes (one transaction) |
+|---|---|---|---|---|
+| T1 | — → `DRAFT` | Author (human) | Canonical form passes the database checks (§5.2). Category is classified. Category equals the slug's existing category. `evidence` is present, and non-empty for `HIGH` (D-10). `(slug, review_digest)` is not already used (I-11). | Revision, ledger `CREATE`, event |
+| T2 | `DRAFT` → `IN_REVIEW` | Author of the revision | Echo matches. No other revision of the slug is `IN_REVIEW`. | Ledger `SUBMIT`, cache, event |
+| T3 | `IN_REVIEW` → `DRAFT` | Author of the revision | Echo matches | Ledger `RETRACT`, cache, event |
+| T4 | `IN_REVIEW` → `CHANGES_REQUESTED` | Reviewer(C) ≠ author | Echo matches. Reason is not blank. | Ledger `REQUEST_CHANGES`, cache, event |
+| T5 | `IN_REVIEW` → `APPROVED` | Reviewer(C) ≠ author | Echo matches. Review reference, scope and `rules_as_at` recorded. | Ledger `APPROVE`, with `publish_by` and `review_due_at` computed from the class policy (§3.4). Cache, event. |
+| T6 | `APPROVED` → `CHANGES_REQUESTED` | Reviewer(C) | The revision has never been published. Reason is not blank. | Ledger `REVOKE`, cache, event |
+| T6b | `APPROVED` (with a `PUBLISHED` record) → `CHANGES_REQUESTED`, and that publication → `WITHDRAWN` | Reviewer(C) | Reason is not blank | Ledger `REVOKE`, withdrawal of kind `REVOCATION`, projection removed, events |
+| T7 | `APPROVED` → `PUBLISHED` | Publisher ≠ author, and ≠ approving reviewer for `HIGH` | §7.1 checks. `now ≤ publish_by`. `expect-live` matches. Workflow activated. | Publication, projection, supersede (T8), events |
+| T8 | `PUBLISHED` → `SUPERSEDED` | System, inside T7 (or T9) | Another revision of the slug became `PUBLISHED` in the same transaction | `superseded_at`, event |
+| T9 *(later, L-2)* | `SUPERSEDED` → `PUBLISHED` | Publisher | Approval not revoked. **Review currency valid:** the revision's latest `APPROVE`/`CONFIRM` has `review_due_at > now`, otherwise a T12 confirmation is needed first. Never withdrawn. `expect-live` matches. | New publication record (new `P`, new published digest), events |
+| T10 | `PUBLISHED` → `WITHDRAWN` | Publisher (`ROUTINE`); Admin (`EMERGENCY`); deadline enforcer (`DEADLINE`, §3.4); Reviewer through T6b (`REVOCATION`) | `expect-live` matches, except for `DEADLINE`, which needs the hard deadline to have passed. Reason is not blank. | `withdrawn_*`, projection removed, event |
+| T11 | `SUPERSEDED` → `WITHDRAWN` | Publisher or Reviewer(C) | Reason is not blank | `withdrawn_*`, event. Rollback to it is then impossible. |
+| T12 | `PUBLISHED` → `PUBLISHED` (review confirmation) | Reviewer(C) ≠ author | The revision is currently `PUBLISHED`. Echo matches. `rules_as_at` recorded. | Ledger `CONFIRM` with a new `review_due_at`, event. No content change, no new publication record, no digest change. |
 
 ### 3.2 Forbidden transitions (enforced, not just undocumented)
 
-| Attempt | Why forbidden | Enforcement (proposed) |
-|---|---|---|
-| Editing a revision in any state | Approval would apply to content nobody reviewed | Immutable columns. The trigger rejects `UPDATE` and `DELETE` (I-2). |
-| `DRAFT`/`IN_REVIEW`/`CHANGES_REQUESTED` → `PUBLISHED` | Unapproved wording would go live | The publish service needs a valid `APPROVED` decision (I-1). |
-| `CHANGES_REQUESTED` → `APPROVED` or `IN_REVIEW` | Changes mean new content, so a new revision | State machine. Terminal state. |
-| `WITHDRAWN` → anything | Prevents accidental republication | Terminal state. The publish service rejects it (I-11). |
-| Approval by the author, an AI or a service principal | Separation of duties; AI can't approve | Constraint so the reviewer must be human (I-5), plus a service check that reviewer ≠ author (I-6) |
-| Approving a stale digest (the echo differs from the stored one) | The reviewer saw different content | Compare-and-set on the digest (I-4) |
-| Publishing with a `--import-guide` file once the workflow is on | Bypasses review | Importer guard (§6.6, I-12) |
-| Two revisions of one slug `IN_REVIEW` at once | Competing reviews of competing content | Partial unique index |
+| Attempt | Enforcement (proposed) |
+|---|---|
+| Changing revision content in any state | Trigger rejects `UPDATE` of content columns and every `DELETE` (I-2) |
+| Publishing anything not `APPROVED`, or after `publish_by` | `wf_publish` checks (I-1) |
+| `CHANGES_REQUESTED` → anything | Terminal. The author creates a new revision. |
+| `WITHDRAWN` → anything, or resubmitting identical content | Terminal, plus `UNIQUE (slug, review_digest)` (I-11) |
+| Approval, confirmation or publication by the author, or by a non-human | Function checks, plus a composite foreign key restricting ledger decisions to human principals (I-5, I-6) |
+| Any `HIGH` action where reviewer = publisher | Function check, with no override parameter (I-6) |
+| Writing the projection or workflow tables other than through `wf_*` | Operators and the runtime role have no DML privileges (I-12, I-17) |
+| `--import-guide` writing after activation, or `PUBLISHED` `HIGH` input before activation | Privileges after activation. Interim code guard before it (I-12). |
+| Two revisions of one slug `IN_REVIEW`, or two `PUBLISHED` records | Partial unique indexes (I-8) |
+| Stale digest echo or stale `expect-live` | Compare-and-set in the functions (I-4, I-9) |
 
-### 3.3 Content changes during review
+### 3.3 Content changes during review and invalidation of approval
 
-- **Revisions never change.** "Changing content during review" always means creating a new revision.
-- **Only one open review per slug.** The author first retracts the old one (T3), or gets changes requested (T4), then submits the new revision.
-- **Approvals never carry over.** The new revision starts at `DRAFT` with no approval. `based_on_revision_id` records where it came from, for diffing.
-- **Re-review support (proposed).** The service can produce a canonical-form diff between a revision and the one it is based on, to help the reviewer. The approval still covers the whole new revision.
+- **"Editing" always creates a new revision** (T1), with `based_on_revision_id` recorded. The old review must first be retracted (T3) or answered (T4), because only one revision per slug may be `IN_REVIEW`.
+- **Approval names `(revision_id, review_digest)`, and revision content can't change.** So approval can never apply to other content. A new revision starts with no approval.
+- **An approval stops counting for initial publication** when it is revoked (T6), when `publish_by` passes, or when the stored canonical form no longer hashes to the approved digest. The last case would be tampering, which every function call detects (I-4).
 
-### 3.4 How approval becomes invalid
+### 3.4 Approval validity, review currency and overdue content (correction 1)
 
-- **Approval binds to `(revision_id, review_digest)`, and the revision can't change.** So approved content can't change without becoming a different revision. Approval then fails for that new revision because it has no `APPROVED` decision.
-- **Approval also stops counting when:**
-  - it is revoked (T6);
-  - it reaches its expiry (D-3), which is checked at publish and rollback time;
-  - the stored canonical form no longer hashes to the approved digest, which would be tampering, so the publish fails and an alert is raised (I-4).
+Revision 1 tied a live publication's validity to an approval expiry. That was wrong: a correctly published Guide doesn't become invalid at a fixed date by itself. Four separate concepts replace it.
+
+| Concept | Recorded on | Governs | Policy (values per class in D-3) |
+|---|---|---|---|
+| **Publish window** (`publish_by`) | `APPROVE` ledger row | **Initial publication (T7) only.** It stops a stale approval being used long after the reviewer checked the law. | `publish_by = approved_at + publish_window(class)`. It has no effect once published. |
+| **Review currency** (`review_due_at`) | Latest `APPROVE` or `CONFIRM` row for the revision | How long published content is considered reviewed. It also controls **rollback (T9)**: an earlier revision can only be restored while its review is current. | `review_due_at = decided_at + review_interval(class)`. Extended only by a human `CONFIRM` (T12) of the same digest, with a new `rules_as_at`. |
+| **Hard deadline** | Computed: `review_due_at + grace(class)` | Fail-closed limit for `HIGH` content | `HIGH`: required. `STANDARD`: none by default (D-3). |
+| **Revocation and emergency withdrawal** | Ledger `REVOKE` / publication `withdrawn_*` | Immediate removal at any time | Revocation of a live revision withdraws it atomically (T6b). An Admin may withdraw in an emergency (T10). |
+
+**What happens as a published Guide ages:**
+
+1. **Current** (`now < review_due_at`): no action.
+2. **Overdue** (`review_due_at ≤ now < hard deadline`):
+   - The content **stays live**.
+   - `--guide-verify` reports it, with a nonzero exit for `HIGH` (§6.6).
+   - The only ways forward are a `CONFIRM` (T12), a new reviewed revision (T1→T7), or withdrawal (T10).
+3. **Past hard deadline (`HIGH` only):**
+   - `wf_enforce_review_deadlines()` withdraws every `HIGH` publication past its hard deadline, with withdrawal kind `DEADLINE`.
+   - It can be run by any Publisher or Admin, or by the dedicated `DEADLINE_ENFORCER` service principal on a schedule.
+   - It is an explicit, audited withdrawal by an identified principal. Nothing is hidden by comparing read time to a deadline, which keeps the existing explicit-publication principle (§1.1).
+   - Until it runs, `--guide-verify` fails. For `HIGH` content, a missed run is therefore loudly detectable. The residual risk is a scheduler failure that also goes unnoticed (§8.1).
+4. **`STANDARD` content past due:** it stays live and is reported. Whether `STANDARD` classes also get a hard deadline is part of D-3.
+
+**Approval expiry never removes a live publication automatically.** Only an explicit, attributed withdrawal does, and for `HIGH` content that withdrawal is mandatory and automatable.
 
 ### 3.5 Competing edits and concurrent publication
 
-- **Competing edits** become separate revisions. The open-review index lets only one be reviewed at a time.
-- **Stale base (publishing over a newer live version).**
-  - Every publish sends the ID of the publication it expects to replace, or `none`.
-  - The service locks the slug's `guide_document` row (`SELECT … FOR UPDATE`) and compares. If they differ it rejects with `STALE_LIVE_VERSION`, so nobody silently overwrites content published after they reviewed.
-- **Concurrent publishes of the same slug** queue on the same lock.
-  - The second one sees that its expected live publication is out of date and fails.
-  - A partial unique index allows only one `LIVE` publication per slug, as a backstop.
-- **First publication of a new slug.** The `guide_document` row is created with the first revision, so there's always a row to lock and no race between two first publications.
+- **Competing edits** become separate revisions. The single-open-review index serialises their review.
+- **Every publish-type function locks the slug.** `wf_publish`, `wf_withdraw`, `wf_revoke` (on a live revision) and `wf_enforce_review_deadlines` each lock the slug's `guide_document` row (`SELECT … FOR UPDATE`).
+- **Compare-and-set on the live version.** Publish and withdraw take `expect_live` (the expected current publication ID, or `none`) and fail with `STALE_LIVE_VERSION` if it differs. Deadline enforcement re-checks the deadline under the lock instead.
+- **First publications can't race.** The `guide_document` row is created with the first revision, so there is always a row to lock. The partial unique index on `PUBLISHED` records is the backstop.
 
 ### 3.6 Withdrawal and replacement
 
-- **Replacement** means publishing a newer approved revision (T7). The old publication becomes `SUPERSEDED` in the same transaction, so the public never sees a gap or a mix of versions.
-- **Withdrawal** (T10) removes the slug from public reads at once and permanently retires that revision.
-- **After a withdrawal,** the slug can go live again only by publishing a different, newly approved revision. Content identical to the withdrawn revision can't even be resubmitted, because `(slug, review_digest)` is unique (I-11). A corrected or re-dated revision has a new digest and needs a full new review.
+- **Replacement** is T7. The previous publication becomes `SUPERSEDED` in the same transaction, so the public sees the old or the new version, never a gap or a mixture.
+- **Withdrawal** (T10) deletes the projection rows for the slug (D-6), so the public API returns 404 from commit.
+- **After withdrawal,** the slug can go live again only through a different, newly approved revision. Identical content can't be resubmitted (I-11).
 
 ---
 
-## 4. Roles and permissions matrix
+## 4. Roles, authentication and permissions
 
-**All roles here are proposed.** No role or user model exists today.
+**All of this section is proposed.**
 
-**Principals.** Each principal has a `kind`: `HUMAN`, `SERVICE` or `AI`.
+### 4.1 Database roles (correction 3)
 
-- Only `HUMAN` principals can hold any role, including Author. The `AI` and `SERVICE` kinds exist so tooling can be recorded and refused, not so it can act.
-- AI tools may help with research, drafting and consistency checks. Their output enters the workflow only when a human Author creates a revision from it. That human is the recorded author and is responsible for it. AI is never recorded as author, reviewer or publisher (I-5). Whether to also flag AI-assisted revisions is part of D-11.
+Today one role migrates, owns the schema and serves the application (§1.2). Least privilege needs separate roles first.
 
-| Action | Author / editor | Legal reviewer (qualified human) | Publisher / approver | Administrator | AI / service |
+| Role | Login | Owns or holds | Used by |
+|---|---|---|---|
+| `lu_owner` | Yes, used only during deployment | Owns all tables and `wf_*` functions | Flyway only (`spring.flyway.user`/`password`, a standard Spring Boot setting with no new dependency). Credentials are held by the deployer. This is the break-glass root of trust. |
+| `life_in_uk_app` (existing name) | Yes | `SELECT` on projection tables. Existing acquisition-table privileges. **No** workflow-table access. **No** projection DML after activation. **No** `EXECUTE` on `wf_*`. | Web application and acquisition jobs |
+| `lu_guide_operator` | No (group role) | `SELECT` on workflow and projection tables (and on `flyway_schema_history` for validation). `EXECUTE` on `wf_*`. **No** table DML. | Granted to personal login roles |
+| `op_<person>` | Yes, one per human | Member of `lu_guide_operator` | One human operator using the command line |
+| `op_deadline_enforcer` | Yes | Member of `lu_guide_operator`. Mapped to a `SERVICE` principal that can only run deadline enforcement. | Scheduler (D-3) |
+
+**`wf_*` function rules.** All `wf_*` functions are `SECURITY DEFINER`, owned by `lu_owner`, with a fixed `SET search_path = pg_catalog, <schema>`, and `PUBLIC` has no `EXECUTE`. Inside them, `current_user` is the owner, but `session_user` remains the authenticated login. That is what attribution relies on.
+
+### 4.2 Options compared
+
+| Option | How the CLI authenticates a human | How the database identifies the actor | Bypass resistance | Verdict |
+|---|---|---|---|---|
+| **O1. Shared account and a `--actor` flag** | It doesn't | It can't: the flag is whatever the caller types | None | **Rejected.** A user-supplied flag is not authentication. |
+| **O2. Shared account and per-operator signed commands** (Ed25519 keys, verified in Java with JDK crypto) | The operator signs each command with a private key | Not at all. Java verifies and passes an actor ID to the database. | Weak. Anyone holding the shared database credential can write tables directly and skip Java verification. It also needs a custom signed-command format and key management. | Rejected for the MVP |
+| **O3. Personal PostgreSQL logins and `SECURITY DEFINER` functions** | PostgreSQL authenticates the operator's own login (SCRAM-SHA-256 over TLS, D-5) | `session_user` inside `wf_*`, mapped to a principal through `principal.db_login` | Strong for operators: they have no table DML, and every write goes through function checks. Only the owner or superuser can bypass, and that is the documented break-glass trust boundary. | **Recommended MVP** |
+| **O4. OIDC admin API and a dedicated `lu_admin_api` role** (later, L-5) | The browser authenticates against an identity provider, and the API verifies the token | The admin API's pooled connections all log in as `lu_admin_api`, so the database can't see the human. It calls `wf_*_as(actor_principal_id, …)` variants that only `lu_admin_api` may execute. | The admin API becomes a trusted component. The database records both `session_user = lu_admin_api` and the asserted principal. | Later enhancement |
+
+**Connection pooling (O3 and O4)**
+
+- **The long-running web application** keeps its pool on `life_in_uk_app`. That role has no `EXECUTE` on `wf_*`, so no workflow action can ever run under a shared pooled identity.
+- **A CLI run is a separate short-lived process** whose datasource is the operator's own login. Every pooled connection in that process belongs to the same login, so `session_user` is constant and correct. The operator profile also sets the pool size to 1.
+- **Under O4,** the per-request actor is passed as a function argument, never as session state. If session state were ever used, it would have to be `SET LOCAL`, scoped to the transaction, so it can't leak between pooled connections.
+
+**CLI operator profile (`operator`, proposed configuration only)**
+
+- Datasource credentials are the operator's own.
+- `spring.flyway.enabled=false`, so operators never migrate.
+- Web server is off. Pool size is 1.
+- The bootstrap and replay runners are disabled or proven to be read-only for operators. Any write they try fails closed for lack of privilege.
+
+**Bootstrapping the first administrator**
+
+1. The deployer, holding `lu_owner`, creates a personal login and grants `lu_guide_operator` out of band.
+2. They call `wf_bootstrap_admin(login, display_name)` **as `lu_owner`**. It succeeds only while no active `ADMIN` exists and only for `session_user = lu_owner`, and it writes an audit event.
+3. After that, roles are granted only through `wf_grant_role`, which refuses self-grants (I-14).
+
+A team therefore needs at least two humans before anyone can hold `ADMIN` together with another role (D-12).
+
+### 4.3 Principals and role grants
+
+- **Principal kinds:** `HUMAN` and `SERVICE`. AI is never a principal.
+- **Who can hold what:**
+  - `AUTHOR`, `REVIEWER`, `PUBLISHER` and `ADMIN` can only be granted to `HUMAN` principals.
+  - `DEADLINE_ENFORCER` can only be granted to `SERVICE` principals.
+  - This is enforced by a composite foreign key `(principal_id, principal_kind)` and a `CHECK` on role versus kind.
+- **Reviewer grants are class-scoped.**
+  - `REVIEWER` grants carry a `review_class`.
+  - `REVIEWER(HIGH)` needs a non-blank `qualification_reference` describing the evidence of qualification. What evidence is sufficient is D-2.
+
+### 4.4 Permissions matrix
+
+| Action | Author | Reviewer(C) | Publisher | Admin | Deadline enforcer (service) |
 |---|:-:|:-:|:-:|:-:|:-:|
-| Create revision (T1) | ✅ | ❌ | ❌ | ❌ | ❌ output enters only through a human Author |
-| Submit or retract own revision (T2, T3) | ✅ own revisions only | ❌ | ❌ | ❌ | ❌ |
-| Read revisions and diffs (admin path only) | ✅ | ✅ | ✅ | ✅ | ❌ given material only through a human Author (D-11) |
-| Request changes (T4) | ❌ | ✅ | ❌ | ❌ | ❌ |
-| Approve (T5) | ❌ | ✅ not on own revision | ❌ | ❌ | ❌ never |
-| Revoke approval (T6) | ❌ | ✅ | ❌ | ❌ | ❌ |
-| Publish or roll back (T7, T9) | ❌ | ❌ by default, see D-1 | ✅ not on own revision | ❌ | ❌ |
-| Withdraw (T10, T11) | ❌ | ✅ T11 only | ✅ | ✅ emergency T10 only, reason required | ❌ |
-| Manage principals and roles | ❌ | ❌ | ❌ | ✅ can't grant own roles (D-12) | ❌ |
-| Read audit log | ✅ own slugs | ✅ | ✅ | ✅ | ❌ |
-| Change or delete audit, revision or decision rows | ❌ | ❌ | ❌ | ❌ blocked by triggers (I-2) | ❌ |
+| T1 create revision | ✅ human only | ❌ | ❌ | ❌ | ❌ |
+| T2, T3 submit or retract | ✅ own revisions only | ❌ | ❌ | ❌ | ❌ |
+| Read revisions and canonical form | ✅ | ✅ | ✅ | ✅ | ❌ |
+| T4 request changes, T5 approve, T12 confirm | ❌ | ✅ not on own revision | ❌ | ❌ | ❌ |
+| T6 revoke, T6b revoke a live revision (withdraws it) | ❌ | ✅ | ❌ | ❌ | ❌ |
+| T7 publish | ❌ | ❌ | ✅ not own revision. For `HIGH`, not the approving reviewer. | ❌ | ❌ |
+| T9 rollback *(later)* | ❌ | ❌ | ✅ same restrictions as T7 | ❌ | ❌ |
+| T10 withdraw | ❌ | via T6b only | ✅ `ROUTINE` | ✅ `EMERGENCY`, reason required | ✅ `DEADLINE` for `HIGH` past hard deadline only |
+| T11 retire superseded | ❌ | ✅ | ✅ | ❌ | ❌ |
+| Run deadline enforcement | ❌ | ❌ | ✅ | ✅ | ✅ |
+| Grant or revoke roles; register principals; classify categories (§6.1) | ❌ | ❌ | ❌ | ✅ never to self | ❌ |
+| Read audit log | ✅ | ✅ | ✅ | ✅ | ❌ |
+| Change or delete revision content, ledger or audit rows | ❌ | ❌ | ❌ | ❌ | ❌ |
 
-**Separation of duties**
+**Separation of duties (I-6)**
 
-- **Author ≠ reviewer for the same revision.** Mandatory (I-6).
-- **Author ≠ publisher.** Mandatory.
-- **Reviewer ≠ publisher.** Recommended as mandatory for any category that needs legal review. This is open decision D-1, because a very small team may not have two qualified people.
-- **Administrator** can't approve or publish unless the person also holds that role. Holding Administrator is never enough. Emergency withdrawal is allowed because it only reduces what's public.
-- **Every approval names a human.** It records the reviewer principal and their qualification reference (§6.2), which an administrator records when granting the role.
+| Rule | `HIGH` | `STANDARD` |
+|---|---|---|
+| author ≠ reviewer | Mandatory | Mandatory |
+| author ≠ publisher | Mandatory | Mandatory |
+| reviewer ≠ publisher | Mandatory, no exception | Recommended (D-1) |
+
+Holding `ADMIN` never grants review or publish rights.
 
 ---
 
@@ -269,62 +356,60 @@ stateDiagram-v2
 
 **`guide-content-v1` exists and is unchanged.** How this section uses it is proposed.
 
-### 5.1 Two definitions, two digests
-
-The digest covers status and timestamps, so one digest can't represent both the reviewed content and the published content. The design keeps two related artifacts.
+### 5.1 Two definitions, two digests (unchanged from revision 1)
 
 | Artifact | Definition | Digest |
 |---|---|---|
-| **Review artifact** (a revision) | `D_r`: the validated definition as submitted, with `status = DRAFT`, `publishedAt = null`, `updatedAt = T_r` (the author's content time) and `evidence` present | `review_digest = v1(D_r)` |
-| **Published artifact** (a publication) | `D_p = derive(D_r, P)`: identical to `D_r` field by field, except `status = PUBLISHED`, `publishedAt = P`, `updatedAt = P` | `published_digest = v1(D_p)` |
+| Review artifact (a revision) | `D_r`: `status = DRAFT`, `publishedAt = null`, `updatedAt = T_r`, evidence present | `review_digest = v1(D_r)` |
+| Published artifact (a publication) | `D_p = derive(D_r, P)`: identical to `D_r` except `status = PUBLISHED`, `publishedAt = updatedAt = P` | `published_digest = v1(D_p)` |
 
 **Derivation rule.**
 
-- `derive` mirrors the existing `Guide.publish(at)` exactly: it needs `P ≥ T_r` and sets `publishedAt = updatedAt = P`.
-- `P` comes from the database clock (`now()`), truncated to microseconds to fit v1's precision limit. Users can't supply it.
-- `D_r` and `D_p` are identical in every other field: same text, same source and evidence order, and the same evidence-collection presence (the `null` versus `[]` distinction carries over unchanged).
+- `derive` mirrors the existing `Guide.publish(at)`: it needs `P ≥ T_r`.
+- `P` is the database transaction time, truncated to microseconds. A user can't supply it.
+- Every other field is identical, including evidence presence (`null` versus `[]`).
+- Comparisons always pair review digest with review digest, and published digest with published digest. Linking the two always goes through `derive`.
 
-**Verification.** Anyone can check a publication from the stored data:
+### 5.2 Content stored once, as canonical text
 
-```
-v1(D_r_stored)              == revision.review_digest       == decision.review_digest
-v1(derive(D_r_stored, P))   == publication.published_digest
-```
+- **A revision stores only `canonical_form text`,** the exact v1 line, with no separate structured copy. That rules out any disagreement between "what was hashed" and "what is published".
+- **`wf_create_revision` checks it in the database:**
+  - `encode(sha256(convert_to(canonical_form, 'UTF8')), 'hex') = review_digest`;
+  - `canonical_form::jsonb` parses;
+  - `canonicalization = 'guide-content-v1'`;
+  - status is `DRAFT` and `publishedAt` is null;
+  - the slug and category match the document.
 
-**No misleading mismatch.**
+  Content with unpaired surrogates, which jsonb rejects, can't be stored, so it fails closed.
+- **Full v1 conformance is checked in Java.** Parsing back to a `GuideImportDefinition` and requiring `v1(definition) == canonical_form` byte for byte happens in the author's CLI before creation, again in the reviewer's and publisher's CLIs before their calls, and in `--guide-verify`.
+  - A malicious caller could call `wf_create_revision` directly with self-consistent but non-canonical text.
+  - The reviewer's command would then refuse to show it as valid, and `--guide-verify` would fail.
+  - Even so, what the reviewer approved and what gets published are the **same bytes**, because the projection is copied from the stored text.
 
-- A reviewer's digest is never compared with live content's digest.
-- Every comparison uses the correct pair: review digest with review digest, published digest with published digest.
-- The derivation function is the only thing linking the two, and it can be computed and tested.
+### 5.3 Computing the published digest inside the database
 
-### 5.2 Immutable revision identity
+- **The swap.** `wf_publish` builds the published canonical text by replacing exactly one segment:
 
-- **`revision_id` (UUID)** is the identity used for transitions and audit.
-- **`(slug, review_digest)` is unique.**
-  - Re-creating identical content returns the existing revision, with outcome `EXISTING`.
-  - If that existing revision has been withdrawn, the outcome is `EXISTING_WITHDRAWN` and nothing further is possible with it (I-11).
-- **The stored canonical form is authoritative.**
-  - `canonical_form` holds the exact v1 text that is hashed, so `sha256(canonical_form)` is checkable without the Java code.
-  - `canonicalization = 'guide-content-v1'` is stored with it.
-  - The structured `definition jsonb`, used to rebuild the `GuideImportDefinition` at publish time, must round-trip to the same canonical form. The service checks this on create and on publish.
-- **Revision numbers** (`revision_number`, per slug, monotonic) are for people to read. They are never used as identity.
+  ```
+  "status":"DRAFT","publishedAt":null,"updatedAt":"<T_r>"
+  →
+  "status":"PUBLISHED","publishedAt":"<P>","updatedAt":"<P>"
+  ```
 
-### 5.3 Evidence-collection presence
+- **Why the replacement is safe.** v1 escapes every `"` inside string values, so an unescaped `"status":` can only be the root property. The function also asserts the segment occurs **exactly once**.
+- **`P` format:** `to_char(P AT TIME ZONE 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.US"Z"')`, matching v1's six-digit format.
+- **Result:** `published_digest = sha256` of that text. It is stored on the publication record, and `--guide-verify` recomputes it independently with `GuideContentDigest`.
 
-- **Proposal (D-10):** revisions for categories that need legal review must have `evidence` present, and probably non-empty.
-- **Why:** this avoids the absent-versus-`[]` ambiguity of §1.4 for legal content. Legacy baselines record whichever form their committed artifact uses.
-- **Where the presence is kept:** in the stored definition. So the integrity check (§6.5) can rebuild the right v1 input even though the projection rows can't tell the two apart.
+### 5.4 Revision identity
 
-### 5.4 Future canonicalization versions
+- **`revision_id` (UUID)** is the identity used for transitions and audit. `revision_number` (per slug, increasing) is for people to read.
+- **`(slug, review_digest)` is unique.** Identical content returns the existing revision as `EXISTING`, or `EXISTING_WITHDRAWN` (nonzero exit) if that revision was withdrawn.
 
-- **New version, not a v1 change.** If a later version is ever needed (D-9), it is introduced as `guide-content-v2` alongside v1.
-- **Existing records keep v1.** Their stored `canonicalization` value and digests stay valid under v1.
-- **A version change is a new identity.** It never rebinds an existing approval.
+### 5.5 Evidence presence, future versions and snapshots
 
-### 5.5 Source and evidence snapshots
-
-- **The revision is the snapshot.** The canonical form includes every source (organisation, title, URL, `accessedAt`) and every evidence statement and support (locator, excerpt, note).
-- **No copies of official pages are captured.** `accessedAt` remains the consultation time, as now. Capturing copies of official pages for provenance is out of scope (D-13).
+- **Evidence presence (D-10):** `evidence` must be present for every revision, and non-empty for `HIGH`.
+- **Future canonicalizations:** any new version is added alongside v1 as `guide-content-v2`, never by changing v1. Stored `canonicalization` values keep existing digests valid.
+- **The revision is the source and evidence snapshot.** `accessedAt` stays the consultation time. Capturing copies of official pages is out of scope (D-13).
 
 ---
 
@@ -336,126 +421,120 @@ v1(derive(D_r_stored, P))   == publication.published_digest
 
 ```mermaid
 erDiagram
-    principal ||--o{ guide_revision : "authored_by"
-    principal ||--o{ guide_review_decision : "reviewer"
-    principal ||--o{ guide_publication : "published_by"
+    principal ||--o{ principal_role : holds
+    review_class_policy ||--o{ guide_document : classifies
     guide_document ||--o{ guide_revision : has
-    guide_revision ||--o{ guide_review_decision : "decided on"
+    guide_revision ||--o{ guide_review_transition : "ledger"
     guide_revision ||--o{ guide_publication : "published as"
-    guide_document ||--o| guide : "projection (existing table)"
+    guide_document ||--o{ guide_publication : "lineage"
+    guide_document ||--o| guide : "projection (existing)"
     guide_document ||--o{ guide_workflow_event : audits
-    guide_revision ||--o| guide_revision : based_on
 ```
 
-| Table (proposed) | Key columns | Mutability |
+| Table | Columns (main) | Mutability |
 |---|---|---|
-| `principal` | `id uuid PK`, `kind` (`HUMAN`/`SERVICE`/`AI`), `display_name`, `db_role name UNIQUE NULL`, `qualification_reference text NULL` (needed for reviewer grants), `active bool`, `UNIQUE (id, kind)` | Admin-managed. Deactivate rather than delete. |
-| `principal_role` | `(principal_id, role)` PK, `role` (`AUTHOR`/`REVIEWER`/`PUBLISHER`/`ADMIN`), `granted_by`, `granted_at`, `revoked_at NULL` | Append and revoke only |
-| `guide_document` | `slug PK` (same rule as `guide.slug`), `category`, `created_at` | Insert only. It is the lock target for a slug. |
-| `guide_revision` | `id uuid PK`, `slug FK`, `revision_number`, `based_on_revision_id NULL FK`, `canonicalization`, `canonical_form text`, `definition jsonb`, `review_digest char(64)`, `review_state`, `state_version int`, `authored_by FK`, `created_at`. Also `UNIQUE (slug, review_digest)`, `UNIQUE (slug, revision_number)`, and `CHECK (review_digest ~ '^[0-9a-f]{64}$')`. | Content columns are immutable (trigger). Only `review_state` and `state_version` change, and only through the service (D-14). |
-| `guide_review_decision` | `id uuid PK`, `revision_id FK`, `review_digest char(64)`, `decision` (`APPROVED`/`CHANGES_REQUESTED`/`REVOKED`), `reviewer_id`, `reviewer_kind char` with `CHECK (reviewer_kind = 'HUMAN')` and `FK (reviewer_id, reviewer_kind) → principal(id, kind)`, `review_reference`, `scope`, `rules_as_at date`, `expires_at NULL`, `notes`, `decided_at` | Append-only (trigger) |
-| `guide_publication` | `id uuid PK`, `slug FK`, `revision_id FK`, `approval_decision_id FK`, `published_at`, `published_digest char(64)`, `state` (`LIVE`/`SUPERSEDED`/`WITHDRAWN`), `published_by FK`, `superseded_at NULL`, `withdrawn_at NULL`, `withdrawal_reason NULL`, `withdrawn_by NULL` | Only the state columns change, one way (`LIVE` → `SUPERSEDED`/`WITHDRAWN`, `SUPERSEDED` → `WITHDRAWN`), enforced by a trigger |
-| `guide_workflow_event` | `id bigserial PK`, `slug`, `revision_id NULL`, `publication_id NULL`, `action`, `actor_id FK`, `actor_kind`, `db_session_user name DEFAULT session_user`, `occurred_at DEFAULT now()`, `review_digest NULL`, `published_digest NULL`, `reason NULL`, `request_id uuid` | Append-only (trigger) |
+| `principal` | `id`, `kind` (`HUMAN`/`SERVICE`), `db_login name UNIQUE`, `display_name`, `active`, `UNIQUE (id, kind)` | Changed only through admin `wf_*` functions. Deactivate, never delete. |
+| `principal_role` | `id`, `principal_id`, `principal_kind`, `role`, `review_class NULL`, `qualification_reference NULL`, `granted_by`, `granted_at`, `revoked_at NULL`, `revoked_by NULL`. `FK (principal_id, principal_kind)`. `CHECK`s on role versus kind, and on `REVIEWER` needing a class and `REVIEWER(HIGH)` needing a qualification reference. | Insert once. Revocation columns write-once. |
+| `review_class_policy` | `category PK`, `review_class`, `publish_window`, `review_interval`, `grace_period NULL` (required for `HIGH`) | `family-visa = HIGH` is seeded by migration. Admin can add or tighten categories. **Downgrading a `HIGH` category needs a migration**, not a function. |
+| `guide_document` | `slug PK`, `category`, `managed_since`, `legacy bool` | Insert only. It is the lock target. |
+| `guide_revision` | **Immutable content:** `id`, `slug`, `revision_number`, `based_on_revision_id`, `canonicalization`, `canonical_form`, `review_digest`, `authored_by`, `ai_assisted bool`, `ai_assistance_note NULL`, `created_at`. **Review-state cache:** `review_state`, `state_version`. Unique `(slug, review_digest)`, unique `(slug, revision_number)`. | A trigger rejects any change to content columns and every `DELETE`. The cache changes only in the same transaction as a ledger insert (§6.2). |
+| `guide_review_transition` | `id`, `revision_id`, `seq`, `kind` (`CREATE`/`SUBMIT`/`RETRACT`/`REQUEST_CHANGES`/`APPROVE`/`REVOKE`/`CONFIRM`), `from_state`, `to_state`, `review_digest`, `actor_id`, `actor_kind`, `review_class`, `review_reference`, `scope`, `rules_as_at`, `publish_by`, `review_due_at`, `reason`, `occurred_at`. `UNIQUE (revision_id, seq)`. `FK (actor_id, actor_kind)`. `CHECK (actor_kind = 'HUMAN')`. | Append-only (trigger) |
+| `guide_publication` | **Identity:** `id`, `slug`, `revision_id NULL`, `approval_transition_id NULL`, `legacy bool`, `published_at`, `published_digest NULL`, `published_by NULL`. **Lifecycle (write-once):** `superseded_at`, `superseded_by_publication_id`, `withdrawn_at`, `withdrawn_by`, `withdrawal_kind` (`ROUTINE`/`EMERGENCY`/`DEADLINE`/`REVOCATION`), `withdrawal_reason`. `CHECK (legacy = (revision_id IS NULL) AND legacy = (approval_transition_id IS NULL) AND legacy = (published_digest IS NULL))`. | Identity immutable. Each lifecycle group can be written once, forward only (trigger). Legacy rows can only be inserted by the activation migration. |
+| `guide_workflow_event` | `id bigserial`, `occurred_at DEFAULT clock_timestamp()`, `db_session_user DEFAULT session_user`, `actor_id`, `action`, `slug`, `revision_id`, `publication_id`, `review_digest`, `published_digest`, `request_id`, `detail jsonb` (identifiers, kinds and reasons only, **never content**) | Append-only (trigger) |
+| `guide_workflow_activation` | Single row: `activated_at`, `activated_by_migration` | Inserted once by the activation migration (§10, MVP-8) |
 
-### 6.2 Constraints and indexes
+### 6.2 How state stays consistent (correction 4)
 
-- **One live version per slug:** `CREATE UNIQUE INDEX … ON guide_publication(slug) WHERE state = 'LIVE'`.
-- **One open review per slug:** `CREATE UNIQUE INDEX … ON guide_revision(slug) WHERE review_state = 'IN_REVIEW'`.
-- **The reviewer must be human.** The composite foreign key `(reviewer_id, reviewer_kind) → principal(id, kind)`, with `reviewer_kind` fixed to `'HUMAN'`, makes an AI or service approval impossible at the database level.
-- **Publication must point at an `APPROVED` decision on the same revision.**
-  - The composite key `(approval_decision_id, revision_id)` references `guide_review_decision(id, revision_id)`.
-  - A trigger or service check confirms `decision = 'APPROVED'` and that the decision's digest equals the revision's.
-- **Append-only enforcement.** Each append-only table gets a `BEFORE UPDATE OR DELETE` trigger that raises an exception. `guide_revision` and `guide_publication` get column-specific triggers. Triggers are plain SQL and need no new dependency.
+**Each fact has exactly one authoritative home:**
+
+| Fact | Authoritative source | Derived or cached |
+|---|---|---|
+| Revision content | `guide_revision` content columns (immutable) | — |
+| Current review state | **`guide_review_transition` ledger** | `guide_revision.review_state` and `state_version` (cache) |
+| Who approved what, and when it's due | Ledger `APPROVE`/`CONFIRM`/`REVOKE` rows | — |
+| Publication history and state | `guide_publication` (identity plus write-once lifecycle) | Publication state (computed) |
+| Live public content | Latest `PUBLISHED` publication, plus the approved canonical form | `guide` projection (rebuilt by `wf_publish`) |
+| What happened, for investigators | `guide_workflow_event` | — |
+
+**Transactional rules (enforced by the functions, backed by triggers)**
+
+1. **Every review transition does three things in one transaction:**
+   - inserts a ledger row with `seq = state_version + 1` and `from_state = review_state`;
+   - updates the cache to `to_state` with `state_version = seq`;
+   - inserts one audit event.
+
+   The unique `(revision_id, seq)` makes a concurrent second transition fail.
+2. **A trigger on `guide_revision`** allows a cache update only when a ledger row with that exact `seq` and `to_state` exists in the same transaction. A deferred constraint trigger checks this at commit.
+3. **The projection is written only inside `wf_publish`, `wf_withdraw`, `wf_revoke` and `wf_enforce_review_deadlines`,** in the same transaction as the publication record change.
+4. **Replay check.** `--guide-verify` replays every revision's ledger and confirms that the final `to_state` equals `review_state` and the row count equals `state_version` (I-15). It also confirms that:
+   - the projection exists if and only if a `PUBLISHED` record exists;
+   - the projection rebuilt into a definition equals `derive(D_r, P)`.
+
+**Audit events are never used to compute state.** If an event were missing while the ledger and the cache agree, verification reports an audit gap but the state stays correct. Every successful action writes both in the same transaction, so a gap is evidence of out-of-band tampering.
+
+### 6.3 Indexes and constraints (summary)
+
+- **One live version per slug:** `UNIQUE (slug) WHERE superseded_at IS NULL AND withdrawn_at IS NULL` on `guide_publication`.
+- **One open review per slug:** `UNIQUE (slug) WHERE review_state = 'IN_REVIEW'` on `guide_revision`.
+- **Approval must match the revision.** `FK (approval_transition_id, revision_id) → guide_review_transition(id, revision_id)`. `wf_publish` checks that it's an `APPROVE` with an equal digest.
 - **Lookup indexes:**
   - `guide_revision(slug, created_at DESC)`;
-  - `guide_review_decision(revision_id, decided_at DESC)`;
+  - `guide_review_transition(revision_id, seq)`;
   - `guide_publication(slug, published_at DESC)`;
   - `guide_workflow_event(slug, occurred_at)`.
 
-### 6.3 Service boundaries (proposed classes, same `guides` package or a sub-package)
+### 6.4 Function and service boundaries
 
-| Service | Responsibility | Writes |
-|---|---|---|
-| `GuideRevisionService` | Validate with `GuideImportReader`, enforce the T1 rules, store the canonical form and digest, and run T2/T3 | `guide_document`, `guide_revision`, events |
-| `GuideReviewService` | T4–T6, separation of duties, digest compare-and-set | `guide_review_decision`, `review_state`, events |
-| `GuidePublicationService` | T7–T11 in one transaction. It calls `GuideImporter.apply(derive(D_r, P))` to write the projection, or removes the projection on withdrawal. | `guide_publication`, projection, events |
-| `GuideIntegrityCheck` | Read-only verification of every live projection (§6.5) | none |
-| `GuideQuery` (existing) | Public reads, unchanged | none |
-
-**Boundary rules**
-
-- The public read path (`GuideController`, `GuideQuery`) never depends on the revision, review or publication repositories.
-- Only `GuidePublicationService` may call `GuideImporter.apply` once the workflow is enabled.
-
-### 6.4 API contracts (proposed)
-
-**Phase 1–4: command-line operations.** These match the existing `--import-guide` pattern: one operation per process, one transaction, nonzero exit on failure.
-
-| Command | Role | Required inputs | Outcomes |
-|---|---|---|---|
-| `--guide-revision-create=<file> [--based-on=<revisionId>]` | Author | file | `CREATED <revisionId> <reviewDigest>`, `EXISTING …` or `EXISTING_WITHDRAWN …` (nonzero exit) |
-| `--guide-review-submit=<revisionId> --expect-digest=<hex>` | Author | | `SUBMITTED` |
-| `--guide-review-retract=<revisionId> --expect-digest=<hex>` | Author | | `RETRACTED` |
-| `--guide-review-decide=<revisionId> --decision=APPROVED\|CHANGES_REQUESTED\|REVOKED --expect-digest=<hex> --reference=<text> [--scope=… --rules-as-at=YYYY-MM-DD]` | Reviewer | | `DECIDED <decisionId>` |
-| `--guide-publish=<revisionId> --expect-review-digest=<hex> --expect-live=<publicationId\|none>` | Publisher | | `PUBLISHED <publicationId> <publishedDigest>` or `ALREADY_LIVE` |
-| `--guide-rollback=<revisionId> --expect-live=<publicationId>` | Publisher | | `ROLLED_BACK <publicationId>` |
-| `--guide-withdraw=<slug> --expect-live=<publicationId> --reason=<text> [--emergency]` | Publisher, or Admin with `--emergency` | | `WITHDRAWN` |
-| `--guide-verify` | any operator | | Report. Nonzero exit on any mismatch. |
-
-**Actor attribution (Phase 1–4):** each human operator connects with a **personal PostgreSQL login role** (D-5).
-
-- The service resolves the actor from `session_user` through `principal.db_role`, and the event table stores `session_user` independently.
-- So the database records who acted. A command-line flag can't assert it.
-- The application's runtime role is never a principal.
-
-**Phase 5: authenticated HTTP admin API.** It uses the same services and verbs under `/admin/guides/...`.
-
-- It is served separately from the public API (separate port or path policy) and authenticated with OIDC through Spring Security. That's a new dependency, which is why it's deferred.
-- There's no CORS for admin, and all authorization is server-side. The digest and expected-live compare-and-set fields are mandatory request fields.
-
-**Public API.** It stays `GET /api/guides` and `GET /api/guides/{slug}` with the existing contracts. Two additions are proposed:
-
-- **`Cache-Control`** on both endpoints, either `no-store` or a short `max-age` (D-7), so a withdrawal takes effect quickly.
-- **Optionally, `publishedDigest` in the detail response,** so downstream consumers can bind to an exact published version (D-8).
-
-No public endpoint ever reads revision, decision, publication or event tables.
-
-### 6.5 Integrity check (`--guide-verify`, proposed)
-
-For every slug, it confirms all of the following:
-
-- A projection row with `status = PUBLISHED` exists **if and only if** exactly one `LIVE` publication exists.
-- The definition rebuilt from the projection rows, using the evidence-collection presence from the stored `D_r`, hashes to `published_digest`.
-- `v1(D_r_stored) == review_digest` and `sha256(canonical_form) == review_digest`.
-- The publication's approval decision is `APPROVED`, human, and for the same digest.
-
-**Uses:** run it in CI against a test database, and on a schedule against production (§6.7).
-
-### 6.6 Migration and compatibility for existing Guides
-
-- **Baseline.** The existing published Guides (GP, Health & NHS, Money) are each imported from their committed `content/guides` artifact as a revision with provenance `LEGACY_BASELINE`.
-  - Each gets a publication recorded with `approval_decision_id = NULL` and `legacy = true`. This needs a column, and a `CHECK` allowing `NULL` approval only when `legacy`.
-  - **That record is explicitly not a legal approval.** Whether legacy Guides need re-review is open decision D-4.
-- **Projection unchanged.** The baseline writes no projection change: the stored definition must hash to the live projection's digest, otherwise the migration stops.
-- **Importer guard.**
-  - Once a slug has a `guide_document`, `--import-guide` refuses to write that slug.
-  - For categories that need legal review, `--import-guide` refuses `PUBLISHED` input altogether, and new drafts go to revisions.
-  - Removing `--import-guide` later is a separate decision.
-- **Drafts in the public table.** Any existing `DRAFT` rows in `guide` are moved into revisions and deleted from the projection, so the projection holds only live content.
-
-### 6.7 Operational safeguards and monitoring
-
-| Safeguard | Detail |
+| Database function (`SECURITY DEFINER`) | Caller roles (checked inside) |
 |---|---|
-| Runtime-role privileges | The application's runtime role can `SELECT` only the projection and its children, and nothing in the revision, decision or event tables (I-3). Operator roles get only `EXECUTE`/DML through the service, as granted. |
-| Scheduled integrity check | `--guide-verify` daily, plus after every publish or withdraw. It alerts on any mismatch. |
-| Audit export | The event log is exported daily off-host (D-15), so a database superuser can't silently rewrite history without it being detectable. |
-| Emergency withdrawal runbook | One command plus a cache purge if a CDN sits in front (D-7). |
-| Alerts | Publish or withdraw outside agreed hours, an approval nearing expiry while live, and an integrity mismatch. |
+| `wf_bootstrap_admin`, `wf_register_principal`, `wf_grant_role`, `wf_revoke_role`, `wf_classify_category` | `lu_owner` (bootstrap only) / Admin |
+| `wf_create_revision`, `wf_submit`, `wf_retract` | Author |
+| `wf_request_changes`, `wf_approve`, `wf_revoke`, `wf_confirm` | Reviewer(C) |
+| `wf_publish`, `wf_withdraw` | Publisher. `wf_withdraw` also allows Admin for `EMERGENCY`. |
+| `wf_enforce_review_deadlines` | Publisher, Admin, deadline enforcer |
+
+**Java side (proposed classes)**
+
+- `GuideWorkflowCommand`: parses CLI options, validates with `GuideImportReader` and `GuideContentDigest`, renders canonical content for review, calls functions through JDBC, and prints outcomes. It never writes tables directly.
+- `GuideIntegrityCheck`: the read-only `--guide-verify`.
+- `GuideQuery` and the public controller: unchanged, and with no dependency on any workflow class.
+
+### 6.5 CLI contracts (MVP)
+
+Each command runs under the `operator` profile as the operator's own login: one operation, one transaction, nonzero exit on failure.
+
+| Command | Function | Outcome |
+|---|---|---|
+| `--guide-revision-create=<file> [--based-on=<id>] [--ai-assisted="<note>"]` | `wf_create_revision` | `CREATED <id> <reviewDigest>` / `EXISTING …` / `EXISTING_WITHDRAWN …` |
+| `--guide-revision-show=<id>` | read only | Rendered canonical content plus digest, for review |
+| `--guide-review-submit=<id> --expect-digest=<hex>` / `--guide-review-retract=…` | `wf_submit` / `wf_retract` | `SUBMITTED` / `RETRACTED` |
+| `--guide-review-request-changes=<id> --expect-digest=<hex> --reason=…` | `wf_request_changes` | `CHANGES_REQUESTED` |
+| `--guide-review-approve=<id> --expect-digest=<hex> --reference=… --scope=… --rules-as-at=YYYY-MM-DD` | `wf_approve` | `APPROVED publish_by=… review_due_at=…` |
+| `--guide-review-confirm=<id> --expect-digest=<hex> --reference=… --rules-as-at=…` | `wf_confirm` | `CONFIRMED review_due_at=…` |
+| `--guide-review-revoke=<id> --reason=…` | `wf_revoke` | `REVOKED` (plus `WITHDRAWN` if it was live) |
+| `--guide-publish=<id> --expect-review-digest=<hex> --expect-live=<publicationId\|none>` | `wf_publish` | `PUBLISHED <publicationId> <publishedDigest>` / `ALREADY_PUBLISHED` |
+| `--guide-withdraw=<slug> --expect-live=<publicationId> --reason=… [--emergency]` | `wf_withdraw` | `WITHDRAWN` |
+| `--guide-enforce-review-deadlines` | `wf_enforce_review_deadlines` | List of withdrawn slugs (may be empty) |
+| `--guide-verify` | read only | Report. Nonzero exit on any integrity failure or `HIGH` overdue item. |
+
+**No command takes an actor, a publication time or a review class as input.** Those come from the session, the database clock and the policy table.
+
+**Public API.** `GET /api/guides` and `GET /api/guides/{slug}` keep their contracts and gain `Cache-Control: no-store` (D-7). Exposing `publishedDigest` publicly is a later option (L-7). No public code path reads workflow tables, and the runtime role can't (I-3).
+
+### 6.6 Integrity verification (`--guide-verify`, MVP)
+
+For every slug, it checks:
+
+- the replayed ledger equals the cache (I-15);
+- `sha256(canonical_form) = review_digest`, and `v1(parse(canonical_form)) = canonical_form`;
+- a projection exists **if and only if** exactly one `PUBLISHED` record exists;
+- the projection rebuilds to `derive(D_r, P)`, using `D_r`'s evidence presence, and that hashes to `published_digest`;
+- every non-legacy publication references an `APPROVE` by an authorised human for the same digest. Legacy publications have no revision, so for them only the projection-existence and audit checks apply;
+- review currency is reported. Any `HIGH` publication past its due date is a failure.
 
 ---
 
-## 7. Publication and withdrawal sequences
+## 7. Publication, review-deadline and withdrawal sequences
 
 **All of this section is proposed.**
 
@@ -463,313 +542,231 @@ For every slug, it confirms all of the following:
 
 ```mermaid
 sequenceDiagram
-    actor Pub as Publisher (personal DB role)
-    participant CLI as --guide-publish
-    participant S as GuidePublicationService
+    actor Pub as Publisher (op_<person> login)
+    participant CLI as --guide-publish (operator profile)
+    participant F as wf_publish (SECURITY DEFINER)
     participant DB as PostgreSQL (one transaction)
     Pub->>CLI: revisionId, expect-review-digest, expect-live
-    CLI->>S: publish(...)
-    S->>DB: BEGIN; SELECT guide_document WHERE slug FOR UPDATE
-    S->>DB: resolve actor from session_user (must hold PUBLISHER, active, HUMAN)
-    S->>DB: load revision, latest decision, current LIVE publication
-    S->>S: check I-1..I-10 (approval, digest echo + recompute, separation of duties, expiry, not withdrawn, expect-live)
-    S->>S: P = db now() truncated to µs; D_p = derive(D_r, P); validate; published_digest = v1(D_p)
-    S->>DB: GuideImporter.apply(D_p)  (projection replaced in the same transaction)
-    S->>DB: old LIVE → SUPERSEDED; insert publication LIVE
-    S->>DB: insert events SUPERSEDED, PUBLISHED
-    S->>DB: COMMIT
-    S-->>CLI: PUBLISHED publicationId publishedDigest
+    CLI->>CLI: show canonical content + digest; Java re-validates v1 conformance
+    CLI->>F: call
+    F->>DB: activation row exists? lock guide_document FOR UPDATE
+    F->>DB: actor = principal(session_user); PUBLISHER, HUMAN, active
+    F->>DB: revision APPROVED (cache == ledger); latest APPROVE not revoked; now ≤ publish_by
+    F->>F: digest echo == review_digest == sha256(canonical_form); separation of duties (class)
+    F->>F: P = transaction time (µs); swap segment → published text; published_digest
+    F->>DB: expect-live == current PUBLISHED record (or none)
+    F->>DB: replace projection rows from published text (status PUBLISHED, published_at = updated_at = P)
+    F->>DB: supersede previous record; insert publication; insert events
+    F-->>CLI: PUBLISHED publicationId publishedDigest
 ```
 
-**Failure handling.** Any failed check or any database error rolls back everything: projection, publication rows and events. The public API keeps serving the earlier `LIVE` version, which is already how `GuideImporter` rollback behaves.
+- **Failure:** any failed check or database error rolls back everything, and the earlier version stays live.
+- **Idempotency:** publishing the revision that's already `PUBLISHED` returns `ALREADY_PUBLISHED` with no writes. A retry after an unknown outcome returns either that or `STALE_LIVE_VERSION`.
 
-**Idempotency**
-
-- Publishing the revision that's already `LIVE` returns `ALREADY_LIVE` and writes nothing.
-- A retry after an unknown outcome, such as a lost connection, is safe. Either `ALREADY_LIVE` comes back or `STALE_LIVE_VERSION` shows that something else changed. Each attempt carries a `request_id` in the event log.
-
-### 7.2 Rollback (T9)
-
-**Same transaction shape as publish, with these differences:**
-
-- The target revision must be `SUPERSEDED`, never withdrawn.
-- Its approval must still be valid: not revoked, not expired.
-- `--expect-live` is mandatory.
-- `P` is a **new** publication time, so the restored version gets a new `published_digest` and a new publication row. Old rows are never reactivated.
-
-**Recorded as** `ROLLED_BACK`.
-
-### 7.3 Withdraw (T10) and emergency withdrawal
+### 7.2 Confirm and deadline enforcement
 
 ```mermaid
 sequenceDiagram
-    actor Op as Publisher or Admin (--emergency)
-    participant S as GuidePublicationService
-    participant DB as PostgreSQL (one transaction)
-    Op->>S: withdraw(slug, expect-live, reason)
-    S->>DB: BEGIN; lock guide_document; check actor role, expect-live
-    S->>DB: delete projection rows for slug (D-6) — public 404 from commit
-    S->>DB: publication LIVE → WITHDRAWN (withdrawn_by, reason)
-    S->>DB: insert event WITHDRAWN (emergency flag)
-    S->>DB: COMMIT
-    Op->>Op: purge CDN/cache if present (runbook)
+    participant Sched as Scheduler (op_deadline_enforcer)
+    participant F as wf_enforce_review_deadlines
+    participant DB as PostgreSQL
+    Sched->>F: run (also runnable by Publisher/Admin)
+    loop each HIGH slug with a PUBLISHED record
+        F->>DB: lock guide_document; recompute hard deadline from latest APPROVE/CONFIRM + policy
+        alt past hard deadline
+            F->>DB: delete projection; withdrawn_* (kind DEADLINE); event
+        else not past
+            F->>DB: no change
+        end
+    end
+    F-->>Sched: list of withdrawn slugs
 ```
 
-**After a withdrawal:**
+- **Confirmation** (T12, `wf_confirm`) is a reviewer action on the live revision. It records a new `review_due_at` and changes no content, digest or publication record.
+- **Each slug is handled in its own transaction,** so one failure doesn't block the others.
 
-- The withdrawn revision can never be published again (I-11).
-- The slug can only go live again through T1→T7 with a different, newly approved revision.
-- An emergency withdrawal by an Administrator alone is followed up by a Publisher or Reviewer in the audit log (D-12).
+### 7.3 Withdraw (T10), emergency withdrawal and revocation of a live revision
+
+- **`wf_withdraw`:**
+  1. lock the slug;
+  2. check the role and withdrawal kind;
+  3. check `expect-live`;
+  4. delete the projection rows (public 404 from commit);
+  5. set the `withdrawn_*` columns;
+  6. write an event.
+- **Emergency:** an Admin with `--emergency` can do this, and a reason is required.
+- **`wf_revoke` on a live revision** does the same withdrawal (kind `REVOCATION`) in the same transaction as the ledger `REVOKE`.
 
 ### 7.4 Failure recovery
 
 | Failure | Behaviour |
 |---|---|
-| Crash or connection loss mid-transaction | PostgreSQL rolls back, and nothing is partly published. The operator re-runs the command, which is idempotent (§7.1). |
-| Projection write fails a constraint | Whole transaction rolls back, and the earlier version stays live |
-| Integrity check finds a mismatch | Alert. An operator either withdraws (fail closed) or re-publishes the approved revision. It never repairs the projection by hand. |
-| Clock skew (`P < T_r`) | Publish rejected. `T_r` came from the author, so the fix is a corrected revision, not a backdated `P`. |
+| Crash mid-transaction | Rolled back. The command is safe to re-run (§7.1). |
+| `P < T_r` (clock or author error) | Publish rejected. A corrected revision is needed. |
+| Deadline scheduler doesn't run | `HIGH` content past hard deadline stays live, but `--guide-verify` fails and anyone with Publisher or Admin can run enforcement (§8.1) |
+| Verify finds drift | Withdraw (fail closed) or re-publish the approved revision. Never repair rows by hand. |
 
 ---
 
 ## 8. Security invariants and failure scenarios
 
-**All invariants are proposed.** Each must have at least one automated test before its phase is accepted (§9).
+**All invariants are proposed.** Each needs automated tests before its phase is accepted (§9).
 
 | ID | Invariant |
 |---|---|
-| I-1 | A `LIVE` publication always references an `APPROVED`, unrevoked, unexpired decision for the same revision and the same `review_digest`, made by an active human reviewer. The only exception is a `legacy` baseline (§6.6). |
-| I-2 | Revision content, review decisions and audit events can't be updated or deleted. Publication state only moves forward. Triggers enforce this for every database role the application uses. |
-| I-3 | No draft, revision, decision or unpublished wording can be read through the public API. The runtime role has no `SELECT` on those tables, and the public query path doesn't reference them. |
-| I-4 | Approve and publish both need the caller's echoed digest to equal the stored digest **and** `sha256(canonical_form)` recomputed at that moment. |
-| I-5 | Only `HUMAN` principals can create revisions, record `APPROVED`, `CHANGES_REQUESTED` or `REVOKED`, publish, roll back or withdraw. `AI` and `SERVICE` principals can't hold roles, which is enforced by the composite foreign key for reviewers and by role-grant and service checks for everything else. |
-| I-6 | The reviewer is never the revision's author. The publisher is never the author. Reviewer ≠ publisher for categories that need legal review (D-1). |
-| I-7 | Every state change writes exactly one audit event in the same transaction, with actor, `session_user`, digests and `request_id`. |
-| I-8 | At most one `LIVE` publication and at most one `IN_REVIEW` revision per slug. |
-| I-9 | Publish, rollback and withdraw need `expect-live` to match the current state under the slug lock. Otherwise `STALE_LIVE_VERSION`. |
-| I-10 | `published_digest == v1(derive(D_r, P))`, and the projection rebuilds to `D_p` exactly. |
-| I-11 | A `WITHDRAWN` revision is never published again, and identical content can't be resubmitted because `(slug, review_digest)` is unique. Changed or re-dated content is a new revision that needs full review. |
-| I-12 | Once the workflow is enabled, `--import-guide` can't publish categories that need legal review, or write any slug that has a `guide_document`. |
-| I-13 | Withdrawal makes the public API return 404 for the slug from commit onwards. Cache headers bound how long it stays downstream (D-7). |
-| I-14 | Granting or revoking a role is audited. A principal can't grant itself a role. |
+| I-1 | **Initial publication** needs an `APPROVE` that is not revoked, made by an active human holding `REVIEWER` for the category's class, for the same revision and the same `review_digest`, with `now ≤ publish_by`. A publication without one exists only as a `legacy` row inserted by the activation migration, and none can be created afterwards. Staying live does **not** depend on approval age (§3.4). |
+| I-2 | Revision content, ledger rows and audit events can't be updated or deleted. Publication identity is immutable, and lifecycle columns are write-once and forward-only. |
+| I-3 | The runtime role can `SELECT` only projection tables. The projection holds only `PUBLISHED` content, so no draft, revision or ledger data can reach the public API. |
+| I-4 | Every review or publish function needs the caller's echoed digest to equal `review_digest`, and `sha256(canonical_form)` recomputed in that transaction. |
+| I-5 | The actor is always `principal(session_user)` (MVP) and is never taken from input. Only `HUMAN` principals hold `AUTHOR`, `REVIEWER`, `PUBLISHER` or `ADMIN`. The only `SERVICE` capability is `DEADLINE` withdrawal. AI is never a principal. |
+| I-6 | Separation of duties: author ≠ reviewer and author ≠ publisher for every class; reviewer ≠ publisher for `HIGH` with no override (`STANDARD` per D-1); Admin alone grants no review or publish right. |
+| I-7 | Every successful action writes exactly one audit event in its transaction. Review transitions also write exactly one ledger row. |
+| I-8 | At most one `PUBLISHED` record and one `IN_REVIEW` revision per slug. |
+| I-9 | Publish and withdraw need `expect-live` to match under the slug lock. |
+| I-10 | `published_digest = sha256(swap(canonical_form, P))`, and the projection equals the parsed published text. Java recomputes it independently. |
+| I-11 | A withdrawn revision is never published again, and identical content can't be resubmitted. |
+| I-12 | **Before activation:** `--import-guide` refuses `PUBLISHED` input for any `HIGH` category (interim guard, MVP-0). **From activation:** the runtime role has no projection DML, the importer refuses to run, and the only projection writers are `wf_*` functions. No mixed mode exists. |
+| I-13 | Withdrawal takes effect at commit. Guide responses carry `Cache-Control: no-store`. |
+| I-14 | Role grants are audited. No self-grant. The first Admin comes only from the one-time `lu_owner` bootstrap. |
+| I-15 | The cached review state always equals the replay of the ledger. |
+| I-16 | A `HIGH` publication past its hard deadline is withdrawn by the enforcement function, and `--guide-verify` fails while one remains live. Approval expiry never silently removes content. |
+| I-17 | `wf_*` functions are `SECURITY DEFINER` with a fixed `search_path`. `PUBLIC` has no `EXECUTE`. Operators have no table DML. |
 
 ### 8.1 Failure scenarios
 
 | Scenario | Prevented or detected by |
 |---|---|
-| Author edits content after approval and publishes | The edit is a new revision without approval (I-1, I-2) |
-| Reviewer approves a different digest than the one shown | Digest echo (I-4) |
-| Database row tampered with after approval | Recomputed digest at publish (I-4). Daily `--guide-verify` (§6.5). |
-| AI agent "approves" | Composite foreign key makes it impossible (I-5) |
-| Admin approves to get something live | No reviewer role, so rejected (§4). Even with the role, an own revision is rejected (I-6). |
+| Author edits content after approval | The edit is a new revision without approval (I-1, I-2) |
+| Reviewer approves a different digest than the one shown | Echo (I-4) |
+| Operator uses `psql` to insert an approval or publication row | No table DML (I-17) |
+| Operator claims to be someone else | Identity comes from their own database login (I-5) |
+| Shared web-app connection used for workflow actions | Runtime role has no `EXECUTE` (§4.2) |
+| AI tool attempts approval | AI isn't a principal, and ledger decisions need `HUMAN` (I-5) |
+| One person reviews and publishes `HIGH` content | Function check with no override (I-6) |
+| Old jar runs `--import-guide` after activation | No projection privileges, so the database denies it (I-12) |
+| Someone imports a `PUBLISHED` Family & Visa file before activation | Interim guard (I-12). Residual risk: the shared credential can still write directly until MVP-8. This is why MVP-0 ships first and activation follows soon after. |
+| Approval goes stale before publishing | `publish_by` (I-1) |
+| Published `HIGH` content goes unreviewed for too long | Overdue reporting, `CONFIRM`, then `DEADLINE` withdrawal (I-16) |
+| Scheduler for deadline enforcement silently fails | `--guide-verify` fails. Residual risk if verification isn't run either. Scheduled verification plus alerting is L-3. |
 | Two publishers race | Slug lock plus `expect-live` (I-8, I-9) |
-| Publisher overwrites a newer live version unknowingly | `STALE_LIVE_VERSION` (I-9) |
-| Legacy `--import-guide` republishes a withdrawn Guide | Importer guard (I-12). Within the workflow, the unique digest blocks resubmission (I-11). |
-| Bug in public query exposes drafts | The runtime role can't read revision tables (I-3). Drafts aren't in `guide` (§6.6). |
-| Withdrawn content cached by a CDN | Cache headers and the purge runbook (I-13, D-7) |
-| Approval goes stale as the law changes | `expires_at` and `rules_as_at` on decisions (D-3). Expiry alerts. |
-| Operator credentials leaked | Personal roles, least privilege, audit of `session_user`, off-host log export. Not fully preventable without stronger authentication (Phase 5). |
-| Database superuser rewrites history | Not preventable inside the database. Detectable through the exported audit log and digests (D-15). |
+| Draft leaks through a query bug | Projection holds no drafts, and the runtime role can't read workflow tables (I-3) |
+| Withdrawn content cached downstream | `no-store` (I-13) |
+| Owner or superuser rewrites history | Not preventable inside the database (break-glass boundary). Detectable through verification and audit gaps. Off-host export is L-4. |
+| Personal operator credential leaks | Limited to that person's roles. Every use is attributed and visible. Revoke the login and role. |
 
 ---
 
 ## 9. Testing strategy
 
-**All of these tests are proposed.** They must follow existing conventions:
-
-- isolated temporary PostgreSQL (`IsolatedPostgres`), never the development database;
-- synthetic fixtures only;
-- no network.
+**All of these tests are proposed.** They use the existing isolated temporary PostgreSQL, synthetic fixtures only, and no network. Tests create the proposed roles (`lu_owner`, `life_in_uk_app`, `lu_guide_operator` and several `op_*` logins) inside the temporary cluster and connect as each.
 
 | Layer | Tests |
 |---|---|
-| Pure units | State-machine table: every allowed transition (§3.1) succeeds and every other pair is rejected. `derive(D_r, P)` matches `Guide.publish(at)` semantics. Digest pairs are pinned with fixed synthetic fixtures for `D_r` and `D_p`, computed independently as in Issue #44. |
-| Database constraints | Direct SQL attempts fail: `UPDATE`/`DELETE` on revisions, decisions and events; `HUMAN`-only approval through the composite foreign key; second `LIVE` or `IN_REVIEW` per slug; publication pointing at a non-approved or mismatched decision. |
-| Privileges | Connected as the runtime role, `SELECT` on revision, decision and event tables is denied. Connected as a non-publisher operator role, publish is denied. |
-| Service integration | Full T1→T7 happy path. Each precondition of I-1 to I-12 broken in turn produces a specific error and leaves no rows changed. Exactly one event per transition (I-7). |
-| Concurrency | Two threads publishing different revisions of one slug: one succeeds, the other gets `STALE_LIVE_VERSION`. Publish racing withdraw. Two first publications of a new slug. |
-| Failure injection | A forced exception after the projection write and before the publication insert rolls back everything, and the earlier version stays served. Mirrors `databaseFailureAfterGuideUpdate…`. |
-| Public API | Revisions in any state are never visible. Withdrawal gives 404 straight after commit. Supersede swaps content atomically. Response contracts unchanged except the agreed additive fields. Cache headers present. |
-| Importer guard | `--import-guide` against a workflow-managed slug, or `PUBLISHED` input for a legal-review category, fails without changing anything. |
-| Migration | Baselines from the committed `content/guides` artifacts reproduce the existing projection's digest. The migration refuses to proceed on a mismatch. |
-| Integrity check | `--guide-verify` passes on a clean database and fails on each kind of injected drift. |
-| Disclosure | Tests, fixtures and logs contain no real unpublished wording. Logs print slugs, IDs and digests only, never content. |
+| Role separation | The runtime role can't `SELECT` workflow tables, `EXECUTE` `wf_*` or (after activation) write the projection. Operators have no table DML. `PUBLIC` has no `EXECUTE`. `search_path` is pinned. |
+| Attribution | Every function records the principal of `session_user`. Arguments can't change it. An unregistered or inactive login is rejected. |
+| State machine | Table-driven: each allowed transition in §3.1 succeeds, and every other (state, action, role) combination is rejected. That covers separation of duties per class, and `HIGH` reviewer = publisher rejected with no override. |
+| Ledger consistency | Cache equals ledger replay after every transition. A concurrent second transition fails on `seq`. A direct cache update without a ledger row is rejected by the trigger. |
+| Immutability | `UPDATE`/`DELETE` on content, ledger and audit rows fail for every role except the owner. Publication lifecycle columns can't be rewritten or reversed. |
+| Digests | `sha256(canonical_form)` is checked on create. The segment swap appears exactly once, matches `GuideContentDigest` on fixed synthetic fixtures, and keeps evidence presence. `P` truncation and format are checked. |
+| Projection mapping (differential) | For synthetic definitions, the projection written by `wf_publish` equals what `GuideImporter.apply(derive(D_r, P))` produces, row by row. |
+| Approval validity | Publish after `publish_by` fails. A live publication stays live after `publish_by` and after `review_due_at`. `CONFIRM` extends `review_due_at` without changing content or digest. Revoking a live revision withdraws it atomically. |
+| Deadlines | `HIGH` past hard deadline is withdrawn by enforcement with kind `DEADLINE`. Not-yet-due content is untouched. `STANDARD` content is never withdrawn by enforcement. The enforcer principal can do nothing else. |
+| Concurrency | Two publishes race: one wins, the other gets `STALE_LIVE_VERSION`. Publish races withdraw. First publication races. |
+| Failure injection | An error after the projection write rolls back everything, and the earlier version keeps serving. |
+| Activation | Before activation, `wf_publish` refuses. The activation migration refuses if `DRAFT` projection rows or `HIGH`-category projection rows exist. After activation, every pre-existing published Guide's public response is byte-identical, and `--import-guide` and old-style writes fail. |
+| Public API | Revisions in any state are never visible. Withdrawal gives 404 at commit. Supersede is atomic. Contracts unchanged except `Cache-Control`. |
+| Verification | `--guide-verify` passes on a clean database and fails on each kind of injected drift, including a ledger/cache mismatch, a missing event, projection drift and `HIGH` overdue. |
+| Disclosure | No real unpublished wording in tests or fixtures. Logs and audit `detail` contain identifiers and digests only. |
 
 ---
 
 ## 10. Phased implementation roadmap
 
-**These are proposed future Issues and are not created yet.** Backend invariants come first (Phases 1–4). The authenticated HTTP API and the admin UI come after.
+**These are proposed future Issues and are not created yet.**
+
+### 10.1 Activation boundary (correction 2)
+
+- **Before activation,** production behaviour is exactly today's, apart from the interim MVP-0 guard. The new tables and functions may exist, but `wf_publish` refuses while `guide_workflow_activation` is empty.
+- **Activation is one Flyway migration plus the release that contains it** (MVP-8). In one transaction it:
+  1. **refuses to proceed** if any `DRAFT` row, or any row in a `HIGH` category, exists in the `guide` projection (fail closed: drafts must not become managed content implicitly, and no legacy `HIGH` content may exist);
+  2. registers **every** existing slug as a managed `guide_document` (`legacy = true`) with a `legacy` `PUBLISHED` publication record, leaving the projection untouched so the public API is unchanged;
+  3. revokes `INSERT`/`UPDATE`/`DELETE` on projection tables from `life_in_uk_app`;
+  4. inserts the activation row.
+
+  The same release replaces `GuideImportCommand` with a command that refuses to run.
+- **After activation:**
+  - every slug is managed;
+  - **there are no unmanaged slugs, so there is no mixed mode**;
+  - legacy content stays live and can be withdrawn, or replaced by a reviewed revision;
+  - new content of any category goes live only through `wf_publish`.
+- **Old binaries fail closed.** A pre-activation jar run against an activated database fails its import for lack of privileges.
+
+### 10.2 MVP: mandatory publication safety
 
 ```mermaid
 flowchart LR
-    I1[1 Principals + audit log] --> I2[2 Immutable revisions]
-    I2 --> I3[3 Review decisions]
-    I3 --> I4[4 Transactional publication]
-    I4 --> I5[5 Withdrawal + rollback]
-    I5 --> I6[6 Legacy baseline + importer guard]
-    I6 --> I7[7 Integrity check + cache headers]
-    I7 --> I8[8 Authenticated admin HTTP API]
-    I8 --> I9[9 Admin UI - frontend]
+    M0[MVP-0 Interim HIGH import guard] --> M1[MVP-1 Database role separation]
+    M1 --> M2[MVP-2 Principals, attribution, audit log]
+    M2 --> M3[MVP-3 Immutable revisions + review classes]
+    M3 --> M4[MVP-4 Review ledger + human decisions]
+    M4 --> M5[MVP-5 Publication function, inert]
+    M5 --> M6[MVP-6 Withdrawal, revocation, deadlines, no-store, inert]
+    M6 --> M7[MVP-7 Integrity verification]
+    M7 --> M8[MVP-8 Atomic activation]
 ```
 
-### Issue 1: Workflow principals, roles and append-only audit log
+| Issue | Purpose and scope | Depends on | Acceptance criteria | Non-goals |
+|---|---|---|---|---|
+| **MVP-0 Interim import guard for high-risk categories** | `--import-guide` refuses `PUBLISHED` input for category `family-visa` (code-level list). Small and shipped first. | — | Unit and CLI tests: a `PUBLISHED` `family-visa` file is rejected with no writes. Other categories are unchanged. | Database enforcement (MVP-8). Any workflow. |
+| **MVP-1 Database role separation** | `lu_owner` for Flyway (`spring.flyway.user`), least-privilege runtime role, `lu_guide_operator` group, `operator` CLI profile (Flyway off, pool size 1, runners safe). Deployment runbook. | MVP-0 | Isolated-Postgres tests with real roles: the runtime role can't run DDL or touch owner-only objects. The app and every existing test still pass under the split roles. | Workflow tables. OIDC. |
+| **MVP-2 Principals, role grants and audit log** | `principal`, `principal_role`, `guide_workflow_event`; `wf_bootstrap_admin`, `wf_register_principal`, `wf_grant_role`, `wf_revoke_role`; `session_user` attribution; append-only triggers. | MVP-1 | Bootstrap works once only, as owner. No self-grant. Role/kind `CHECK`s hold. Events can't be changed. The actor can't be supplied as an argument. | Revisions. HTTP. |
+| **MVP-3 Immutable revisions and review classes** | `review_class_policy` (seeded `family-visa = HIGH`), `guide_document`, `guide_revision`; `wf_create_revision`; `--guide-revision-create` and `--guide-revision-show`; database digest checks; Java v1 conformance. | MVP-2 | `EXISTING` and `EXISTING_WITHDRAWN` outcomes. Content immutable. Unclassified categories rejected. `HIGH` needs non-empty evidence. Not visible publicly. | Review decisions. Publication. |
+| **MVP-4 Review ledger and human decisions** | `guide_review_transition`; review-state cache with ledger trigger; T2–T6 and T12 functions and CLI; class-scoped reviewers; separation of duties. | MVP-3 | Every review row of the §3.1 and §3.2 tables is tested. Cache equals ledger replay. Concurrent transitions are serialised. | Publication. Notifications. |
+| **MVP-5 Transactional publication (inert)** | `guide_publication`; `wf_publish` with segment swap, published digest, projection copy, supersede, `expect-live`, `publish_by`; `--guide-publish`. Refuses until activation, and tests enable activation inside the test database. | MVP-4 | I-1, I-4, I-6, I-8, I-9 and I-10 tested. Differential projection test. Concurrency and failure-injection tests. | Rollback (L-2). Activation. |
+| **MVP-6 Withdrawal, revocation, review deadlines and cache policy (inert)** | `wf_withdraw` (routine and emergency), live revocation (T6b), T11, `wf_confirm` currency, `wf_enforce_review_deadlines` and the `DEADLINE_ENFORCER` role; `Cache-Control: no-store` on Guide endpoints. | MVP-5 | 404 at commit. Withdrawn revisions are never republished. Deadline behaviour per §3.4. The enforcer can do nothing else. Headers present. | Scheduler hosting. Alerting (L-3). |
+| **MVP-7 Integrity verification** | `--guide-verify` (§6.6) and a security regression suite across MVP-1 to MVP-6. | MVP-6 | Detects every kind of injected drift. Passes on a clean database. Nonzero exit for `HIGH` overdue. | Scheduled runs or alerting (L-3). |
+| **MVP-8 Atomic activation** | Activation migration (§10.1), disabling `GuideImportCommand`, a post-activation `--guide-verify` in the deployment runbook. | MVP-7 | Refuses on drafts or `HIGH` legacy rows. Public responses byte-identical before and after. Old-jar import denied. Verification passes after activation. | Legacy re-review. Removing importer code (L-1). |
 
-- **Purpose:** establish who can act, and an audit log that can't be changed.
-- **Scope:**
-  - `principal`, `principal_role` and `guide_workflow_event` tables (one Flyway migration), with append-only triggers.
-  - Resolving the actor from `session_user`.
-  - A role-grant command, itself audited.
-- **Depends on:** none.
-- **Acceptance criteria:**
-  - Rows can't be changed or deleted.
-  - An `AI`/`SERVICE` principal can't receive any role.
-  - Self-grant is rejected.
-  - The actor comes from the database session, not from input.
-- **Non-goals:** revisions, publication, HTTP, UI.
+### 10.3 Later enhancements
 
-### Issue 2: Immutable Guide revisions bound to `guide-content-v1`
-
-- **Purpose:** content can be reviewed without being changed.
-- **Scope:**
-  - `guide_document` and `guide_revision` tables, with the immutability trigger.
-  - `--guide-revision-create`, using `GuideImportReader`.
-  - Storing the canonical form, digest and definition; the round-trip check; unique `(slug, review_digest)`.
-  - The rule that evidence must be present (D-10).
-- **Depends on:** 1.
-- **Acceptance criteria:**
-  - Identical input gives `EXISTING`.
-  - Any content edit gives a new revision.
-  - `sha256(canonical_form) == review_digest` is tested.
-  - Revisions never appear in the public API.
-- **Non-goals:** review decisions, publication, changing `--import-guide`.
-
-### Issue 3: Human legal review decisions
-
-- **Purpose:** record approval of an exact version by a named, qualified human.
-- **Scope:**
-  - T2–T6 (submit, retract, request changes, approve, revoke).
-  - `guide_review_decision` with the human-only composite foreign key.
-  - Digest compare-and-set; author ≠ reviewer; the open-review index; expiry and `rules_as_at` fields.
-- **Depends on:** 2.
-- **Acceptance criteria:**
-  - Every forbidden transition in §3.2 that applies to review is rejected by a test.
-  - An AI or author approval is impossible.
-  - Each decision writes exactly one event.
-- **Non-goals:** publication, notification, UI.
-
-### Issue 4: Transactional publication of approved revisions
-
-- **Purpose:** the only way content goes live.
-- **Scope:**
-  - `guide_publication` and the one-live index.
-  - `derive(D_r, P)` and the published digest.
-  - `--guide-publish` with `expect-live`, writing the projection through `GuideImporter.apply` in the same transaction, and supersede.
-  - `ALREADY_LIVE` idempotency.
-- **Depends on:** 3.
-- **Acceptance criteria:**
-  - I-1, I-4, I-6, I-8, I-9 and I-10 are tested.
-  - The concurrency and failure-injection tests in §9 pass.
-  - The public API contract is unchanged.
-- **Non-goals:** withdrawal, rollback, HTTP.
-
-### Issue 5: Withdrawal, emergency withdrawal and rollback
-
-- **Purpose:** remove live content safely, and restore earlier approved content deliberately.
-- **Scope:**
-  - T9, T10 and T11.
-  - Removing the projection (per D-6).
-  - The withdrawn-revision guard and the `EXISTING_WITHDRAWN` outcome (I-11).
-  - Admin emergency withdrawal with a mandatory reason.
-- **Depends on:** 4.
-- **Acceptance criteria:**
-  - Withdrawal gives a public 404 at commit.
-  - A withdrawn revision can never be republished.
-  - Rollback needs a valid approval and `expect-live`, and gets a new publication time and digest.
-- **Non-goals:** CDN integration, UI.
-
-### Issue 6: Legacy baseline migration and `--import-guide` guard
-
-- **Purpose:** bring existing Guides under the workflow without changing what users see.
-- **Scope:**
-  - Baseline revisions and `legacy` publications from the committed artifacts, with digest equality checked against the live projection.
-  - Moving any `DRAFT` projection rows into revisions.
-  - The importer guard (I-12).
-- **Depends on:** 5, and D-4 decided.
-- **Acceptance criteria:**
-  - Every existing public response is byte-identical before and after.
-  - Legacy publications are clearly marked as having no legal approval.
-  - The guard tests pass.
-- **Non-goals:** re-reviewing legacy content, removing `--import-guide`.
-
-### Issue 7: Integrity verification and public cache policy
-
-- **Purpose:** detect drift and limit how long withdrawn content can survive downstream.
-- **Scope:**
-  - The `--guide-verify` command (§6.5).
-  - Runtime-role privilege hardening (I-3).
-  - `Cache-Control` on the Guide endpoints (D-7).
-  - Optionally `publishedDigest` in the detail response (D-8).
-- **Depends on:** 6.
-- **Acceptance criteria:**
-  - The verify command catches each kind of injected drift.
-  - The runtime role can't read revision tables.
-  - The headers are present and the contracts are otherwise unchanged.
-- **Non-goals:** a monitoring platform, an alerting service.
-
-### Issue 8: Authenticated admin HTTP API
-
-- **Purpose:** the foundation for a UI.
-- **Scope:**
-  - `/admin/guides/...` for the same verbs, on a separate port or path policy.
-  - OIDC through Spring Security; mandatory digest and expect-live fields; mapping the principal from token claims.
-  - The same service layer, so no new business rules.
-- **Depends on:** 7, and D-5 decided.
-- **Acceptance criteria:**
-  - Every command-line invariant holds over HTTP.
-  - Unauthenticated, wrong-role and cross-site requests are rejected.
-  - Public endpoints are unaffected.
-- **Non-goals:** the UI, user self-registration.
-
-### Issue 9 (frontend repository): Review and publication admin UI
-
-- **Purpose:** for reviewers and publishers.
-- **Scope:**
-  - Revision list and diff view.
-  - Approve, request changes, publish and withdraw forms that show the digest being acted on.
-  - It never renders unapproved content on public routes.
-- **Depends on:** 8.
-- **Acceptance criteria:**
-  - The UI can't send an action without the digest it displayed.
-  - Accessibility review done.
-- **Non-goals:** a WYSIWYG editor, a CMS, comments.
+| Issue | Purpose | Depends on |
+|---|---|---|
+| **L-1 Legacy reconciliation and cleanup** | Turn legacy publications into reviewed v1 revisions from the committed artifacts according to each category's class (`STANDARD` review), then remove `GuideImportCommand` and `GuideImporter` code paths that are no longer reachable. | MVP-8, D-4 |
+| **L-2 Rollback to a superseded revision** | T9 with valid approval and review currency, plus a new publication record. | MVP-8 |
+| **L-3 Scheduled verification, deadline enforcement and alerting** | Run enforcement and verification on a schedule, and alert on failures, overdue reviews and out-of-hours publishing. | MVP-8, D-3 |
+| **L-4 Off-host audit export / hash chaining** | Tamper evidence beyond the database boundary. | MVP-8, D-14 |
+| **L-5 Authenticated admin HTTP API** | OIDC (O4): `lu_admin_api` role, `wf_*_as` variants, same functions. | MVP-8, D-5 |
+| **L-6 Admin UI with visual diffs** (frontend) | Review and publish screens that always send the displayed digest. | L-5 |
+| **L-7 Optional public `publishedDigest`** | Downstream version binding. | MVP-8, D-8 |
+| **L-8 Further automation** | Review reminders, bulk confirmation tooling, CI checks for artifacts against revisions. | L-3 |
 
 ---
 
 ## 11. Open decisions requiring human approval
 
-None of these is decided by this document.
+None of these is decided by this document. Items marked **policy set** reflect the product direction in §2.3. Only their details remain open.
 
-| ID | Decision | Recommendation |
+| ID | Decision | Recommendation / status |
 |---|---|---|
-| D-1 | Must the reviewer and publisher be different people? | Yes, for categories that need legal review. Decide whether a single-person exception (with a recorded reason) is acceptable while the team is small. |
-| D-2 | Who counts as a "qualified legal reviewer" for each category, and what qualification evidence is recorded? | Needs legal or professional input. Immigration content may involve regulated advice considerations, and this document makes no claim about them. |
-| D-3 | Approval expiry, and the `rules_as_at` requirement | Expiry needed for categories that need legal review (e.g. 90 days), with an alert before expiry while live |
-| D-4 | Which categories need legal review? Do the existing Health and Money Guides need retrospective review? | Family & Visa: yes. Others: owner decision. Legacy Guides are marked "no recorded legal approval" until reviewed. |
-| D-5 | Actor authentication before the HTTP API exists | Personal PostgreSQL login roles with `session_user` attribution. Confirm this fits how the database is hosted. |
-| D-6 | On withdrawal, delete the projection rows or set `status = DRAFT`? | Delete. The revision keeps the full history, so the public table holds only live content. |
-| D-7 | Guide endpoint cache policy | `no-store`, or `max-age ≤ 300` if a CDN is introduced, plus a purge runbook |
-| D-8 | Expose `publishedDigest` publicly? | Optional. Useful for downstream version binding, and it reveals nothing that isn't already public. |
-| D-9 | Add a separate editorial digest (a new canonicalization excluding publication fields) instead of the `derive` pairing? | No. The `derive` pairing needs no new canonicalization. Revisit only if a real need appears. |
-| D-10 | Must legal-review revisions have `evidence` present and non-empty? | Present: yes. Non-empty: yes for categories that need legal review. |
-| D-11 | How AI assistance is recorded (e.g. an `ai_assisted` flag and tool name on a revision), and what material AI tools may be given | Record it on the revision, and give AI tools only what a human Author chooses to share |
-| D-12 | Admin emergency withdrawal alone, and who grants the first Administrator? | Allow emergency withdrawal with a mandatory reason and follow-up. The first Admin comes from a one-off migration naming the owner. |
-| D-13 | Capture snapshots of official sources (copies of pages) as provenance? | Not now. `accessedAt` stays the consultation time. |
-| D-14 | Keep review state on the revision row (a mutable column) or derive it only from decisions? | A mutable state column guarded by the trigger and `state_version`, with decisions as the authoritative record |
-| D-15 | Off-host export or hash-chaining of the audit log | Daily export. Add hash-chaining only if threat modelling needs it. |
+| D-1 | Reviewer ≠ publisher for `STANDARD` | **`HIGH`: policy set, mandatory with no exception.** `STANDARD`: recommended, owner to confirm whether a recorded single-person exception is acceptable. |
+| D-2 | Qualification standard and evidence for `REVIEWER(HIGH)`, reviewer availability, and any regulated-advice implications of Family & Visa content | Needs legal or professional confirmation. This design records a qualification reference but defines no standard and claims no compliance. |
+| D-3 | `publish_window`, `review_interval` and `grace_period` per class; whether `STANDARD` has a hard deadline; whether scheduled enforcement is enabled at activation | Example only: `HIGH` publish window 30 days, review interval 90 days, grace 14 days. Scheduled enforcement on from activation for `HIGH`. |
+| D-4 | Review class for each category beyond Family & Visa (Health & NHS, Money, GP, …), and the timetable for reviewing legacy content | **Family & Visa = `HIGH`: policy set.** Others: risk-based owner decision. Unclassified categories can't be published. |
+| D-5 | Hosting supports per-person PostgreSQL logins (`CREATEROLE` for the deployer), SCRAM over TLS, and credential distribution. OIDC provider choice later. | Confirm against the actual hosting before MVP-1 |
+| D-6 | Withdrawal deletes projection rows rather than setting `DRAFT` | Delete. History lives in revisions and publication records. |
+| D-7 | Guide cache policy | `no-store` in the MVP. Revisit if a CDN is introduced. |
+| D-8 | Expose `publishedDigest` publicly | Later (L-7). Optional. |
+| D-9 | Add an editorial canonicalization instead of `derive` plus segment swap | No |
+| D-10 | Evidence requirements per class | Present for all. Non-empty for `HIGH`. |
+| D-11 | How AI assistance is recorded and what material AI tools may receive | `ai_assisted` plus a note on the revision, recorded by the human author. Tools get only what that author shares. |
+| D-12 | Who is the first Admin, and what minimum team size is needed | The owner through bootstrap. A second human is needed before anyone holds `ADMIN` with another role. For `HIGH`, at least three people (author, reviewer, publisher). |
+| D-13 | Capture copies of official source pages as provenance | Not now |
+| D-14 | Off-host audit export and/or hash chaining | Later (L-4). Daily export recommended. |
+| D-15 | Retire `--import-guide` entirely after L-1, or keep a read-only validation mode | Keep only validation (`--validate-guide`), with no writes |
 
 ---
 
-*Prepared for Issue #46 as an architecture proposal. All facts about existing behaviour come
-from the repository code and tests on `main` (`dfa48dd`). Nothing here has been
-implemented, and nothing here constitutes legal approval of any content.*
+*Prepared for Issue #46 as an architecture proposal (revision 2). All facts about existing
+behaviour come from the repository code, configuration, migrations and tests on `main`
+(`dfa48dd`). Nothing here is implemented, and nothing here constitutes legal approval of any
+content or a claim of regulatory compliance.*
