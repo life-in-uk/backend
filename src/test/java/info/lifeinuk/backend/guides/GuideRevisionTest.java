@@ -35,7 +35,7 @@ import static org.assertj.core.api.Assertions.*;
 @ContextConfiguration(initializers = IsolatedPostgres.Initializer.class)
 class GuideRevisionTest {
     @Autowired GuideRevisionService revisions;
-    @Autowired GuideRevisionCommand command;
+    @Autowired GuideWorkflowCommand command;
     @Autowired GuideQualityGate gate;
     @Autowired GuideImporter importer;
     @Autowired GuideImportReader reader;
@@ -44,7 +44,7 @@ class GuideRevisionTest {
     private final JsonMapper json = JsonMapper.builder().build();
 
     @BeforeEach
-    void clear() { jdbc.execute("TRUNCATE guide_revision, guide_evidence_support, guide_evidence, guide_source, guide"); }
+    void clear() { jdbc.execute("TRUNCATE guide_publication, guide_revision, guide_evidence_support, guide_evidence, guide_source, guide"); }
 
     GuideImportDefinition draft(Consumer<ObjectNode> edit) throws Exception {
         var root = (ObjectNode) json.readTree(GuideContentDigestTest.fixture("synthetic-evidence-import.json"));
@@ -267,7 +267,7 @@ class GuideRevisionTest {
                 "--guide-revision-create=" + valid, "--based-on=not-a-uuid")));
         assertThatIllegalArgumentException().isThrownBy(() -> command.run(new DefaultApplicationArguments("--guide-check=" + id)))
                 .withMessageContaining("Revision not found");
-        assertThatIllegalArgumentException().isThrownBy(() -> new GuideRevisionCommand(reader, revisions, gate, "")
+        assertThatIllegalArgumentException().isThrownBy(() -> new GuideWorkflowCommand(reader, revisions, gate, null, "")
                 .run(new DefaultApplicationArguments("--guide-revision-create=" + valid))).withMessageContaining("LIFE_IN_UK_OPERATOR");
         assertThat(count()).isZero();
         assertThat(projection()).contains("\"g\" : null");
