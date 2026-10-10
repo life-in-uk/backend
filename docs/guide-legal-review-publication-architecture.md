@@ -1,21 +1,14 @@
 # Guide publication workflow for a solo operator: architecture (Issue #46)
 
-> **Status: design proposal only (revision 3).** Nothing described as *proposed* exists in
+> **Status: design proposal only (final revision).** Nothing described as *proposed* exists in
 > this repository. This document is not legal advice, and it doesn't claim that any content
 > or process meets a legal or regulatory standard.
 
-**Revision 3 supersedes revisions 1 and 2.** Life in UK has **one human operator**, so multi-person approval is not a requirement. The following are removed:
-
-- reviewer, publisher and qualification roles;
-- review states;
-- per-person database logins;
-- the PL/pgSQL workflow functions.
-
-The following are kept:
+**This revision supersedes earlier drafts of this document.** Life in UK has **one human operator**, who creates, checks, publishes, updates and withdraws Guides. The design keeps:
 
 - `guide-content-v1` (unchanged);
-- immutable content revisions and the two-digest design;
-- transactional publication;
+- immutable content revisions with draft and published digests;
+- explicit, transactional publication and withdrawal, with history;
 - an editorial quality gate;
 - a safe migration away from the legacy importer.
 
@@ -65,23 +58,22 @@ stateDiagram-v2
     DRAFT --> PUBLISHED: publish (explicit confirmation)
     PUBLISHED --> WITHDRAWN: withdraw (immediate)
     PUBLISHED --> Replaced: publish a newer revision of the slug
-    Replaced --> PUBLISHED: republish (explicit, new record)
-    WITHDRAWN --> [*]: never republished; fix = new revision
+    Replaced --> [*]: kept as history
+    WITHDRAWN --> [*]: kept as history, fix by a new revision
 ```
 
-`Replaced` isn't a state the operator manages. It is the historical end reason `REPLACED` on a publication record, kept only so the history shows which revision was public at any time.
+`Replaced` isn't a state the operator manages. It is the historical end reason `REPLACED` on a publication record, kept only so the history shows which revision was public at any time. **Each revision is published at most once.** Restoring earlier wording means creating a new revision (A1) and publishing it (A2). There is no rollback command in the MVP (§11).
 
 | # | Action | Preconditions | Effect (one transaction) |
 |---|---|---|---|
 | A1 | Create revision | File passes `GuideImportReader`. `status = DRAFT`, `publishedAt = null`, `evidence` present. `(slug, draft_digest)` is new. | Immutable revision stored. Nothing public changes. |
-| A2 | Publish | Workflow activated (§8). Revision never withdrawn. Echoed digest = `draft_digest`. Echoed current publication matches (`--expect-current`). The automatic quality-gate checks pass. Checklist confirmed (§4). | Projection replaced from `derive(D_r, P)`. Previous open record ended `REPLACED`. New publication record. |
+| A2 | Publish (first publication, or replacing the live revision) | Workflow activated (§8). The revision is a `DRAFT` (never published). Echoed digest = `draft_digest`. Echoed current publication matches (`--expect-current`). The automatic quality-gate checks pass. Checklist confirmed (§4). | Projection replaced from `derive(D_r, P)`. Previous open record ended `REPLACED`. New publication record. |
 | A3 | Withdraw | Workflow activated. `--expect-current` matches. Reason is not blank. | Projection rows deleted (public 404 from commit). Record ended `WITHDRAWN`. |
-| A4 | Republish a replaced revision (rollback) | As A2. The revision has a publication ended `REPLACED` and none ended `WITHDRAWN`. | As A2, with a new `P` and a new published digest |
 
 **Forbidden:**
 
 - editing a revision;
-- publishing a withdrawn revision, or resubmitting identical content (both refused, see §5);
+- publishing any revision a second time, whether it was replaced or withdrawn (see §5);
 - publishing or withdrawing before activation;
 - `--import-guide` writes after activation;
 - a stale `--expect-digest` or `--expect-current`;
@@ -141,12 +133,12 @@ The checklist is editorial discipline for one operator. It isn't a legal-review 
 - **Everything else is identical,** including evidence presence (`null` versus `[]`). Comparisons always pair draft digest with draft digest, or published digest with published digest.
 - **Content is stored once,** as `canonical_form`, the exact v1 text. Java (`GuideContentDigest`) computes both digests.
 - **A database trigger re-checks the stored text.** At insert it verifies that `draft_digest` equals SHA-256 of the stored text and that the status is `DRAFT`. This catches a corrupted or hand-made row.
-- **Identity.** A revision is identified by its UUID. `revision_number` (per slug) is for people to read. `(slug, draft_digest)` is unique, so identical content returns `EXISTING`, or `EXISTING_WITHDRAWN` (refused) if it was withdrawn. A corrected Guide has different content or a new `updatedAt`, so it gets a new digest.
+- **Identity.** A revision is identified by its UUID. `revision_number` (per slug) is for people to read. `(slug, draft_digest)` is unique, so identical content returns the existing revision (`EXISTING`, with its status). A revision that has been published can't be published again. A corrected Guide has different content or a new `updatedAt`, so it gets a new digest and a new revision.
 - **Provenance.** The revision itself is the source and evidence snapshot. `accessedAt` remains the consultation time.
 
 ## 6. Proposed data model
 
-Two new tables, plus one activation row. The existing `guide` tables become the **public projection**: they hold live content only and are written only by the publication service once the workflow is active.
+Three small new tables. The existing `guide` tables become the **public projection**: they hold live content only and are written only by the publication service once the workflow is active.
 
 ```mermaid
 erDiagram
@@ -158,20 +150,21 @@ erDiagram
 |---|---|---|
 | `guide_revision` | `id uuid PK`, `slug`, `revision_number`, `canonical_form text`, `draft_digest char(64)`, `based_on_revision_id NULL`, `created_at`, `created_by`, `db_session_user DEFAULT session_user`, `ai_assisted bool`, `note NULL` | `UNIQUE (slug, draft_digest)`, `UNIQUE (slug, revision_number)`. Trigger: insert digest check; no `UPDATE`/`DELETE`. |
 | `guide_publication` | `id uuid PK`, `slug`, `revision_id FK`, `published_at`, `published_digest char(64)`, `published_by`, `db_session_user DEFAULT session_user`, `checklist_id`, `verified_on date`, `legacy bool`, `ended_at NULL`, `end_reason NULL` (`REPLACED`/`WITHDRAWN`), `ended_by NULL`, `end_note NULL` | Partial unique index: one open record per slug (`ended_at IS NULL`). `CHECK`: end columns all null or all set, and `WITHDRAWN` needs `end_note`. `CHECK`: `legacy` rows have `checklist_id = 'legacy-baseline'` and a null `verified_on`; all other rows have a real checklist and date. Trigger: identity columns immutable, end columns written once, no `DELETE`. |
-| `guide_workflow_activation` | Single row: `activated_at`, `activated_by` | Inserted once by `--guide-activate` (§8) |
+| `guide_workflow_activation` | Single row: `activated_at`, `activated_by` | Created empty with `guide_publication` (Issue 2). Inserted once by `--guide-activate` (§8). |
 
-These two tables are the audit history: who created, published, replaced and withdrew which exact content, when, and from which database session. Failed attempts are logged by the application, not stored.
+`guide_revision` and `guide_publication` are the audit history: who created, published, replaced and withdrew which exact content, when, and from which database session. Failed attempts are logged by the application, not stored.
 
 **Java services (proposed)**
 
 - **`GuideRevisionService`:** creates revisions (A1) and runs the `--guide-check` report.
-- **`GuidePublicationService`:** runs A2, A3 and A4 in one transaction.
+- **`GuidePublicationService`:** runs A2 and A3, each in one transaction.
   1. Take `pg_advisory_xact_lock` on the slug.
   2. Check activation, digests, `--expect-current` and the quality gate.
   3. Write the projection by **reusing `GuideImporter.apply(D_p)`**.
   4. Write the publication records.
-  5. Set the write-guard flag (§8).
+  5. Set the write-guard flag (§8) before the projection write.
 - **`GuideIntegrityCheck`:** read-only `--guide-verify`.
+- **`GuideActivation`:** `--guide-baseline` and `--guide-activate` (§8).
 
 All business logic is in Java. Triggers only protect immutability and the activation guard.
 
@@ -179,9 +172,9 @@ All business logic is in Java. Triggers only protect immutability and the activa
 
 | Command | Effect |
 |---|---|
-| `--guide-revision-create=<file> [--based-on=<id>] [--ai-assisted]` | A1. Prints `CREATED <id> <draftDigest>`, `EXISTING …` or `EXISTING_WITHDRAWN …` (nonzero). |
+| `--guide-revision-create=<file> [--based-on=<id>] [--ai-assisted]` | A1. Prints `CREATED <id> <draftDigest>` or `EXISTING <id> <status>`. |
 | `--guide-check=<revisionId>` | Quality-gate report. Read-only. |
-| `--guide-publish=<revisionId> --expect-digest=<draftDigest> --expect-current=<publicationId\|none> --checklist=<id> --verified-on=<date>` | A2 or A4. Prints `PUBLISHED <publicationId> <publishedDigest>`, or `ALREADY_PUBLISHED` with no writes. |
+| `--guide-publish=<revisionId> --expect-digest=<draftDigest> --expect-current=<publicationId\|none> --checklist=<id> --verified-on=<date>` | A2. Prints `PUBLISHED <publicationId> <publishedDigest>`. If the revision is already the live one, prints `ALREADY_PUBLISHED` with no writes. Any other non-`DRAFT` revision is refused. |
 | `--guide-withdraw=<slug> --expect-current=<publicationId> --reason=<text>` | A3 |
 | `--guide-baseline=<committed artifact>` | Legacy baseline (§8) |
 | `--guide-activate` | Activation (§8) |
@@ -189,7 +182,7 @@ All business logic is in Java. Triggers only protect immutability and the activa
 
 **Authentication (recommended MVP)**
 
-- **Two database credentials, not per-person logins.**
+- **Two database credentials.**
   - **Runtime credential:** the web application gets one that can only `SELECT` Guide tables (plus its existing acquisition-table rights).
   - **Admin credential:** a separate one owns the schema and runs Flyway and all `--guide-*` commands. It is held only by the operator, in a password manager, and supplied only when running a command.
 - **Network access** to the database is restricted (TLS plus an IP allowlist or SSH tunnel; D-4).
@@ -209,6 +202,17 @@ All business logic is in Java. Triggers only protect immutability and the activa
   - Publish and withdraw are run by the operator personally.
 - **No scheduled or background process publishes.** Any future scheduled job is read-only (§11).
 - **OIDC is out of the MVP.** An admin UI would later add an authenticated HTTP layer over the same services (§11).
+
+**Feasibility with the current configuration**
+
+- **Credential split (Issue 4).**
+  - Spring Boot's standard `spring.flyway.user`/`spring.flyway.password` let Flyway use the admin credential while `spring.datasource.*` uses the runtime one. No new dependency is needed.
+  - The existing schema objects are currently owned by the single application role, so a one-time database-administrator step transfers ownership to the admin role (`REASSIGN OWNED` or `ALTER … OWNER`).
+  - A migration then grants the runtime role exactly what it uses: `SELECT` on Guide tables, and the existing acquisition and source-configuration writes that the startup bootstrap runners need. The role name comes from a Flyway placeholder.
+  - Admin commands run the same jar with the admin datasource credential.
+- **Write guard (Issue 3).**
+  - `GuidePublicationService` calls `set_config('life_in_uk.guide_publication', 'on', true)` inside its `@Transactional` method, before `GuideImporter.apply`. The setting is scoped to the transaction, so it can't leak to other pooled connections.
+  - The trigger is a few lines of PL/pgSQL, like the V2/V3 triggers, and is inactive until the activation row exists. Existing tests and unactivated databases are unaffected.
 
 ## 8. Legacy importer migration and activation (proposed)
 
@@ -257,7 +261,7 @@ All business logic is in Java. Triggers only protect immutability and the activa
 | S-2 | Revision content and publication identity can't be updated or deleted. Publication end columns are written once. |
 | S-3 | Publish needs the echoed `draft_digest`, re-verified from the stored text, and a matching `--expect-current`, under the slug lock. |
 | S-4 | `published_digest = v1(derive(D_r, P))`, and the projection equals `D_p`. `--guide-verify` re-checks this. |
-| S-5 | At most one open publication per slug. A withdrawn revision is never republished, and identical content can't be resubmitted. |
+| S-5 | At most one open publication per slug. Each revision is published at most once, so neither replaced nor withdrawn content can be republished, and identical content can't be resubmitted as a new revision. |
 | S-6 | After activation, only `GuidePublicationService` can write the projection without tripping the guard trigger, and `--import-guide` refuses. Before activation, publish and withdraw refuse. |
 | S-7 | Publish needs the blocking quality-gate checks and an explicit checklist confirmation. No background job publishes. |
 | S-8 | The web application's credential can't write Guide tables (after the credential split). |
@@ -280,13 +284,12 @@ All business logic is in Java. Triggers only protect immutability and the activa
 
 All tests use the isolated temporary PostgreSQL and synthetic fixtures, with no network.
 
-- **Revisions:** immutability (the trigger rejects `UPDATE`/`DELETE`); digest check at insert; `EXISTING` and `EXISTING_WITHDRAWN`; evidence-presence rule.
+- **Revisions:** immutability (the trigger rejects `UPDATE`/`DELETE`); digest check at insert; `EXISTING` for identical content; evidence-presence rule.
 - **Digests:** `derive` matches `Guide.publish` semantics; `null` versus `[]` evidence is kept; fixed-hash fixtures for `D_r` and `D_p`, computed independently as in Issue #44.
 - **Publication:**
   - stale `--expect-digest` and stale `--expect-current` are refused, with nothing changed;
   - replacement ends the previous record as `REPLACED` in the same transaction;
-  - rollback (A4) works;
-  - a withdrawn revision is refused;
+  - publishing a replaced or withdrawn revision is refused;
   - `ALREADY_PUBLISHED` idempotency;
   - a forced failure part-way leaves the old version live;
   - two concurrent publishes: one wins.
@@ -307,13 +310,14 @@ All tests use the isolated temporary PostgreSQL and synthetic fixtures, with no 
 | # | Issue | Scope | Acceptance |
 |---|---|---|---|
 | 1 | Immutable Guide revisions and quality-gate check | `guide_revision` with triggers; `GuideRevisionService`; `--guide-revision-create`; `--guide-check` with both checklists. No public effect. | Revision and digest tests (§10). Check report covers §4. |
-| 2 | Transactional publish and withdraw (inactive until activation) | `guide_publication`; `GuidePublicationService` reusing `GuideImporter.apply`; `--guide-publish`, `--guide-withdraw`; `Cache-Control: no-store`. Both commands refuse without an activation row; tests activate isolated databases. | Publication and public-API tests. |
+| 2 | Transactional publish and withdraw (inactive until activation) | `guide_publication` and an empty `guide_workflow_activation`; `GuidePublicationService` reusing `GuideImporter.apply`; `--guide-publish`, `--guide-withdraw`; `Cache-Control: no-store`. Both commands refuse without an activation row; tests activate isolated databases. | Publication and public-API tests. |
 | 3 | Legacy baseline, write guard and activation | Write-guard trigger; `--import-guide` refusal; `--guide-baseline`, `--guide-activate`, `--guide-verify`; production runbook. | Activation tests. Byte-identical public responses. Old-importer rejection. |
 | 4 | Runtime/admin credential separation | Separate Flyway/admin credential (`spring.flyway.user`); runtime role `SELECT`-only on Guide and revision tables, keeping existing acquisition rights; deployment runbook. | Credential tests. All existing tests pass under split roles. Required before the first Family & Visa publication. |
 
 **Optional, later**
 
 - **Admin UI:** an authenticated HTTP layer and frontend screens over the same services, showing the digest and checklist before publishing.
+- **Rollback command:** republish an earlier replaced revision directly. This is out of scope for the MVP, where a new revision is created instead.
 - **Monitoring and scheduled re-verification:** read-only scheduled `--guide-verify`, and reminders when `verified_on` is old (for example, re-check Family & Visa Guides after official rule changes). Never publishes.
 
 ## 12. Open decisions (human, product or legal boundary)
@@ -325,4 +329,3 @@ All tests use the isolated temporary PostgreSQL and synthetic fixtures, with no 
 | D-3 | Withdrawal deletes projection rows rather than setting `DRAFT` | Delete. History is in the two tables. |
 | D-4 | Admin credential custody and database network access (TLS, IP allowlist or SSH tunnel) for the actual hosting | Confirm before Issue 4 |
 | D-5 | Add `content/drafts/` to `.gitignore` so drafts can't be committed accidentally | Yes, as a separate small change |
-| D-6 | Allow republishing a replaced revision (A4) in the MVP | Yes. It's a simple rollback, still refused for withdrawn revisions. |
