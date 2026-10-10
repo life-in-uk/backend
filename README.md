@@ -1016,3 +1016,42 @@ one committed Guide snapshot. Public reads remain database-only.
 This does not add a CMS, admin API, source monitoring/fetching, AI, history or
 frontend implementation. Source-to-evidence relationships leave future affected
 claim discovery possible, without implementing monitoring or a global catalogue.
+
+## Guide content digest (Issue #44)
+
+`GuideContentDigest.digest(definition)` returns a lower-case hexadecimal SHA-256
+of one validated `GuideImportDefinition`, using canonicalization
+`guide-content-v1`. It is a utility only: no command, endpoint, migration,
+persistence or import behaviour uses it yet.
+
+The digest is computed from validated import data, never from raw file bytes or
+database rows, so JSON whitespace, property order, equivalent timestamp offsets
+and database UUIDs cannot affect it, and neither can locale or time zone. Input
+the reader rejects never gets a digest. The canonical form is one line of compact
+JSON with a fixed property order:
+
+```
+{"canonicalization":"guide-content-v1","slug","category","title","summary","content",
+ "status","publishedAt","updatedAt",
+ "sources":[{"key","organisation","title","url","accessedAt"}],
+ "evidence":null | [{"key","statement","supports":[{"sourceKey","locator","excerpt","note"}]}]}
+```
+
+- Every property is always present. Absent and null optional values (`publishedAt`,
+  a legacy source `key`, `locator`, `excerpt`) are written as `null`.
+- An absent `evidence` collection is written as `null`, an explicit `evidence: []`
+  as `[]`, and anything else as the ordered evidence array. Absent and empty
+  evidence get different digests because the importer treats them differently
+  for a Guide that already has evidence. The reader rejects `"evidence": null`.
+- Source, evidence and support arrays keep their input order, which is editorial.
+- Timestamps are UTC instants as `yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'`.
+- Strings are hashed exactly as validated, without trimming or Unicode
+  normalization. Only `"`, `\`, U+0000–U+001F and unpaired surrogates are
+  escaped (as `\"`, `\\` and lower-case `\uXXXX`). Everything else is written
+  literally as UTF-8.
+
+Status and both timestamps are covered, so publishing a Guide (DRAFT to PUBLISHED
+with `publishedAt`) changes its digest. Any future change to this representation
+must use a new canonicalization version and leave `guide-content-v1` unchanged.
+Tests pin the digests of the two synthetic fixtures, computed independently from
+this specification.
