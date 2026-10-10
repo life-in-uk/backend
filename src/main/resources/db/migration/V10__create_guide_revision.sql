@@ -19,9 +19,10 @@ CREATE TABLE guide_revision (
     FOREIGN KEY (slug, based_on_revision_id) REFERENCES guide_revision(slug, id)
 );
 
--- Revisions are append-only. On insert the database itself checks that the stored text is canonical
--- DRAFT content for the row's slug, with an explicit evidence collection, and that the digest is the
--- SHA-256 of exactly that text. Creation time and session are recorded by the database.
+-- Revisions are append-only. On insert the database checks only structure and integrity: the digest is the
+-- SHA-256 of exactly the stored text, which parses as JSON with the expected canonicalization label, slug,
+-- DRAFT status, null publishedAt and an evidence array. Exact guide-content-v1 canonical form and full Guide
+-- validation are checked in Java, not here. Creation time and session are recorded by the database.
 CREATE FUNCTION protect_guide_revision() RETURNS trigger LANGUAGE plpgsql AS $$
 DECLARE document jsonb;
 BEGIN
