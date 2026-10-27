@@ -1055,3 +1055,57 @@ with `publishedAt`) changes its digest. Any future change to this representation
 must use a new canonicalization version and leave `guide-content-v1` unchanged.
 Tests pin the digests of the two synthetic fixtures, computed independently from
 this specification.
+
+## National Rail arrivals
+
+The backend exposes `GET /api/rail/stations/{crs}/arrivals`, with optional
+`numRows` (1–9) and `timeWindow` (-119–119 minutes). CRS codes are normalized to
+uppercase. Missing provider fields remain null; an absent or empty service list
+is returned as an empty list. Responses use `Cache-Control: no-store`.
+
+Set `NATIONAL_RAIL_API_KEY` to the RDM Consumer Key and optionally set
+`NATIONAL_RAIL_API_BASE_URL` to the gateway base URL. Spring Boot does not load
+`.env` automatically: export the variables in the shell or process manager before
+starting the application. For a trusted shell-compatible local `.env`, one option
+is `set -a; source .env; set +a` (do not enable shell tracing). The Consumer Secret
+is not used. The API key is sent only in the `x-apikey` request header.
+
+The numerical limits follow the exclusive bounds in the published National Rail
+LDBWS documentation. That documentation describes `timeWindow` as a future window
+but does not explain the meaning of negative values; their behavior and the RDM
+REST gateway limits remain unverified. Confirm these, plus display, attribution
+and data-use requirements, against the subscribed product documentation and
+agreement before production use.
+
+## Rail disruption checker
+
+`GET /api/rail/stations/{crs}/disruptions?direction=arrivals|departures`
+defaults to arrivals and requests nine rows, the maximum under the published
+exclusive limit. It returns full and partial cancellations and delays of at least
+10 minutes, plus services explicitly
+marked delayed when their delay cannot be calculated. `unknownTimingCount`
+counts other unconfirmed timings. The board is a limited snapshot, not a full
+timetable. Time-only values are compared using the nearest calendar day; the
+provider does not supply a service date for these fields.
+
+Departures are available when `NATIONAL_RAIL_DEPARTURES_BASE_URL`
+and `NATIONAL_RAIL_DEPARTURES_API_KEY` are set to the separately subscribed
+RDM departure product's base URL and Consumer Key. Do not assume that an
+arrival subscription covers departures. The verified official RDM Departure
+Gateway is `https://api1.raildata.org.uk/1010-live-departure-board-dep1_2/LDBWS`.
+Set the following non-secret URL in your local, git-ignored `.env`:
+
+```dotenv
+NATIONAL_RAIL_DEPARTURES_BASE_URL=https://api1.raildata.org.uk/1010-live-departure-board-dep1_2/LDBWS
+```
+
+Keep the actual Consumer Key only in `.env`, under
+`NATIONAL_RAIL_DEPARTURES_API_KEY`; never put it in source, this README or logs.
+Load the trusted `.env` into the backend process as described above. These
+settings are separate from, and do not change, the working Arrival configuration.
+
+The frontend uses arrivals by default
+and requests either direction only after an explicit check. The frontend
+uses an attributed ODbL directory of Great Britain National Rail stations; it
+does not cover Northern Ireland rail. Confirm RDM licence and attribution
+requirements before publication.

@@ -28,3 +28,9 @@ life-in-uk:
       base-url: ${OS_NAMES_BASE_URL:https://api.os.uk/search/names/v1}
       # Secret: environment only. Never commit, persist, log or place it in a URL (sent as the 'key' header).
       api-key: ${OS_NAMES_API_KEY:}
+  rail:
+    base-url: ${NATIONAL_RAIL_API_BASE_URL:https://api1.raildata.org.uk/1010-live-arrival-board-arr/LDBWS}
+    api-key: ${NATIONAL_RAIL_API_KEY:}
+  rail-departures:
+    base-url: ${NATIONAL_RAIL_DEPARTURES_BASE_URL:}
+    api-key: ${NATIONAL_RAIL_DEPARTURES_API_KEY:}
