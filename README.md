@@ -1109,3 +1109,12 @@ and requests either direction only after an explicit check. The frontend
 uses an attributed ODbL directory of Great Britain National Rail stations; it
 does not cover Northern Ireland rail. Confirm RDM licence and attribution
 requirements before publication.
+
+
+### Rail production release checklist
+
+See [Rail production readiness](docs/rail-production-readiness.md) for the
+configuration and same-origin routing checklist, timeout and request-volume
+findings, preliminary agreement findings, and the unresolved RDM Platform
+Agreement Schedule 2 — Policies attachment. Local testing does not require that
+attachment and does not establish full legal compliance.
