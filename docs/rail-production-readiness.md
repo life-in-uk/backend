@@ -72,19 +72,22 @@ visible to the browser. The readiness tests use mocked providers, not live keys.
   retry timer or fetch on language/direction changes. Frontend requests abort after
   ten seconds or when superseded/unmounted. A browser abort is not proof that a
   provider request was cancelled, so do not count it as provider quota protection.
-- No Rail-specific server-side rate limiter, concurrency cap, cache or request
-  coalescing is present. Check/Refresh remains clickable while a request is pending;
-  scripted clients can bypass UI behaviour and call the public endpoint directly.
-  The pacer for the separate OS Names service does not protect Rail.
+- `RailService` uses a non-blocking, in-process semaphore to cap concurrent board
+  requests at four per application instance. Excess requests use the existing
+  rate-limit error response; permits are released on success or failure. This is
+  an aggregate concurrency cap, not a per-client or per-minute rate limiter.
+  Check/Refresh remains clickable while pending, and scripted clients can call the
+  endpoint directly. The National Highways acquisition `RequestPacer` is separate
+  and does not protect Rail. There is no Rail cache or request coalescing.
 
 **P2 public-launch capacity gap:** obtain the subscribed RDM quota/policies and
-verify existing ingress protection before unrestricted public release. If it does
-not already provide suitable protection, a simple rule on the existing ingress
-(per-client limit plus an aggregate ceiling consistent with the actual quota) is
-preferable to new infrastructure. If the existing ingress cannot provide that,
-review a small bounded in-process guard separately. No numeric quota is inferred
-from the agreements. UI-only disabling/debouncing is insufficient as the sole
-control. No Redis, database, polling system or limiter was added in this task.
+verify per-client ingress rate limiting and aggregate request controls before
+unrestricted public release. The four-request cap limits simultaneous work per
+instance, but does not control requests per client or per minute, or enforce a
+shared quota across instances. If ingress does not already provide suitable
+protection, add an appropriate rule on the existing ingress. No numeric quota is
+inferred from the agreements. UI-only controls are insufficient as the sole
+control. No Redis, database or polling system was added.
 
 ## Attribution, user expectations and preliminary licensing findings
 
@@ -125,7 +128,7 @@ were not independently re-reviewed in this task.
       backend settings without disclosing keys.
 - [ ] Existing production `/api/rail/` forwarding, JSON/status/no-store preservation,
       static directory/notice assets and same-origin behaviour verified.
-- [ ] Actual provider quota and existing ingress controls reviewed; resolve the
+- [ ] Actual provider quota and per-client ingress rate limiting verified; resolve the
       capacity gap before unrestricted public exposure.
 - [ ] Missing Schedule 2 and commercial Departure use assessment resolved for
       public-release sign-off.
@@ -133,7 +136,7 @@ were not independently re-reviewed in this task.
       then independent review and separate merge/deployment approvals.
 
 No new P0 or P1 was established by this scoped inspection. P2 items are the missing
-policy attachment, unverified production wiring and the unverified aggregate usage
-protection. A confirmed production misconfiguration or provider restriction could
-change their priority. Do not treat local test success as proof of production
+policy attachment, unverified production wiring and unverified per-client ingress
+rate limiting and quota controls. A confirmed production misconfiguration or
+provider restriction could change their priority. Do not treat local test success as proof of production
 configuration or full licence compliance.
