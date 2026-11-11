@@ -55,7 +55,7 @@ class GuidePublicationTest {
     void clear() {
         jdbc.execute("DROP TRIGGER IF EXISTS guide_publication_fail ON guide_publication");
         jdbc.execute("DROP FUNCTION IF EXISTS guide_publication_fail()");
-        jdbc.execute("TRUNCATE guide_publication, guide_workflow_activation, guide_revision, guide_evidence_support, guide_evidence, guide_source, guide");
+        jdbc.execute("TRUNCATE guide_locale_current, guide_locale_revision, guide_content_batch, guide_publication, guide_workflow_activation, guide_revision, guide_evidence_support, guide_evidence, guide_source, guide");
     }
     void activate() { jdbc.update("INSERT INTO guide_workflow_activation (activated_by) VALUES ('synthetic-test')"); }
 
@@ -116,6 +116,11 @@ class GuidePublicationTest {
         activate();
         var revision = revision();
         var publication = publish(revision, null);
+        String publishedTitle = jdbc.queryForObject("SELECT title FROM guide WHERE slug = ?", String.class, revision.slug());
+        assertThatThrownBy(() -> jdbc.update("UPDATE guide SET title = 'unauthorized edit' WHERE slug = ?", revision.slug()))
+                .hasMessageContaining("Guide projection writes require GuidePublicationService");
+        assertThat(jdbc.queryForObject("SELECT title FROM guide WHERE slug = ?", String.class, revision.slug()))
+                .isEqualTo(publishedTitle);
         var draft = revisions.definition(revision.canonicalForm());
         var derived = new GuideImportDefinition(draft.slug(), draft.category(), draft.title(), draft.summary(), draft.content(),
                 GuideStatus.PUBLISHED, publication.publishedAt(), publication.publishedAt(), draft.sources(), draft.evidence());
@@ -169,9 +174,13 @@ class GuidePublicationTest {
 
     @Test
     void staleExpectationsAndUnmanagedPublicContentAreRefusedWithoutChanges() throws Exception {
-        activate();
+        // Seed legacy public content before activation, as in the existing bootstrap lifecycle.
+        var legacy = reader.parse(GuideImportReaderTest.fixture().replace("\"status\": \"DRAFT\"", "\"status\": \"PUBLISHED\"")
+                .replace("\"publishedAt\": null", "\"publishedAt\": \"2026-10-04T12:00:00Z\"").getBytes(StandardCharsets.UTF_8));
+        importer.apply(legacy);
         var revision = revision();
         var other = revision(root -> root.put("title", "Other"));
+        activate();
         var publication = publish(revision, null);
         String before = state();
         refused(() -> publications.publish(request(other, null)), "STALE_CURRENT");
@@ -182,10 +191,7 @@ class GuidePublicationTest {
         refused(() -> publications.withdraw("never-published", UUID.randomUUID(), "reason", OPERATOR), "NOT_PUBLIC");
         assertThat(state()).isEqualTo(before);
 
-        // Public content without publication history (not yet baselined) is never overwritten.
-        var legacy = reader.parse(GuideImportReaderTest.fixture().replace("\"status\": \"DRAFT\"", "\"status\": \"PUBLISHED\"")
-                .replace("\"publishedAt\": null", "\"publishedAt\": \"2026-10-04T12:00:00Z\"").getBytes(StandardCharsets.UTF_8));
-        importer.apply(legacy);
+        // Public content without publication history is never overwritten after activation.
         var onLegacySlug = revision(root -> root.put("slug", legacy.slug()));
         String withLegacy = state();
         refused(() -> publications.publish(request(onLegacySlug, null)), "UNMANAGED_PUBLIC_GUIDE");

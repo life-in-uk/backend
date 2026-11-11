@@ -30,7 +30,7 @@ class GuideRevisionStore {
     }
 
     Optional<GuideRevision> findByDigest(String slug, String draftDigest) {
-        return jdbc.query("SELECT " + COLUMNS + " FROM guide_revision WHERE slug = ? AND draft_digest = ?",
+        return jdbc.query("SELECT " + COLUMNS + " FROM guide_revision WHERE slug = ? AND draft_digest = ? AND canonical_form IS NOT NULL",
                 GuideRevisionStore::revision, slug, draftDigest).stream().findFirst();
     }
 

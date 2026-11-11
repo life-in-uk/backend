@@ -26,6 +26,14 @@ public class GuideController {
                         .body(new Error("GUIDE_NOT_FOUND", "Guide not found.")));
     }
 
+    @GetMapping("/api/guides/{slug}/locales/{locale}")
+    public ResponseEntity<?> localizedDetail(@PathVariable("slug") String slug, @PathVariable("locale") String locale) {
+        return query.localizedDetail(slug, locale).<ResponseEntity<?>>map(value -> ResponseEntity.ok()
+                .cacheControl(CacheControl.noStore()).body(value))
+                .orElseGet(() -> ResponseEntity.status(404).cacheControl(CacheControl.noStore())
+                        .body(new Error("GUIDE_NOT_FOUND", "Guide not found.")));
+    }
+
     @ExceptionHandler(Exception.class)
     ResponseEntity<Error> failedRead() {
         return ResponseEntity.internalServerError().cacheControl(CacheControl.noStore())

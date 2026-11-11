@@ -44,7 +44,13 @@ class GuideRevisionTest {
     private final JsonMapper json = JsonMapper.builder().build();
 
     @BeforeEach
-    void clear() { jdbc.execute("TRUNCATE guide_publication, guide_revision, guide_evidence_support, guide_evidence, guide_source, guide"); }
+    void clear() { jdbc.execute("TRUNCATE guide_locale_current, guide_locale_revision, guide_content_batch, guide_publication, guide_revision, guide_evidence_support, guide_evidence, guide_source, guide"); }
+
+    @Test
+    void redactedRevisionBodyFailsClosedWithAnExplicitMessage() {
+        assertThatIllegalStateException().isThrownBy(() -> revisions.definition(null))
+                .withMessageContaining("redacted after successful replacement");
+    }
 
     GuideImportDefinition draft(Consumer<ObjectNode> edit) throws Exception {
         var root = (ObjectNode) json.readTree(GuideContentDigestTest.fixture("synthetic-evidence-import.json"));
