@@ -1176,9 +1176,9 @@ path. Measured payloads in the local database on 2026-11-11: TfL Tube status
 (one page). At the default intervals that is about 9 MB per day for TfL (720 runs)
 and about 15 MB per day for National Highways (144 runs). That is roughly 0.7 GB
 per 30 days, growing without bound. Before enabling unattended production
-polling, add a reviewed controlled-expiry migration that keeps rows immutable
-while retained, and have the owner choose the retention periods. The migration
-number must follow the unmerged `V11__create_guide_publication`.
+polling, apply the reviewed controlled-expiry migration
+`V11__travel_evidence_expiry` (see "Travel evidence retention" below), which
+keeps rows immutable while retained.
 
 The travel read APIs return `Cache-Control: no-store`, so no proxy or CDN can
 serve an older snapshot than the database holds. Freshness always comes from
@@ -1211,3 +1211,12 @@ proxy, the remote address must be the real client address, for example
 `server.forward-headers-strategy=native` with a trusted proxy. Otherwise every
 user shares one client budget. This does not enforce a quota shared across
 instances, and it does not resolve the RDM Schedule 2 policy question.
+
+## Travel evidence retention
+
+`V11__travel_evidence_expiry` adds the only supported path for expiring raw
+Travel evidence: TfL 72 hours, National Highways 7 days (proposed), failed and
+interrupted runs 30 days. It never touches Bank Holidays evidence, current
+snapshots or Guide data. The migration deletes nothing, and expiry is a
+reviewed manual operation until a scheduled job is approved. See
+[Travel evidence retention](docs/travel-evidence-retention.md).
