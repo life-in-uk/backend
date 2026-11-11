@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.Semaphore;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tools.jackson.core.JacksonException;
 import tools.jackson.core.StreamReadFeature;
@@ -14,15 +16,24 @@ import tools.jackson.databind.json.JsonMapper;
 @Service
 final class RailService {
     private final RailClient client;
+    private final boolean enabled;
     private final Semaphore boardPermits = new Semaphore(4);
     private final JsonMapper json = JsonMapper.builder().enable(StreamReadFeature.STRICT_DUPLICATE_DETECTION).enable(DeserializationFeature.FAIL_ON_TRAILING_TOKENS).build();
-    RailService(RailClient client) { this.client = client; }
+    /** Offline test seam: provider access enabled, with a mocked client. */
+    RailService(RailClient client) { this(client, true); }
+    @Autowired RailService(RailClient client, RailAccess access) {
+        this(client, access.enabled());
+        if (!access.enabled()) LoggerFactory.getLogger(RailService.class).info("Rail access is disabled; no RDM requests will be made");
+    }
+    private RailService(RailClient client, boolean enabled) { this.client = client; this.enabled = enabled; }
     static String validate(String crs, Integer rows, Integer window) {
         if (crs == null || !crs.matches("[A-Za-z]{3}") || rows != null && (rows < 1 || rows > 9) || window != null && (window < -119 || window > 119)) throw new IllegalArgumentException();
         return crs.toUpperCase(Locale.ROOT);
     }
     RailResponse arrivals(String crs, Integer rows, Integer window) { return board(crs, rows, window, false); }
     RailResponse board(String crs, Integer rows, Integer window, boolean departures) {
+        // The only provider path: nothing below runs while Rail access is disabled.
+        if (!enabled) throw new RailFailure(RailFailure.Reason.DISABLED);
         crs = validate(crs, rows, window);
         if (!boardPermits.tryAcquire()) throw new RailFailure(RailFailure.Reason.RATE_LIMIT);
         try {

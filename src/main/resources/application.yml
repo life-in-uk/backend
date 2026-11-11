@@ -34,6 +34,10 @@ life-in-uk:
   rail-departures:
     base-url: ${NATIONAL_RAIL_DEPARTURES_BASE_URL:}
     api-key: ${NATIONAL_RAIL_DEPARTURES_API_KEY:}
+  rail-access:
+    # OFF by default: no Rail endpoint contacts RDM, even if Rail credentials are present.
+    # Enable only after the RDM Schedule 2 policy, licensing and rate-limit review.
+    enabled: ${RAIL_ACCESS_ENABLED:false}
   rail-rate-limit:
     # Per application instance, fixed one-minute windows; checked before any provider request.
     per-client-per-minute: ${RAIL_RATE_LIMIT_PER_CLIENT_PER_MINUTE:6}

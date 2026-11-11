@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@EnableConfigurationProperties({RailProperties.class, RailDepartureProperties.class, RailRateLimiter.Limits.class})
+@EnableConfigurationProperties({RailProperties.class, RailDepartureProperties.class, RailRateLimiter.Limits.class, RailAccess.class})
 public class RailController {
     private final RailService rail;
     private final RailRateLimiter limiter;
@@ -52,6 +52,7 @@ public class RailController {
     @ExceptionHandler(RailFailure.class)
     ResponseEntity<Error> upstream(RailFailure failure) {
         return switch (failure.reason) {
+            case DISABLED -> error(HttpStatus.SERVICE_UNAVAILABLE,"RAIL_DISABLED","Rail information is not available.");
             case NOT_CONFIGURED -> error(HttpStatus.SERVICE_UNAVAILABLE,"RAIL_NOT_CONFIGURED","Rail information is not available.");
             case AUTHENTICATION -> error(HttpStatus.BAD_GATEWAY,"RAIL_UPSTREAM_AUTHENTICATION","Rail provider authentication failed.");
             case RATE_LIMIT -> error(HttpStatus.SERVICE_UNAVAILABLE,"RAIL_UPSTREAM_RATE_LIMIT","Rail information is temporarily unavailable.");

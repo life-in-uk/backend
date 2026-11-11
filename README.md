@@ -1184,6 +1184,16 @@ The travel read APIs return `Cache-Control: no-store`, so no proxy or CDN can
 serve an older snapshot than the database holds. Freshness always comes from
 `observedAt` or `snapshotAt`.
 
+## Rail access flag
+
+`life-in-uk.rail-access.enabled` (environment `RAIL_ACCESS_ENABLED`) defaults to
+`false`. While it is off, `RailService.board()`, the only method that reaches
+RDM, refuses before any provider access. Valid requests get `503 RAIL_DISABLED`,
+and malformed ones still get `400`, even if Rail credentials are present. Local Rail previews need it set to `true`
+explicitly. Keep it off in production until the RDM Schedule 2 policy,
+licensing and rate-limit review is complete. See
+[Travel provider approvals](docs/travel-provider-approvals.md).
+
 ## Rail request budget
 
 Board requests (`/arrivals` and `/disruptions`) are checked after validation and
