@@ -95,9 +95,9 @@ class RailIntegrationTest {
     }
     @Test void controllerValidatesAndMapsErrors() {
         var controller=new RailController(new RailService(client(upstream(403,KEY),KEY)));
-        assertThat(controller.arrivals("bad!",null,null).getStatusCode().value()).isEqualTo(400);
-        assertThat(controller.arrivals("shf","abc",null).getStatusCode().value()).isEqualTo(400);
-        var failure=catchThrowableOfType(RailFailure.class,() -> controller.arrivals("shf",null,null));
+        assertThat(controller.arrivals("bad!",null,null,new org.springframework.mock.web.MockHttpServletRequest()).getStatusCode().value()).isEqualTo(400);
+        assertThat(controller.arrivals("shf","abc",null,new org.springframework.mock.web.MockHttpServletRequest()).getStatusCode().value()).isEqualTo(400);
+        var failure=catchThrowableOfType(RailFailure.class,() -> controller.arrivals("shf",null,null,new org.springframework.mock.web.MockHttpServletRequest()));
         var response=controller.upstream(failure);
         assertThat(response.getStatusCode().value()).isEqualTo(502);
         assertThat(response.getBody().toString()).doesNotContain(KEY);
@@ -192,7 +192,7 @@ class RailIntegrationTest {
     @Test void disruptionBoardExplicitlyRequestsNineRows() {
         HttpClient http = upstream(200, BOARD);
         var controller = new RailController(new RailService(client(http, KEY)));
-        assertThat(controller.disruptions("SHF", "arrivals").getStatusCode().value()).isEqualTo(200);
+        assertThat(controller.disruptions("SHF", "arrivals", new org.springframework.mock.web.MockHttpServletRequest()).getStatusCode().value()).isEqualTo(200);
         var captor = org.mockito.ArgumentCaptor.forClass(HttpRequest.class);
         verify(http).sendAsync(captor.capture(), any());
         assertThat(captor.getValue().uri().getRawQuery()).isEqualTo("numRows=9");

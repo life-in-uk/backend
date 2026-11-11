@@ -34,3 +34,18 @@ life-in-uk:
   rail-departures:
     base-url: ${NATIONAL_RAIL_DEPARTURES_BASE_URL:}
     api-key: ${NATIONAL_RAIL_DEPARTURES_API_KEY:}
+  rail-rate-limit:
+    # Per application instance, fixed one-minute windows; checked before any provider request.
+    per-client-per-minute: ${RAIL_RATE_LIMIT_PER_CLIENT_PER_MINUTE:6}
+    aggregate-per-minute: ${RAIL_RATE_LIMIT_AGGREGATE_PER_MINUTE:60}
+  travel-refresh:
+    # OFF by default. Enabling unattended provider polling is an owner operational decision
+    # (qualification, evidence retention and cost). See README "Travel Current State refresh".
+    underground:
+      enabled: ${TRAVEL_REFRESH_UNDERGROUND_ENABLED:false}
+      interval: ${TRAVEL_REFRESH_UNDERGROUND_INTERVAL:PT2M}
+      max-runs: ${TRAVEL_REFRESH_UNDERGROUND_MAX_RUNS:0}
+    roads:
+      enabled: ${TRAVEL_REFRESH_ROADS_ENABLED:false}
+      interval: ${TRAVEL_REFRESH_ROADS_INTERVAL:PT10M}
+      max-runs: ${TRAVEL_REFRESH_ROADS_MAX_RUNS:0}
