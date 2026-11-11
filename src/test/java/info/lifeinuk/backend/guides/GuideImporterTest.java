@@ -161,15 +161,16 @@ class GuideImporterTest {
     }
 
     @Test
-    void actualCliCommandImportsOneLocalFixtureAndNeverFetchesReferenceUrls() throws Exception {
+    void legacyCliImportCannotWritePublicGuidesOrFetchReferenceUrls() throws Exception {
         var calls=new AtomicInteger();var server=HttpServer.create(new InetSocketAddress("127.0.0.1",0),0);
         server.createContext("/",exchange->{calls.incrementAndGet();exchange.sendResponseHeaders(500,-1);exchange.close();});server.start();
         Path file=java.nio.file.Files.createTempFile("guide-import-offline-",".json");
         try {
             var contents=GuideImportReaderTest.fixture().replace("https://example.invalid/reference-b","http://127.0.0.1:"+server.getAddress().getPort()+"/reference");
             java.nio.file.Files.writeString(file,contents,StandardCharsets.UTF_8);
-            command.run(new DefaultApplicationArguments("--import-guide="+file));
-            String before=snapshot();command.run(new DefaultApplicationArguments("--import-guide="+file));
+            String before=snapshot();
+            assertThatIllegalArgumentException().isThrownBy(()->command.run(new DefaultApplicationArguments("--import-guide="+file)))
+                    .withMessageContaining("disabled");
             assertThat(snapshot()).isEqualTo(before);assertThat(calls.get()).isZero();
         } finally {server.stop(0);java.nio.file.Files.deleteIfExists(file);}
     }
