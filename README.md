@@ -1118,3 +1118,96 @@ configuration and same-origin routing checklist, timeout and request-volume
 findings, preliminary agreement findings, and the unresolved RDM Platform
 Agreement Schedule 2 — Policies attachment. Local testing does not require that
 attachment and does not establish full legal compliance.
+
+## Travel Current State refresh
+
+`TravelRefreshScheduler` can refresh Underground and Roads Current State on a
+schedule. **Both schedules are off by default.** Enabling unattended provider
+polling is an owner operational decision. It is not a code default.
+
+Each run calls the existing operations in order and adds no acquisition, parsing
+or projection logic:
+
+- Underground: `TflUndergroundAcquisition.acquire()`, which already projects the
+  committed evidence.
+- Roads: `NationalHighwaysRoadClosuresAcquisition.acquire()`, then
+  `RoadsEvidenceProjection.projectRun(runId)`, only if the run is `SUCCESS`.
+
+Qualification is still checked inside every acquisition. Un-qualifying or
+disabling an endpoint stops refresh without a deploy. A failed run never changes
+Current State. The last good snapshot remains, and the frontend's freshness rule
+hides it once it is too old (Underground 10 minutes, Roads 30 minutes).
+
+| Setting (`life-in-uk.travel-refresh.*`) | Underground | Roads |
+| --- | --- | --- |
+| `<source>.enabled` | `false` | `false` |
+| `<source>.interval` (fixed delay; floor) | `PT2M` (floor `PT1M`) | `PT10M` (floor `PT5M`) |
+| `<source>.max-backoff` (≤ `PT6H`) | `PT30M` | `PT60M` |
+| `<source>.max-runs` (0 = no cap) | `0` | `0` |
+| `<source>.initial-delay` (≤ `PT10M`) | `PT15S` | `PT15S` |
+
+Values below a floor or outside a range fail startup. Environment shortcuts are
+`TRAVEL_REFRESH_{UNDERGROUND,ROADS}_{ENABLED,INTERVAL,MAX_RUNS}`.
+
+- **No overlap:** each source runs on its own single thread with a fixed delay
+  after the previous run. A slow Roads run (up to 8 paced pages, about 56 s) never
+  overlaps the next.
+- **No retry inside a run:** the next tick is the retry. From the third
+  consecutive failure the delay doubles, up to `max-backoff`. A provider HTTP 429
+  backs off immediately. Success resets the delay.
+- **Single runner:** each run holds a PostgreSQL session advisory lock on one
+  dedicated connection. If another instance holds it, the tick is skipped and
+  does not count towards `max-runs`.
+- **Bounded sessions:** `max-runs` stops a schedule after that many provider runs,
+  for controlled verification.
+- **Logs:** run id, outcome, failure code and duration only. Never keys, URLs or
+  provider bodies.
+
+Provider budgets at the default intervals: TfL makes 1 request per run, so 30 per
+hour, well within its published limits. National Highways makes at most 8 paced
+requests per run, against a limit of 10 requests per minute per key; the existing
+`RequestPacer` keeps it to at most 9 in any rolling minute.
+
+### Evidence growth: blocker before unattended production polling
+
+Raw evidence is append-only and immutable (V2 triggers), and there is no expiry
+path. Measured payloads in the local database on 2026-11-11: TfL Tube status
+12,464 bytes per run, National Highways unplanned closures 101,448 bytes per run
+(one page). At the default intervals that is about 9 MB per day for TfL (720 runs)
+and about 15 MB per day for National Highways (144 runs). That is roughly 0.7 GB
+per 30 days, growing without bound. Before enabling unattended production
+polling, add a reviewed controlled-expiry migration that keeps rows immutable
+while retained, and have the owner choose the retention periods. The migration
+number must follow the unmerged `V11__create_guide_publication`.
+
+The travel read APIs return `Cache-Control: no-store`, so no proxy or CDN can
+serve an older snapshot than the database holds. Freshness always comes from
+`observedAt` or `snapshotAt`.
+
+## Rail access flag
+
+`life-in-uk.rail-access.enabled` (environment `RAIL_ACCESS_ENABLED`) defaults to
+`false`. While it is off, `RailService.board()`, the only method that reaches
+RDM, refuses before any provider access. Valid requests get `503 RAIL_DISABLED`,
+and malformed ones still get `400`, even if Rail credentials are present. Local Rail previews need it set to `true`
+explicitly. Keep it off in production until the RDM Schedule 2 policy,
+licensing and rate-limit review is complete. See
+[Travel provider approvals](docs/travel-provider-approvals.md).
+
+## Rail request budget
+
+Board requests (`/arrivals` and `/disruptions`) are checked after validation and
+before any provider request. The budget is per application instance and uses
+fixed one-minute windows:
+
+- `life-in-uk.rail-rate-limit.per-client-per-minute`, default 6, keyed by the
+  servlet remote address. Exceeding it returns `429 RAIL_CLIENT_RATE_LIMIT` with
+  `Retry-After`.
+- `life-in-uk.rail-rate-limit.aggregate-per-minute`, default 60. Exceeding it
+  returns `503 RAIL_RATE_LIMIT` with `Retry-After`.
+
+These complement the existing four-request concurrency cap. Behind a reverse
+proxy, the remote address must be the real client address, for example
+`server.forward-headers-strategy=native` with a trusted proxy. Otherwise every
+user shares one client budget. This does not enforce a quota shared across
+instances, and it does not resolve the RDM Schedule 2 policy question.

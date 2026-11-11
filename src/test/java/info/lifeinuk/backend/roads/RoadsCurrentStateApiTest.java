@@ -340,7 +340,7 @@ class RoadsCurrentStateApiTest {
         // Raw evidence deletion must neither prevent nor break the Current State read.
         removeRawEvidence(run,false);
         String before=stored(),history=history();clearInvocations(parser,states,acquisition);
-        var response=get("?lat=52.193516&lon=-0.908380");assertThat(response.statusCode()).isEqualTo(200);
+        var response=get("?lat=52.193516&lon=-0.908380");assertThat(response.statusCode()).isEqualTo(200);assertThat(response.headers().firstValue("Cache-Control")).hasValue("no-store");
         var body=json.readTree(response.body());
         assertThat(body.get("snapshotAt").asString()).isEqualTo(START.toString());
         assertThat(body.get("relevanceRadiusMeters").asDouble()).isEqualTo(15000);
@@ -384,7 +384,7 @@ class RoadsCurrentStateApiTest {
 
     @Test
     void unavailableEmptyAndOutsideRelevanceHaveDistinctCorrectHttpResults() throws Exception {
-        assertThat(get("?lat=52&lon=-1").statusCode()).isEqualTo(404);
+        var missing=get("?lat=52&lon=-1");assertThat(missing.statusCode()).isEqualTo(404);assertThat(missing.headers().firstValue("Cache-Control")).hasValue("no-store");
         var empty=run(START,true,List.of(empty()));projection.projectRun(empty);
         var response=get("?lat=52&lon=-1");assertThat(response.statusCode()).isEqualTo(200);
         assertThat(json.readTree(response.body()).get("disruptions").isEmpty()).isTrue();
@@ -398,7 +398,7 @@ class RoadsCurrentStateApiTest {
             "?lat=0&lon=Infinity","?lat=banana&lon=0","?lat=&lon=0"})
     void missingOrInvalidLocationIsBoundedClientErrorAndNeverReadsNationwideState(String query) throws Exception {
         clearInvocations(states,parser,acquisition);
-        var response=get(query);assertThat(response.statusCode()).isEqualTo(400);
+        var response=get(query);assertThat(response.statusCode()).isEqualTo(400);assertThat(response.headers().firstValue("Cache-Control")).hasValue("no-store");
         assertThat(json.readTree(response.body()).get("code").asString()).isEqualTo("ROADS_LOCATION_INVALID");
         assertThat(response.body()).doesNotContain("disruptions","Exception","SQL");
         verifyNoInteractions(states,parser,acquisition);
@@ -407,7 +407,7 @@ class RoadsCurrentStateApiTest {
     @Test
     void unexpectedReadFailureHasBounded500AndNoLeakedDiagnostics() throws Exception {
         doThrow(new IllegalStateException("SECRET SQL /local/path")).when(states).current();
-        var response=get("?lat=52&lon=-1");assertThat(response.statusCode()).isEqualTo(500);
+        var response=get("?lat=52&lon=-1");assertThat(response.statusCode()).isEqualTo(500);assertThat(response.headers().firstValue("Cache-Control")).hasValue("no-store");
         assertThat(json.readTree(response.body()).get("code").asString()).isEqualTo("ROADS_READ_FAILED");
         assertThat(response.body()).doesNotContain("SECRET","SQL","/local","Exception");
     }
