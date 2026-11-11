@@ -53,6 +53,21 @@ class GuideContentBatchStore {
                 GuideContentBatchStore::localeRevision, batchId);
     }
 
+    List<ExpiryCandidate> expiryCandidates() {
+        return jdbc.query("""
+                SELECT b.id AS batch_id, b.slug, c.locale, b.status, c.valid_until, 'EXPIRED_CURRENT_LOCALE' AS scope
+                FROM guide_locale_current c JOIN guide_content_batch b ON b.id = c.batch_id
+                WHERE c.valid_until IS NOT NULL AND c.valid_until <= CURRENT_TIMESTAMP
+                UNION ALL
+                SELECT b.id AS batch_id, b.slug, NULL AS locale, b.status, b.valid_until, 'EXPIRED_PENDING_BATCH' AS scope
+                FROM guide_content_batch b
+                WHERE b.status IN ('DRAFT', 'READY', 'APPROVED')
+                    AND b.valid_until IS NOT NULL AND b.valid_until <= CURRENT_TIMESTAMP
+                ORDER BY 5, 2, 3
+                """, (row, index) -> new ExpiryCandidate(row.getObject("batch_id", UUID.class), row.getString("slug"),
+                row.getString("locale"), row.getString("status"), instant(row, "valid_until"), row.getString("scope")));
+    }
+
     Optional<LocaleRevision> locale(UUID batchId, String locale) {
         return jdbc.query("SELECT * FROM guide_locale_revision WHERE batch_id = ? AND locale = ?",
                 GuideContentBatchStore::localeRevision, batchId, locale).stream().findFirst();
@@ -119,8 +134,9 @@ class GuideContentBatchStore {
                 WHERE id = ? AND status = 'READY'
                     AND (SELECT count(*) FROM guide_locale_revision WHERE batch_id = ? AND validation_status = 'VALID'
                          AND review_status = 'PASSED' AND reviewed_hash = content_hash) = 5
-                """, actor, batchId, batchId);
-        if (updated != 1) { throw new IncompleteBatch("All five current locale revisions must pass validation and hash-specific review"); }
+                    AND NOT EXISTS (SELECT 1 FROM guide_locale_revision WHERE batch_id = ? AND reviewer = 'mock-adapter')
+                """, actor, batchId, batchId, batchId);
+        if (updated != 1) { throw new IncompleteBatch("All five current locale revisions must pass independent hash-specific review; mock-adapter reviews cannot be approved"); }
     }
 
     @org.springframework.transaction.annotation.Transactional(propagation = org.springframework.transaction.annotation.Propagation.REQUIRES_NEW)
@@ -184,6 +200,7 @@ class GuideContentBatchStore {
     record CurrentLocale(String locale, UUID batchId, UUID revisionId, Instant validFrom, Instant validUntil) { }
     record LocalizedCurrent(UUID batchId, UUID sourceRevisionId, UUID revisionId, String canonicalForm,
             String contentHash, Instant publishedAt) { }
+    record ExpiryCandidate(UUID batchId, String slug, String locale, String status, Instant validUntil, String scope) { }
 
     static class IncompleteBatch extends org.springframework.dao.DataAccessException {
         IncompleteBatch(String message) { super(message); }

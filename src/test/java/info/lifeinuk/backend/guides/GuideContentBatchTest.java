@@ -26,6 +26,7 @@ import static org.assertj.core.api.Assertions.*;
     "spring.flyway.schemas=guide_content_batch_tests", "spring.flyway.default-schema=guide_content_batch_tests",
     "spring.jpa.properties.hibernate.default_schema=guide_content_batch_tests", "spring.datasource.hikari.schema=guide_content_batch_tests",
     "life-in-uk.editorial.draft-token=test-draft-token", "life-in-uk.editorial.review-token=test-review-token",
+    "life-in-uk.editorial.mock-review-token=test-mock-review-token",
     "life-in-uk.editorial.approval-token=test-approval-token"
 })
 @ContextConfiguration(initializers = IsolatedPostgres.Initializer.class)
@@ -41,6 +42,11 @@ class GuideContentBatchTest {
     private HttpResponse<String> get(String path) throws Exception {
         return HttpClient.newHttpClient().send(HttpRequest.newBuilder(URI.create("http://127.0.0.1:" + port + path))
                 .GET().build(), HttpResponse.BodyHandlers.ofString());
+    }
+
+    private HttpResponse<String> getWithDraftCredential(String path) throws Exception {
+        return HttpClient.newHttpClient().send(HttpRequest.newBuilder(URI.create("http://127.0.0.1:" + port + path))
+                .header("Authorization", "Bearer test-draft-token").GET().build(), HttpResponse.BodyHandlers.ofString());
     }
 
     @BeforeEach
@@ -79,7 +85,7 @@ class GuideContentBatchTest {
         return translated;
     }
 
-    private void fillAndReview(GuideContentBatchService.BatchReceipt batch, ObjectNode source) throws Exception {
+    private void fillAndReview(GuideContentBatchService.BatchReceipt batch, ObjectNode source, String reviewer) throws Exception {
         var locales = new java.util.LinkedHashMap<String, String>();
         locales.put("zh-CN", source.get("title").stringValue());
         locales.put("zh-TW", "Traditional Chinese"); locales.put("en", "English");
@@ -89,11 +95,11 @@ class GuideContentBatchTest {
                 batches.translate(batch.batchId(), entry.getKey(), json.writeValueAsBytes(translation(source, entry.getValue())));
             }
             String hash = store.locale(batch.batchId(), entry.getKey()).orElseThrow().contentHash();
-            var review = json.createObjectNode(); review.put("contentHash", hash); review.put("passed", true); review.putArray("findings");
-            batches.review(batch.batchId(), entry.getKey(), review);
+            var review = json.createObjectNode(); review.put("contentHash", hash); review.put("passed", true);
+            review.putArray("findings");
+            batches.review(batch.batchId(), entry.getKey(), review, reviewer);
         }
         assertThat(store.byId(batch.batchId()).orElseThrow().status()).isEqualTo("READY");
-        batches.approve(batch.batchId(), "synthetic-owner");
     }
 
     @Test
@@ -140,9 +146,43 @@ class GuideContentBatchTest {
         String originalHash = store.locale(batch.batchId(), "en").orElseThrow().contentHash();
         batches.translate(batch.batchId(), "en", json.writeValueAsBytes(translation(source, "Replacement")));
         var request = json.createObjectNode();
-        request.put("contentHash", originalHash); request.put("passed", true); request.putArray("findings");
-        assertThatThrownBy(() -> batches.review(batch.batchId(), "en", request))
+        request.put("contentHash", originalHash); request.put("passed", true);
+        request.putArray("findings");
+        assertThatThrownBy(() -> batches.review(batch.batchId(), "en", request, "mock-adapter"))
                 .isInstanceOf(GuideContentBatchStore.StaleLocaleRevision.class);
+    }
+
+    @Test
+    void reviewIdentityComesFromBearerCredentialAndCannotBeSpoofedInPayload() throws Exception {
+        var batch = batches.create(createRequest("batch-review-identity", source("Review identity")));
+        String hash = store.locale(batch.batchId(), "zh-CN").orElseThrow().contentHash();
+        var payload = json.createObjectNode(); payload.put("contentHash", hash); payload.put("passed", true); payload.putArray("findings");
+        var client = HttpClient.newHttpClient();
+        payload.put("reviewer", "claude-independent");
+        var forged = client.send(HttpRequest.newBuilder(URI.create("http://127.0.0.1:" + port
+                        + "/api/editorial/guide-batches/" + batch.batchId() + "/reviews/zh-CN"))
+                .header("Authorization", "Bearer test-mock-review-token").header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(payload.toString())).build(), HttpResponse.BodyHandlers.ofString());
+        assertThat(forged.statusCode()).isEqualTo(400);
+        payload.remove("reviewer");
+        var reviewResponse = client.send(HttpRequest.newBuilder(URI.create("http://127.0.0.1:" + port
+                        + "/api/editorial/guide-batches/" + batch.batchId() + "/reviews/zh-CN"))
+                .header("Authorization", "Bearer test-mock-review-token").header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(payload.toString())).build(), HttpResponse.BodyHandlers.ofString());
+        assertThat(reviewResponse.statusCode()).isEqualTo(200);
+        assertThat(reviewResponse.body()).contains("\"reviewer\":\"mock-adapter\"");
+        assertThat(reviewResponse.body()).contains("\"reviewedHash\":\"" + hash + "\"");
+
+        var independentBatch = batches.create(createRequest("batch-independent-review-identity", source("Independent review identity")));
+        String independentHash = store.locale(independentBatch.batchId(), "zh-CN").orElseThrow().contentHash();
+        var independentPayload = json.createObjectNode(); independentPayload.put("contentHash", independentHash);
+        independentPayload.put("passed", true); independentPayload.putArray("findings");
+        var independentResponse = client.send(HttpRequest.newBuilder(URI.create("http://127.0.0.1:" + port
+                        + "/api/editorial/guide-batches/" + independentBatch.batchId() + "/reviews/zh-CN"))
+                .header("Authorization", "Bearer test-review-token").header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(independentPayload.toString())).build(), HttpResponse.BodyHandlers.ofString());
+        assertThat(independentResponse.statusCode()).isEqualTo(200);
+        assertThat(independentResponse.body()).contains("\"reviewer\":\"claude-independent\"");
     }
 
     @Test
@@ -162,11 +202,27 @@ class GuideContentBatchTest {
     }
 
     @Test
+    void mockReviewsReachReadyButCannotBeOwnerApproved() throws Exception {
+        var source = source("Mock approval guard");
+        var batch = batches.create(createRequest("batch-mock-approval", source));
+        fillAndReview(batch, source, "mock-adapter");
+        assertThat(store.byId(batch.batchId()).orElseThrow().status()).isEqualTo("READY");
+        assertThatThrownBy(() -> batches.approve(batch.batchId(), "synthetic-owner"))
+                .isInstanceOf(GuideContentBatchStore.IncompleteBatch.class)
+                .hasMessageContaining("mock-adapter reviews cannot be approved");
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM guide_publication", Integer.class)).isZero();
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM guide", Integer.class)).isZero();
+    }
+
+    @Test
     void fiveLocalePublicationIsAtomicAndExpiredContentIsHidden() throws Exception {
         var source = source("Five locale sample");
         var batch = batches.create(createRequest("batch-five", source));
-        fillAndReview(batch, source);
+        fillAndReview(batch, source, "claude-independent");
+        assertThat(store.byId(batch.batchId()).orElseThrow().status()).isEqualTo("READY");
+        assertThat(get("/api/guides").body()).doesNotContain(batch.slug());
         jdbc.update("INSERT INTO guide_workflow_activation (activated_by) VALUES ('synthetic-test')");
+        batches.approve(batch.batchId(), "synthetic-owner");
         batches.publish(batch.batchId(), new GuideContentBatchService.PublishRequest(null, "standard-v1",
                 LocalDate.now(ZoneOffset.UTC)), "synthetic-owner");
 
@@ -185,21 +241,26 @@ class GuideContentBatchTest {
         assertThat(get("/api/guides").body()).doesNotContain(batch.slug());
         assertThat(get("/api/guides/" + batch.slug()).statusCode()).isEqualTo(404);
         assertThat(get("/api/guides/" + batch.slug() + "/locales/en").statusCode()).isEqualTo(404);
+        var report = getWithDraftCredential("/api/editorial/guide-batches/expiry-report");
+        assertThat(report.statusCode()).isEqualTo(200);
+        assertThat(report.body()).contains(batch.slug(), "EXPIRED_CURRENT_LOCALE");
     }
 
     @Test
     void failedReplacementPublicationLeavesPreviousProjectionAndLocalePointers() throws Exception {
         var firstSource = source("Initial published batch");
         var first = batches.create(createRequest("batch-replace-first", firstSource));
-        fillAndReview(first, firstSource);
+        fillAndReview(first, firstSource, "claude-independent");
         jdbc.update("INSERT INTO guide_workflow_activation (activated_by) VALUES ('synthetic-test')");
+        batches.approve(first.batchId(), "synthetic-owner");
         batches.publish(first.batchId(), new GuideContentBatchService.PublishRequest(null, "standard-v1",
                 LocalDate.now(ZoneOffset.UTC)), "synthetic-owner");
         var oldTitle = jdbc.queryForObject("SELECT title FROM guide WHERE slug = ?", String.class, first.slug());
 
         var replacementSource = sourceWithSlug("Replacement draft", first.slug());
         var replacement = batches.create(createRequest("batch-replace-next", replacementSource));
-        fillAndReview(replacement, replacementSource);
+        fillAndReview(replacement, replacementSource, "claude-independent");
+        batches.approve(replacement.batchId(), "synthetic-owner");
         UUID currentPublication = jdbc.queryForObject("SELECT id FROM guide_publication WHERE slug = ? AND ended_at IS NULL",
                 UUID.class, first.slug());
         jdbc.execute("CREATE FUNCTION fail_batch_publication_insert() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN RAISE EXCEPTION 'synthetic publication failure'; END; $$");

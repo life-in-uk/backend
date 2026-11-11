@@ -99,10 +99,13 @@ class GuideContentBatchService {
     }
 
     @Transactional
-    public LocaleReceipt review(UUID batchId, String locale, JsonNode request) {
+    public LocaleReceipt review(UUID batchId, String locale, JsonNode request, String reviewer) {
         if (!LOCALES.contains(locale)) throw new IllegalArgumentException("Unsupported locale");
         fields(request, Set.of("contentHash", "passed", "findings"), "review request");
         String hash = text(request, "contentHash", 64);
+        if (!Set.of("claude-independent", "mock-adapter").contains(reviewer)) {
+            throw new IllegalArgumentException("Unsupported authenticated reviewer identity");
+        }
         if (!hash.matches("[0-9a-f]{64}")) throw new IllegalArgumentException("contentHash must be lower-case SHA-256");
         if (!request.has("passed") || !request.get("passed").isBoolean()) throw new IllegalArgumentException("passed must be boolean");
         JsonNode findings = request.get("findings");
@@ -111,7 +114,7 @@ class GuideContentBatchService {
         if (result.length() > 64_000) throw new IllegalArgumentException("review findings exceed the size limit");
         var batch = batches.byId(batchId).orElseThrow(() -> new NotFound("Batch not found"));
         batches.requireOpenDraft(batch);
-        var reviewed = batches.review(batchId, locale, hash, result, "claude-independent", request.get("passed").booleanValue());
+        var reviewed = batches.review(batchId, locale, hash, result, reviewer, request.get("passed").booleanValue());
         return localeReceipt(reviewed);
     }
 
@@ -119,6 +122,11 @@ class GuideContentBatchService {
     public BatchDetail detail(UUID batchId) {
         var batch = batches.byId(batchId).orElseThrow(() -> new NotFound("Batch not found"));
         return new BatchDetail(receipt(batch), batches.locales(batchId).stream().map(GuideContentBatchService::localeReceipt).toList());
+    }
+
+    @Transactional(readOnly = true)
+    public ExpiryReport expiryReport() {
+        return new ExpiryReport(Instant.now(), batches.expiryCandidates());
     }
 
     @Transactional
@@ -160,7 +168,7 @@ class GuideContentBatchService {
     }
     private static LocaleReceipt localeReceipt(GuideContentBatchStore.LocaleRevision row) {
         return new LocaleReceipt(row.id(), row.batchId(), row.locale(), row.sourceRevisionId(), row.contentHash(),
-                row.validationStatus(), row.reviewStatus(), row.reviewedHash(), row.failureCode());
+                row.validationStatus(), row.reviewStatus(), row.reviewedHash(), row.failureCode(), row.reviewer());
     }
     private static boolean fiveReviewed(List<GuideContentBatchStore.LocaleRevision> rows) {
         return LOCALES.size() == rows.size() && rows.stream().allMatch(row -> "VALID".equals(row.validationStatus())
@@ -221,8 +229,9 @@ class GuideContentBatchService {
     record BatchReceipt(UUID batchId, String slug, UUID sourceRevisionId, String sourceContentHash, String status,
             Instant validFrom, Instant validUntil) { }
     record BatchDetail(BatchReceipt batch, List<LocaleReceipt> locales) { }
+    record ExpiryReport(Instant generatedAt, List<GuideContentBatchStore.ExpiryCandidate> candidates) { }
     record LocaleReceipt(UUID localeRevisionId, UUID batchId, String locale, UUID sourceRevisionId, String contentHash,
-            String validationStatus, String reviewStatus, String reviewedHash, String failureCode) { }
+            String validationStatus, String reviewStatus, String reviewedHash, String failureCode, String reviewer) { }
     record PublishRequest(UUID expectCurrentPublicationId, String checklistId, LocalDate verifiedOn) { }
     static class IdempotencyConflict extends IllegalStateException { IdempotencyConflict(String message) { super(message); } }
     static class NotFound extends IllegalArgumentException { NotFound(String message) { super(message); } }

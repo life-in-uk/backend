@@ -18,12 +18,16 @@ class GuideEditorialSecurity implements WebMvcConfigurer {
 
     GuideEditorialSecurity(@Value("${life-in-uk.editorial.draft-token:}") String draft,
             @Value("${life-in-uk.editorial.review-token:}") String review,
+            @Value("${life-in-uk.editorial.mock-review-token:}") String mockReview,
             @Value("${life-in-uk.editorial.approval-token:}") String approval) {
-        if (sameNonblank(draft, review) || sameNonblank(draft, approval) || sameNonblank(review, approval)) {
+        if (sameNonblank(draft, review) || sameNonblank(draft, mockReview) || sameNonblank(draft, approval)
+                || sameNonblank(review, mockReview) || sameNonblank(review, approval) || sameNonblank(mockReview, approval)) {
             throw new IllegalArgumentException("Editorial draft, review and approval tokens must be distinct");
         }
-        gate = new Gate(draft, review, approval);
+        gate = new Gate(draft, review, mockReview, approval);
     }
+
+    String authenticatedReviewer(HttpServletRequest request) { return gate.authenticatedReviewer(request); }
 
     private static boolean sameNonblank(String left, String right) {
         return left != null && !left.isBlank() && left.equals(right);
@@ -36,16 +40,18 @@ class GuideEditorialSecurity implements WebMvcConfigurer {
     static final class Gate implements HandlerInterceptor {
         private final byte[] draft;
         private final byte[] review;
+        private final byte[] mockReview;
         private final byte[] approval;
-        Gate(String draft, String review, String approval) {
-            this.draft = bytes(draft); this.review = bytes(review); this.approval = bytes(approval);
+        Gate(String draft, String review, String mockReview, String approval) {
+            this.draft = bytes(draft); this.review = bytes(review); this.mockReview = bytes(mockReview); this.approval = bytes(approval);
         }
 
         @Override public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
             String path = request.getRequestURI();
+            boolean reviewPath = path.contains("/reviews/");
             byte[] expected = path.endsWith("/approve") || path.endsWith("/publish") ? approval
-                    : path.contains("/reviews/") ? review : draft;
-            if (expected.length == 0) {
+                    : reviewPath ? review : draft;
+            if (expected.length == 0 && !(reviewPath && mockReview.length > 0)) {
                 response.setStatus(HttpStatus.SERVICE_UNAVAILABLE.value());
                 response.setHeader("Cache-Control", "no-store");
                 response.getWriter().write("{\"code\":\"EDITORIAL_AUTH_NOT_CONFIGURED\"}");
@@ -54,13 +60,24 @@ class GuideEditorialSecurity implements WebMvcConfigurer {
             String authorization = request.getHeader("Authorization");
             byte[] supplied = authorization != null && authorization.startsWith("Bearer ")
                     ? bytes(authorization.substring(7)) : new byte[0];
-            if (!MessageDigest.isEqual(expected, supplied)) {
+            boolean valid = MessageDigest.isEqual(expected, supplied)
+                    || reviewPath && mockReview.length > 0 && MessageDigest.isEqual(mockReview, supplied);
+            if (!valid) {
                 response.setStatus(HttpStatus.UNAUTHORIZED.value());
                 response.setHeader("Cache-Control", "no-store");
                 response.getWriter().write("{\"code\":\"EDITORIAL_UNAUTHORIZED\"}");
                 return false;
             }
             return true;
+        }
+
+        String authenticatedReviewer(HttpServletRequest request) {
+            String authorization = request.getHeader("Authorization");
+            byte[] supplied = authorization != null && authorization.startsWith("Bearer ")
+                    ? bytes(authorization.substring(7)) : new byte[0];
+            if (mockReview.length > 0 && MessageDigest.isEqual(mockReview, supplied)) return "mock-adapter";
+            if (review.length > 0 && MessageDigest.isEqual(review, supplied)) return "claude-independent";
+            throw new IllegalStateException("No authenticated review identity");
         }
 
         private static byte[] bytes(String value) {

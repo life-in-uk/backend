@@ -1,6 +1,7 @@
 package info.lifeinuk.backend.guides;
 
 import java.util.UUID;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,11 +21,14 @@ import tools.jackson.databind.JsonNode;
 @RequestMapping("/api/editorial/guide-batches")
 class GuideEditorialController {
     private final GuideContentBatchService service;
+    private final GuideEditorialSecurity editorialSecurity;
     private final String approvalActor;
 
     GuideEditorialController(GuideContentBatchService service,
+            GuideEditorialSecurity editorialSecurity,
             @Value("${life-in-uk.editorial.approval-actor:}") String approvalActor) {
         this.service = service;
+        this.editorialSecurity = editorialSecurity;
         this.approvalActor = approvalActor;
     }
 
@@ -36,6 +40,11 @@ class GuideEditorialController {
     @GetMapping("/{batchId}")
     ResponseEntity<?> get(@PathVariable UUID batchId) {
         return ResponseEntity.ok().cacheControl(CacheControl.noStore()).body(service.detail(batchId));
+    }
+
+    @GetMapping("/expiry-report")
+    ResponseEntity<?> expiryReport() {
+        return ResponseEntity.ok().cacheControl(CacheControl.noStore()).body(service.expiryReport());
     }
 
     @PutMapping("/{batchId}/locales/{locale}")
@@ -53,8 +62,10 @@ class GuideEditorialController {
     }
 
     @PostMapping("/{batchId}/reviews/{locale}")
-    ResponseEntity<?> review(@PathVariable UUID batchId, @PathVariable String locale, @RequestBody JsonNode request) {
-        return ResponseEntity.ok().cacheControl(CacheControl.noStore()).body(service.review(batchId, locale, request));
+    ResponseEntity<?> review(@PathVariable UUID batchId, @PathVariable String locale, @RequestBody JsonNode request,
+            HttpServletRequest httpRequest) {
+        return ResponseEntity.ok().cacheControl(CacheControl.noStore())
+                .body(service.review(batchId, locale, request, editorialSecurity.authenticatedReviewer(httpRequest)));
     }
 
     @PostMapping("/{batchId}/approve")
