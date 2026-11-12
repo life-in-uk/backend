@@ -119,6 +119,9 @@ test('provider protocol integration is mockable and records token usage without 
     let output;
     if (req.url === '/sol') {
       const user = JSON.parse(payload.messages[1].content);
+      if (payload.messages[0].content.includes('POLICY_ANALYSIS_JSON') && user.job.idempotencyKey === 'timeout-job') {
+        await new Promise((resolve) => setTimeout(resolve, 150));
+      }
       output = payload.messages[0].content.includes('POLICY_ANALYSIS_JSON')
         ? user.job.idempotencyKey === 'invalid-job' ? [] : { keyFindings: [{ claim: 'Eligibility conditions', sourceKeys: ['official-benefit-guide'] }], effectiveDates: [], unresolvedQuestions: [] }
         : makeGuide(user.job.slug, fixtureSources, 'Chinese source');
@@ -180,6 +183,24 @@ test('provider protocol integration is mockable and records token usage without 
   assert.equal(afterRestart.status, 409);
   await new Promise((resolve) => restartedAdapter.close(resolve));
 
+  const timeoutAdapter = createServer({ ...config, timeoutMs: 50 });
+  await new Promise((resolve) => timeoutAdapter.listen(0, '127.0.0.1', resolve));
+  const timeoutUrl = `http://127.0.0.1:${timeoutAdapter.address().port}/v1/guide-drafts`;
+  const timeoutBody = JSON.stringify({ job: { idempotencyKey: 'timeout-job', policyVersion: 'test-policy-v1', sourceVersion: 'test-source-v1', slug: 'example-benefit', topicCandidate: { topic: 'Example benefit', candidateId: 'candidate-timeout' } }, sourceMaterials: materials });
+  const timedOut = await fetch(timeoutUrl, {
+    method: 'POST', headers: { authorization: `Bearer ${config.adapterToken}`, 'content-type': 'application/json' }, body: timeoutBody,
+  });
+  assert.equal(timedOut.status, 502);
+  await new Promise((resolve) => timeoutAdapter.close(resolve));
+  const afterTimeoutRestart = createServer({ ...config, timeoutMs: 50 });
+  await new Promise((resolve) => afterTimeoutRestart.listen(0, '127.0.0.1', resolve));
+  const timeoutReplay = await fetch(`http://127.0.0.1:${afterTimeoutRestart.address().port}/v1/guide-drafts`, {
+    method: 'POST', headers: { authorization: `Bearer ${config.adapterToken}`, 'content-type': 'application/json' }, body: timeoutBody,
+  });
+  assert.equal(timeoutReplay.status, 409);
+  await new Promise((resolve) => afterTimeoutRestart.close(resolve));
+  await new Promise((resolve) => setTimeout(resolve, 170));
+
   for (const locale of ['zh-CN', ...generated.translations.map((row) => row.locale)]) {
     const guideValue = locale === 'zh-CN' ? generated.sourceGuide : generated.translations.find((row) => row.locale === locale).guide;
     const contentHash = canonicalGuideHash(guideValue);
@@ -210,12 +231,15 @@ test('provider protocol integration is mockable and records token usage without 
     body: JSON.stringify({ job: { idempotencyKey: 'invalid-job', policyVersion: 'test-policy-v1', sourceVersion: 'test-source-v1', slug: 'example-benefit', topicCandidate: { topic: 'Example benefit', candidateId: 'candidate-2' } }, sourceMaterials: materials }),
   });
   assert.equal(invalidResponse.status, 400);
-  assert.equal(providerCalls, 12);
+  assert.equal(providerCalls, 13);
   const usageLines = (await readFile(metricsFile, 'utf8')).trim().split('\n').map((line) => JSON.parse(line));
-  assert.equal(usageLines.length, 12);
-  assert.equal(usageLines.every((event) => event.inputTokens > 0 && event.outputTokens > 0 && event.latencyMs >= 0), true);
-  assert.equal(usageLines.at(-1).attemptStatus, 'OUTPUT_INVALID');
-  assert.equal(usageLines.at(-1).inputTokens, 41);
+  assert.equal(usageLines.length, 13);
+  assert.equal(usageLines.filter((event) => event.attemptStatus === 'SUCCEEDED').every((event) => event.inputTokens > 0 && event.outputTokens > 0 && event.latencyMs >= 0), true);
+  const invalidAttempt = usageLines.find((event) => event.attemptStatus === 'OUTPUT_INVALID');
+  assert.equal(invalidAttempt.inputTokens, 41);
+  const timeoutAttempt = usageLines.find((event) => event.attemptStatus === 'PROVIDER_ERROR');
+  assert.equal(timeoutAttempt.usageAvailable, false);
+  assert.equal(timeoutAttempt.inputTokens, null);
   assert.equal(JSON.stringify(usageLines).includes('test-secret'), false);
   assert.equal(JSON.stringify(usageLines).includes('Verified source text'), false);
 });
