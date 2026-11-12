@@ -53,6 +53,21 @@ class GuideContentBatchStore {
                 GuideContentBatchStore::localeRevision, batchId);
     }
 
+    List<PublishedLocaleMetadata> publishedLocaleMetadata(String locale) {
+        return jdbc.query("""
+                SELECT c.slug, r.canonical_form, g.published_at, r.updated_at
+                FROM guide_locale_current c
+                JOIN guide g ON g.slug = c.slug AND g.status = 'PUBLISHED'
+                JOIN guide_content_batch b ON b.id = c.batch_id AND b.status = 'PUBLISHED'
+                JOIN guide_locale_revision r ON r.id = c.locale_revision_id
+                    AND r.batch_id = c.batch_id AND r.locale = c.locale
+                WHERE c.locale = ? AND c.valid_from <= CURRENT_TIMESTAMP
+                    AND (c.valid_until IS NULL OR c.valid_until > CURRENT_TIMESTAMP)
+                ORDER BY g.published_at DESC, c.slug ASC
+                """, (row, index) -> new PublishedLocaleMetadata(row.getString("slug"), row.getString("canonical_form"),
+                instant(row, "published_at"), instant(row, "updated_at")), locale);
+    }
+
     List<ExpiryCandidate> expiryCandidates() {
         return jdbc.query("""
                 SELECT b.id AS batch_id, b.slug, c.locale, b.status, c.valid_until, 'EXPIRED_CURRENT_LOCALE' AS scope
@@ -198,6 +213,7 @@ class GuideContentBatchStore {
             String contentHash, String validationStatus, String failureCode, String reviewStatus,
             String reviewedHash, String reviewResult, String reviewer, Instant reviewedAt) { }
     record CurrentLocale(String locale, UUID batchId, UUID revisionId, Instant validFrom, Instant validUntil) { }
+    record PublishedLocaleMetadata(String slug, String canonicalForm, Instant publishedAt, Instant updatedAt) { }
     record LocalizedCurrent(UUID batchId, UUID sourceRevisionId, UUID revisionId, String canonicalForm,
             String contentHash, Instant publishedAt) { }
     record ExpiryCandidate(UUID batchId, String slug, String locale, String status, Instant validUntil, String scope) { }

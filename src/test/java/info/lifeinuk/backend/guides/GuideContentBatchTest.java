@@ -25,6 +25,7 @@ import static org.assertj.core.api.Assertions.*;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = {
     "spring.flyway.schemas=guide_content_batch_tests", "spring.flyway.default-schema=guide_content_batch_tests",
     "spring.jpa.properties.hibernate.default_schema=guide_content_batch_tests", "spring.datasource.hikari.schema=guide_content_batch_tests",
+    "life-in-uk.public-base-url=http://127.0.0.1:5173",
     "life-in-uk.editorial.draft-token=test-draft-token", "life-in-uk.editorial.review-token=test-review-token",
     "life-in-uk.editorial.mock-review-token=test-mock-review-token",
     "life-in-uk.editorial.approval-token=test-approval-token"
@@ -273,10 +274,13 @@ class GuideContentBatchTest {
     @Test
     void fiveLocalePublicationIsAtomicAndExpiredContentIsHidden() throws Exception {
         var source = source("Five locale sample");
+        source.put("category", "health-nhs");
         var batch = batches.create(createRequest("batch-five", source));
         fillAndReview(batch, source, "claude-independent");
         assertThat(store.byId(batch.batchId()).orElseThrow().status()).isEqualTo("READY");
         assertThat(get("/api/guides").body()).doesNotContain(batch.slug());
+        assertThat(get("/api/guides/locales/en").body()).doesNotContain(batch.slug());
+        assertThat(get("/sitemap.xml").body()).doesNotContain(batch.slug());
         jdbc.update("INSERT INTO guide_workflow_activation (activated_by) VALUES ('synthetic-test')");
         batches.approve(batch.batchId(), "synthetic-owner");
         batches.publish(batch.batchId(), new GuideContentBatchService.PublishRequest(null, "standard-v1",
@@ -288,6 +292,15 @@ class GuideContentBatchTest {
                 Integer.class, batch.batchId(), batch.sourceRevisionId())).isEqualTo(5);
         assertThat(jdbc.queryForObject("SELECT count(DISTINCT batch_id) FROM guide_locale_current WHERE slug = ?",
                 Integer.class, batch.slug())).isEqualTo(1);
+        assertThat(get("/api/guides/locales/en").body()).contains(batch.slug(), "English");
+        assertThat(get("/api/guides/locales/zh-CN").body()).contains(batch.slug(), "Five locale sample");
+        assertThat(get("/api/guides/locales/unknown").statusCode()).isEqualTo(404);
+        var sitemap = get("/sitemap.xml");
+        assertThat(sitemap.statusCode()).isEqualTo(200);
+        assertThat(sitemap.headers().firstValue("content-type").orElse("")).contains("application/xml");
+        assertThat(sitemap.body()).contains("http://127.0.0.1:5173/en/health/" + batch.slug(),
+                "hreflang=\"zh-TW\"", "hreflang=\"ur\"", "hreflang=\"hi\"");
+        assertThat(get("/robots.txt").body()).contains("Sitemap: http://127.0.0.1:5173/sitemap.xml");
 
         jdbc.update("UPDATE guide_locale_current SET valid_until = ? WHERE slug = ?",
                 java.sql.Timestamp.from(Instant.now().minusSeconds(1)), batch.slug());

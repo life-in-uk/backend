@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(readOnly = true)
 public class GuideQuery {
+    private static final Set<String> LOCALES = Set.of("zh-CN", "zh-TW", "en", "ur", "hi");
     private final GuideRepository guides;
     private final GuideContentBatchStore batches;
     private final GuideRevisionService revisions;
@@ -21,6 +22,15 @@ public class GuideQuery {
         return guides.publishedMetadataRows().stream().map(row -> new GuideResponse.Metadata(
                 (String) row[0], (String) row[1], (String) row[2], (String) row[3],
                 instant(row[4]), instant(row[5]))).toList();
+    }
+    public Optional<List<GuideResponse.Metadata>> localizedList(String locale) {
+        if (!LOCALES.contains(locale)) return Optional.empty();
+        if ("zh-CN".equals(locale)) return Optional.of(list());
+        return Optional.of(batches.publishedLocaleMetadata(locale).stream().map(row -> {
+            var definition = revisions.definition(row.canonicalForm());
+            return new GuideResponse.Metadata(row.slug(), definition.category(), definition.title(), definition.summary(),
+                    row.publishedAt(), row.updatedAt());
+        }).toList());
     }
     @Transactional(readOnly = true, isolation = org.springframework.transaction.annotation.Isolation.REPEATABLE_READ)
     public Optional<GuideResponse.Detail> detail(String slug) {
