@@ -20,16 +20,22 @@ Copy `ai-provider.env.example` to `life-in-uk-frontend/.local/ai-provider.env` a
 
 The workflow template has an empty `sourceMaterials` array by design. Before a manual run, the editor must provide a unique idempotency key, verified policy/source versions, a valid slug, a verified topic candidate, and one or more allowlisted source items with `key`, `organisation`, `title`, absolute HTTPS `url`, `accessedAt`, and source text in `content`. `AI_SOURCE_ALLOWLIST` must name the verified official source hosts. Do not put unverified or speculative material in this input.
 
+The adapter validates idempotency, policy-version, and source-version identifiers with Spring's exact rule: `[A-Za-z0-9][A-Za-z0-9._:-]{0,max-1}` (200 characters for idempotency keys; 120 for versions). It hashes each source's exact UTF-8 text with lower-case SHA-256 and returns the digest with that material; review recomputes each digest and verifies the Chinese source Guide hash against the batch's `sourceContentHash`. Nested `sources`, `evidence`, and `supports` objects reject unknown fields. Evidence excerpts must be at least 20 Unicode characters and occur literally in the source. The sole short-source exception is an excerpt equal to the complete trimmed source when that source itself is under 20 characters. Translations must retain source locators and exact excerpts.
+
 ## Local adapter start
 
 After provider access has been confirmed, load the protected env file and start the adapter from the backend checkout:
 
 ```bash
-set -a
-. /home/yejun_guan/projects/life-in-uk-frontend/.local/ai-provider.env
-set +a
-node ops/n8n/ai-provider-adapter.mjs
+(
+  set -a
+  . /home/yejun_guan/projects/life-in-uk-frontend/.local/ai-provider.env
+  set +a
+  exec node ops/n8n/ai-provider-adapter.mjs
+)
 ```
+
+The environment file is loaded and exported only inside this subshell; the operator's interactive shell does not retain the provider variables. The adapter's per-call timeout is bounded by `AI_ADAPTER_TIMEOUT_MS`. Its generation processing budget is `AI_ADAPTER_MAX_PROCESSING_MS=900000`; the workflow's generation HTTP timeout is fixed at 930000 ms. `AI_ADAPTER_GENERATION_HTTP_TIMEOUT_MS` must equal 930000 and exceed the processing budget. Configuration validation fails if these values drift. The installed n8n 2.47.4 HTTP Request node supports the `options.timeout` field used by the workflow.
 
 This process does not start automatically. With `AI_ADAPTER_ENABLED=false`, `/healthz` works but generation/review routes return HTTP 503. The adapter refuses live startup if required provider IDs, API URLs, keys, API version, source allowlist, adapter token, or absolute metrics path are missing. Never change `AI_ADAPTER_BIND` from `127.0.0.1` for this local POC.
 
@@ -47,7 +53,7 @@ The adapter makes a separate Sol policy-analysis call before the Chinese draft; 
 
 If a provider request times out or returns invalid output, its durable claim remains consumed. Do not retry or replay the same key. Check the adapter usage log, provider usage/billing console, and Spring batch state first. Only after confirming that no completed batch needs recovery should an operator create a new editorial idempotency key and manually retry. A timeout may still have been billed by the provider; the guard prevents silent automatic duplicate calls but cannot resolve provider-side timeout ambiguity.
 
-The existing native n8n environment disables saving successful, failed, and manual execution data and prunes retained history (`EXECUTIONS_DATA_SAVE_ON_SUCCESS=none`, `EXECUTIONS_DATA_SAVE_ON_ERROR=none`, `EXECUTIONS_DATA_SAVE_MANUAL_EXECUTIONS=false`). Provider keys remain in the adapter environment and are never sent to n8n. n8n stores only its separate encrypted adapter and Spring editorial credentials. Keep these execution settings in place for the controlled test.
+The workflow export explicitly sets `saveDataSuccessExecution=none`, `saveDataErrorExecution=none`, `saveManualExecutions=false`, and `saveExecutionProgress=false`; the native n8n instance also has successful, failed, and manual execution-data saving disabled globally. Provider keys remain in the adapter environment and are never sent to n8n. n8n stores only its separate encrypted adapter and Spring editorial credentials. Keep these execution settings in place for the controlled test.
 
 ## Owner actions before activation
 

@@ -30,7 +30,9 @@
       "parameters": {
         "method": "POST",
         "url": "http://127.0.0.1:8092/v1/guide-drafts",
-        "options": {},
+        "options": {
+          "timeout": 930000
+        },
         "authentication": "genericCredentialType",
         "sendBody": true,
         "contentType": "json",
@@ -110,7 +112,7 @@
     {
       "parameters": {
         "mode": "runOnceForAllItems",
-        "jsCode": "const j = $input.first().json;\nif (j.adapterLabel !== 'LIVE_AI_PROVIDER_CALLS' || !j.job || !j.sourceGuide || !j.sourceRevisionId || !j.sourceContentHash || !Array.isArray(j.translations) || j.translations.length !== 4 || !Array.isArray(j.usageEvents) || j.usageEvents.length !== 6) throw new Error('Expected Sol policy analysis + Chinese draft + four Terra outputs and usage receipts');\nconst common = { batchId: j.batchId, sourceRevisionId: j.sourceRevisionId, sourceGuide: j.sourceGuide, sourceMaterials: j.sourceMaterials, generationMetrics: j.usageEvents };\nreturn [{ json: { ...common, locale: 'zh-CN', guide: j.sourceGuide, contentHash: j.sourceContentHash } }, ...j.translations.map(t => ({ json: { ...common, locale: t.locale, guide: t.guide } }))];"
+        "jsCode": "const j = $input.first().json;\nif (j.adapterLabel !== 'LIVE_AI_PROVIDER_CALLS' || !j.job || !j.sourceGuide || !j.sourceRevisionId || !j.sourceContentHash || !Array.isArray(j.translations) || j.translations.length !== 4 || !Array.isArray(j.usageEvents) || j.usageEvents.length !== 6) throw new Error('Expected Sol policy analysis + Chinese draft + four Terra outputs and usage receipts');\nconst common = { batchId: j.batchId, sourceRevisionId: j.sourceRevisionId, sourceGuide: j.sourceGuide, sourceContentHash: j.sourceContentHash, sourceMaterials: j.sourceMaterials, generationMetrics: j.usageEvents };\nreturn [{ json: { ...common, locale: 'zh-CN', guide: j.sourceGuide, contentHash: j.sourceContentHash } }, ...j.translations.map(t => ({ json: { ...common, locale: t.locale, guide: t.guide } }))];"
       },
       "id": "3bb49abd-6da5-42c0-8ba5-f36c7465360b",
       "name": "Prepare five locale drafts",
@@ -209,7 +211,7 @@
     {
       "parameters": {
         "mode": "runOnceForAllItems",
-        "jsCode": "return $input.all().map(i => ({ json: { batchId: i.json.batchId, sourceRevisionId: i.json.sourceRevisionId, locale: i.json.locale, guide: i.json.guide, contentHash: i.json.contentHash, sourceGuide: i.json.sourceGuide, sourceMaterials: i.json.sourceMaterials, generationMetrics: i.json.generationMetrics } }));"
+        "jsCode": "return $input.all().map(i => ({ json: { batchId: i.json.batchId, sourceRevisionId: i.json.sourceRevisionId, locale: i.json.locale, guide: i.json.guide, contentHash: i.json.contentHash, sourceGuide: i.json.sourceGuide, sourceContentHash: i.json.sourceContentHash, sourceMaterials: i.json.sourceMaterials, generationMetrics: i.json.generationMetrics } }));"
       },
       "id": "97dc2241-1710-4b1f-a257-de257cfcaf9a",
       "name": "Normalize locale review input",
@@ -538,7 +540,11 @@
   "active": false,
   "settings": {
     "executionOrder": "v1",
-    "timezone": "Europe/London"
+    "timezone": "Europe/London",
+    "saveDataSuccessExecution": "none",
+    "saveDataErrorExecution": "none",
+    "saveManualExecutions": false,
+    "saveExecutionProgress": false
   },
   "meta": {
     "templateCredsSetupCompleted": false,
