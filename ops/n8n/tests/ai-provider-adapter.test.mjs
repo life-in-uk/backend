@@ -172,6 +172,13 @@ test('provider protocol integration is mockable and records token usage without 
   });
   assert.equal(duplicateGeneration.status, 409);
   assert.equal((await duplicateGeneration.json()).code, 'AI_DUPLICATE_IDEMPOTENCY_KEY');
+  const restartedAdapter = createServer(config);
+  await new Promise((resolve) => restartedAdapter.listen(0, '127.0.0.1', resolve));
+  const afterRestart = await fetch(`http://127.0.0.1:${restartedAdapter.address().port}/v1/guide-drafts`, {
+    method: 'POST', headers: { authorization: `Bearer ${config.adapterToken}`, 'content-type': 'application/json' }, body: generationRequest,
+  });
+  assert.equal(afterRestart.status, 409);
+  await new Promise((resolve) => restartedAdapter.close(resolve));
 
   for (const locale of ['zh-CN', ...generated.translations.map((row) => row.locale)]) {
     const guideValue = locale === 'zh-CN' ? generated.sourceGuide : generated.translations.find((row) => row.locale === locale).guide;
