@@ -65,6 +65,14 @@ class GuideContentDigestTest {
     }
 
     @Test
+    void sharedNodeFixtureMatchesJavaCanonicalFormAndDigest() throws Exception {
+        JsonNode fixture = json.readTree(fixture("guide-content-v1-shared.json"));
+        var definition = reader.parse(json.writeValueAsBytes(fixture.get("guide")));
+        assertThat(GuideContentDigest.canonicalForm(definition)).isEqualTo(fixture.get("canonicalForm").stringValue());
+        assertThat(GuideContentDigest.digest(definition)).isEqualTo(fixture.get("sha256").stringValue());
+    }
+
+    @Test
     void canonicalFormIsTheDocumentedSingleLine() {
         var guide = new GuideImportDefinition("tiny-guide", "example-category", "T", "S", "# T\n\nText.[查看官方依据](#guide-evidence-claim)\n",
                 GuideStatus.PUBLISHED, Instant.parse("2026-10-04T12:00:00Z"), Instant.parse("2026-10-04T12:00:00.5Z"),

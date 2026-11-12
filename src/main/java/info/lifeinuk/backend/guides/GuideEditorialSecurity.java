@@ -5,6 +5,7 @@ import java.security.MessageDigest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -47,11 +48,20 @@ class GuideEditorialSecurity implements WebMvcConfigurer {
         }
 
         @Override public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-            String path = request.getRequestURI();
-            boolean reviewPath = path.contains("/reviews/");
-            byte[] expected = path.endsWith("/approve") || path.endsWith("/publish") ? approval
-                    : reviewPath ? review : draft;
-            if (expected.length == 0 && !(reviewPath && mockReview.length > 0)) {
+            CredentialClass credentialClass = credentialClass(handler);
+            if (credentialClass == CredentialClass.UNRECOGNIZED) {
+                response.setStatus(HttpStatus.FORBIDDEN.value());
+                response.setHeader("Cache-Control", "no-store");
+                response.getWriter().write("{\"code\":\"EDITORIAL_ROUTE_NOT_AUTHORIZED\"}");
+                return false;
+            }
+            byte[] expected = switch (credentialClass) {
+                case DRAFT -> draft;
+                case REVIEW -> review;
+                case APPROVAL -> approval;
+                case UNRECOGNIZED -> new byte[0];
+            };
+            if (expected.length == 0 && !(credentialClass == CredentialClass.REVIEW && mockReview.length > 0)) {
                 response.setStatus(HttpStatus.SERVICE_UNAVAILABLE.value());
                 response.setHeader("Cache-Control", "no-store");
                 response.getWriter().write("{\"code\":\"EDITORIAL_AUTH_NOT_CONFIGURED\"}");
@@ -60,8 +70,9 @@ class GuideEditorialSecurity implements WebMvcConfigurer {
             String authorization = request.getHeader("Authorization");
             byte[] supplied = authorization != null && authorization.startsWith("Bearer ")
                     ? bytes(authorization.substring(7)) : new byte[0];
-            boolean valid = MessageDigest.isEqual(expected, supplied)
-                    || reviewPath && mockReview.length > 0 && MessageDigest.isEqual(mockReview, supplied);
+            boolean valid = expected.length > 0 && MessageDigest.isEqual(expected, supplied)
+                    || credentialClass == CredentialClass.REVIEW && mockReview.length > 0
+                    && MessageDigest.isEqual(mockReview, supplied);
             if (!valid) {
                 response.setStatus(HttpStatus.UNAUTHORIZED.value());
                 response.setHeader("Cache-Control", "no-store");
@@ -69,6 +80,17 @@ class GuideEditorialSecurity implements WebMvcConfigurer {
                 return false;
             }
             return true;
+        }
+
+        private static CredentialClass credentialClass(Object handler) {
+            if (!(handler instanceof HandlerMethod method)
+                    || method.getBeanType() != GuideEditorialController.class) return CredentialClass.UNRECOGNIZED;
+            return switch (method.getMethod().getName()) {
+                case "review" -> CredentialClass.REVIEW;
+                case "approve", "publish" -> CredentialClass.APPROVAL;
+                case "create", "get", "expiryReport", "locale", "failedLocale" -> CredentialClass.DRAFT;
+                default -> CredentialClass.UNRECOGNIZED;
+            };
         }
 
         String authenticatedReviewer(HttpServletRequest request) {
@@ -83,5 +105,7 @@ class GuideEditorialSecurity implements WebMvcConfigurer {
         private static byte[] bytes(String value) {
             return value == null ? new byte[0] : value.getBytes(StandardCharsets.UTF_8);
         }
+
+        private enum CredentialClass { DRAFT, REVIEW, APPROVAL, UNRECOGNIZED }
     }
 }

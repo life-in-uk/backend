@@ -159,6 +159,12 @@ class GuideContentBatchTest {
         var payload = json.createObjectNode(); payload.put("contentHash", hash); payload.put("passed", true); payload.putArray("findings");
         var client = HttpClient.newHttpClient();
         payload.put("reviewer", "claude-independent");
+        var unauthenticated = client.send(HttpRequest.newBuilder(URI.create("http://127.0.0.1:" + port
+                        + "/api/editorial/guide-batches/" + batch.batchId() + "/reviews/zh-CN"))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString("{\"contentHash\":\"" + hash + "\",\"passed\":true,\"findings\":[]}"))
+                .build(), HttpResponse.BodyHandlers.ofString());
+        assertThat(unauthenticated.statusCode()).isEqualTo(401);
         var forged = client.send(HttpRequest.newBuilder(URI.create("http://127.0.0.1:" + port
                         + "/api/editorial/guide-batches/" + batch.batchId() + "/reviews/zh-CN"))
                 .header("Authorization", "Bearer test-mock-review-token").header("Content-Type", "application/json")
@@ -199,6 +205,56 @@ class GuideContentBatchTest {
         assertThat(response.statusCode()).isEqualTo(401);
         assertThat(jdbc.queryForObject("SELECT count(*) FROM guide_publication", Integer.class)).isZero();
         assertThat(jdbc.queryForObject("SELECT count(*) FROM guide", Integer.class)).isZero();
+    }
+
+    @Test
+    void draftAndMockReviewCredentialsCannotReachApprovalThroughNonCanonicalRoutes() throws Exception {
+        var source = source("Encoded route protection");
+        var batch = batches.create(createRequest("batch-encoded-auth", source));
+        var client = HttpClient.newHttpClient();
+        for (String operation : java.util.List.of("approve", "publish")) {
+            for (String encoded : java.util.List.of(operation + ";x", "%61" + operation.substring(1))) {
+                String path = "/api/editorial/guide-batches/" + batch.batchId() + "/" + encoded;
+                for (String token : java.util.List.of("test-draft-token", "test-mock-review-token")) {
+                    var request = HttpRequest.newBuilder(URI.create("http://127.0.0.1:" + port + path))
+                            .header("Authorization", "Bearer " + token)
+                            .header("Content-Type", "application/json")
+                            .POST(HttpRequest.BodyPublishers.ofString(operation.equals("publish")
+                                    ? "{\"checklistId\":\"test\",\"verifiedOn\":\"2026-01-01\",\"expectCurrentPublicationId\":null}"
+                                    : "{}"))
+                            .build();
+                    var response = client.send(request, HttpResponse.BodyHandlers.ofString());
+                    assertThat(response.statusCode()).as("%s using %s at %s", operation, token, path)
+                            .isIn(401, 403, 404, 405);
+                }
+            }
+        }
+        assertThat(store.byId(batch.batchId()).orElseThrow().status()).isEqualTo("DRAFT");
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM guide_publication", Integer.class)).isZero();
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM guide", Integer.class)).isZero();
+    }
+
+    @Test
+    void legitimateDraftAndReviewEndpointsAcceptTheirScopedCredentials() throws Exception {
+        var source = source("Scoped credentials");
+        var requestBody = json.writeValueAsString(createRequest("batch-scoped-http", source));
+        var client = HttpClient.newHttpClient();
+        var createResponse = client.send(HttpRequest.newBuilder(URI.create("http://127.0.0.1:" + port
+                        + "/api/editorial/guide-batches"))
+                .header("Authorization", "Bearer test-draft-token").header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(requestBody)).build(), HttpResponse.BodyHandlers.ofString());
+        assertThat(createResponse.statusCode()).isEqualTo(200);
+        var created = json.readTree(createResponse.body());
+        UUID batchId = UUID.fromString(created.get("batchId").stringValue());
+        String hash = store.locale(batchId, "zh-CN").orElseThrow().contentHash();
+        var reviewBody = json.createObjectNode(); reviewBody.put("contentHash", hash); reviewBody.put("passed", true);
+        reviewBody.putArray("findings");
+        var reviewResponse = client.send(HttpRequest.newBuilder(URI.create("http://127.0.0.1:" + port
+                        + "/api/editorial/guide-batches/" + batchId + "/reviews/zh-CN"))
+                .header("Authorization", "Bearer test-mock-review-token").header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(reviewBody.toString())).build(), HttpResponse.BodyHandlers.ofString());
+        assertThat(reviewResponse.statusCode()).isEqualTo(200);
+        assertThat(reviewResponse.body()).contains("\"reviewer\":\"mock-adapter\"");
     }
 
     @Test

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createServer, loadConfig, normalizeUsage, validateGuide, validatePolicyAnalysis, validateReview, validateSourceMaterials } from '../ai-provider-adapter.mjs';
+import { canonicalGuideForm, canonicalGuideHash, createServer, loadConfig, normalizeUsage, validateGuide, validatePolicyAnalysis, validateReview, validateSourceMaterials } from '../ai-provider-adapter.mjs';
 import { mkdtemp, readFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
@@ -49,6 +49,15 @@ test('translation validation retains exact source links and evidence structure',
   const badSource = { ...translated, sources: [{ ...translated.sources[0], url: 'https://example.com/' }] };
   assert.throws(() => validateGuide(badSource, { sourceMaterials: materials, locale: 'en', sourceGuide: guide }), /source reference/);
   assert.throws(() => validateGuide(translated, { sourceMaterials: materials, locale: 'zh-CN', sourceGuide: guide }), /Unsupported translation/);
+  const changedLocator = { ...translated, evidence: [{ ...translated.evidence[0], supports: [{ ...translated.evidence[0].supports[0], locator: 'Different heading' }] }] };
+  assert.throws(() => validateGuide(changedLocator, { sourceMaterials: materials, locale: 'en', sourceGuide: guide }), /source references changed/);
+});
+
+test('quoted evidence excerpts must occur literally in their cited source', () => {
+  const withExcerpt = { ...guide, evidence: [{ ...guide.evidence[0], supports: [{ sourceKey: 'official-benefit-guide', locator: null, excerpt: 'Verified source text for the test.', note: 'Exact excerpt.' }] }] };
+  assert.equal(validateGuide(withExcerpt, { sourceMaterials: materials }).slug, guide.slug);
+  const unsupported = { ...withExcerpt, evidence: [{ ...withExcerpt.evidence[0], supports: [{ ...withExcerpt.evidence[0].supports[0], excerpt: 'Invented quotation.' }] }] };
+  assert.throws(() => validateGuide(unsupported, { sourceMaterials: materials }), /does not occur in source/);
 });
 
 test('Claude review schema fails closed on invalid or blocking findings and binds the requested hash', () => {
@@ -66,9 +75,24 @@ test('Sol policy analysis requires exact source-key citations', () => {
 
 test('usage normalizes provider token fields and estimates cost only when rates are supplied', () => {
   assert.deepEqual(normalizeUsage('sol', 'configured-model', { prompt_tokens: 10, completion_tokens: 5 }, 123, { inputUsdPerMillion: 2, outputUsdPerMillion: 4 }), {
-    provider: 'sol', model: 'configured-model', inputTokens: 10, outputTokens: 5, usageAvailable: true, latencyMs: 123, estimatedCostUsd: 0.00004,
+    provider: 'sol', model: 'configured-model', inputTokens: 10, outputTokens: 5, cachedInputTokens: 0, cacheWriteInputTokens: 0,
+    usageAvailable: true, latencyMs: 123, estimatedCostUsd: 0.00004,
   });
   assert.equal(normalizeUsage('terra', 'configured-model', null, 12).estimatedCostUsd, null);
+  assert.equal(normalizeUsage('terra', 'configured-model', { prompt_tokens: 100, completion_tokens: 5, prompt_tokens_details: { cached_tokens: 60 } }, 1,
+    { inputUsdPerMillion: 1, outputUsdPerMillion: 2 }).estimatedCostUsd, null);
+  assert.equal(normalizeUsage('terra', 'configured-model', { prompt_tokens: 100, completion_tokens: 5, prompt_tokens_details: { cached_tokens: 60 } }, 1,
+    { inputUsdPerMillion: 1, outputUsdPerMillion: 2, cachedInputUsdPerMillion: 0.1 }).estimatedCostUsd, 0.000056);
+  assert.equal(normalizeUsage('claude', 'configured-model', { input_tokens: 100, output_tokens: 5, cache_read_input_tokens: 60 }, 1,
+    { inputUsdPerMillion: 1, outputUsdPerMillion: 2, cachedInputUsdPerMillion: 0.1 }).estimatedCostUsd, 0.000116);
+});
+
+test('canonical Guide v1 matches the shared Java fixture and detects content changes', async () => {
+  const fixturePath = new URL('../../../src/test/resources/guides/guide-content-v1-shared.json', import.meta.url);
+  const fixture = JSON.parse(await readFile(fixturePath, 'utf8'));
+  assert.equal(canonicalGuideForm(fixture.guide), fixture.canonicalForm);
+  assert.equal(canonicalGuideHash(fixture.guide), fixture.sha256);
+  assert.notEqual(canonicalGuideHash({ ...fixture.guide, title: `${fixture.guide.title}!` }), fixture.sha256);
 });
 
 test('live mode stays disabled by default and does not expose a provider route', async (t) => {
@@ -84,6 +108,7 @@ test('live mode stays disabled by default and does not expose a provider route',
 test('provider protocol integration is mockable and records token usage without retaining content', async (t) => {
   const tempDir = await mkdtemp(path.join(tmpdir(), 'life-uk-ai-adapter-'));
   const metricsFile = path.join(tempDir, 'usage.jsonl');
+  const idempotencyDir = path.join(tempDir, 'idempotency');
   const fixtureSources = materials.map(({ content, ...source }) => source);
   let providerCalls = 0;
   const provider = http.createServer(async (req, res) => {
@@ -95,7 +120,7 @@ test('provider protocol integration is mockable and records token usage without 
     if (req.url === '/sol') {
       const user = JSON.parse(payload.messages[1].content);
       output = payload.messages[0].content.includes('POLICY_ANALYSIS_JSON')
-        ? { keyFindings: [{ claim: 'Eligibility conditions', sourceKeys: ['official-benefit-guide'] }], effectiveDates: [], unresolvedQuestions: [] }
+        ? user.job.idempotencyKey === 'invalid-job' ? [] : { keyFindings: [{ claim: 'Eligibility conditions', sourceKeys: ['official-benefit-guide'] }], effectiveDates: [], unresolvedQuestions: [] }
         : makeGuide(user.job.slug, fixtureSources, 'Chinese source');
     } else if (req.url === '/terra') {
       const user = JSON.parse(payload.messages[1].content);
@@ -113,7 +138,7 @@ test('provider protocol integration is mockable and records token usage without 
   const origin = `http://127.0.0.1:${provider.address().port}`;
   const config = {
     enabled: true, adapterToken: 'local-test-token-0123456789-0123456789', host: '127.0.0.1', port: 0,
-    timeoutMs: 5000, maxRequestsPerMinute: 20, sourceAllowlist: allowlist, metricsFile,
+    timeoutMs: 5000, maxRequestsPerMinute: 20, sourceAllowlist: allowlist, metricsFile, idempotencyDir,
     sol: { provider: 'sol', url: `${origin}/sol`, apiKey: 'sol-test-secret', model: 'sol-6.1-configured', rates: { inputUsdPerMillion: 1, outputUsdPerMillion: 2 } },
     terra: { provider: 'terra', url: `${origin}/terra`, apiKey: 'terra-test-secret', model: 'terra-6.1-configured', rates: { inputUsdPerMillion: 1, outputUsdPerMillion: 2 } },
     claude: { provider: 'claude', url: `${origin}/claude`, apiKey: 'claude-test-secret', model: 'claude-configured', apiVersion: 'test-version', maxTokens: 500, rates: { inputUsdPerMillion: 1, outputUsdPerMillion: 2 } },
@@ -126,36 +151,64 @@ test('provider protocol integration is mockable and records token usage without 
   });
 
   const endpoint = `http://127.0.0.1:${adapter.address().port}`;
-  const generatedResponse = await fetch(`${endpoint}/v1/guide-drafts`, {
-    method: 'POST', headers: { authorization: `Bearer ${config.adapterToken}`, 'content-type': 'application/json' },
-    body: JSON.stringify({
+  const generationRequest = JSON.stringify({
       job: { idempotencyKey: 'test-job-v1', policyVersion: 'test-policy-v1', sourceVersion: 'test-source-v1', slug: 'example-benefit', topicCandidate: { topic: 'Example benefit', candidateId: 'candidate-1' } },
       sourceMaterials: materials,
-    }),
   });
+  const submitGeneration = () => fetch(`${endpoint}/v1/guide-drafts`, {
+    method: 'POST', headers: { authorization: `Bearer ${config.adapterToken}`, 'content-type': 'application/json' }, body: generationRequest,
+  });
+  const concurrent = await Promise.all([submitGeneration(), submitGeneration()]);
+  assert.deepEqual(concurrent.map((response) => response.status).sort(), [200, 409]);
+  const generatedResponse = concurrent.find((response) => response.status === 200);
   assert.equal(generatedResponse.status, 200);
   const generated = await generatedResponse.json();
   assert.deepEqual(generated.translations.map((row) => row.locale), ['zh-TW', 'en', 'ur', 'hi']);
   assert.equal(generated.usageEvents.length, 6);
   assert.equal(generated.usageEvents.every((event) => event.usageAvailable && event.estimatedCostUsd !== null), true);
+  const duplicateGeneration = await fetch(`${endpoint}/v1/guide-drafts`, {
+    method: 'POST', headers: { authorization: `Bearer ${config.adapterToken}`, 'content-type': 'application/json' },
+    body: JSON.stringify({ job: { idempotencyKey: 'test-job-v1', policyVersion: 'test-policy-v1', sourceVersion: 'test-source-v1', slug: 'example-benefit', topicCandidate: { topic: 'Example benefit', candidateId: 'candidate-1' } }, sourceMaterials: materials }),
+  });
+  assert.equal(duplicateGeneration.status, 409);
+  assert.equal((await duplicateGeneration.json()).code, 'AI_DUPLICATE_IDEMPOTENCY_KEY');
 
   for (const locale of ['zh-CN', ...generated.translations.map((row) => row.locale)]) {
     const guideValue = locale === 'zh-CN' ? generated.sourceGuide : generated.translations.find((row) => row.locale === locale).guide;
-    const contentHash = createHash('sha256').update(JSON.stringify(guideValue)).digest('hex');
+    const contentHash = canonicalGuideHash(guideValue);
+    if (locale === 'zh-CN') {
+      const staleHash = await fetch(`${endpoint}/v1/claude/review`, {
+        method: 'POST', headers: { authorization: `Bearer ${config.adapterToken}`, 'content-type': 'application/json' },
+        body: JSON.stringify({ batchId: '11111111-1111-4111-8111-111111111111', sourceRevisionId: '22222222-2222-4222-8222-222222222222', locale, contentHash: 'a'.repeat(64), guide: guideValue, sourceGuide: generated.sourceGuide, sourceMaterials: materials }),
+      });
+      assert.equal(staleHash.status, 400);
+    }
     const reviewResponse = await fetch(`${endpoint}/v1/claude/review`, {
       method: 'POST', headers: { authorization: `Bearer ${config.adapterToken}`, 'content-type': 'application/json' },
-      body: JSON.stringify({ batchId: 'batch-1', locale, contentHash, guide: guideValue, sourceGuide: generated.sourceGuide, sourceMaterials: materials }),
+      body: JSON.stringify({ batchId: '11111111-1111-4111-8111-111111111111', sourceRevisionId: '22222222-2222-4222-8222-222222222222', locale, contentHash, guide: guideValue, sourceGuide: generated.sourceGuide, sourceMaterials: materials }),
     });
     assert.equal(reviewResponse.status, 200);
     const review = await reviewResponse.json();
     assert.equal(review.contentHash, contentHash);
     assert.equal(review.passed, true);
     assert.equal(review.reviewerIdentity, 'claude-independent');
+    const duplicateReview = await fetch(`${endpoint}/v1/claude/review`, {
+      method: 'POST', headers: { authorization: `Bearer ${config.adapterToken}`, 'content-type': 'application/json' },
+      body: JSON.stringify({ batchId: '11111111-1111-4111-8111-111111111111', sourceRevisionId: '22222222-2222-4222-8222-222222222222', locale, contentHash, guide: guideValue, sourceGuide: generated.sourceGuide, sourceMaterials: materials }),
+    });
+    assert.equal(duplicateReview.status, 409);
   }
-  assert.equal(providerCalls, 11);
+  const invalidResponse = await fetch(`${endpoint}/v1/guide-drafts`, {
+    method: 'POST', headers: { authorization: `Bearer ${config.adapterToken}`, 'content-type': 'application/json' },
+    body: JSON.stringify({ job: { idempotencyKey: 'invalid-job', policyVersion: 'test-policy-v1', sourceVersion: 'test-source-v1', slug: 'example-benefit', topicCandidate: { topic: 'Example benefit', candidateId: 'candidate-2' } }, sourceMaterials: materials }),
+  });
+  assert.equal(invalidResponse.status, 400);
+  assert.equal(providerCalls, 12);
   const usageLines = (await readFile(metricsFile, 'utf8')).trim().split('\n').map((line) => JSON.parse(line));
-  assert.equal(usageLines.length, 11);
+  assert.equal(usageLines.length, 12);
   assert.equal(usageLines.every((event) => event.inputTokens > 0 && event.outputTokens > 0 && event.latencyMs >= 0), true);
+  assert.equal(usageLines.at(-1).attemptStatus, 'OUTPUT_INVALID');
+  assert.equal(usageLines.at(-1).inputTokens, 41);
   assert.equal(JSON.stringify(usageLines).includes('test-secret'), false);
   assert.equal(JSON.stringify(usageLines).includes('Verified source text'), false);
 });

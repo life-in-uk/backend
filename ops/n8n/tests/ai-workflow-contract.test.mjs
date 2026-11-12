@@ -20,6 +20,8 @@ test('real AI workflow extends the tested editorial graph and remains inactive',
   assert.ok(names.has('Sol 6.1 source + Terra 6.1 translations (local adapter)'));
   assert.ok(names.has('Claude independent review (local adapter)'));
   const byName = Object.fromEntries(workflow.nodes.map((node) => [node.name, node]));
+  assert.equal(byName['Sol 6.1 source + Terra 6.1 translations (local adapter)'].settings?.retryOnFail, undefined);
+  assert.equal(byName['Claude independent review (local adapter)'].settings?.retryOnFail, undefined);
   assert.equal(byName['Seed manually verified topic and sources'].parameters.jsonOutput.includes('"sourceMaterials":[]'), true);
   assert.equal(byName['Sol 6.1 source + Terra 6.1 translations (local adapter)'].parameters.url, 'http://127.0.0.1:8092/v1/guide-drafts');
   assert.equal(byName['Claude independent review (local adapter)'].parameters.url, 'http://127.0.0.1:8092/v1/claude/review');

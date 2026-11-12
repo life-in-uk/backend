@@ -46,11 +46,7 @@
         600,
         0
       ],
-      "settings": {
-        "retryOnFail": true,
-        "maxTries": 3,
-        "waitBetweenTries": 1000
-      },
+      "settings": {},
       "credentials": {
         "httpHeaderAuth": {
           "id": "00000000-0000-4000-8000-000000000010",
@@ -258,11 +254,7 @@
         3300,
         0
       ],
-      "settings": {
-        "retryOnFail": true,
-        "maxTries": 3,
-        "waitBetweenTries": 1000
-      },
+      "settings": {},
       "credentials": {
         "httpHeaderAuth": {
           "id": "00000000-0000-4000-8000-000000000010",
