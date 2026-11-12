@@ -32,7 +32,7 @@ COMMIT;
 \password life_uk_n8n
 ```
 
-At the password prompts, set the password to the value stored in the existing mode-0600 `native/n8n.env` file, or change both through the owner’s local secret-management process. Never put it in SQL, command arguments, shell history, workflow exports, model prompts or logs. Then verify before starting n8n:
+At the password prompts, set the password to the value stored in the existing mode-0600 `/home/yejun_guan/projects/life-in-uk-frontend/.local/n8n.env` file, or change both through the owner’s local secret-management process. Never put it in SQL, command arguments, shell history, workflow exports, model prompts or logs. Then verify before starting n8n:
 
 ```sql
 SELECT rolname, rolsuper, rolcreatedb, rolcreaterole, rolinherit, rolbypassrls
@@ -54,13 +54,13 @@ Expected: `NOSUPERUSER`, `NOCREATEDB`, `NOCREATEROLE`, `NOINHERIT`, `NOBYPASSRLS
 
 ## Native service
 
-The systemd user unit is prepared at `/home/yejun_guan/projects/life-in-uk-n8n-poc/native/life-uk-n8n.service`, using Node 24.22.3, n8n 2.47.4 and PostgreSQL 16’s readiness tool. Its secret environment file is outside Git and mode 0600. The unit has not been installed, enabled or started while the role is absent.
+The systemd user unit is maintained at `/home/yejun_guan/projects/life-in-uk-backend/ops/n8n/life-uk-n8n.service`, using Node 24.22.3, n8n 2.47.4 and PostgreSQL 16’s readiness tool. It reads `/home/yejun_guan/projects/life-in-uk-frontend/.local/n8n.env` (mode 0600, ignored by Git). The unit is installed for the user but remains disabled and inactive. The owner-provisioned role/schema are present with no business-table privileges; password authentication with the configured value failed on 2026-11-12, so do not start until synchronized and reverified.
 
 After the owner action and privilege verification:
 
 ```sh
 mkdir -p /home/yejun_guan/.config/systemd/user
-cp /home/yejun_guan/projects/life-in-uk-n8n-poc/native/life-uk-n8n.service /home/yejun_guan/.config/systemd/user/
+cp /home/yejun_guan/projects/life-in-uk-backend/ops/n8n/life-uk-n8n.service /home/yejun_guan/.config/systemd/user/
 systemctl --user daemon-reload
 systemctl --user enable --now life-uk-n8n.service
 systemctl --user status life-uk-n8n.service --no-pager

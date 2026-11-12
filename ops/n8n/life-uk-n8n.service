@@ -1,0 +1,20 @@
+[Unit]
+Description=Life in UK native n8n workflow service
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/yejun_guan/projects/life-in-uk-n8n-poc/native
+EnvironmentFile=/home/yejun_guan/projects/life-in-uk-frontend/.local/n8n.env
+Environment=NODE_ENV=production
+Environment=PATH=/home/yejun_guan/.local/opt/node-v24.22.3/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+ExecStartPre=/usr/lib/postgresql/16/bin/pg_isready -h 127.0.0.1 -p 5432 -d life_in_uk -U life_uk_n8n
+ExecStart=/home/yejun_guan/.local/opt/n8n-2.47.4/node_modules/.bin/n8n start
+Restart=on-failure
+RestartSec=10
+TimeoutStopSec=30
+UMask=0077
+
+[Install]
+WantedBy=default.target
