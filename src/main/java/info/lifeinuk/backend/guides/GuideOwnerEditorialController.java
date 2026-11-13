@@ -5,6 +5,7 @@ import java.security.MessageDigest;
 import java.security.SecureRandom;
 import java.time.Instant;
 import java.util.Base64;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.UUID;
 import jakarta.servlet.http.HttpServletRequest;
@@ -35,7 +36,7 @@ class GuideOwnerEditorialController {
     private final String allowedOrigins;
     private final String approvalActor;
     private final GuideContentBatchService batches;
-    private final ConcurrentHashMap<String, LoginWindow> attempts = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<LoginKey, LoginWindow> attempts = new ConcurrentHashMap<>();
 
     GuideOwnerEditorialController(
             @Value("${life-in-uk.editorial.owner-draft-password:}") String draftPassword,
@@ -63,24 +64,23 @@ class GuideOwnerEditorialController {
     @PostMapping("/session")
     ResponseEntity<?> login(@RequestBody LoginRequest body, HttpServletRequest request) {
         if (!allowedOrigin(request)) return failure(HttpStatus.FORBIDDEN, "OWNER_ORIGIN_REJECTED");
-        String address = request.getRemoteAddr();
-        LoginWindow window = attempts.compute(address, (key, current) -> current == null || current.until().isBefore(Instant.now())
-                ? new LoginWindow(0, Instant.now().plusSeconds(900)) : current);
-        if (window.count() >= 5) return failure(HttpStatus.TOO_MANY_REQUESTS, "OWNER_LOGIN_RATE_LIMITED");
         if (body == null || body.role() == null || body.credential() == null || body.credential().length() > 512)
             return failure(HttpStatus.BAD_REQUEST, "INVALID_OWNER_LOGIN");
+        if (!"DRAFT".equals(body.role()) && !"APPROVAL".equals(body.role()))
+            return failure(HttpStatus.BAD_REQUEST, "INVALID_OWNER_ROLE");
         String expected = switch (body.role()) {
             case "DRAFT" -> draftPassword;
             case "APPROVAL" -> approvalPassword;
             default -> "";
         };
         if (expected.isBlank()) return failure(HttpStatus.SERVICE_UNAVAILABLE, "OWNER_ROLE_NOT_CONFIGURED");
+        // Use the socket peer address; forwarded headers are untrusted unless an explicitly trusted proxy is configured.
+        LoginKey key = new LoginKey(body.role(), request.getRemoteAddr());
+        if (!reserveAttempt(key)) return failure(HttpStatus.TOO_MANY_REQUESTS, "OWNER_LOGIN_RATE_LIMITED");
         if (!MessageDigest.isEqual(expected.getBytes(StandardCharsets.UTF_8), body.credential().getBytes(StandardCharsets.UTF_8))) {
-            attempts.compute(address, (key, current) -> new LoginWindow((current == null ? 0 : current.count()) + 1,
-                    current == null ? Instant.now().plusSeconds(900) : current.until()));
             return failure(HttpStatus.UNAUTHORIZED, "OWNER_LOGIN_FAILED");
         }
-        attempts.remove(address);
+        attempts.remove(key);
         HttpSession session = request.getSession(true);
         request.changeSessionId();
         String csrf = randomToken();
@@ -185,6 +185,19 @@ class GuideOwnerEditorialController {
                 .map(String::trim).anyMatch(origin::equals);
     }
 
+    private boolean reserveAttempt(LoginKey key) {
+        Instant now = Instant.now();
+        var allowed = new AtomicBoolean();
+        attempts.compute(key, (ignored, current) -> {
+            LoginWindow window = current == null || current.until().isBefore(now)
+                    ? new LoginWindow(0, now.plusSeconds(900)) : current;
+            if (window.count() >= 5) return window;
+            allowed.set(true);
+            return new LoginWindow(window.count() + 1, window.until());
+        });
+        return allowed.get();
+    }
+
     private static String randomToken() {
         byte[] bytes = new byte[32]; RANDOM.nextBytes(bytes); return Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
     }
@@ -210,6 +223,7 @@ class GuideOwnerEditorialController {
     record LoginRequest(String role, String credential) { }
     record SessionView(String role, String csrfToken) { }
     record Error(String code) { }
+    record LoginKey(String role, String remoteAddress) { }
     record LoginWindow(int count, Instant until) { }
     static final class OwnerUnauthorized extends RuntimeException { }
     static final class OwnerCsrfRejected extends RuntimeException { }

@@ -47,7 +47,7 @@ class GuideSitemapController {
             for (String available : variants.keySet()) {
                 GuideResponse.Metadata variant = variants.get(available);
                 String alternate = base + "/" + available + "/" + domainPath(variant.category()) + "/" + slug;
-                xml.append("<xhtml:link rel=\"alternate\" hreflang=\"").append(available)
+                xml.append("<xhtml:link rel=\"alternate\" hreflang=\"").append(hreflang(available))
                         .append("\" href=\"").append(xml(alternate)).append("\"/>");
             }
             if (variants.containsKey("zh-CN")) {
@@ -88,6 +88,10 @@ class GuideSitemapController {
             case "money" -> "money";
             default -> null;
         };
+    }
+
+    private static String hreflang(String locale) {
+        return "en".equals(locale) ? "en-GB" : locale;
     }
 
     private static String xml(String value) {

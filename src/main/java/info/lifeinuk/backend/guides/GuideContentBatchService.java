@@ -245,6 +245,8 @@ class GuideContentBatchService {
     public BatchReceipt approve(UUID batchId, String actor) {
         actor = GuideRevisionService.operator(actor);
         var batch = batches.byId(batchId).orElseThrow(() -> new NotFound("Batch not found"));
+        batches.lockSlug(batch.slug());
+        requireLatestBatch(batch, batchId);
         if (batch.validUntil() != null && !batch.validUntil().isAfter(Instant.now())) {
             batches.expire(batchId);
             throw new IllegalStateException("Expired content cannot be approved");
@@ -257,6 +259,8 @@ class GuideContentBatchService {
     public BatchReceipt publish(UUID batchId, PublishRequest request, String actor) {
         actor = GuideRevisionService.operator(actor);
         var batch = batches.byId(batchId).orElseThrow(() -> new NotFound("Batch not found"));
+        batches.lockSlug(batch.slug());
+        requireLatestBatch(batch, batchId);
         if (!"APPROVED".equals(batch.status())) throw new GuideContentBatchStore.IncompleteBatch("Batch needs explicit human approval");
         if (batch.validUntil() != null && !batch.validUntil().isAfter(Instant.now())) {
             batches.expire(batchId);
@@ -265,7 +269,6 @@ class GuideContentBatchService {
         if (batch.validFrom().isAfter(Instant.now())) {
             throw new IllegalStateException("Content cannot be published before its validity begins");
         }
-        batches.lockSlug(batch.slug());
         var revisionsForBatch = batches.locales(batchId);
         if (!fiveReviewed(revisionsForBatch)) throw new GuideContentBatchStore.IncompleteBatch("Batch review hashes are incomplete or stale");
         publications.publish(new GuidePublicationService.PublishRequest(batch.sourceRevisionId(), batch.sourceDigest(),
@@ -286,13 +289,19 @@ class GuideContentBatchService {
         return LOCALES.size() == rows.size() && rows.stream().allMatch(row -> "VALID".equals(row.validationStatus())
                 && "PASSED".equals(row.reviewStatus()) && row.contentHash().equals(row.reviewedHash()));
     }
+    private void requireLatestBatch(GuideContentBatchStore.Batch batch, UUID batchId) {
+        if (batches.latestForSlug(batch.slug()).map(latest -> !latest.id().equals(batchId)).orElse(true)) {
+            throw new GuideContentBatchStore.StaleLocaleRevision(
+                    "A newer Guide batch exists; superseded batches cannot be approved or published");
+        }
+    }
     private static void requireTranslationLocale(String locale) {
         if (!TRANSLATIONS.contains(locale)) throw new IllegalArgumentException("Only zh-TW, en, ur and hi are translation locales");
     }
     private static void validateSourceReferences(GuideImportDefinition source, GuideImportDefinition translated) {
-        var sourceRefs = source.sources().stream().map(s -> s.key() + "\n" + s.url() + "\n" + s.accessedAt()).toList();
-        var translatedRefs = translated.sources().stream().map(s -> s.key() + "\n" + s.url() + "\n" + s.accessedAt()).toList();
-        if (!sourceRefs.equals(translatedRefs)) throw new IllegalArgumentException("Locale source references must match the Chinese source in order");
+        if (!source.sources().equals(translated.sources())) {
+            throw new IllegalArgumentException("Locale source references, organisations and titles must match the Chinese source in order");
+        }
         var sourceEvidence = source.evidence().stream().map(GuideImportDefinition.Evidence::key).sorted().toList();
         var translatedEvidence = translated.evidence().stream().map(GuideImportDefinition.Evidence::key).sorted().toList();
         if (!sourceEvidence.equals(translatedEvidence)) throw new IllegalArgumentException("Locale evidence keys must match the Chinese source");

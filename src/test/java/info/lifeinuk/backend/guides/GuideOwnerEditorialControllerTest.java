@@ -3,6 +3,10 @@ package info.lifeinuk.backend.guides;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
+import java.util.ArrayList;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 class GuideOwnerEditorialControllerTest {
     @Test
@@ -51,6 +55,45 @@ class GuideOwnerEditorialControllerTest {
         assertThrows(GuideOwnerEditorialController.OwnerCsrfRejected.class, () -> controller.logout(request, "wrong"));
         assertEquals(204, controller.logout(request, csrf).getStatusCode().value());
         assertNull(request.getSession(false));
+    }
+
+    @Test
+    void failedLoginsAreAtomicallyLimitedByRoleAndSocketPeerAddress() throws Exception {
+        var controller = controller();
+        int attempts = 32;
+        var pool = Executors.newFixedThreadPool(attempts);
+        var ready = new CountDownLatch(attempts);
+        var start = new CountDownLatch(1);
+        try {
+            var futures = new ArrayList<java.util.concurrent.Future<Integer>>();
+            for (int i = 0; i < attempts; i++) {
+                int forwarded = i;
+                futures.add(pool.submit(() -> {
+                    var request = request();
+                    request.addHeader("X-Forwarded-For", "198.51.100." + forwarded);
+                    ready.countDown();
+                    start.await();
+                    return controller.login(new GuideOwnerEditorialController.LoginRequest("DRAFT", "wrong"), request)
+                            .getStatusCode().value();
+                }));
+            }
+            assertTrue(ready.await(5, TimeUnit.SECONDS));
+            start.countDown();
+            var statuses = new ArrayList<Integer>();
+            for (var future : futures) statuses.add(future.get(5, TimeUnit.SECONDS));
+            assertEquals(5, statuses.stream().filter(status -> status == 401).count());
+            assertEquals(attempts - 5, statuses.stream().filter(status -> status == 429).count());
+
+            // Same socket peer but another role has its own failed-attempt bucket.
+            var approval = controller.login(new GuideOwnerEditorialController.LoginRequest("APPROVAL", "wrong"), request());
+            assertEquals(401, approval.getStatusCode().value());
+            // Spoofing a different forwarded IP did not evade the exhausted DRAFT bucket.
+            var draft = request(); draft.addHeader("X-Forwarded-For", "203.0.113.9");
+            assertEquals(429, controller.login(new GuideOwnerEditorialController.LoginRequest("DRAFT", "wrong"), draft)
+                    .getStatusCode().value());
+        } finally {
+            pool.shutdownNow();
+        }
     }
 
     private static GuideOwnerEditorialController controller() {

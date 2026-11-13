@@ -29,7 +29,12 @@ import static org.assertj.core.api.Assertions.*;
     "life-in-uk.public-base-url=http://127.0.0.1:5173",
     "life-in-uk.editorial.draft-token=test-draft-token", "life-in-uk.editorial.review-token=test-review-token",
     "life-in-uk.editorial.mock-review-token=test-mock-review-token",
-    "life-in-uk.editorial.approval-token=test-approval-token"
+    "life-in-uk.editorial.approval-token=test-approval-token",
+    "life-in-uk.editorial.approval-actor=synthetic-owner",
+    "life-in-uk.editorial.owner-draft-password=test-owner-draft-password-0123456789abcdef",
+    "life-in-uk.editorial.owner-approval-password=test-owner-approval-password-0123456789abcdef",
+    "life-in-uk.editorial.owner-origins=http://127.0.0.1:5179",
+    "server.servlet.session.cookie.secure=false"
 })
 @ContextConfiguration(initializers = IsolatedPostgres.Initializer.class)
 class GuideContentBatchTest {
@@ -192,6 +197,75 @@ class GuideContentBatchTest {
     }
 
     @Test
+    void manualImportRejectsSourceOrganisationOrTitleChangesWithoutPartialWrites() throws Exception {
+        for (String field : List.of("organisation", "title")) {
+            var source = source("Source metadata integrity " + field);
+            var batch = batches.create(createRequest("manual-source-metadata-" + field, source));
+            var packageJson = manualPackage(batch, source);
+            var firstGuide = packageJson.get("translations").get(0).get("guide").asObject();
+            firstGuide.withArray("sources").get(0).asObject().put(field, "Altered source " + field);
+            assertThatThrownBy(() -> batches.importTranslations(batch.batchId(), packageJson))
+                    .isInstanceOf(IllegalArgumentException.class).hasMessageContaining("organisations and titles");
+            assertThat(store.locales(batch.batchId())).as("no locale writes after changing source %s", field).hasSize(1);
+            assertThat(store.byId(batch.batchId()).orElseThrow().status()).isEqualTo("DRAFT");
+        }
+    }
+
+    @Test
+    void supersededReadyBatchCannotBeApprovedOrPublished() throws Exception {
+        var firstSource = source("Older batch");
+        var first = batches.create(createRequest("superseded-ready-first", firstSource));
+        fillAndReview(first, firstSource, "claude-independent");
+        var newerSource = sourceWithSlug("Newer draft", first.slug());
+        var newerRequest = createRequest("superseded-ready-newer", newerSource);
+        newerRequest.put("basedOnRevisionId", first.sourceRevisionId().toString());
+        newerRequest.put("sourceVersion", "source-v2");
+        var newer = batches.create(newerRequest);
+
+        assertThatThrownBy(() -> batches.approve(first.batchId(), "synthetic-owner"))
+                .isInstanceOf(GuideContentBatchStore.StaleLocaleRevision.class).hasMessageContaining("newer Guide batch");
+        assertThatThrownBy(() -> batches.publish(first.batchId(), new GuideContentBatchService.PublishRequest(
+                null, "standard-v1", LocalDate.now(ZoneOffset.UTC)), "synthetic-owner"))
+                .isInstanceOf(GuideContentBatchStore.StaleLocaleRevision.class).hasMessageContaining("newer Guide batch");
+        assertThat(store.byId(first.batchId()).orElseThrow().status()).isEqualTo("READY");
+        assertThat(store.byId(newer.batchId()).orElseThrow().status()).isEqualTo("DRAFT");
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM guide_publication", Integer.class)).isZero();
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM guide", Integer.class)).isZero();
+    }
+
+    @Test
+    void newerDraftDoesNotAlterHistoricalPublicationWhenOldBatchActionsAreRejected() throws Exception {
+        var source = source("Published content remains intact");
+        source.put("category", "health-nhs");
+        var published = batches.create(createRequest("superseded-published-first", source));
+        fillAndReview(published, source, "claude-independent");
+        jdbc.update("INSERT INTO guide_workflow_activation (activated_by) VALUES ('synthetic-test')");
+        batches.approve(published.batchId(), "synthetic-owner");
+        batches.publish(published.batchId(), new GuideContentBatchService.PublishRequest(null, "standard-v1",
+                LocalDate.now(ZoneOffset.UTC)), "synthetic-owner");
+        String originalTitle = jdbc.queryForObject("SELECT title FROM guide WHERE slug = ?", String.class, published.slug());
+
+        var newerSource = sourceWithSlug("Unpublished later draft", published.slug());
+        newerSource.put("category", "health-nhs");
+        var newerRequest = createRequest("superseded-published-newer", newerSource);
+        newerRequest.put("basedOnRevisionId", published.sourceRevisionId().toString());
+        newerRequest.put("sourceVersion", "source-v2");
+        var newer = batches.create(newerRequest);
+
+        assertThatThrownBy(() -> batches.approve(published.batchId(), "synthetic-owner"))
+                .isInstanceOf(GuideContentBatchStore.StaleLocaleRevision.class);
+        assertThatThrownBy(() -> batches.publish(published.batchId(), new GuideContentBatchService.PublishRequest(
+                null, "standard-v1", LocalDate.now(ZoneOffset.UTC)), "synthetic-owner"))
+                .isInstanceOf(GuideContentBatchStore.StaleLocaleRevision.class);
+        assertThat(store.byId(published.batchId()).orElseThrow().status()).isEqualTo("PUBLISHED");
+        assertThat(store.byId(newer.batchId()).orElseThrow().status()).isEqualTo("DRAFT");
+        assertThat(jdbc.queryForObject("SELECT title FROM guide WHERE slug = ?", String.class, published.slug())).isEqualTo(originalTitle);
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM guide_locale_current WHERE slug = ? AND batch_id = ?",
+                Integer.class, published.slug(), published.batchId())).isEqualTo(5);
+        assertThat(get("/api/guides/" + published.slug()).statusCode()).isEqualTo(200);
+    }
+
+    @Test
     void manualImportRejectsStaleSourceAndPrevalidatesAllLocalesBeforeSaving() throws Exception {
         var source = source("Stale translation source");
         var batch = batches.create(createRequest("manual-translation-stale", source));
@@ -304,6 +378,70 @@ class GuideContentBatchTest {
     }
 
     @Test
+    void ownerSessionsRotateHttpOnlyCookieEnforceCsrfAndSeparateDraftFromApprovalOverHttp() throws Exception {
+        var source = source("HTTP owner session controls");
+        var batch = batches.create(createRequest("owner-session-http-controls", source));
+        var client = HttpClient.newHttpClient();
+        String root = "http://127.0.0.1:" + port + "/api/owner/editorial";
+
+        var draftLogin = client.send(HttpRequest.newBuilder(URI.create(root + "/session"))
+                .header("Origin", "http://127.0.0.1:5179").header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString("{\"role\":\"DRAFT\",\"credential\":\"test-owner-draft-password-0123456789abcdef\"}"))
+                .build(), HttpResponse.BodyHandlers.ofString());
+        assertThat(draftLogin.statusCode()).isEqualTo(200);
+        String draftCookie = sessionCookie(draftLogin);
+        String draftCsrf = json.readTree(draftLogin.body()).get("csrfToken").stringValue();
+        assertThat(draftLogin.headers().firstValue("set-cookie").orElse("").toLowerCase())
+                .contains("httponly", "samesite=strict").doesNotContain("secure");
+        assertThat(draftCookie).startsWith("JSESSIONID=");
+
+        assertThat(ownerRequest(client, root + "/batches/" + batch.batchId() + "/approve", "POST", draftCookie,
+                draftCsrf, "{}").statusCode()).isEqualTo(401);
+        assertThat(ownerRequest(client, root + "/batches/" + batch.batchId() + "/publish", "POST", draftCookie,
+                draftCsrf, "{\"checklistId\":\"standard-v1\",\"verifiedOn\":\"2026-11-13\",\"expectCurrentPublicationId\":null}").statusCode()).isEqualTo(401);
+
+        var approvalLogin = client.send(HttpRequest.newBuilder(URI.create(root + "/session"))
+                .header("Origin", "http://127.0.0.1:5179").header("Cookie", draftCookie)
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString("{\"role\":\"APPROVAL\",\"credential\":\"test-owner-approval-password-0123456789abcdef\"}"))
+                .build(), HttpResponse.BodyHandlers.ofString());
+        assertThat(approvalLogin.statusCode()).isEqualTo(200);
+        String approvalCookie = sessionCookie(approvalLogin);
+        String approvalCsrf = json.readTree(approvalLogin.body()).get("csrfToken").stringValue();
+        assertThat(approvalCookie).isNotEqualTo(draftCookie);
+        assertThat(ownerRequest(client, root + "/session", "GET", draftCookie, null, null).statusCode()).isEqualTo(401);
+        assertThat(ownerRequest(client, root + "/batches/" + batch.batchId() + "/approve", "POST", approvalCookie,
+                null, "{}").statusCode()).isEqualTo(403);
+        assertThat(ownerRequest(client, root + "/batches", "POST", approvalCookie, approvalCsrf, "{}").statusCode()).isEqualTo(401);
+        assertThat(ownerRequest(client, root + "/batches/" + batch.batchId() + "/translations/import", "POST", approvalCookie,
+                approvalCsrf, "{}").statusCode()).isEqualTo(401);
+
+        var refusedApproval = ownerRequest(client, root + "/batches/" + batch.batchId() + "/approve", "POST",
+                approvalCookie, approvalCsrf, "{}");
+        assertThat(refusedApproval.statusCode()).isEqualTo(409);
+        var refusedPublication = ownerRequest(client, root + "/batches/" + batch.batchId() + "/publish", "POST",
+                approvalCookie, approvalCsrf, "{\"checklistId\":\"standard-v1\",\"verifiedOn\":\"2026-11-13\",\"expectCurrentPublicationId\":null}");
+        assertThat(refusedPublication.statusCode()).isEqualTo(409);
+        assertThat(store.byId(batch.batchId()).orElseThrow().status()).isEqualTo("DRAFT");
+
+        assertThat(ownerRequest(client, root + "/session", "DELETE", approvalCookie, approvalCsrf, null).statusCode()).isEqualTo(204);
+        assertThat(ownerRequest(client, root + "/session", "GET", approvalCookie, null, null).statusCode()).isEqualTo(401);
+    }
+
+    private HttpResponse<String> ownerRequest(HttpClient client, String url, String method, String cookie,
+            String csrf, String body) throws Exception {
+        var builder = HttpRequest.newBuilder(URI.create(url)).header("Cookie", cookie);
+        if (csrf != null) builder.header("X-CSRF-Token", csrf);
+        if (body != null) builder.header("Content-Type", "application/json");
+        builder.method(method, body == null ? HttpRequest.BodyPublishers.noBody() : HttpRequest.BodyPublishers.ofString(body));
+        return client.send(builder.build(), HttpResponse.BodyHandlers.ofString());
+    }
+
+    private static String sessionCookie(HttpResponse<?> response) {
+        return response.headers().firstValue("set-cookie").orElseThrow().split(";", 2)[0];
+    }
+
+    @Test
     void draftAndMockReviewCredentialsCannotReachApprovalThroughNonCanonicalRoutes() throws Exception {
         var source = source("Encoded route protection");
         var batch = batches.create(createRequest("batch-encoded-auth", source));
@@ -394,7 +532,8 @@ class GuideContentBatchTest {
         assertThat(sitemap.statusCode()).isEqualTo(200);
         assertThat(sitemap.headers().firstValue("content-type").orElse("")).contains("application/xml");
         assertThat(sitemap.body()).contains("http://127.0.0.1:5173/en/health/" + batch.slug(),
-                "hreflang=\"zh-TW\"", "hreflang=\"ur\"", "hreflang=\"hi\"");
+                "hreflang=\"zh-TW\"", "hreflang=\"en-GB\"", "hreflang=\"ur\"", "hreflang=\"hi\"")
+                .doesNotContain("hreflang=\"en\"");
         assertThat(get("/robots.txt").body()).contains("Sitemap: http://127.0.0.1:5173/sitemap.xml");
 
         jdbc.update("UPDATE guide_locale_current SET valid_until = ? WHERE slug = ?",
@@ -408,6 +547,81 @@ class GuideContentBatchTest {
         var report = getWithDraftCredential("/api/editorial/guide-batches/expiry-report");
         assertThat(report.statusCode()).isEqualTo(200);
         assertThat(report.body()).contains(batch.slug(), "EXPIRED_CURRENT_LOCALE");
+    }
+
+    @Test
+    void independentReviewOwnerHttpApprovalAndPublicationCompleteFiveLocaleLifecycle() throws Exception {
+        var source = source("Owner HTTP lifecycle sample");
+        source.put("category", "health-nhs");
+        var batch = batches.create(createRequest("owner-http-lifecycle-first", source));
+        var localeTitles = new java.util.LinkedHashMap<String, String>();
+        localeTitles.put("zh-CN", source.get("title").stringValue());
+        localeTitles.put("zh-TW", "繁體中文合成測試"); localeTitles.put("en", "Synthetic English");
+        localeTitles.put("ur", "اردو آزمائشی متن"); localeTitles.put("hi", "हिन्दी परीक्षण पाठ");
+        var client = HttpClient.newHttpClient();
+        for (var localeEntry : localeTitles.entrySet()) {
+            String locale = localeEntry.getKey();
+            if (!locale.equals("zh-CN")) {
+                batches.translate(batch.batchId(), locale, json.writeValueAsBytes(translation(source, localeEntry.getValue())));
+            }
+            String hash = store.locale(batch.batchId(), locale).orElseThrow().contentHash();
+            var review = json.createObjectNode(); review.put("contentHash", hash); review.put("passed", true); review.putArray("findings");
+            var response = client.send(HttpRequest.newBuilder(URI.create("http://127.0.0.1:" + port
+                            + "/api/editorial/guide-batches/" + batch.batchId() + "/reviews/" + locale))
+                    .header("Authorization", "Bearer test-review-token").header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(review.toString())).build(), HttpResponse.BodyHandlers.ofString());
+            assertThat(response.statusCode()).as("independent review of %s", locale).isEqualTo(200);
+            assertThat(response.body()).contains("\"reviewer\":\"claude-independent\"", "\"reviewedHash\":\"" + hash + "\"");
+        }
+        assertThat(store.byId(batch.batchId()).orElseThrow().status()).isEqualTo("READY");
+        jdbc.update("INSERT INTO guide_workflow_activation (activated_by) VALUES ('synthetic-test')");
+
+        var login = client.send(HttpRequest.newBuilder(URI.create("http://127.0.0.1:" + port + "/api/owner/editorial/session"))
+                .header("Origin", "http://127.0.0.1:5179").header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString("{\"role\":\"APPROVAL\",\"credential\":\"test-owner-approval-password-0123456789abcdef\"}"))
+                .build(), HttpResponse.BodyHandlers.ofString());
+        assertThat(login.statusCode()).isEqualTo(200);
+        String cookie = sessionCookie(login);
+        String csrf = json.readTree(login.body()).get("csrfToken").stringValue();
+        String ownerRoot = "http://127.0.0.1:" + port + "/api/owner/editorial";
+        var approve = ownerRequest(client, ownerRoot + "/batches/" + batch.batchId() + "/approve", "POST", cookie, csrf, "{}");
+        assertThat(approve.statusCode()).isEqualTo(200);
+        assertThat(approve.body()).contains("\"status\":\"APPROVED\"");
+        var publishBody = "{\"checklistId\":\"standard-v1\",\"verifiedOn\":\"" + LocalDate.now(ZoneOffset.UTC)
+                + "\",\"expectCurrentPublicationId\":null}";
+        var publish = ownerRequest(client, ownerRoot + "/batches/" + batch.batchId() + "/publish", "POST", cookie, csrf, publishBody);
+        assertThat(publish.statusCode()).isEqualTo(200);
+        assertThat(publish.body()).contains("\"status\":\"PUBLISHED\"");
+
+        for (String locale : GuideContentBatchService.LOCALES) {
+            var listing = get("/api/guides/locales/" + locale);
+            assertThat(listing.statusCode()).as("published %s list", locale).isEqualTo(200);
+            assertThat(listing.body()).contains(batch.slug());
+            var detail = get("/api/guides/" + batch.slug() + "/locales/" + locale);
+            assertThat(detail.statusCode()).as("published %s detail", locale).isEqualTo(200);
+            assertThat(detail.body()).contains("\"locale\":\"" + locale + "\"", "\"contentHash\":");
+        }
+
+        var unpublishedSource = source("Still unpublished sample");
+        var unpublished = batches.create(createRequest("owner-http-lifecycle-unpublished", unpublishedSource));
+        assertThat(get("/api/guides/" + unpublished.slug()).statusCode()).isEqualTo(404);
+        assertThat(get("/api/guides/" + unpublished.slug() + "/locales/en").statusCode()).isEqualTo(404);
+
+        var newerSource = sourceWithSlug("Newer draft must not hide old publication", batch.slug());
+        newerSource.put("category", "health-nhs");
+        var newerRequest = createRequest("owner-http-lifecycle-newer", newerSource);
+        newerRequest.put("basedOnRevisionId", batch.sourceRevisionId().toString());
+        newerRequest.put("sourceVersion", "source-v2");
+        var newer = batches.create(newerRequest);
+        assertThat(ownerRequest(client, ownerRoot + "/batches/" + batch.batchId() + "/approve", "POST", cookie, csrf, "{}").statusCode())
+                .isEqualTo(409);
+        assertThat(ownerRequest(client, ownerRoot + "/batches/" + batch.batchId() + "/publish", "POST", cookie, csrf, publishBody).statusCode())
+                .isEqualTo(409);
+        assertThat(store.byId(batch.batchId()).orElseThrow().status()).isEqualTo("PUBLISHED");
+        assertThat(store.byId(newer.batchId()).orElseThrow().status()).isEqualTo("DRAFT");
+        assertThat(get("/api/guides/" + batch.slug()).statusCode()).isEqualTo(200);
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM guide_locale_current WHERE slug = ? AND batch_id = ?",
+                Integer.class, batch.slug(), batch.batchId())).isEqualTo(5);
     }
 
     @Test
