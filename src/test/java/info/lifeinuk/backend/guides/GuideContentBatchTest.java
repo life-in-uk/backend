@@ -10,6 +10,7 @@ import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.time.Instant;
 import java.util.UUID;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -137,6 +138,100 @@ class GuideContentBatchTest {
         var retried = batches.translate(batch.batchId(), "ur", json.writeValueAsBytes(translation(source, "Urdu draft")));
         assertThat(retried.validationStatus()).isEqualTo("VALID");
         assertThat(store.locale(batch.batchId(), "en")).isPresent();
+    }
+
+    @Test
+    void manualTranslationExportImportRoundTripsFourDraftsWithoutReviewingThem() throws Exception {
+        var source = source("Manual translation source");
+        var batch = batches.create(createRequest("manual-translation-roundtrip", source));
+        var exported = batches.translationPackage(batch.batchId());
+        assertThat(exported.contractVersion()).isEqualTo("translation-package-v1");
+        assertThat(exported.sourceRevisionId()).isEqualTo(batch.sourceRevisionId());
+        assertThat(exported.sourceContentHash()).isEqualTo(batch.sourceContentHash());
+        assertThat(exported.sourceGuide().has("canonicalization")).isFalse();
+        assertThat(exported.requiredLocales()).containsExactly("zh-TW", "en", "ur", "hi");
+        assertThat(exported.responseTemplate().get("translations")).hasSize(4);
+        assertThat(exported.responseTemplate().get("translations").get(0).get("guide").has("evidence")).isTrue();
+
+        var packageJson = json.createObjectNode();
+        packageJson.put("contractVersion", "translation-package-v1");
+        packageJson.put("batchId", batch.batchId().toString());
+        packageJson.put("sourceRevisionId", batch.sourceRevisionId().toString());
+        packageJson.put("sourceContentHash", batch.sourceContentHash());
+        var translations = packageJson.putArray("translations");
+        for (String locale : exported.requiredLocales()) {
+            var item = translations.addObject();
+            item.put("locale", locale);
+            item.put("sourceRevisionId", batch.sourceRevisionId().toString());
+            item.put("sourceContentHash", batch.sourceContentHash());
+            var translated = source.deepCopy();
+            translated.put("title", "Manual " + locale);
+            item.set("guide", translated);
+        }
+        var imported = batches.importTranslations(batch.batchId(), packageJson);
+        assertThat(imported).hasSize(4).allSatisfy(locale -> {
+            assertThat(locale.validationStatus()).isEqualTo("VALID");
+            assertThat(locale.reviewStatus()).isEqualTo("PENDING");
+            assertThat(locale.contentHash()).matches("[0-9a-f]{64}");
+            assertThat(locale.sourceRevisionId()).isEqualTo(batch.sourceRevisionId());
+        });
+        assertThat(store.locales(batch.batchId())).hasSize(5);
+        assertThat(store.byId(batch.batchId()).orElseThrow().status()).isEqualTo("DRAFT");
+    }
+
+    @Test
+    void manualImportRejectsChangedEvidenceAndDoesNotPersistAnyTranslation() throws Exception {
+        var source = source("Evidence must remain unchanged");
+        var batch = batches.create(createRequest("manual-translation-evidence", source));
+        var packageJson = manualPackage(batch, source);
+        var first = (ObjectNode) packageJson.get("translations").get(0).get("guide");
+        first.withArray("evidence").get(0).withArray("supports").get(0).asObject().put("locator", "changed locator");
+        assertThatThrownBy(() -> batches.importTranslations(batch.batchId(), packageJson))
+                .isInstanceOf(IllegalArgumentException.class).hasMessageContaining("locators, excerpts");
+        assertThat(store.locales(batch.batchId())).hasSize(1);
+    }
+
+    @Test
+    void manualImportRejectsStaleSourceAndPrevalidatesAllLocalesBeforeSaving() throws Exception {
+        var source = source("Stale translation source");
+        var batch = batches.create(createRequest("manual-translation-stale", source));
+        var stale = manualPackage(batch, source);
+        stale.put("sourceRevisionId", UUID.randomUUID().toString());
+        assertThatThrownBy(() -> batches.importTranslations(batch.batchId(), stale))
+                .isInstanceOf(GuideContentBatchStore.StaleLocaleRevision.class);
+
+        var malformedLaterLocale = manualPackage(batch, source);
+        malformedLaterLocale.get("translations").get(3).get("guide").asObject().remove("title");
+        assertThatThrownBy(() -> batches.importTranslations(batch.batchId(), malformedLaterLocale))
+                .isInstanceOf(IllegalArgumentException.class);
+        assertThat(store.locales(batch.batchId())).hasSize(1);
+
+        var newerSource = source.deepCopy();
+        newerSource.put("title", "Newer Chinese source revision");
+        var newerRequest = createRequest("manual-translation-newer", newerSource);
+        newerRequest.put("basedOnRevisionId", batch.sourceRevisionId().toString());
+        newerRequest.put("sourceVersion", "source-v2");
+        var newer = batches.create(newerRequest);
+        assertThatThrownBy(() -> batches.importTranslations(batch.batchId(), manualPackage(batch, source)))
+                .isInstanceOf(GuideContentBatchStore.StaleLocaleRevision.class);
+        assertThat(store.locales(newer.batchId())).hasSize(1);
+    }
+
+    private ObjectNode manualPackage(GuideContentBatchService.BatchReceipt batch, ObjectNode source) {
+        var result = json.createObjectNode();
+        result.put("contractVersion", "translation-package-v1");
+        result.put("batchId", batch.batchId().toString());
+        result.put("sourceRevisionId", batch.sourceRevisionId().toString());
+        result.put("sourceContentHash", batch.sourceContentHash());
+        var translations = result.putArray("translations");
+        for (String locale : List.of("zh-TW", "en", "ur", "hi")) {
+            var item = translations.addObject(); item.put("locale", locale);
+            item.put("sourceRevisionId", batch.sourceRevisionId().toString());
+            item.put("sourceContentHash", batch.sourceContentHash());
+            var translated = source.deepCopy(); translated.put("title", "Manual " + locale);
+            item.set("guide", translated);
+        }
+        return result;
     }
 
     @Test

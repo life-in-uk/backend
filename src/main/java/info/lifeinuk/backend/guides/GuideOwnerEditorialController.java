@@ -118,6 +118,20 @@ class GuideOwnerEditorialController {
         return ResponseEntity.ok().cacheControl(CacheControl.noStore()).body(batches.ownerDetail(batchId));
     }
 
+    @GetMapping("/batches/{batchId}/translation-export")
+    ResponseEntity<?> translationExport(@PathVariable UUID batchId, HttpServletRequest request) {
+        requireSession(request, "DRAFT");
+        return ResponseEntity.ok().cacheControl(CacheControl.noStore()).body(batches.translationPackage(batchId));
+    }
+
+    @PostMapping("/batches/{batchId}/translations/import")
+    ResponseEntity<?> importTranslations(@PathVariable UUID batchId, @RequestBody JsonNode body,
+            HttpServletRequest request, @RequestHeader(value = "X-CSRF-Token", required = false) String csrf) {
+        HttpSession session = requireSession(request, "DRAFT");
+        requireCsrf(session, csrf);
+        return ResponseEntity.ok().cacheControl(CacheControl.noStore()).body(batches.importTranslations(batchId, body));
+    }
+
     @PostMapping("/batches/{batchId}/approve")
     ResponseEntity<?> approve(@PathVariable UUID batchId, HttpServletRequest request,
             @RequestHeader(value = "X-CSRF-Token", required = false) String csrf) {
@@ -183,6 +197,15 @@ class GuideOwnerEditorialController {
     ResponseEntity<Error> unauthorized() { return failure(HttpStatus.UNAUTHORIZED, "OWNER_SESSION_REQUIRED"); }
     @org.springframework.web.bind.annotation.ExceptionHandler(OwnerCsrfRejected.class)
     ResponseEntity<Error> csrfRejected() { return failure(HttpStatus.FORBIDDEN, "OWNER_CSRF_REJECTED"); }
+    @org.springframework.web.bind.annotation.ExceptionHandler(GuideContentBatchService.NotFound.class)
+    ResponseEntity<Error> notFound() { return failure(HttpStatus.NOT_FOUND, "BATCH_NOT_FOUND"); }
+    @org.springframework.web.bind.annotation.ExceptionHandler({GuideContentBatchStore.StaleLocaleRevision.class,
+            GuideContentBatchStore.IncompleteBatch.class, GuideContentBatchService.IdempotencyConflict.class})
+    ResponseEntity<Error> conflict() { return failure(HttpStatus.CONFLICT, "EDITORIAL_CONFLICT"); }
+    @org.springframework.web.bind.annotation.ExceptionHandler(IllegalArgumentException.class)
+    ResponseEntity<Error> invalid() { return failure(HttpStatus.BAD_REQUEST, "INVALID_EDITORIAL_REQUEST"); }
+    @org.springframework.web.bind.annotation.ExceptionHandler(IllegalStateException.class)
+    ResponseEntity<Error> stateConflict() { return failure(HttpStatus.CONFLICT, "EDITORIAL_STATE_CONFLICT"); }
 
     record LoginRequest(String role, String credential) { }
     record SessionView(String role, String csrfToken) { }

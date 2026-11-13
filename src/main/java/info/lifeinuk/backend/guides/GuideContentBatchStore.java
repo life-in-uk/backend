@@ -42,6 +42,11 @@ class GuideContentBatchStore {
                 GuideContentBatchStore::batch, limit);
     }
 
+    Optional<Batch> latestForSlug(String slug) {
+        return jdbc.query("SELECT * FROM guide_content_batch WHERE slug = ? ORDER BY created_at DESC, id DESC LIMIT 1",
+                GuideContentBatchStore::batch, slug).stream().findFirst();
+    }
+
     Batch insertBatch(UUID id, String slug, UUID sourceRevisionId, String sourceDigest, String idempotencyKey,
             String requestDigest, String policyVersion, String sourceVersion, Instant validFrom, Instant validUntil, String createdBy) {
         jdbc.update("""

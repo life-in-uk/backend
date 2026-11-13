@@ -139,6 +139,104 @@ class GuideContentBatchService {
     }
 
     @Transactional(readOnly = true)
+    public TranslationPackage translationPackage(UUID batchId) {
+        var batch = batches.byId(batchId).orElseThrow(() -> new NotFound("Batch not found"));
+        var sourceLocale = batches.locale(batchId, "zh-CN").orElseThrow(() -> new IllegalStateException("Chinese source is missing"));
+        JsonNode guide = parseCanonicalGuide(sourceLocale.canonicalForm());
+        var source = reader.parse(json.writeValueAsString(guide).getBytes(StandardCharsets.UTF_8));
+        String digest = GuideContentDigest.digest(source);
+        if (!digest.equals(batch.sourceDigest()) || !digest.equals(sourceLocale.contentHash())) {
+            throw new IllegalStateException("Stored Chinese source hash does not match its content");
+        }
+        var template = json.createObjectNode();
+        template.put("contractVersion", "translation-package-v1");
+        template.put("batchId", batch.id().toString());
+        template.put("sourceRevisionId", batch.sourceRevisionId().toString());
+        template.put("sourceContentHash", digest);
+        var translations = template.putArray("translations");
+        for (String locale : List.of("zh-TW", "en", "ur", "hi")) {
+            var item = translations.addObject();
+            item.put("locale", locale);
+            item.put("sourceRevisionId", batch.sourceRevisionId().toString());
+            item.put("sourceContentHash", digest);
+            item.set("guide", guide.deepCopy());
+        }
+        var instructions = "Translate the Guide content into zh-TW, en, ur and hi. Translate only title, summary, content and evidence[].statement. Preserve Guide structure, slug, category, status, dates, source references, evidence keys, support sourceKey values, locators, excerpts and support notes exactly. Keep status DRAFT and publishedAt null. Return only the JSON object in responseTemplate, with all four entries retained; do not add fields or change batchId/sourceRevisionId/sourceContentHash.";
+        return new TranslationPackage("translation-package-v1", batch.id(), batch.slug(), batch.sourceRevisionId(), digest,
+                guide, List.of("zh-TW", "en", "ur", "hi"), instructions, template);
+    }
+
+    @Transactional
+    public List<LocaleReceipt> importTranslations(UUID batchId, JsonNode request) {
+        fields(request, Set.of("contractVersion", "batchId", "sourceRevisionId", "sourceContentHash", "translations"),
+                "translation package");
+        if (!"translation-package-v1".equals(text(request, "contractVersion", 80))) {
+            throw new IllegalArgumentException("contractVersion must be translation-package-v1");
+        }
+        UUID suppliedBatch = uuid(request.get("batchId"), "batchId");
+        UUID suppliedSourceRevision = uuid(request.get("sourceRevisionId"), "sourceRevisionId");
+        String suppliedHash = text(request, "sourceContentHash", 64);
+        var batch = batches.byId(batchId).orElseThrow(() -> new NotFound("Batch not found"));
+        if (!batch.id().equals(suppliedBatch) || !batch.sourceRevisionId().equals(suppliedSourceRevision)
+                || !batch.sourceDigest().equals(suppliedHash)) {
+            throw new GuideContentBatchStore.StaleLocaleRevision("Translation package is linked to a different or stale Chinese source revision");
+        }
+        if (batches.latestForSlug(batch.slug()).map(latest -> !latest.id().equals(batchId)).orElse(true)) {
+            throw new GuideContentBatchStore.StaleLocaleRevision("A newer Guide batch exists; export translations from the latest source");
+        }
+        batches.requireOpenDraft(batch);
+        var entries = request.get("translations");
+        if (entries == null || !entries.isArray() || entries.size() != 4) {
+            throw new IllegalArgumentException("translations must contain exactly zh-TW, en, ur and hi");
+        }
+        var expectedLocales = Set.of("zh-TW", "en", "ur", "hi");
+        var found = new java.util.HashSet<String>();
+        var validated = new java.util.ArrayList<ValidatedTranslation>();
+        var sourceRow = batches.locale(batchId, "zh-CN").orElseThrow();
+        var source = reader.parse(json.writeValueAsString(parseCanonicalGuide(sourceRow.canonicalForm())).getBytes(StandardCharsets.UTF_8));
+        if (!GuideContentDigest.digest(source).equals(batch.sourceDigest())) {
+            throw new GuideContentBatchStore.StaleLocaleRevision("Chinese source content no longer matches its stored hash");
+        }
+        for (int index = 0; index < entries.size(); index++) {
+            var entry = entries.get(index);
+            fields(entry, Set.of("locale", "sourceRevisionId", "sourceContentHash", "guide"), "translations[" + index + "]");
+            String locale = text(entry, "locale", 8);
+            if (!expectedLocales.contains(locale) || !found.add(locale)) {
+                throw new IllegalArgumentException("translations contains an unsupported or duplicate locale: " + locale);
+            }
+            if (!suppliedSourceRevision.equals(uuid(entry.get("sourceRevisionId"), "translations[" + index + "].sourceRevisionId"))
+                    || !suppliedHash.equals(text(entry, "sourceContentHash", 64))) {
+                throw new GuideContentBatchStore.StaleLocaleRevision("A translation does not reference the exact exported Chinese revision and hash");
+            }
+            var guide = entry.get("guide");
+            if (guide == null || !guide.isObject()) throw new IllegalArgumentException("translations[" + index + "].guide must be an object");
+            var definition = reader.parse(json.writeValueAsString(guide).getBytes(StandardCharsets.UTF_8));
+            if (definition.status() != GuideStatus.DRAFT || definition.publishedAt() != null || definition.evidence() == null)
+                throw new IllegalArgumentException("Imported locale content must remain DRAFT with explicit evidence and null publishedAt");
+            if (!batch.slug().equals(definition.slug()) || !source.category().equals(definition.category()))
+                throw new IllegalArgumentException("Imported locale slug and category must match the Chinese source");
+            validateSourceReferences(source, definition);
+            validated.add(new ValidatedTranslation(locale, json.writeValueAsString(guide).getBytes(StandardCharsets.UTF_8)));
+        }
+        if (!found.equals(expectedLocales)) throw new IllegalArgumentException("translations must contain exactly zh-TW, en, ur and hi");
+        var results = new java.util.ArrayList<LocaleReceipt>();
+        for (var translation : validated) results.add(translate(batchId, translation.locale(), translation.payload()));
+        return List.copyOf(results);
+    }
+
+    private JsonNode parseCanonicalGuide(String canonical) {
+        try {
+            JsonNode guide = json.readTree(canonical.getBytes(StandardCharsets.UTF_8));
+            if (!(guide instanceof tools.jackson.databind.node.ObjectNode object))
+                throw new IllegalStateException("Stored canonical Guide content is not an object");
+            object.remove("canonicalization");
+            return object;
+        } catch (tools.jackson.core.JacksonException invalid) {
+            throw new IllegalStateException("Stored canonical Guide content is invalid", invalid);
+        }
+    }
+
+    @Transactional(readOnly = true)
     public ExpiryReport expiryReport() {
         return new ExpiryReport(Instant.now(), batches.expiryCandidates());
     }
@@ -201,9 +299,8 @@ class GuideContentBatchService {
         for (int i = 0; i < source.evidence().size(); i++) {
             var sourceItem = source.evidence().get(i);
             var translatedItem = translated.evidence().stream().filter(item -> item.key().equals(sourceItem.key())).findFirst().orElseThrow();
-            if (!sourceItem.supports().stream().map(GuideImportDefinition.Support::sourceKey).sorted().toList()
-                    .equals(translatedItem.supports().stream().map(GuideImportDefinition.Support::sourceKey).sorted().toList())) {
-                throw new IllegalArgumentException("Locale evidence support source keys must match the Chinese source");
+            if (!sourceItem.supports().equals(translatedItem.supports())) {
+                throw new IllegalArgumentException("Locale evidence source references, locators, excerpts and notes must match the Chinese source exactly");
             }
         }
     }
@@ -231,7 +328,7 @@ class GuideContentBatchService {
         catch (RuntimeException invalid) { throw new IllegalArgumentException(name + " must be an ISO instant"); }
     }
     private static UUID uuid(JsonNode value, String name) {
-        if (!value.isString()) throw new IllegalArgumentException(name + " must be a UUID");
+        if (value == null || !value.isString()) throw new IllegalArgumentException(name + " must be a UUID");
         try { return UUID.fromString(value.stringValue()); }
         catch (IllegalArgumentException invalid) { throw new IllegalArgumentException(name + " must be a UUID"); }
     }
@@ -247,6 +344,10 @@ class GuideContentBatchService {
     record OwnerLocaleDetail(UUID localeRevisionId, UUID batchId, String locale, UUID sourceRevisionId,
             String canonicalContent, String contentHash, String validationStatus, String reviewStatus,
             String reviewedHash, String reviewResult, String reviewer, String failureCode) { }
+    record TranslationPackage(String contractVersion, UUID batchId, String slug, UUID sourceRevisionId,
+            String sourceContentHash, JsonNode sourceGuide, List<String> requiredLocales, String instructions,
+            JsonNode responseTemplate) { }
+    private record ValidatedTranslation(String locale, byte[] payload) { }
     record ExpiryReport(Instant generatedAt, List<GuideContentBatchStore.ExpiryCandidate> candidates) { }
     record LocaleReceipt(UUID localeRevisionId, UUID batchId, String locale, UUID sourceRevisionId, String contentHash,
             String validationStatus, String reviewStatus, String reviewedHash, String failureCode, String reviewer) { }
