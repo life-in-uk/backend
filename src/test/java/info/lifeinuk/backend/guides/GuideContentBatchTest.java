@@ -657,4 +657,35 @@ class GuideContentBatchTest {
         assertThat(store.byId(first.batchId()).orElseThrow().status()).isEqualTo("PUBLISHED");
         assertThat(store.byId(replacement.batchId()).orElseThrow().status()).isEqualTo("APPROVED");
     }
+
+    @Test
+    void successfulReplacementRetainsSupersededLocaleBodies() throws Exception {
+        var firstSource = source("Retained historical locale body");
+        firstSource.put("category", "health-nhs");
+        var first = batches.create(createRequest("batch-retain-first", firstSource));
+        fillAndReview(first, firstSource, "claude-independent");
+        jdbc.update("INSERT INTO guide_workflow_activation (activated_by) VALUES ('synthetic-test')");
+        batches.approve(first.batchId(), "synthetic-owner");
+        batches.publish(first.batchId(), new GuideContentBatchService.PublishRequest(null, "standard-v1",
+                LocalDate.now(ZoneOffset.UTC)), "synthetic-owner");
+        UUID previousPublication = jdbc.queryForObject("SELECT id FROM guide_publication WHERE slug = ? AND ended_at IS NULL",
+                UUID.class, first.slug());
+        var previousBodies = jdbc.query("SELECT locale, canonical_form FROM guide_locale_revision WHERE batch_id = ? ORDER BY locale",
+                (row, index) -> row.getString("locale") + ":" + row.getString("canonical_form"), first.batchId());
+
+        var secondSource = sourceWithSlug("Replacement batch body", first.slug());
+        secondSource.put("category", "health-nhs");
+        var second = batches.create(createRequest("batch-retain-second", secondSource));
+        fillAndReview(second, secondSource, "claude-independent");
+        batches.approve(second.batchId(), "synthetic-owner");
+        batches.publish(second.batchId(), new GuideContentBatchService.PublishRequest(previousPublication, "standard-v1",
+                LocalDate.now(ZoneOffset.UTC)), "synthetic-owner");
+
+        var after = jdbc.query("SELECT locale, canonical_form FROM guide_locale_revision WHERE batch_id = ? ORDER BY locale",
+                (row, index) -> row.getString("locale") + ":" + row.getString("canonical_form"), first.batchId());
+        assertThat(after).containsExactlyElementsOf(previousBodies);
+        assertThat(after).allMatch(body -> !body.endsWith(":null"));
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM guide_locale_current WHERE slug = ? AND batch_id = ?",
+                Integer.class, first.slug(), second.batchId())).isEqualTo(5);
+    }
 }

@@ -59,6 +59,9 @@ class GuideRevisionRetentionTest {
 
         jdbc.execute("CALL redact_superseded_guide_body('" + firstRevision.id() + "', 'synthetic-retention-owner', 'Synthetic replacement verified')");
 
+        assertThat(jdbc.queryForObject("SELECT current_setting('life_in_uk.guide_body_redaction', true)", String.class))
+                .isNotEqualTo("on");
+
         var redacted = revisions.find(firstRevision.id()).orElseThrow();
         assertThat(redacted.canonicalForm()).isNull();
         assertThat(redacted.draftDigest()).isEqualTo(firstRevision.draftDigest());
@@ -104,6 +107,7 @@ class GuideRevisionRetentionTest {
             }
             jdbc.execute("GRANT USAGE ON SCHEMA guide_revision_retention_tests TO " + role);
             jdbc.execute("GRANT SELECT ON guide, guide_source, guide_evidence, guide_evidence_support TO " + role);
+            jdbc.execute("GRANT INSERT ON guide_revision_body_redaction TO " + role);
             try (var owner = dataSource.getConnection();
                  var connection = java.sql.DriverManager.getConnection(owner.getMetaData().getURL(), "life_in_uk_test", "");
                  var statement = connection.createStatement()) {
@@ -117,6 +121,9 @@ class GuideRevisionRetentionTest {
                         .hasMessageContaining("permission denied");
                 assertThatThrownBy(() -> statement.execute("CALL redact_superseded_guide_body('00000000-0000-0000-0000-000000000000','x','x')"))
                         .hasMessageContaining("permission denied");
+                statement.execute("SELECT set_config('life_in_uk.guide_body_redaction','on',false)");
+                assertThatThrownBy(() -> statement.execute("INSERT INTO guide_revision_body_redaction(revision_id,slug,draft_digest,replaced_publication_id,replacement_publication_id,redacted_by,reason) VALUES ('00000000-0000-0000-0000-000000000001','test','" + "0".repeat(64) + "', '00000000-0000-0000-0000-000000000002','00000000-0000-0000-0000-000000000003','test','test')"))
+                        .hasMessageContaining("controlled redaction procedure");
             }
         } finally {
             jdbc.execute("DROP OWNED BY " + role);

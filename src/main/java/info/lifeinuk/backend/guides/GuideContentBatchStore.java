@@ -188,13 +188,9 @@ class GuideContentBatchStore {
                     locale_revision_id = EXCLUDED.locale_revision_id, valid_from = EXCLUDED.valid_from,
                     valid_until = EXCLUDED.valid_until
                 """, batch.slug(), Timestamp.from(batch.validFrom()), batch.validUntil() == null ? null : Timestamp.from(batch.validUntil()), batchId);
-        jdbc.update("""
-                UPDATE guide_locale_revision old SET canonical_form = NULL, validation_status = 'SUPERSEDED',
-                    updated_at = clock_timestamp()
-                WHERE old.batch_id IN (SELECT b.id FROM guide_content_batch b
-                    WHERE b.slug = ? AND b.status = 'PUBLISHED' AND b.id <> ?)
-                  AND old.canonical_form IS NOT NULL
-                """, batch.slug(), batchId);
+        // Superseding removes the old locale from the public pointer only. Historical content
+        // remains intact; any future body redaction must use the separately authorized and
+        // audited retention procedure.
         jdbc.update("UPDATE guide_content_batch SET status = 'SUPERSEDED' WHERE slug = ? AND id <> ? AND status = 'PUBLISHED'",
                 batch.slug(), batchId);
         jdbc.update("UPDATE guide_content_batch SET status = 'PUBLISHED', published_at = clock_timestamp() WHERE id = ?", batchId);
