@@ -23,6 +23,8 @@ class GuideOwnerEditorialControllerTest {
         var approval = controller.login(new GuideOwnerEditorialController.LoginRequest("APPROVAL", "approval-session-password-0123456789abcdef"), approvalRequest);
         assertEquals(200, approval.getStatusCode().value());
         assertEquals("APPROVAL", ((GuideOwnerEditorialController.SessionView) approval.getBody()).role());
+        assertThrows(GuideOwnerEditorialController.OwnerUnauthorized.class,
+                () -> controller.create(null, approvalRequest, ((GuideOwnerEditorialController.SessionView) approval.getBody()).csrfToken()));
     }
 
     @Test
@@ -44,6 +46,8 @@ class GuideOwnerEditorialControllerTest {
         var request = request();
         var response = controller.login(new GuideOwnerEditorialController.LoginRequest("DRAFT", "draft-session-password-0123456789abcdef"), request);
         String csrf = ((GuideOwnerEditorialController.SessionView) response.getBody()).csrfToken();
+        assertThrows(GuideOwnerEditorialController.OwnerCsrfRejected.class,
+                () -> controller.create(null, request, "wrong"));
         assertThrows(GuideOwnerEditorialController.OwnerCsrfRejected.class, () -> controller.logout(request, "wrong"));
         assertEquals(204, controller.logout(request, csrf).getStatusCode().value());
         assertNull(request.getSession(false));
