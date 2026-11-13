@@ -58,7 +58,7 @@ class GuideContentBatchTest {
 
     @BeforeEach
     void clear() {
-        jdbc.execute("TRUNCATE guide_locale_current, guide_locale_revision, guide_content_batch, guide_publication, guide_workflow_activation, guide_revision, guide_evidence_support, guide_evidence, guide_source, guide");
+        jdbc.execute("TRUNCATE guide_revision_body_redaction, guide_locale_current, guide_locale_revision, guide_content_batch, guide_publication, guide_workflow_activation, guide_revision, guide_evidence_support, guide_evidence, guide_source, guide");
     }
 
     private ObjectNode source(String title) throws Exception {

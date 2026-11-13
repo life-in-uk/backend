@@ -21,12 +21,16 @@ import org.springframework.stereotype.Component;
 /**
  * Explicit Guide workflow operations. Literal CLI options only; properties, profiles and the environment never invoke
  * them, and no scheduled path exists. {@code --guide-revision-create} stores an immutable DRAFT revision and
- * {@code --guide-check} is read-only. {@code --guide-publish} and {@code --guide-withdraw} refuse until the workflow
- * is activated. At most one Guide operation, including {@code --import-guide}, may be requested per run.
+ * {@code --guide-check} is read-only. Baseline and activation are explicit administrative commands. Publication and
+ * withdrawal refuse until the workflow is activated. At most one Guide operation, including {@code --import-guide},
+ * may be requested per run.
  */
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
 class GuideWorkflowCommand implements ApplicationRunner {
+    static final String BASELINE = "guide-baseline";
+    static final String ACTIVATE = "guide-activate";
+    static final String VERIFY = "guide-verify";
     static final String CREATE = "guide-revision-create";
     static final String CHECK = "guide-check";
     static final String PUBLISH = "guide-publish";
@@ -42,6 +46,7 @@ class GuideWorkflowCommand implements ApplicationRunner {
     static final String REASON = "reason";
     /** The options each operation accepts besides its own. */
     private static final Map<String, Set<String>> MODIFIERS = Map.of(
+            BASELINE, Set.of(), ACTIVATE, Set.of(CONFIRM), VERIFY, Set.of(),
             CREATE, Set.of(BASED_ON, AI_ASSISTED, NOTE),
             CHECK, Set.of(),
             PUBLISH, Set.of(EXPECT_DIGEST, EXPECT_CURRENT, CHECKLIST, VERIFIED_ON, CONFIRM),
@@ -53,14 +58,17 @@ class GuideWorkflowCommand implements ApplicationRunner {
     private final GuideRevisionService revisions;
     private final GuideQualityGate gate;
     private final GuidePublicationService publications;
+    private final GuideActivation activation;
     private final String operator;
 
     GuideWorkflowCommand(GuideImportReader reader, GuideRevisionService revisions, GuideQualityGate gate,
-            GuidePublicationService publications, @Value("${LIFE_IN_UK_OPERATOR:}") String operator) {
+            GuidePublicationService publications, GuideActivation activation,
+            @Value("${LIFE_IN_UK_OPERATOR:}") String operator) {
         this.reader = reader;
         this.revisions = revisions;
         this.gate = gate;
         this.publications = publications;
+        this.activation = activation;
         this.operator = operator;
     }
 
@@ -74,19 +82,38 @@ class GuideWorkflowCommand implements ApplicationRunner {
         }
         // Runs before other runners, so a conflicting combination fails before anything else executes.
         if (operations.size() > 1 || args.containsOption(GuideImportCommand.OPTION)) {
-            throw new IllegalArgumentException("Run exactly one of --" + CREATE + ", --" + CHECK + ", --" + PUBLISH + ", --"
-                    + WITHDRAW + " or --" + GuideImportCommand.OPTION + " per command");
+            throw new IllegalArgumentException("Run exactly one Guide operation per command");
         }
         String operation = operations.getFirst();
         var unexpected = modifiers.stream().filter(option -> !MODIFIERS.get(operation).contains(option)).sorted().toList();
         if (!unexpected.isEmpty()) { throw new IllegalArgumentException("--" + operation + " does not accept " + unexpected); }
         switch (operation) {
+            case BASELINE -> baseline(args);
+            case ACTIVATE -> activate(args);
+            case VERIFY -> verify(args);
             case CREATE -> create(args);
             case CHECK -> log.info("\n{}", GuideQualityGate.render(gate.check(uuid(single(args, CHECK)), Instant.now())));
             case PUBLISH -> publish(args);
             case WITHDRAW -> withdraw(args);
             default -> throw new IllegalStateException(operation);
         }
+    }
+
+    private void baseline(ApplicationArguments args) throws Exception {
+        var artifact = reader.read(Path.of(single(args, BASELINE)));
+        log.info("Guide legacy baseline {}", activation.baseline(artifact, operator));
+    }
+
+    private void activate(ApplicationArguments args) {
+        if (!flag(args, ACTIVATE)) throw new IllegalArgumentException("--guide-activate is a flag");
+        var result = activation.activate(operator, flag(args, CONFIRM));
+        log.info("Guide workflow activation {} publications {}", result.activated(), result.publications());
+    }
+
+    private void verify(ApplicationArguments args) {
+        flag(args, VERIFY);
+        var result = activation.verify();
+        log.info("Guide workflow integrity activated {} publications {}", result.activated(), result.publications());
     }
 
     private void create(ApplicationArguments args) throws Exception {

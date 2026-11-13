@@ -44,7 +44,7 @@ class GuideRevisionTest {
     private final JsonMapper json = JsonMapper.builder().build();
 
     @BeforeEach
-    void clear() { jdbc.execute("TRUNCATE guide_locale_current, guide_locale_revision, guide_content_batch, guide_publication, guide_revision, guide_evidence_support, guide_evidence, guide_source, guide"); }
+    void clear() { jdbc.execute("TRUNCATE guide_revision_body_redaction, guide_locale_current, guide_locale_revision, guide_content_batch, guide_publication, guide_revision, guide_evidence_support, guide_evidence, guide_source, guide"); }
 
     @Test
     void redactedRevisionBodyFailsClosedWithAnExplicitMessage() {
@@ -273,7 +273,7 @@ class GuideRevisionTest {
                 "--guide-revision-create=" + valid, "--based-on=not-a-uuid")));
         assertThatIllegalArgumentException().isThrownBy(() -> command.run(new DefaultApplicationArguments("--guide-check=" + id)))
                 .withMessageContaining("Revision not found");
-        assertThatIllegalArgumentException().isThrownBy(() -> new GuideWorkflowCommand(reader, revisions, gate, null, "")
+        assertThatIllegalArgumentException().isThrownBy(() -> new GuideWorkflowCommand(reader, revisions, gate, null, null, "")
                 .run(new DefaultApplicationArguments("--guide-revision-create=" + valid))).withMessageContaining("LIFE_IN_UK_OPERATOR");
         assertThat(count()).isZero();
         assertThat(projection()).contains("\"g\" : null");
