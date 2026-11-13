@@ -37,6 +37,11 @@ class GuideContentBatchStore {
                 .stream().findFirst();
     }
 
+    List<Batch> recentBatches(int limit) {
+        return jdbc.query("SELECT * FROM guide_content_batch ORDER BY created_at DESC, id DESC LIMIT ?",
+                GuideContentBatchStore::batch, limit);
+    }
+
     Batch insertBatch(UUID id, String slug, UUID sourceRevisionId, String sourceDigest, String idempotencyKey,
             String requestDigest, String policyVersion, String sourceVersion, Instant validFrom, Instant validUntil, String createdBy) {
         jdbc.update("""

@@ -125,6 +125,20 @@ class GuideContentBatchService {
     }
 
     @Transactional(readOnly = true)
+    public List<BatchReceipt> recentBatches() {
+        return batches.recentBatches(100).stream().map(GuideContentBatchService::receipt).toList();
+    }
+
+    @Transactional(readOnly = true)
+    public OwnerBatchDetail ownerDetail(UUID batchId) {
+        var batch = batches.byId(batchId).orElseThrow(() -> new NotFound("Batch not found"));
+        var locales = batches.locales(batchId).stream().map(row -> new OwnerLocaleDetail(
+                row.id(), row.batchId(), row.locale(), row.sourceRevisionId(), row.canonicalForm(), row.contentHash(),
+                row.validationStatus(), row.reviewStatus(), row.reviewedHash(), row.reviewResult(), row.reviewer(), row.failureCode())).toList();
+        return new OwnerBatchDetail(receipt(batch), batch.policyVersion(), batch.sourceVersion(), locales);
+    }
+
+    @Transactional(readOnly = true)
     public ExpiryReport expiryReport() {
         return new ExpiryReport(Instant.now(), batches.expiryCandidates());
     }
@@ -229,6 +243,10 @@ class GuideContentBatchService {
     record BatchReceipt(UUID batchId, String slug, UUID sourceRevisionId, String sourceContentHash, String status,
             Instant validFrom, Instant validUntil) { }
     record BatchDetail(BatchReceipt batch, List<LocaleReceipt> locales) { }
+    record OwnerBatchDetail(BatchReceipt batch, String policyVersion, String sourceVersion, List<OwnerLocaleDetail> locales) { }
+    record OwnerLocaleDetail(UUID localeRevisionId, UUID batchId, String locale, UUID sourceRevisionId,
+            String canonicalContent, String contentHash, String validationStatus, String reviewStatus,
+            String reviewedHash, String reviewResult, String reviewer, String failureCode) { }
     record ExpiryReport(Instant generatedAt, List<GuideContentBatchStore.ExpiryCandidate> candidates) { }
     record LocaleReceipt(UUID localeRevisionId, UUID batchId, String locale, UUID sourceRevisionId, String contentHash,
             String validationStatus, String reviewStatus, String reviewedHash, String failureCode, String reviewer) { }
