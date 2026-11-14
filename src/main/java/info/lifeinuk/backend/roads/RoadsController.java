@@ -1,5 +1,6 @@
 package info.lifeinuk.backend.roads;
 
+import org.springframework.http.CacheControl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,18 +18,19 @@ public class RoadsController {
     public ResponseEntity<?> get(@RequestParam("lat") double latitude, @RequestParam("lon") double longitude) {
         try { RoadsSpatial.validateLocation(latitude, longitude); }
         catch (IllegalArgumentException invalid) { return invalidLocation(); }
-        return query.read(latitude, longitude).<ResponseEntity<?>>map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.status(404).body(new Error("ROADS_UNAVAILABLE", "No Roads Current State is available.")));
+        // no-store: freshness is derived from snapshotAt, so no cache may serve an older snapshot than the database.
+        return query.read(latitude, longitude).<ResponseEntity<?>>map(state -> ResponseEntity.ok().cacheControl(CacheControl.noStore()).body(state))
+                .orElseGet(() -> ResponseEntity.status(404).cacheControl(CacheControl.noStore()).body(new Error("ROADS_UNAVAILABLE", "No Roads Current State is available.")));
     }
 
     @ExceptionHandler({MissingServletRequestParameterException.class, MethodArgumentTypeMismatchException.class})
     ResponseEntity<Error> invalidLocation() {
-        return ResponseEntity.badRequest().body(new Error("ROADS_LOCATION_INVALID", "Valid latitude and longitude are required."));
+        return ResponseEntity.badRequest().cacheControl(CacheControl.noStore()).body(new Error("ROADS_LOCATION_INVALID", "Valid latitude and longitude are required."));
     }
 
     @ExceptionHandler(Exception.class)
     ResponseEntity<Error> failedRead() {
-        return ResponseEntity.internalServerError().body(new Error("ROADS_READ_FAILED", "Roads Current State could not be read."));
+        return ResponseEntity.internalServerError().cacheControl(CacheControl.noStore()).body(new Error("ROADS_READ_FAILED", "Roads Current State could not be read."));
     }
     public record Error(String code, String message) { }
 }

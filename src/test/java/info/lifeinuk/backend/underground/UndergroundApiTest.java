@@ -95,6 +95,7 @@ class UndergroundApiTest {
         String before = databaseSnapshot();
         var response = request("GET");
         assertThat(response.statusCode()).isEqualTo(200);
+        assertThat(response.headers().firstValue("Cache-Control")).hasValue("no-store");
         assertThat(response.headers().firstValue("Content-Type").orElseThrow()).startsWith("application/json");
         assertThat(json.readTree(response.body())).isEqualTo(json.readTree("""
                 {"observedAt":"2026-10-03T15:47:08.441419123Z","lines":[
@@ -117,6 +118,7 @@ class UndergroundApiTest {
         String before = databaseSnapshot();
         var response = request("GET");
         assertThat(response.statusCode()).isEqualTo(404);
+        assertThat(response.headers().firstValue("Cache-Control")).hasValue("no-store");
         assertThat(json.readTree(response.body())).isEqualTo(json.readTree("""
                 {"code":"UNDERGROUND_UNAVAILABLE","message":"No Underground Current State is available."}
                 """));
@@ -142,6 +144,7 @@ class UndergroundApiTest {
         doThrow(new IllegalStateException("SECRET SQL /local/path password=hidden")).when(states).current();
         var response = request("GET");
         assertThat(response.statusCode()).isEqualTo(500);
+        assertThat(response.headers().firstValue("Cache-Control")).hasValue("no-store");
         assertThat(json.readTree(response.body())).isEqualTo(json.readTree("""
                 {"code":"UNDERGROUND_READ_FAILED","message":"Underground Current State could not be read."}
                 """));

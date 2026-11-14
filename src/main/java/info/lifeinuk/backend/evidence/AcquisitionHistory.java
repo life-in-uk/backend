@@ -67,6 +67,15 @@ public class AcquisitionHistory {
         entityManager.flush();
     }
 
+    /** Committed state of one run, read-only, for callers that only receive the run id. */
+    public record RunOutcome(RunStatus status, String failureCode, String failureMessage) { }
+
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+    public RunOutcome outcome(UUID runId) {
+        IngestionRun run = requireRun(runId);
+        return new RunOutcome(run.getStatus(), run.getFailureCode(), run.getFailureMessage());
+    }
+
     private IngestionRun requireRun(UUID id) {
         return runs.findById(id).orElseThrow(() -> new IllegalArgumentException("Ingestion run does not exist"));
     }

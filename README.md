@@ -1055,3 +1055,159 @@ with `publishedAt`) changes its digest. Any future change to this representation
 must use a new canonicalization version and leave `guide-content-v1` unchanged.
 Tests pin the digests of the two synthetic fixtures, computed independently from
 this specification.
+
+## National Rail arrivals
+
+The backend exposes `GET /api/rail/stations/{crs}/arrivals`, with optional
+`numRows` (1–9) and `timeWindow` (-119–119 minutes). CRS codes are normalized to
+uppercase. Missing provider fields remain null; an absent or empty service list
+is returned as an empty list. Responses use `Cache-Control: no-store`.
+
+Set `NATIONAL_RAIL_API_KEY` to the RDM Consumer Key and optionally set
+`NATIONAL_RAIL_API_BASE_URL` to the gateway base URL. Spring Boot does not load
+`.env` automatically: export the variables in the shell or process manager before
+starting the application. For a trusted shell-compatible local `.env`, one option
+is `set -a; source .env; set +a` (do not enable shell tracing). The Consumer Secret
+is not used. The API key is sent only in the `x-apikey` request header.
+
+The numerical limits follow the exclusive bounds in the published National Rail
+LDBWS documentation. That documentation describes `timeWindow` as a future window
+but does not explain the meaning of negative values; their behavior and the RDM
+REST gateway limits remain unverified. Confirm these, plus display, attribution
+and data-use requirements, against the subscribed product documentation and
+agreement before production use.
+
+## Rail disruption checker
+
+`GET /api/rail/stations/{crs}/disruptions?direction=arrivals|departures`
+defaults to arrivals and requests nine rows, the maximum under the published
+exclusive limit. It returns full and partial cancellations and delays of at least
+10 minutes, plus services explicitly
+marked delayed when their delay cannot be calculated. `unknownTimingCount`
+counts other unconfirmed timings. The board is a limited snapshot, not a full
+timetable. Time-only values are compared using the nearest calendar day; the
+provider does not supply a service date for these fields.
+
+Departures are available when `NATIONAL_RAIL_DEPARTURES_BASE_URL`
+and `NATIONAL_RAIL_DEPARTURES_API_KEY` are set to the separately subscribed
+RDM departure product's base URL and Consumer Key. Do not assume that an
+arrival subscription covers departures. The verified official RDM Departure
+Gateway is `https://api1.raildata.org.uk/1010-live-departure-board-dep1_2/LDBWS`.
+Set the following non-secret URL in your local, git-ignored `.env`:
+
+```dotenv
+NATIONAL_RAIL_DEPARTURES_BASE_URL=https://api1.raildata.org.uk/1010-live-departure-board-dep1_2/LDBWS
+```
+
+Keep the actual Consumer Key only in `.env`, under
+`NATIONAL_RAIL_DEPARTURES_API_KEY`; never put it in source, this README or logs.
+Load the trusted `.env` into the backend process as described above. These
+settings are separate from, and do not change, the working Arrival configuration.
+
+The frontend uses arrivals by default
+and requests either direction only after an explicit check. The frontend
+uses an attributed ODbL directory of Great Britain National Rail stations; it
+does not cover Northern Ireland rail. Confirm RDM licence and attribution
+requirements before publication.
+
+
+### Rail production release checklist
+
+See [Rail production readiness](docs/rail-production-readiness.md) for the
+configuration and same-origin routing checklist, timeout and request-volume
+findings, preliminary agreement findings, and the unresolved RDM Platform
+Agreement Schedule 2 — Policies attachment. Local testing does not require that
+attachment and does not establish full legal compliance.
+
+## Travel Current State refresh
+
+`TravelRefreshScheduler` can refresh Underground and Roads Current State on a
+schedule. **Both schedules are off by default.** Enabling unattended provider
+polling is an owner operational decision. It is not a code default.
+
+Each run calls the existing operations in order and adds no acquisition, parsing
+or projection logic:
+
+- Underground: `TflUndergroundAcquisition.acquire()`, which already projects the
+  committed evidence.
+- Roads: `NationalHighwaysRoadClosuresAcquisition.acquire()`, then
+  `RoadsEvidenceProjection.projectRun(runId)`, only if the run is `SUCCESS`.
+
+Qualification is still checked inside every acquisition. Un-qualifying or
+disabling an endpoint stops refresh without a deploy. A failed run never changes
+Current State. The last good snapshot remains, and the frontend's freshness rule
+hides it once it is too old (Underground 10 minutes, Roads 30 minutes).
+
+| Setting (`life-in-uk.travel-refresh.*`) | Underground | Roads |
+| --- | --- | --- |
+| `<source>.enabled` | `false` | `false` |
+| `<source>.interval` (fixed delay; floor) | `PT2M` (floor `PT1M`) | `PT10M` (floor `PT5M`) |
+| `<source>.max-backoff` (≤ `PT6H`) | `PT30M` | `PT60M` |
+| `<source>.max-runs` (0 = no cap) | `0` | `0` |
+| `<source>.initial-delay` (≤ `PT10M`) | `PT15S` | `PT15S` |
+
+Values below a floor or outside a range fail startup. Environment shortcuts are
+`TRAVEL_REFRESH_{UNDERGROUND,ROADS}_{ENABLED,INTERVAL,MAX_RUNS}`.
+
+- **No overlap:** each source runs on its own single thread with a fixed delay
+  after the previous run. A slow Roads run (up to 8 paced pages, about 56 s) never
+  overlaps the next.
+- **No retry inside a run:** the next tick is the retry. From the third
+  consecutive failure the delay doubles, up to `max-backoff`. A provider HTTP 429
+  backs off immediately. Success resets the delay.
+- **Single runner:** each run holds a PostgreSQL session advisory lock on one
+  dedicated connection. If another instance holds it, the tick is skipped and
+  does not count towards `max-runs`.
+- **Bounded sessions:** `max-runs` stops a schedule after that many provider runs,
+  for controlled verification.
+- **Logs:** run id, outcome, failure code and duration only. Never keys, URLs or
+  provider bodies.
+
+Provider budgets at the default intervals: TfL makes 1 request per run, so 30 per
+hour, well within its published limits. National Highways makes at most 8 paced
+requests per run, against a limit of 10 requests per minute per key; the existing
+`RequestPacer` keeps it to at most 9 in any rolling minute.
+
+### Evidence growth: blocker before unattended production polling
+
+Raw evidence is append-only and immutable (V2 triggers), and there is no expiry
+path. Measured payloads in the local database on 2026-11-11: TfL Tube status
+12,464 bytes per run, National Highways unplanned closures 101,448 bytes per run
+(one page). At the default intervals that is about 9 MB per day for TfL (720 runs)
+and about 15 MB per day for National Highways (144 runs). That is roughly 0.7 GB
+per 30 days, growing without bound. Before enabling unattended production
+polling, add a reviewed controlled-expiry migration that keeps rows immutable
+while retained, and have the owner choose the retention periods. The migration
+number must follow the unmerged `V11__create_guide_publication`.
+
+The travel read APIs return `Cache-Control: no-store`, so no proxy or CDN can
+serve an older snapshot than the database holds. Freshness always comes from
+`observedAt` or `snapshotAt`.
+
+## Rail access flag
+
+`life-in-uk.rail-access.enabled` (environment `RAIL_ACCESS_ENABLED`) defaults to
+`false`. While it is off, `RailService.board()`, the only method that reaches
+RDM, refuses before any provider access. Valid requests get `503 RAIL_DISABLED`,
+and malformed ones still get `400`, even if Rail credentials are present. Local Rail previews need it set to `true`
+explicitly. Keep it off in production until the RDM Schedule 2 policy,
+licensing and rate-limit review is complete. See
+[Travel provider approvals](docs/travel-provider-approvals.md).
+
+## Rail request budget
+
+Board requests (`/arrivals` and `/disruptions`) are checked after validation and
+before any provider request. The budget is per application instance and uses
+fixed one-minute windows:
+
+- `life-in-uk.rail-rate-limit.per-client-per-minute`, default 6, keyed by the
+  servlet remote address. Exceeding it returns `429 RAIL_CLIENT_RATE_LIMIT` with
+  `Retry-After`.
+- `life-in-uk.rail-rate-limit.aggregate-per-minute`, default 60. Exceeding it
+  returns `503 RAIL_RATE_LIMIT` with `Retry-After`.
+
+These complement the existing four-request concurrency cap. Behind a reverse
+proxy, the remote address must be the real client address, for example
+`server.forward-headers-strategy=native` with a trusted proxy. Otherwise every
+user shares one client budget. This does not enforce a quota shared across
+instances, and it does not resolve the RDM Schedule 2 policy question.
