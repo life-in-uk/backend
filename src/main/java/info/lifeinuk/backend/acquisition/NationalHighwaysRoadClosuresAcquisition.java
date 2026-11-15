@@ -83,11 +83,54 @@ public class NationalHighwaysRoadClosuresAcquisition {
         SourceEndpoint endpoint = endpoints.requireNationalHighwaysRoadClosures();
         http.requireCredential();
         Instant acquisitionNow = clock.instant();
+        UUID runId = history.start(endpoint.getId());
+        var captured = new ArrayList<CapturedResponse>();
+        Failure failure = receivePages(endpoint, acquisitionNow, captured);
+        if (failure != null) {
+            history.fail(runId, failure.code(), failure.message());
+            return runId;
+        }
+        try {
+            history.succeedWithResponses(runId, captured);
+        } catch (RuntimeException persistenceFailure) {
+            // The single success transaction rolled back: no artifact of a partial or failed run survives.
+            history.fail(runId, "EVIDENCE_PERSISTENCE", "Evidence and successful completion could not be persisted");
+        }
+        return runId;
+    }
+
+    /** Outcome of {@link #fetchLatest()}: every page, or one bounded failure. */
+    sealed interface Fetched permits Pages, Failure { }
+
+    /** All pages of one complete logical acquisition, held in memory only; nothing is persisted. */
+    record Pages(SourceEndpoint endpoint, Instant acquiredAt, List<CapturedResponse> responses) implements Fetched { }
+
+    /** A bounded failure code and message for a run that did not receive every page. */
+    record Failure(String code, String message) implements Fetched { }
+
+    /**
+     * The same paginated, paced and sequential fetch as {@link #acquire()}, without recording a run or
+     * evidence (the scheduled latest-only Roads refresh). Throws only when the endpoint is not qualified or
+     * no usable key is configured; then no request is made.
+     */
+    Fetched fetchLatest() {
+        sequential.lock();
+        try {
+            SourceEndpoint endpoint = endpoints.requireNationalHighwaysRoadClosures();
+            http.requireCredential();
+            Instant acquisitionNow = clock.instant();
+            var captured = new ArrayList<CapturedResponse>();
+            Failure failure = receivePages(endpoint, acquisitionNow, captured);
+            return failure != null ? failure : new Pages(endpoint, acquisitionNow, List.copyOf(captured));
+        } finally {
+            sequential.unlock();
+        }
+    }
+
+    private Failure receivePages(SourceEndpoint endpoint, Instant acquisitionNow, List<CapturedResponse> captured) {
         String windowQuery = "closureType=" + CLOSURE_TYPE
                 + "&startDateTime=" + WINDOW_FORMAT.format(acquisitionNow.minus(WINDOW))
                 + "&endDateTime=" + WINDOW_FORMAT.format(acquisitionNow);
-        UUID runId = history.start(endpoint.getId());
-        var captured = new ArrayList<CapturedResponse>();
         var usedCursors = new HashSet<String>();
         String cursor = null;
         int page = 0;
@@ -105,30 +148,20 @@ public class NationalHighwaysRoadClosuresAcquisition {
                         response.observedAt(), 200, query, page));
                 cursor = continuation(response.next());
                 if (cursor == null) {
-                    break;
+                    return null;
                 }
                 if (!usedCursors.add(cursor)) {
                     throw new AcquisitionFailure("PAGINATION_LOOP", "Provider repeated a continuation cursor");
                 }
             }
         } catch (AcquisitionFailure failure) {
-            history.fail(runId, failure.code(), "Unplanned page " + page + ": " + failure.getMessage());
-            return runId;
+            return new Failure(failure.code(), "Unplanned page " + page + ": " + failure.getMessage());
         } catch (InterruptedException interrupted) {
             Thread.currentThread().interrupt();
-            history.fail(runId, "INTERRUPTED", "Unplanned page " + page + ": acquisition was interrupted");
-            return runId;
+            return new Failure("INTERRUPTED", "Unplanned page " + page + ": acquisition was interrupted");
         } catch (RuntimeException failure) {
-            history.fail(runId, "TRANSPORT", "Unplanned page " + page + ": HTTP transport could not complete");
-            return runId;
+            return new Failure("TRANSPORT", "Unplanned page " + page + ": HTTP transport could not complete");
         }
-        try {
-            history.succeedWithResponses(runId, captured);
-        } catch (RuntimeException persistenceFailure) {
-            // The single success transaction rolled back: no artifact of a partial or failed run survives.
-            history.fail(runId, "EVIDENCE_PERSISTENCE", "Evidence and successful completion could not be persisted");
-        }
-        return runId;
     }
 
     /** Provider-issued continuation only: the cursor is taken from x-next, never invented. Null ends paging. */

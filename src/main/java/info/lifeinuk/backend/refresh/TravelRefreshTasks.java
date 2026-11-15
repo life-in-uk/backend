@@ -1,39 +1,30 @@
 package info.lifeinuk.backend.refresh;
 
-import info.lifeinuk.backend.acquisition.NationalHighwaysRoadClosuresAcquisition;
+import info.lifeinuk.backend.acquisition.NationalHighwaysRoadsLatestRefresh;
 import info.lifeinuk.backend.acquisition.TflUndergroundLatestRefresh;
-import info.lifeinuk.backend.evidence.AcquisitionHistory;
-import info.lifeinuk.backend.evidence.RunStatus;
 import info.lifeinuk.backend.roads.RoadsCurrentStateProjector;
-import info.lifeinuk.backend.roads.RoadsEvidenceProjection;
 import info.lifeinuk.backend.underground.UndergroundCurrentStateProjector;
-import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 /**
- * Underground: the latest-only refresh (no run or evidence history; only Current State is replaced).
- * Roads: the existing acquisition followed by the existing projection, in that order. Qualification is
- * still enforced on each run, so an un-qualified or disabled endpoint stops refresh without a deploy. A
- * failure never touches Current State.
+ * Both sources use a latest-only refresh: the provider fetch, the accepted parser, then the existing atomic
+ * Current State replacement. No ingestion run or evidence artifact is written, so scheduled refreshes grow no
+ * table. Qualification (and, for Roads, a usable key) is still checked on every run, so an un-qualified or
+ * disabled endpoint stops refresh without a deploy. A failure never touches Current State.
  *
- * <p>Logs carry only the run id, outcome and failure code; never keys, URLs or provider bodies.
+ * <p>Logs carry only the outcome and failure code; never keys, URLs or provider bodies.
  */
 @Component
 class TravelRefreshTasks {
     private static final Logger log = LoggerFactory.getLogger(TravelRefreshTasks.class);
     private final TflUndergroundLatestRefresh underground;
-    private final NationalHighwaysRoadClosuresAcquisition roads;
-    private final RoadsEvidenceProjection roadsProjection;
-    private final AcquisitionHistory history;
+    private final NationalHighwaysRoadsLatestRefresh roads;
 
-    TravelRefreshTasks(TflUndergroundLatestRefresh underground, NationalHighwaysRoadClosuresAcquisition roads,
-            RoadsEvidenceProjection roadsProjection, AcquisitionHistory history) {
+    TravelRefreshTasks(TflUndergroundLatestRefresh underground, NationalHighwaysRoadsLatestRefresh roads) {
         this.underground = underground;
         this.roads = roads;
-        this.roadsProjection = roadsProjection;
-        this.history = history;
     }
 
     RefreshPolicy.Outcome underground() {
@@ -46,9 +37,7 @@ class TravelRefreshTasks {
             return RefreshPolicy.Outcome.FAILED;
         }
         if (result.failureCode() != null) {
-            boolean rateLimited = result.rateLimited();
-            log.warn("Underground refresh failed: {}{}", result.failureCode(), rateLimited ? " (HTTP 429)" : "");
-            return rateLimited ? RefreshPolicy.Outcome.RATE_LIMITED : RefreshPolicy.Outcome.FAILED;
+            return failed("Underground", result.failureCode(), result.rateLimited());
         }
         if (result.outcome() == UndergroundCurrentStateProjector.Outcome.CONFLICT) {
             log.warn("Underground refresh projection conflict");
@@ -59,43 +48,27 @@ class TravelRefreshTasks {
     }
 
     RefreshPolicy.Outcome roads() {
-        UUID runId;
+        NationalHighwaysRoadsLatestRefresh.Result result;
         try {
-            runId = roads.acquire();
+            result = roads.refresh();
         } catch (RuntimeException notStarted) {
-            // e.g. no usable subscription key or endpoint no longer qualified: no run was recorded.
+            // e.g. no usable subscription key or endpoint no longer qualified: no request was made.
             log.warn("Roads refresh did not start: {}", notStarted.getClass().getSimpleName());
             return RefreshPolicy.Outcome.FAILED;
         }
-        var outcome = history.outcome(runId);
-        if (outcome.status() != RunStatus.SUCCESS) {
-            return failed("Roads", runId, outcome);
+        if (result.failureCode() != null) {
+            return failed("Roads", result.failureCode(), result.rateLimited());
         }
-        RoadsCurrentStateProjector.Outcome projected;
-        try {
-            projected = roadsProjection.projectRun(runId);
-        } catch (RuntimeException projectionFailure) {
-            log.warn("Roads refresh run {} acquired evidence but projection failed: {}", runId,
-                    projectionFailure.getClass().getSimpleName());
+        if (result.outcome() == RoadsCurrentStateProjector.Outcome.CONFLICT) {
+            log.warn("Roads refresh projection conflict");
             return RefreshPolicy.Outcome.FAILED;
         }
-        if (projected == RoadsCurrentStateProjector.Outcome.CONFLICT) {
-            log.warn("Roads refresh run {} projection conflict", runId);
-            return RefreshPolicy.Outcome.FAILED;
-        }
-        log.info("Roads refresh run {} succeeded: {}", runId, projected);
+        log.info("Roads refresh succeeded: {}", result.outcome());
         return RefreshPolicy.Outcome.SUCCESS;
     }
 
-    private static RefreshPolicy.Outcome failed(String name, UUID runId, AcquisitionHistory.RunOutcome outcome) {
-        boolean rateLimited = isRateLimited(outcome);
-        log.warn("{} refresh run {} failed: {}{}", name, runId, outcome.failureCode(), rateLimited ? " (HTTP 429)" : "");
+    private static RefreshPolicy.Outcome failed(String name, String code, boolean rateLimited) {
+        log.warn("{} refresh failed: {}{}", name, code, rateLimited ? " (HTTP 429)" : "");
         return rateLimited ? RefreshPolicy.Outcome.RATE_LIMITED : RefreshPolicy.Outcome.FAILED;
-    }
-
-    /** The shared HTTP boundary records a non-200 status as HTTP_STATUS "... received &lt;code&gt;". */
-    static boolean isRateLimited(AcquisitionHistory.RunOutcome outcome) {
-        return outcome.status() == RunStatus.FAILED && "HTTP_STATUS".equals(outcome.failureCode())
-                && outcome.failureMessage() != null && outcome.failureMessage().endsWith("received 429");
     }
 }

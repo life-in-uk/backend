@@ -5,6 +5,7 @@ import static org.mockito.Mockito.*;
 
 import info.lifeinuk.backend.acquisition.NationalHighwaysRoadClosuresAcquisition;
 import info.lifeinuk.backend.acquisition.TflUndergroundAcquisition;
+import info.lifeinuk.backend.acquisition.NationalHighwaysRoadsLatestRefresh;
 import info.lifeinuk.backend.acquisition.TflUndergroundLatestRefresh;
 import info.lifeinuk.backend.support.IsolatedPostgres;
 import java.util.concurrent.CompletableFuture;
@@ -32,11 +33,12 @@ class TravelRefreshIntegrationTest {
     @MockitoBean TflUndergroundAcquisition underground;
     @MockitoBean TflUndergroundLatestRefresh latest;
     @MockitoBean NationalHighwaysRoadClosuresAcquisition roads;
+    @MockitoBean NationalHighwaysRoadsLatestRefresh roadsLatest;
 
     @Test
     void refreshIsOffByDefaultAndNothingIsAcquiredAtStartup() {
         assertThat(scheduler.scheduleCount()).isZero();
-        verifyNoInteractions(underground, latest, roads);
+        verifyNoInteractions(underground, latest, roads, roadsLatest);
     }
 
     @Test

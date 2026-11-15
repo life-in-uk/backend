@@ -39,7 +39,7 @@ amendment.
 | Requests | At most **8** provider-issued paginated requests per refresh, strictly sequential, **at least 7 seconds apart** |
 | Rate limit | Never above the published **10 requests per minute per subscription key** (at most 9 in any rolling minute); no retry within a refresh; back-off after repeated failures and immediately on HTTP 429 |
 | Raw evidence | Kept exactly as received and immutable while retained, for **up to 7 days** after run completion, then expired only through the reviewed controlled-expiry path (`V11__travel_evidence_expiry`, PR #53, not yet applied) |
-| Current state | Independent lifecycle; never shown as current once stale (frontend 30-minute freshness rule) |
+| Current state | Independent lifecycle; never shown as current once stale (frontend 15-minute freshness rule since 2026-11-15; the scheduled refresh keeps only the latest snapshot and writes no raw evidence) |
 | Public display | Closures relevant to a user-searched place or device location only, never the full national dataset by default; provider status shown unchanged; the attribution "Powered by National Highways' Transport Data Feeds" (paragraph 20(a)); no National Highways logos (paragraph 20(b)) |
 | Credential | External configuration, request header only, never in URLs, logs or stored provenance |
 

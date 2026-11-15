@@ -1135,13 +1135,19 @@ Each run does the following:
   replaced, so repeated refreshes grow no table. An invalid, empty or failed
   response changes nothing. `TflUndergroundAcquisition.acquire()` still records
   an explicit, persisted evidence run when one is wanted.
-- Roads: `NationalHighwaysRoadClosuresAcquisition.acquire()`, then
-  `RoadsEvidenceProjection.projectRun(runId)`, only if the run is `SUCCESS`.
+- Roads: `NationalHighwaysRoadsLatestRefresh.refresh()`. It runs the same paced,
+  paginated fetch as `NationalHighwaysRoadClosuresAcquisition` (same lock, 7 s
+  spacing, 8-page bound), parses **every** page with the accepted parser, and
+  then calls the existing atomic `RoadsCurrentStateProjector`. It also writes no
+  run or evidence rows; only the single `roads_current_snapshot` row is replaced.
+  If any page fails or is invalid, nothing changes.
+  `NationalHighwaysRoadClosuresAcquisition.acquire()` still records an explicit
+  persisted run.
 
 Qualification is still checked on every run. Un-qualifying or
 disabling an endpoint stops refresh without a deploy. A failed run never changes
 Current State. The last good snapshot remains, and the frontend's freshness rule
-hides it once it is too old (Underground 15 minutes, Roads 30 minutes).
+hides it once it is too old (Underground and Roads 15 minutes).
 
 | Setting (`life-in-uk.travel-refresh.*`) | Underground | Roads |
 | --- | --- | --- |
@@ -1173,14 +1179,14 @@ hour, well within its published limits. National Highways makes at most 8 paced
 requests per run, against a limit of 10 requests per minute per key; the existing
 `RequestPacer` keeps it to at most 9 in any rolling minute.
 
-### Evidence growth: blocker before unattended production polling
+### Evidence growth
 
 Raw evidence is append-only and immutable (V2 triggers), and there is no expiry
-path. The scheduled Underground refresh no longer writes evidence (latest-only
-since 2026-11-15), so this applies to Roads and to explicit acquisitions. Measured
-payload in the local database on 2026-11-11: National Highways unplanned closures
-101,448 bytes per run (one page), about 15 MB per day at the default interval
-(144 runs), growing without bound. Before enabling unattended Roads polling, add a reviewed controlled-expiry migration that keeps rows immutable
+path. Since 2026-11-15 neither scheduled refresh writes evidence (both are
+latest-only), so scheduled polling no longer grows any table. Only explicit
+`acquire()` runs add evidence. National Highways measured 101,448 bytes per
+one-page run on 2026-11-11. If scheduled evidence capture is ever wanted again,
+first add a reviewed controlled-expiry migration that keeps rows immutable
 while retained, and have the owner choose the retention periods. The migration
 number must follow the unmerged `V11__create_guide_publication`.
 

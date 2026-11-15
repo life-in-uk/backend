@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Function;
 import org.hibernate.Hibernate;
 import org.springframework.stereotype.Component;
@@ -49,16 +50,30 @@ public final class NationalHighwaysRoadClosuresParser {
                 || evidence.getRequestQuery() == null) {
             throw invalid("Evidence must be a successful qualified canonical National Highways acquisition page");
         }
+        return parse(evidence.getId(), run.getId(), evidence.getObservedAt(), evidence.getRequestedAt(),
+                evidence.getPageNumber(), evidence.getRequestQuery(), evidence.getPayload());
+    }
+
+    /**
+     * The same validation for a page that is not persisted as evidence (the latest-only Roads refresh).
+     * The caller must have received it from the qualified canonical endpoint with HTTP 200.
+     */
+    public NationalHighwaysRoadClosuresInterpretation parse(UUID pageId, UUID observationId, Instant observedAt,
+            Instant requestedAt, int pageNumber, String requestQuery, byte[] body) {
+        if (pageId == null || observationId == null || observedAt == null || requestedAt == null || pageNumber < 1
+                || requestQuery == null || body == null) {
+            throw invalid("Page provenance is required");
+        }
         JsonNode root;
-        try { root = json.readTree(evidence.getPayload()); }
+        try { root = json.readTree(body); }
         catch (JacksonException malformed) { throw invalid("Evidence must contain one valid JSON document"); }
         JsonNode payload = requiredObject(requiredObject(root).get("D2Payload"));
         if (!"SituationPublication".equals(text(payload.get("feedType")))) {
             throw invalid("Expected a SituationPublication");
         }
         var situations = array(payload.get("situation"), this::situation);
-        return new NationalHighwaysRoadClosuresInterpretation(evidence.getId(), run.getId(), evidence.getObservedAt(),
-                evidence.getRequestedAt(), evidence.getPageNumber(), evidence.getRequestQuery(),
+        return new NationalHighwaysRoadClosuresInterpretation(pageId, observationId, observedAt,
+                requestedAt, pageNumber, requestQuery,
                 optionalText(payload, "version"), time(payload, "publicationTime"), situations);
     }
 
