@@ -1,0 +1,101 @@
+{
+  "name": "Life in UK — Guide expiry report (dry run)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 6
+            }
+          ]
+        }
+      },
+      "id": "61052014-4204-4d60-bf0c-73eb364b74cc",
+      "name": "Every six hours",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "http://127.0.0.1:8080/api/editorial/guide-batches/expiry-report",
+        "options": {},
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth"
+      },
+      "id": "86af0016-2444-46ee-897b-b1e458543907",
+      "name": "Read expiry candidates from Spring Boot",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        300,
+        0
+      ],
+      "settings": {
+        "retryOnFail": true,
+        "maxTries": 3,
+        "waitBetweenTries": 1000
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "00000000-0000-4000-8000-000000000001",
+          "name": "Life UK Editorial Draft API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "const report = $input.first().json;\nreturn [{ json: { mode: 'DRY_RUN', generatedAt: report.generatedAt, candidateCount: (report.candidates || []).length, candidates: report.candidates || [], destructiveCleanupEnabled: false, ownerApprovalRequiredBeforeCleanup: true } }];"
+      },
+      "id": "4a7eb20d-265e-4c22-8b6d-a8c57c4cd3b9",
+      "name": "Format non-destructive dry-run report",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        600,
+        0
+      ]
+    }
+  ],
+  "connections": {
+    "Every six hours": {
+      "main": [
+        [
+          {
+            "node": "Read expiry candidates from Spring Boot",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read expiry candidates from Spring Boot": {
+      "main": [
+        [
+          {
+            "node": "Format non-destructive dry-run report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Europe/London"
+  },
+  "versionId": "18de95ad-5f0e-49a3-9ac0-a0f71f6b8e82",
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": []
+}

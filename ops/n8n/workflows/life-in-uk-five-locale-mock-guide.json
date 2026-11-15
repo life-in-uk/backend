@@ -1,0 +1,542 @@
+{
+  "name": "Life in UK — Five-locale Guide batch (local mock)",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "d764fc9a-2703-4d74-a431-afdfde126a6d",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "{\"job\": {\"idempotencyKey\": \"n8n-mock-five-locale-20261111-v1\", \"policyVersion\": \"local-mock-policy-v1\", \"sourceVersion\": \"local-mock-source-v1\", \"validFrom\": \"2026-11-11T00:00:00Z\", \"validUntil\": null, \"topicCandidate\": {\"topic\": \"Synthetic local verification topic\", \"candidateId\": \"mock-topic-20261111\", \"provenance\": \"Local mock fixture only\", \"capturedAt\": \"2026-11-11T00:00:00Z\"}}}"
+      },
+      "id": "3181a681-69e9-41d2-9a7f-7c41260d7c37",
+      "name": "Seed verified synthetic topic",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        300,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:8091/mock/sol/draft-and-translations",
+        "options": {},
+        "authentication": "none",
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "json",
+        "jsonBody": "={{ $json }}"
+      },
+      "id": "b5e5b1b3-1d92-45b8-b829-7607cc386875",
+      "name": "MOCK Sol: Chinese source and four translations",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        600,
+        0
+      ],
+      "settings": {
+        "retryOnFail": true,
+        "maxTries": 3,
+        "waitBetweenTries": 1000
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:8080/api/editorial/guide-batches",
+        "options": {},
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "json",
+        "jsonBody": "={{ { idempotencyKey: $json.job.idempotencyKey, policyVersion: $json.job.policyVersion, sourceVersion: $json.job.sourceVersion, validFrom: $json.job.validFrom, validUntil: $json.job.validUntil, source: $json.sourceGuide } }}"
+      },
+      "id": "b765e49f-ac70-4a7f-9686-aeafb26b6ab3",
+      "name": "Create idempotent Chinese draft batch",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        900,
+        -120
+      ],
+      "settings": {
+        "retryOnFail": true,
+        "maxTries": 3,
+        "waitBetweenTries": 1000
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "00000000-0000-4000-8000-000000000001",
+          "name": "Life UK Editorial Draft API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {
+          "clashHandling": {
+            "values": {
+              "resolveClash": "preferInput2"
+            }
+          }
+        }
+      },
+      "id": "b913c64d-af65-4c86-bd69-17afc9f95cd8",
+      "name": "Merge generated content and batch receipt",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1200,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "const j = $input.first().json;\nif (!j.batchId || !j.sourceRevisionId || !j.sourceContentHash || !Array.isArray(j.translations) || j.translations.length !== 4) throw new Error('Expected one batch and four translations');\nreturn [{ json: { batchId: j.batchId, sourceRevisionId: j.sourceRevisionId, locale: 'zh-CN', guide: j.sourceGuide, contentHash: j.sourceContentHash } }, ...j.translations.map(t => ({ json: { batchId: j.batchId, sourceRevisionId: j.sourceRevisionId, locale: t.locale, guide: t.guide } }))];"
+      },
+      "id": "c4892a99-eb2c-4f12-9b92-3f60325daf3d",
+      "name": "Prepare five locale drafts",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1500,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "0953e60e-dbde-4072-9526-e35b4006955f",
+              "leftValue": "={{ $json.locale }}",
+              "rightValue": "zh-CN",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "b9ad4980-36db-4e43-9a90-70a4b862872b",
+      "name": "Is Chinese source locale?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1800,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "={{ \"http://127.0.0.1:8080/api/editorial/guide-batches/\" + $json.batchId + \"/locales/\" + $json.locale }}",
+        "options": {},
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.guide }}"
+      },
+      "id": "9be8ccb6-cd37-44b2-b069-ecf97b6a22b0",
+      "name": "Submit locale draft",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2100,
+        200
+      ],
+      "settings": {
+        "retryOnFail": true,
+        "maxTries": 3,
+        "waitBetweenTries": 1000
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "00000000-0000-4000-8000-000000000001",
+          "name": "Life UK Editorial Draft API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {
+          "clashHandling": {
+            "values": {
+              "resolveClash": "preferInput2"
+            }
+          }
+        }
+      },
+      "id": "bf4de2c8-580c-4ddc-8b3d-b3bccc4cbaf1",
+      "name": "Merge translation and content hash",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        2400,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "return $input.all().map(i => ({ json: { batchId: i.json.batchId, sourceRevisionId: i.json.sourceRevisionId, locale: i.json.locale, guide: i.json.guide, contentHash: i.json.contentHash } }));"
+      },
+      "id": "e67e5301-4a37-4dee-8279-75150078a4be",
+      "name": "Normalize locale review input",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2700,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "append",
+        "numberInputs": 2
+      },
+      "id": "43100435-514c-4398-8c6a-b6d219dbfa82",
+      "name": "Collect all five locale revisions",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        3000,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:8091/mock/claude/review",
+        "options": {},
+        "authentication": "none",
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "json",
+        "jsonBody": "={{ $json }}"
+      },
+      "id": "f8ef4308-1969-446d-9121-ea5737c2136f",
+      "name": "MOCK Claude independent review",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3300,
+        0
+      ],
+      "settings": {
+        "retryOnFail": true,
+        "maxTries": 3,
+        "waitBetweenTries": 1000
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ \"http://127.0.0.1:8080/api/editorial/guide-batches/\" + $json.batchId + \"/reviews/\" + $json.locale }}",
+        "options": {},
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "json",
+        "jsonBody": "={{ { contentHash: $json.contentHash, passed: $json.passed, findings: $json.findings } }}"
+      },
+      "id": "d7067501-16f4-4065-86fd-532097648eb6",
+      "name": "Store hash-bound review outcome",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3600,
+        0
+      ],
+      "settings": {
+        "retryOnFail": true,
+        "maxTries": 3,
+        "waitBetweenTries": 1000
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "00000000-0000-4000-8000-000000000003",
+          "name": "Life UK Editorial Mock Review API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "const rows = $input.all().map(i => i.json);\nconst ids = [...new Set(rows.map(r => r.batchId))];\nif (rows.length !== 5 || ids.length !== 1) throw new Error('Expected five review receipts for one batch');\nif (rows.some(r => r.reviewStatus !== 'PASSED' || r.reviewedHash !== r.contentHash)) throw new Error('A review is missing, failed, or stale');\nreturn [{ json: { batchId: ids[0] } }];"
+      },
+      "id": "7ea80459-ea25-4fa3-8511-40ef8540ca8b",
+      "name": "Wait for five review receipts",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3900,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "={{ \"http://127.0.0.1:8080/api/editorial/guide-batches/\" + $json.batchId }}",
+        "options": {},
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth"
+      },
+      "id": "08858969-b8fa-4264-8180-89dd32bc67c3",
+      "name": "Read batch approval state",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        4200,
+        0
+      ],
+      "settings": {
+        "retryOnFail": true,
+        "maxTries": 3,
+        "waitBetweenTries": 1000
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "00000000-0000-4000-8000-000000000001",
+          "name": "Life UK Editorial Draft API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "const detail = $input.first().json;\nconst rows = detail.locales || [];\nconst hashesMatch = rows.length === 5 && rows.every(r => r.validationStatus === 'VALID' && r.reviewStatus === 'PASSED' && r.contentHash === r.reviewedHash);\nconst ready = detail.batch?.status === 'READY' && hashesMatch;\nconst mockOnly = rows.some(r => r.reviewer === 'mock-adapter');\nreturn [{ json: { batchId: detail.batch?.batchId, status: detail.batch?.status, approvalGate: mockOnly ? 'MOCK_ONLY_NOT_PUBLISHABLE' : (ready ? 'WAITING_FOR_EXPLICIT_OWNER_APPROVAL' : 'NOT_READY'), locales: rows.map(r => ({ locale: r.locale, hash: r.contentHash, review: r.reviewStatus, reviewer: r.reviewer })), publicationCalled: false, mockOnly } }];"
+      },
+      "id": "7bbb5701-d72f-4894-9f51-5523a6d77251",
+      "name": "Stop at owner approval gate",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4500,
+        0
+      ]
+    }
+  ],
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Seed verified synthetic topic",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Seed verified synthetic topic": {
+      "main": [
+        [
+          {
+            "node": "MOCK Sol: Chinese source and four translations",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MOCK Sol: Chinese source and four translations": {
+      "main": [
+        [
+          {
+            "node": "Create idempotent Chinese draft batch",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge generated content and batch receipt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create idempotent Chinese draft batch": {
+      "main": [
+        [
+          {
+            "node": "Merge generated content and batch receipt",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge generated content and batch receipt": {
+      "main": [
+        [
+          {
+            "node": "Prepare five locale drafts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare five locale drafts": {
+      "main": [
+        [
+          {
+            "node": "Is Chinese source locale?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Chinese source locale?": {
+      "main": [
+        [
+          {
+            "node": "Collect all five locale revisions",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Submit locale draft",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge translation and content hash",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Submit locale draft": {
+      "main": [
+        [
+          {
+            "node": "Merge translation and content hash",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge translation and content hash": {
+      "main": [
+        [
+          {
+            "node": "Normalize locale review input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize locale review input": {
+      "main": [
+        [
+          {
+            "node": "Collect all five locale revisions",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Collect all five locale revisions": {
+      "main": [
+        [
+          {
+            "node": "MOCK Claude independent review",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MOCK Claude independent review": {
+      "main": [
+        [
+          {
+            "node": "Store hash-bound review outcome",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Store hash-bound review outcome": {
+      "main": [
+        [
+          {
+            "node": "Wait for five review receipts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait for five review receipts": {
+      "main": [
+        [
+          {
+            "node": "Read batch approval state",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read batch approval state": {
+      "main": [
+        [
+          {
+            "node": "Stop at owner approval gate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Europe/London"
+  },
+  "versionId": "6096e43e-7ca3-4b43-b8c5-d9a6aa75d20f",
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": []
+}

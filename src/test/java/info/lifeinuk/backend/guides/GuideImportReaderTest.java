@@ -9,7 +9,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.boot.DefaultApplicationArguments;
 import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 class GuideImportReaderTest {
     private final GuideImportReader reader = new GuideImportReader();
@@ -86,31 +85,24 @@ class GuideImportReaderTest {
     }
 
     @Test
-    void commandWithoutLiteralCliOptionDoesNotReadAnyFileOrInvokePersistence() throws Exception {
-        var reader=mock(GuideImportReader.class);var importer=mock(GuideImporter.class);
-        var command=new GuideImportCommand(reader,importer);
+    void commandWithoutLiteralCliOptionIsNoOp() {
+        var command=new GuideImportCommand();
         command.run(new DefaultApplicationArguments());
         command.run(new DefaultApplicationArguments("--spring.profiles.active=anything","--some-other-option=x"));
-        verifyNoInteractions(reader,importer);
     }
 
     @ParameterizedTest
-    @ValueSource(strings={"--import-guide","--import-guide=","--import-guide= "})
-    void commandRejectsMissingPathWithoutDoingAnything(String arg) {
-        var reader=mock(GuideImportReader.class);var importer=mock(GuideImporter.class);
-        var command=new GuideImportCommand(reader,importer);
-        assertThatIllegalArgumentException().isThrownBy(()->command.run(new DefaultApplicationArguments(arg)));
-        verifyNoInteractions(reader,importer);
+    @ValueSource(strings={"--import-guide","--import-guide=","--import-guide= ","--import-guide=/tmp/guide.json"})
+    void commandRejectsEveryLegacyProjectionImport(String arg) {
+        var command=new GuideImportCommand();
+        assertThatIllegalArgumentException().isThrownBy(()->command.run(new DefaultApplicationArguments(arg)))
+                .withMessageContaining("disabled").withMessageContaining("public Guides");
     }
 
     @Test
-    void multipleFilesAndInvalidFileDoNotInvokeImporter() throws Exception {
-        var reader=mock(GuideImportReader.class);var importer=mock(GuideImporter.class);
-        var command=new GuideImportCommand(reader,importer);
-        assertThatIllegalArgumentException().isThrownBy(()->command.run(new DefaultApplicationArguments("--import-guide=a","--import-guide=b")));
-        verifyNoInteractions(reader,importer);
-        when(reader.read(Path.of("invalid.json"))).thenThrow(new IllegalArgumentException("content must be nonblank"));
-        assertThatIllegalArgumentException().isThrownBy(()->command.run(new DefaultApplicationArguments("--import-guide=invalid.json")));
-        verifyNoInteractions(importer);
+    void multipleLegacyPathsAreRejectedBeforeAnyFileIsRead() {
+        var command=new GuideImportCommand();
+        assertThatIllegalArgumentException().isThrownBy(()->command.run(new DefaultApplicationArguments(
+                "--import-guide=a","--import-guide=b"))).withMessageContaining("disabled");
     }
 }

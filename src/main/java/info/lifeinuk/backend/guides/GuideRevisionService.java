@@ -76,6 +76,9 @@ class GuideRevisionService {
      * text is not guide-content-v1 or no longer passes validation.
      */
     GuideImportDefinition definition(String canonicalForm) {
+        if (canonicalForm == null) {
+            throw new IllegalStateException("Guide revision body was redacted after successful replacement");
+        }
         ObjectNode root;
         try {
             root = (ObjectNode) json.readTree(canonicalForm);

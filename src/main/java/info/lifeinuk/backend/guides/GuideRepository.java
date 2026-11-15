@@ -13,17 +13,23 @@ interface GuideRepository extends JpaRepository<Guide, UUID> {
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     Optional<Guide> findBySlug(String slug);
 
-    @Query("""
-            select new info.lifeinuk.backend.guides.GuideResponse$Metadata(
-                g.slug, g.category, g.title, g.summary, g.publishedAt, g.updatedAt)
-            from Guide g where g.status = info.lifeinuk.backend.guides.GuideStatus.PUBLISHED
-            order by g.publishedAt desc, g.slug asc
-            """)
-    List<GuideResponse.Metadata> publishedMetadata();
+    @Query(value = """
+            SELECT g.slug, g.category, g.title, g.summary, g.published_at, g.updated_at
+            FROM guide g WHERE g.status = 'PUBLISHED'
+                AND NOT EXISTS (SELECT 1 FROM guide_locale_current c WHERE c.slug = g.slug
+                    AND c.locale = 'zh-CN' AND c.valid_until IS NOT NULL AND c.valid_until <= CURRENT_TIMESTAMP)
+            ORDER BY g.published_at DESC, g.slug ASC
+            """, nativeQuery = true)
+    List<Object[]> publishedMetadataRows();
 
-    @Query("""
-            select g from Guide g left join fetch g.sources
-            where g.slug = :slug and g.status = info.lifeinuk.backend.guides.GuideStatus.PUBLISHED
-            """)
+    @Query(value = """
+            SELECT g.* FROM guide g
+            WHERE g.slug = :slug AND g.status = 'PUBLISHED'
+                AND NOT EXISTS (SELECT 1 FROM guide_locale_current c WHERE c.slug = g.slug
+                    AND c.locale = 'zh-CN' AND c.valid_until IS NOT NULL AND c.valid_until <= CURRENT_TIMESTAMP)
+            """, nativeQuery = true)
     Optional<Guide> publishedBySlug(@Param("slug") String slug);
+
+    @Query(value = "SELECT g.* FROM guide g WHERE g.slug = :slug AND g.status = 'PUBLISHED'", nativeQuery = true)
+    Optional<Guide> publishedGuideForLocale(@Param("slug") String slug);
 }
