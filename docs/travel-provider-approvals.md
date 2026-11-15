@@ -121,3 +121,12 @@ amended. Recording this cadence is an owner decision.
 `life-in-uk.rail-access.enabled` defaults to `false`. While it is off, no Rail endpoint contacts
 RDM, even if Rail credentials are present; responses are `503 RAIL_DISABLED`. It stays off until
 the RDM Schedule 2 policy review, licensing and rate-limit requirements are complete.
+
+**Local status (2026-11-15):** the owner's existing RDM arrival and departure product credentials are
+configured in the local backend environment only, with `RAIL_ACCESS_ENABLED=true` locally. A bounded live
+test for King's Cross (one arrivals and one departures-disruptions request, plus one board per locale in
+the development Rail preview) returned HTTP 200 and matched the frontend. Rail requests are made per user
+check, within the per-client and aggregate limits, and nothing is stored, so there is no polling and no
+database growth. The frontend shows Rail only in development with `?rail-preview`; production builds
+exclude it. Public release still needs the Schedule 2 attachment, the commercial Departure-use assessment
+and a quota review (see [Rail production readiness](rail-production-readiness.md)).
