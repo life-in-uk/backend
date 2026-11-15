@@ -95,8 +95,10 @@ class GuideRevisionRetentionTest {
         String role = "guide_rt_" + UUID.randomUUID().toString().replace("-", "");
         jdbc.execute("CREATE ROLE " + role + " NOLOGIN");
         try {
-            assertThat(jdbc.queryForObject("SELECT prosecdef FROM pg_proc WHERE proname='redact_superseded_guide_body'", Boolean.class)).isTrue();
-            assertThat(jdbc.queryForObject("SELECT proconfig[1] FROM pg_proc WHERE proname='redact_superseded_guide_body'", String.class))
+            assertThat(jdbc.queryForObject("SELECT prosecdef FROM pg_proc WHERE proname='redact_superseded_guide_body'"
+                    + " AND pronamespace = 'guide_revision_retention_tests'::regnamespace", Boolean.class)).isTrue();
+            assertThat(jdbc.queryForObject("SELECT proconfig[1] FROM pg_proc WHERE proname='redact_superseded_guide_body'"
+                    + " AND pronamespace = 'guide_revision_retention_tests'::regnamespace", String.class))
                     .isEqualTo("search_path=pg_catalog, guide_revision_retention_tests, pg_temp");
             assertThat(jdbc.queryForObject("SELECT pg_get_userbyid(relowner) FROM pg_class WHERE oid='guide_revision'::regclass", String.class))
                     .isEqualTo("life_in_uk_test");
