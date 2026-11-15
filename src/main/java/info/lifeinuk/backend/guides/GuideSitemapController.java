@@ -85,6 +85,8 @@ class GuideSitemapController {
         return switch (category) {
             case "health-nhs" -> "health";
             case "family-visa" -> "family-visa";
+            case "work-visa" -> "work-visa";
+            case "settlement" -> "settlement";
             case "money" -> "money";
             default -> null;
         };

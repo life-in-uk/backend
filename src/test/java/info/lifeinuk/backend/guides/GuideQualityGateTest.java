@@ -118,6 +118,31 @@ class GuideQualityGateTest {
     }
 
     @Test
+    void workVisaUsesTheStricterImmigrationChecklistAndBlockingRules() throws Exception {
+        var work = check(draft(root -> root.put("category", "work-visa")));
+        assertThat(work.checklist()).isEqualTo(GuideQualityGate.Checklist.FAMILY_VISA_V1);
+        assertThat(work.blocked()).isFalse();
+        assertThat(GuideQualityGate.render(work)).contains("Checklist family-visa-v1", "regulated advice");
+        var unused = check(draft(root -> { addUnusedSource(root); root.put("category", "work-visa"); }));
+        assertThat(codes(unused, BLOCKING)).containsExactly("SOURCE_UNUSED");
+        var empty = check(draft(root -> {
+            root.putArray("evidence");
+            root.put("content", "# Example\n\nNo evidence links.\n");
+            root.putArray("sources");
+            root.put("category", "work-visa");
+        }));
+        assertThat(codes(empty, BLOCKING)).containsExactly("EVIDENCE_EMPTY");
+        // Settlement (ILR) content is immigration content too.
+        var settlement = check(draft(root -> root.put("category", "settlement")));
+        assertThat(settlement.checklist()).isEqualTo(GuideQualityGate.Checklist.FAMILY_VISA_V1);
+        assertThat(codes(check(draft(root -> { addUnusedSource(root); root.put("category", "settlement"); })), BLOCKING))
+                .containsExactly("SOURCE_UNUSED");
+        // Other categories keep the standard checklist.
+        assertThat(check(draft(root -> root.put("category", "money"))).checklist())
+                .isEqualTo(GuideQualityGate.Checklist.STANDARD_V1);
+    }
+
+    @Test
     void storedTextThatIsNotExactCanonicalFormIsBlocking() throws Exception {
         var draft = draft(root -> { });
         String canonical = GuideContentDigest.canonicalForm(draft);

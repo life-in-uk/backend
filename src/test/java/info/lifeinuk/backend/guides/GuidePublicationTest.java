@@ -219,6 +219,18 @@ class GuidePublicationTest {
         var published = publications.publish(new GuidePublicationService.PublishRequest(family.id(), family.draftDigest(), null,
                 "family-visa-v1", today(), true, OPERATOR));
         assertThat(published.publication().checklistId()).isEqualTo("family-visa-v1");
+
+        var work = revision(root -> { root.put("slug", "synthetic-work-guide"); root.put("category", "work-visa"); });
+        assertThatIllegalArgumentException().isThrownBy(() -> publications.publish(request(work, null)))
+                .withMessageContaining("requires checklist family-visa-v1");
+        assertThat(publications.publish(new GuidePublicationService.PublishRequest(work.id(), work.draftDigest(), null,
+                "family-visa-v1", today(), true, OPERATOR)).publication().checklistId()).isEqualTo("family-visa-v1");
+
+        var settlement = revision(root -> { root.put("slug", "synthetic-settlement-guide"); root.put("category", "settlement"); });
+        assertThatIllegalArgumentException().isThrownBy(() -> publications.publish(request(settlement, null)))
+                .withMessageContaining("requires checklist family-visa-v1");
+        assertThat(publications.publish(new GuidePublicationService.PublishRequest(settlement.id(), settlement.draftDigest(), null,
+                "family-visa-v1", today(), true, OPERATOR)).publication().checklistId()).isEqualTo("family-visa-v1");
     }
 
     @Test
