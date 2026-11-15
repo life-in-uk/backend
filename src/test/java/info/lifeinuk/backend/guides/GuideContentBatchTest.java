@@ -24,11 +24,13 @@ import static org.assertj.core.api.Assertions.*;
 
 /** Isolated PostgreSQL lifecycle tests; synthetic data only. */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = {
+    "spring.profiles.active=local",
     "spring.flyway.schemas=guide_content_batch_tests", "spring.flyway.default-schema=guide_content_batch_tests",
     "spring.jpa.properties.hibernate.default_schema=guide_content_batch_tests", "spring.datasource.hikari.schema=guide_content_batch_tests",
     "life-in-uk.public-base-url=http://127.0.0.1:5173",
     "life-in-uk.editorial.draft-token=test-draft-token", "life-in-uk.editorial.review-token=test-review-token",
     "life-in-uk.editorial.mock-review-token=test-mock-review-token",
+    "life-in-uk.editorial.local-review-token=test-codex-local-review-token",
     "life-in-uk.editorial.approval-token=test-approval-token",
     "life-in-uk.editorial.approval-actor=synthetic-owner",
     "life-in-uk.editorial.owner-draft-password=test-owner-draft-password-0123456789abcdef",
@@ -192,8 +194,23 @@ class GuideContentBatchTest {
         var first = (ObjectNode) packageJson.get("translations").get(0).get("guide");
         first.withArray("evidence").get(0).withArray("supports").get(0).asObject().put("locator", "changed locator");
         assertThatThrownBy(() -> batches.importTranslations(batch.batchId(), packageJson))
-                .isInstanceOf(IllegalArgumentException.class).hasMessageContaining("locators, excerpts");
+                .isInstanceOf(IllegalArgumentException.class).hasMessageContaining("locators and excerpts");
         assertThat(store.locales(batch.batchId())).hasSize(1);
+    }
+
+    @Test
+    void manualImportAllowsLocalizedSupportNotesButKeepsEvidenceLocatorsAndExcerptsExact() throws Exception {
+        var source = source("Localized evidence notes");
+        var batch = batches.create(createRequest("manual-translation-localized-notes", source));
+        var packageJson = manualPackage(batch, source);
+        var support = packageJson.get("translations").get(0).get("guide").get("evidence").get(0)
+                .get("supports").get(0).asObject();
+        support.put("note", "Localized explanation of the same source evidence.");
+        var imported = batches.importTranslations(batch.batchId(), packageJson);
+        assertThat(imported).hasSize(4).allSatisfy(locale -> assertThat(locale.validationStatus()).isEqualTo("VALID"));
+        var stored = store.locale(batch.batchId(), "zh-TW").orElseThrow();
+        assertThat(stored.canonicalForm()).contains("Localized explanation of the same source evidence.");
+        assertThat(store.locales(batch.batchId())).hasSize(5);
     }
 
     @Test
@@ -359,6 +376,17 @@ class GuideContentBatchTest {
                 .POST(HttpRequest.BodyPublishers.ofString(independentPayload.toString())).build(), HttpResponse.BodyHandlers.ofString());
         assertThat(independentResponse.statusCode()).isEqualTo(200);
         assertThat(independentResponse.body()).contains("\"reviewer\":\"claude-independent\"");
+
+        var localBatch = batches.create(createRequest("batch-codex-local-review-identity", source("Codex local review identity")));
+        String localHash = store.locale(localBatch.batchId(), "zh-CN").orElseThrow().contentHash();
+        var localPayload = json.createObjectNode(); localPayload.put("contentHash", localHash);
+        localPayload.put("passed", false); localPayload.putArray("findings").add("LOCAL_REVIEW_TEST_FAILURE");
+        var localResponse = client.send(HttpRequest.newBuilder(URI.create("http://127.0.0.1:" + port
+                        + "/api/editorial/guide-batches/" + localBatch.batchId() + "/reviews/zh-CN"))
+                .header("Authorization", "Bearer test-codex-local-review-token").header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(localPayload.toString())).build(), HttpResponse.BodyHandlers.ofString());
+        assertThat(localResponse.statusCode()).isEqualTo(200);
+        assertThat(localResponse.body()).contains("\"reviewer\":\"codex-local-review\"", "\"reviewStatus\":\"FAILED\"");
     }
 
     @Test

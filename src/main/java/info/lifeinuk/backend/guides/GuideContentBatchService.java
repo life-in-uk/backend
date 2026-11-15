@@ -103,7 +103,7 @@ class GuideContentBatchService {
         if (!LOCALES.contains(locale)) throw new IllegalArgumentException("Unsupported locale");
         fields(request, Set.of("contentHash", "passed", "findings"), "review request");
         String hash = text(request, "contentHash", 64);
-        if (!Set.of("claude-independent", "mock-adapter").contains(reviewer)) {
+        if (!Set.of("claude-independent", "mock-adapter", "codex-local-review").contains(reviewer)) {
             throw new IllegalArgumentException("Unsupported authenticated reviewer identity");
         }
         if (!hash.matches("[0-9a-f]{64}")) throw new IllegalArgumentException("contentHash must be lower-case SHA-256");
@@ -161,7 +161,7 @@ class GuideContentBatchService {
             item.put("sourceContentHash", digest);
             item.set("guide", guide.deepCopy());
         }
-        var instructions = "Translate the Guide content into zh-TW, en, ur and hi. Translate only title, summary, content and evidence[].statement. Preserve Guide structure, slug, category, status, dates, source references, evidence keys, support sourceKey values, locators, excerpts and support notes exactly. Keep status DRAFT and publishedAt null. Return only the JSON object in responseTemplate, with all four entries retained; do not add fields or change batchId/sourceRevisionId/sourceContentHash.";
+        var instructions = "Translate the Guide content into zh-TW, en, ur and hi. Translate title, summary, content, evidence[].statement and evidence[].supports[].note. Preserve Guide structure, slug, category, status, dates, source references, evidence keys, support sourceKey values, locators and excerpts exactly. Keep status DRAFT and publishedAt null. Return only the JSON object in responseTemplate, with all four entries retained; do not add fields or change batchId/sourceRevisionId/sourceContentHash.";
         return new TranslationPackage("translation-package-v1", batch.id(), batch.slug(), batch.sourceRevisionId(), digest,
                 guide, List.of("zh-TW", "en", "ur", "hi"), instructions, template);
     }
@@ -308,8 +308,17 @@ class GuideContentBatchService {
         for (int i = 0; i < source.evidence().size(); i++) {
             var sourceItem = source.evidence().get(i);
             var translatedItem = translated.evidence().stream().filter(item -> item.key().equals(sourceItem.key())).findFirst().orElseThrow();
-            if (!sourceItem.supports().equals(translatedItem.supports())) {
-                throw new IllegalArgumentException("Locale evidence source references, locators, excerpts and notes must match the Chinese source exactly");
+            if (sourceItem.supports().size() != translatedItem.supports().size()) {
+                throw new IllegalArgumentException("Locale evidence support count must match the Chinese source");
+            }
+            for (int supportIndex = 0; supportIndex < sourceItem.supports().size(); supportIndex++) {
+                var sourceSupport = sourceItem.supports().get(supportIndex);
+                var translatedSupport = translatedItem.supports().get(supportIndex);
+                if (!sourceSupport.sourceKey().equals(translatedSupport.sourceKey())
+                        || !java.util.Objects.equals(sourceSupport.locator(), translatedSupport.locator())
+                        || !java.util.Objects.equals(sourceSupport.excerpt(), translatedSupport.excerpt())) {
+                    throw new IllegalArgumentException("Locale evidence source keys, locators and excerpts must match the Chinese source exactly");
+                }
             }
         }
     }

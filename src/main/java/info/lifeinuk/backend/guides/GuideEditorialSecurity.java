@@ -4,6 +4,8 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
+import org.springframework.core.env.Profiles;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -20,12 +22,19 @@ class GuideEditorialSecurity implements WebMvcConfigurer {
     GuideEditorialSecurity(@Value("${life-in-uk.editorial.draft-token:}") String draft,
             @Value("${life-in-uk.editorial.review-token:}") String review,
             @Value("${life-in-uk.editorial.mock-review-token:}") String mockReview,
-            @Value("${life-in-uk.editorial.approval-token:}") String approval) {
+            @Value("${life-in-uk.editorial.approval-token:}") String approval,
+            @Value("${life-in-uk.editorial.local-review-token:}") String localReview,
+            Environment environment) {
         if (sameNonblank(draft, review) || sameNonblank(draft, mockReview) || sameNonblank(draft, approval)
-                || sameNonblank(review, mockReview) || sameNonblank(review, approval) || sameNonblank(mockReview, approval)) {
+                || sameNonblank(draft, localReview) || sameNonblank(review, mockReview) || sameNonblank(review, approval)
+                || sameNonblank(review, localReview) || sameNonblank(mockReview, approval)
+                || sameNonblank(mockReview, localReview) || sameNonblank(approval, localReview)) {
             throw new IllegalArgumentException("Editorial draft, review and approval tokens must be distinct");
         }
-        gate = new Gate(draft, review, mockReview, approval);
+        if (localReview != null && !localReview.isBlank() && !environment.acceptsProfiles(Profiles.of("local"))) {
+            throw new IllegalArgumentException("The Codex local review credential is only allowed with the local Spring profile");
+        }
+        gate = new Gate(draft, review, mockReview, approval, localReview);
     }
 
     String authenticatedReviewer(HttpServletRequest request) { return gate.authenticatedReviewer(request); }
@@ -43,8 +52,10 @@ class GuideEditorialSecurity implements WebMvcConfigurer {
         private final byte[] review;
         private final byte[] mockReview;
         private final byte[] approval;
-        Gate(String draft, String review, String mockReview, String approval) {
-            this.draft = bytes(draft); this.review = bytes(review); this.mockReview = bytes(mockReview); this.approval = bytes(approval);
+        private final byte[] localReview;
+        Gate(String draft, String review, String mockReview, String approval, String localReview) {
+            this.draft = bytes(draft); this.review = bytes(review); this.mockReview = bytes(mockReview);
+            this.approval = bytes(approval); this.localReview = bytes(localReview);
         }
 
         @Override public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -61,7 +72,8 @@ class GuideEditorialSecurity implements WebMvcConfigurer {
                 case APPROVAL -> approval;
                 case UNRECOGNIZED -> new byte[0];
             };
-            if (expected.length == 0 && !(credentialClass == CredentialClass.REVIEW && mockReview.length > 0)) {
+            if (expected.length == 0 && !(credentialClass == CredentialClass.REVIEW
+                    && (mockReview.length > 0 || localReview.length > 0))) {
                 response.setStatus(HttpStatus.SERVICE_UNAVAILABLE.value());
                 response.setHeader("Cache-Control", "no-store");
                 response.getWriter().write("{\"code\":\"EDITORIAL_AUTH_NOT_CONFIGURED\"}");
@@ -72,7 +84,9 @@ class GuideEditorialSecurity implements WebMvcConfigurer {
                     ? bytes(authorization.substring(7)) : new byte[0];
             boolean valid = expected.length > 0 && MessageDigest.isEqual(expected, supplied)
                     || credentialClass == CredentialClass.REVIEW && mockReview.length > 0
-                    && MessageDigest.isEqual(mockReview, supplied);
+                    && MessageDigest.isEqual(mockReview, supplied)
+                    || credentialClass == CredentialClass.REVIEW && localReview.length > 0
+                    && MessageDigest.isEqual(localReview, supplied);
             if (!valid) {
                 response.setStatus(HttpStatus.UNAUTHORIZED.value());
                 response.setHeader("Cache-Control", "no-store");
@@ -98,6 +112,7 @@ class GuideEditorialSecurity implements WebMvcConfigurer {
             byte[] supplied = authorization != null && authorization.startsWith("Bearer ")
                     ? bytes(authorization.substring(7)) : new byte[0];
             if (mockReview.length > 0 && MessageDigest.isEqual(mockReview, supplied)) return "mock-adapter";
+            if (localReview.length > 0 && MessageDigest.isEqual(localReview, supplied)) return "codex-local-review";
             if (review.length > 0 && MessageDigest.isEqual(review, supplied)) return "claude-independent";
             throw new IllegalStateException("No authenticated review identity");
         }
