@@ -1125,23 +1125,28 @@ attachment and does not establish full legal compliance.
 schedule. **Both schedules are off by default.** Enabling unattended provider
 polling is an owner operational decision. It is not a code default.
 
-Each run calls the existing operations in order and adds no acquisition, parsing
-or projection logic:
+Each run does the following:
 
-- Underground: `TflUndergroundAcquisition.acquire()`, which already projects the
-  committed evidence.
+- Underground: `TflUndergroundLatestRefresh.refresh()`. It makes one request to the
+  qualified TfL endpoint, runs the accepted `TflUndergroundStatusParser`, and then
+  calls the existing atomic `UndergroundCurrentStateProjector`. It writes **no**
+  `ingestion_run` and **no** `evidence_artifact` row. Only the single Current
+  State snapshot (`underground_current_snapshot`, `_line`, `_status`) is
+  replaced, so repeated refreshes grow no table. An invalid, empty or failed
+  response changes nothing. `TflUndergroundAcquisition.acquire()` still records
+  an explicit, persisted evidence run when one is wanted.
 - Roads: `NationalHighwaysRoadClosuresAcquisition.acquire()`, then
   `RoadsEvidenceProjection.projectRun(runId)`, only if the run is `SUCCESS`.
 
-Qualification is still checked inside every acquisition. Un-qualifying or
+Qualification is still checked on every run. Un-qualifying or
 disabling an endpoint stops refresh without a deploy. A failed run never changes
 Current State. The last good snapshot remains, and the frontend's freshness rule
-hides it once it is too old (Underground 10 minutes, Roads 30 minutes).
+hides it once it is too old (Underground 15 minutes, Roads 30 minutes).
 
 | Setting (`life-in-uk.travel-refresh.*`) | Underground | Roads |
 | --- | --- | --- |
 | `<source>.enabled` | `false` | `false` |
-| `<source>.interval` (fixed delay; floor) | `PT2M` (floor `PT1M`) | `PT10M` (floor `PT5M`) |
+| `<source>.interval` (fixed delay; floor) | `PT10M` (floor `PT1M`) | `PT10M` (floor `PT5M`) |
 | `<source>.max-backoff` (≤ `PT6H`) | `PT30M` | `PT60M` |
 | `<source>.max-runs` (0 = no cap) | `0` | `0` |
 | `<source>.initial-delay` (≤ `PT10M`) | `PT15S` | `PT15S` |
@@ -1163,7 +1168,7 @@ Values below a floor or outside a range fail startup. Environment shortcuts are
 - **Logs:** run id, outcome, failure code and duration only. Never keys, URLs or
   provider bodies.
 
-Provider budgets at the default intervals: TfL makes 1 request per run, so 30 per
+Provider budgets at the default intervals: TfL makes 1 request per run, so 6 per
 hour, well within its published limits. National Highways makes at most 8 paced
 requests per run, against a limit of 10 requests per minute per key; the existing
 `RequestPacer` keeps it to at most 9 in any rolling minute.
@@ -1171,12 +1176,11 @@ requests per run, against a limit of 10 requests per minute per key; the existin
 ### Evidence growth: blocker before unattended production polling
 
 Raw evidence is append-only and immutable (V2 triggers), and there is no expiry
-path. Measured payloads in the local database on 2026-11-11: TfL Tube status
-12,464 bytes per run, National Highways unplanned closures 101,448 bytes per run
-(one page). At the default intervals that is about 9 MB per day for TfL (720 runs)
-and about 15 MB per day for National Highways (144 runs). That is roughly 0.7 GB
-per 30 days, growing without bound. Before enabling unattended production
-polling, add a reviewed controlled-expiry migration that keeps rows immutable
+path. The scheduled Underground refresh no longer writes evidence (latest-only
+since 2026-11-15), so this applies to Roads and to explicit acquisitions. Measured
+payload in the local database on 2026-11-11: National Highways unplanned closures
+101,448 bytes per run (one page), about 15 MB per day at the default interval
+(144 runs), growing without bound. Before enabling unattended Roads polling, add a reviewed controlled-expiry migration that keeps rows immutable
 while retained, and have the owner choose the retention periods. The migration
 number must follow the unmerged `V11__create_guide_publication`.
 

@@ -47,7 +47,7 @@ life-in-uk:
     # (qualification, evidence retention and cost). See README "Travel Current State refresh".
     underground:
       enabled: ${TRAVEL_REFRESH_UNDERGROUND_ENABLED:false}
-      interval: ${TRAVEL_REFRESH_UNDERGROUND_INTERVAL:PT2M}
+      interval: ${TRAVEL_REFRESH_UNDERGROUND_INTERVAL:PT10M}
       max-runs: ${TRAVEL_REFRESH_UNDERGROUND_MAX_RUNS:0}
     roads:
       enabled: ${TRAVEL_REFRESH_ROADS_ENABLED:false}

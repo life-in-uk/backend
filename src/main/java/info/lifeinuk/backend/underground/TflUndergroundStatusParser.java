@@ -1,10 +1,12 @@
 package info.lifeinuk.backend.underground;
 
 import info.lifeinuk.backend.evidence.EvidenceArtifact;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 import org.springframework.stereotype.Component;
 import tools.jackson.core.JacksonException;
 import tools.jackson.core.StreamReadFeature;
@@ -22,9 +24,18 @@ public final class TflUndergroundStatusParser {
 
     public UndergroundStatusInterpretation parse(EvidenceArtifact evidence) {
         Objects.requireNonNull(evidence, "Evidence artifact is required");
+        return parse(evidence.getId(), evidence.getPayload(), evidence.getObservedAt());
+    }
+
+    /**
+     * The same validation for an observation that is not persisted as evidence (the latest-only
+     * Underground refresh). {@code observationId} identifies this observation in Current State.
+     */
+    public UndergroundStatusInterpretation parse(UUID observationId, byte[] payload, Instant observedAt) {
+        Objects.requireNonNull(payload, "Payload is required");
         JsonNode root;
         try {
-            root = json.readTree(evidence.getPayload());
+            root = json.readTree(payload);
         } catch (JacksonException invalid) {
             throw new IllegalArgumentException("Evidence is not one valid JSON document");
         }
@@ -67,7 +78,7 @@ public final class TflUndergroundStatusParser {
             }
             lines.add(new UndergroundLineStatus(id, name, statuses));
         }
-        return new UndergroundStatusInterpretation(evidence.getId(), evidence.getObservedAt(), lines);
+        return new UndergroundStatusInterpretation(observationId, observedAt, lines);
     }
 
     private static void requireObject(JsonNode value, String label) {

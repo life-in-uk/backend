@@ -17,7 +17,7 @@ public record TravelRefreshProperties(
         @DefaultValue Schedule underground,
         @DefaultValue Schedule roads) {
 
-    static final Duration UNDERGROUND_DEFAULT = Duration.ofMinutes(2);
+    static final Duration UNDERGROUND_DEFAULT = Duration.ofMinutes(10);
     static final Duration UNDERGROUND_FLOOR = Duration.ofMinutes(1);
     static final Duration UNDERGROUND_MAX_BACKOFF = Duration.ofMinutes(30);
     static final Duration ROADS_DEFAULT = Duration.ofMinutes(10);

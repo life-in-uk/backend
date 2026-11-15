@@ -4,19 +4,17 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import info.lifeinuk.backend.acquisition.NationalHighwaysRoadClosuresAcquisition;
-import info.lifeinuk.backend.acquisition.TflUndergroundAcquisition;
+import info.lifeinuk.backend.acquisition.TflUndergroundLatestRefresh;
 import info.lifeinuk.backend.evidence.AcquisitionHistory;
 import info.lifeinuk.backend.evidence.RunStatus;
 import info.lifeinuk.backend.roads.RoadsCurrentStateProjector;
 import info.lifeinuk.backend.roads.RoadsEvidenceProjection;
 import info.lifeinuk.backend.underground.UndergroundCurrentStateProjector;
-import info.lifeinuk.backend.underground.UndergroundEvidenceProjection;
-import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 
 class TravelRefreshTasksTest {
-    private final TflUndergroundAcquisition underground = mock(TflUndergroundAcquisition.class);
+    private final TflUndergroundLatestRefresh underground = mock(TflUndergroundLatestRefresh.class);
     private final NationalHighwaysRoadClosuresAcquisition roads = mock(NationalHighwaysRoadClosuresAcquisition.class);
     private final RoadsEvidenceProjection roadsProjection = mock(RoadsEvidenceProjection.class);
     private final AcquisitionHistory history = mock(AcquisitionHistory.class);
@@ -27,50 +25,51 @@ class TravelRefreshTasksTest {
         return new AcquisitionHistory.RunOutcome(RunStatus.FAILED, code, message);
     }
 
-    private void undergroundProjects(UndergroundCurrentStateProjector.Outcome outcome,
-            UndergroundEvidenceProjection.Result.Failure failure) {
-        when(underground.acquire()).thenReturn(new TflUndergroundAcquisition.Result(run,
-                Optional.of(new UndergroundEvidenceProjection.Result(outcome, failure))));
+    private static TflUndergroundLatestRefresh.Result projected(UndergroundCurrentStateProjector.Outcome outcome) {
+        return new TflUndergroundLatestRefresh.Result(outcome, null, null);
+    }
+
+    private static TflUndergroundLatestRefresh.Result failure(String code, String message) {
+        return new TflUndergroundLatestRefresh.Result(null, code, message);
     }
 
     @Test
-    void undergroundSuccessIsTheExistingAcquisitionAndProjection() {
-        undergroundProjects(UndergroundCurrentStateProjector.Outcome.APPLIED, null);
+    void undergroundSuccessIsTheLatestOnlyRefresh() {
+        when(underground.refresh()).thenReturn(projected(UndergroundCurrentStateProjector.Outcome.APPLIED));
         assertThat(tasks.underground()).isEqualTo(RefreshPolicy.Outcome.SUCCESS);
-        verify(underground).acquire();
-        verifyNoInteractions(roads, roadsProjection);
+        verify(underground).refresh();
+        verifyNoInteractions(roads, roadsProjection, history);
     }
 
     @Test
     void undergroundOlderOrReplayedSnapshotsAreNotFailures() {
-        undergroundProjects(UndergroundCurrentStateProjector.Outcome.IGNORED_OLDER, null);
+        when(underground.refresh()).thenReturn(projected(UndergroundCurrentStateProjector.Outcome.IGNORED_OLDER));
         assertThat(tasks.underground()).isEqualTo(RefreshPolicy.Outcome.SUCCESS);
-        undergroundProjects(UndergroundCurrentStateProjector.Outcome.REPLAYED, null);
+        when(underground.refresh()).thenReturn(projected(UndergroundCurrentStateProjector.Outcome.REPLAYED));
         assertThat(tasks.underground()).isEqualTo(RefreshPolicy.Outcome.SUCCESS);
     }
 
     @Test
-    void undergroundProjectionFailureOrConflictIsAFailure() {
-        undergroundProjects(null, UndergroundEvidenceProjection.Result.Failure.EVIDENCE_INVALID);
+    void undergroundInvalidResponseOrConflictIsAFailure() {
+        when(underground.refresh()).thenReturn(failure("INVALID_RESPONSE", "TfL response did not match"));
         assertThat(tasks.underground()).isEqualTo(RefreshPolicy.Outcome.FAILED);
-        undergroundProjects(UndergroundCurrentStateProjector.Outcome.CONFLICT, null);
+        when(underground.refresh()).thenReturn(projected(UndergroundCurrentStateProjector.Outcome.CONFLICT));
         assertThat(tasks.underground()).isEqualTo(RefreshPolicy.Outcome.FAILED);
     }
 
     @Test
     void undergroundHttp429IsRateLimitedOtherFailuresAreFailed() {
-        when(underground.acquire()).thenReturn(new TflUndergroundAcquisition.Result(run, Optional.empty()));
-        when(history.outcome(run)).thenReturn(failed("HTTP_STATUS", "Expected HTTP 200; received 429"));
+        when(underground.refresh()).thenReturn(failure("HTTP_STATUS", "Expected HTTP 200; received 429"));
         assertThat(tasks.underground()).isEqualTo(RefreshPolicy.Outcome.RATE_LIMITED);
-        when(history.outcome(run)).thenReturn(failed("HTTP_STATUS", "Expected HTTP 200; received 503"));
+        when(underground.refresh()).thenReturn(failure("HTTP_STATUS", "Expected HTTP 200; received 503"));
         assertThat(tasks.underground()).isEqualTo(RefreshPolicy.Outcome.FAILED);
-        when(history.outcome(run)).thenReturn(failed("TIMEOUT", "HTTP request timed out"));
+        when(underground.refresh()).thenReturn(failure("TIMEOUT", "HTTP request timed out"));
         assertThat(tasks.underground()).isEqualTo(RefreshPolicy.Outcome.FAILED);
     }
 
     @Test
     void undergroundIneligibleEndpointFailsWithoutThrowing() {
-        when(underground.acquire()).thenThrow(new IllegalStateException("not qualified"));
+        when(underground.refresh()).thenThrow(new IllegalStateException("not qualified"));
         assertThat(tasks.underground()).isEqualTo(RefreshPolicy.Outcome.FAILED);
     }
 

@@ -20,7 +20,7 @@ class TravelRefreshPropertiesTest {
         var properties = bind(Map.of());
         assertThat(properties.underground().enabled()).isFalse();
         assertThat(properties.roads().enabled()).isFalse();
-        assertThat(properties.underground().interval()).isEqualTo(Duration.ofMinutes(2));
+        assertThat(properties.underground().interval()).isEqualTo(Duration.ofMinutes(10));
         assertThat(properties.underground().maxBackoff()).isEqualTo(Duration.ofMinutes(30));
         assertThat(properties.roads().interval()).isEqualTo(Duration.ofMinutes(10));
         assertThat(properties.roads().maxBackoff()).isEqualTo(Duration.ofMinutes(60));
