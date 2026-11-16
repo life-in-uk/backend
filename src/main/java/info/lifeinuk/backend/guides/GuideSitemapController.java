@@ -12,7 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-/** Published Guide sitemap. Its public origin is explicit so a proxy host cannot poison canonical URLs. */
+/** Published Guide and topic hub sitemap. Its public origin is explicit so a proxy host cannot poison canonical URLs. */
 @RestController
 class GuideSitemapController {
     private static final List<String> LOCALES = List.of("zh-CN", "zh-TW", "en", "ur", "hi");
@@ -57,6 +57,25 @@ class GuideSitemapController {
             }
             xml.append("</url>\n");
         }));
+        // Topic hubs (/{locale}/{domain}): one per section, in each locale where it has a published Guide.
+        Map<String, java.util.Set<String>> hubs = new LinkedHashMap<>();
+        guides.values().forEach(variants -> variants.forEach((locale, metadata) ->
+                hubs.computeIfAbsent(domainPath(metadata.category()), ignored -> new java.util.LinkedHashSet<>()).add(locale)));
+        hubs.forEach((domain, present) -> {
+            List<String> locales = LOCALES.stream().filter(present::contains).toList();
+            for (String locale : locales) {
+                xml.append("  <url><loc>").append(xml(base + "/" + locale + "/" + domain)).append("</loc>");
+                for (String available : locales) {
+                    xml.append("<xhtml:link rel=\"alternate\" hreflang=\"").append(hreflang(available))
+                            .append("\" href=\"").append(xml(base + "/" + available + "/" + domain)).append("\"/>");
+                }
+                if (locales.contains("zh-CN")) {
+                    xml.append("<xhtml:link rel=\"alternate\" hreflang=\"x-default\" href=\"")
+                            .append(xml(base + "/zh-CN/" + domain)).append("\"/>");
+                }
+                xml.append("</url>\n");
+            }
+        });
         xml.append("</urlset>\n");
         return ResponseEntity.ok().cacheControl(CacheControl.noStore()).contentType(MediaType.APPLICATION_XML).body(xml.toString());
     }

@@ -562,6 +562,9 @@ class GuideContentBatchTest {
         assertThat(sitemap.body()).contains("http://127.0.0.1:5173/en/health/" + batch.slug(),
                 "hreflang=\"zh-TW\"", "hreflang=\"en-GB\"", "hreflang=\"ur\"", "hreflang=\"hi\"")
                 .doesNotContain("hreflang=\"en\"");
+        // The section's topic hub is listed once per published locale.
+        assertThat(sitemap.body()).contains("<loc>http://127.0.0.1:5173/en/health</loc>", "<loc>http://127.0.0.1:5173/zh-CN/health</loc>",
+                "hreflang=\"x-default\" href=\"http://127.0.0.1:5173/zh-CN/health\"");
         assertThat(get("/robots.txt").body()).contains("Sitemap: http://127.0.0.1:5173/sitemap.xml");
 
         jdbc.update("UPDATE guide_locale_current SET valid_until = ? WHERE slug = ?",
