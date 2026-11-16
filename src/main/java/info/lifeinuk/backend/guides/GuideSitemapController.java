@@ -88,6 +88,7 @@ class GuideSitemapController {
             case "work-visa" -> "work-visa";
             case "settlement" -> "settlement";
             case "money" -> "money";
+            case "renting" -> "renting";
             default -> null;
         };
     }
