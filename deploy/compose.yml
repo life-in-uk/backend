@@ -1,0 +1,129 @@
+# Production stack on the EC2 host (deploy/RUNBOOK.md). Installed as
+# /opt/lifeinuk/compose.yml; /opt/lifeinuk/.env sets APP_IMAGE.
+#
+#   db     PostgreSQL 16, internal network only, data in the pgdata volume.
+#   app    Spring Boot (Java 21). Reachable from nginx, and on the host's
+#          loopback only (127.0.0.1:8080) for operator SSH tunnels.
+#   proxy  nginx: TLS origin for CloudFront on :443 (security group: CloudFront
+#          origin-facing prefix list only), origin secret check, path allowlist.
+#   certbot  (profile "tools") Let's Encrypt DNS-01 via Route 53 for the origin certificate.
+#
+# Paths outside the project can be moved with LIFEINUK_ETC, LIFEINUK_CERTS and
+# LIFEINUK_BACKUPS (the local stack test does this); production uses the defaults.
+name: lifeinuk
+
+x-logging: &logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "5"
+
+services:
+  db:
+    image: postgres:16-bookworm@sha256:a49f7438ba03589f9b1ca062f2da82e899b48ea1dc50d2449fa09a70be83ebca
+    restart: unless-stopped
+    env_file: ${LIFEINUK_ETC:-/etc/lifeinuk}/db.env
+    environment:
+      POSTGRES_DB: life_in_uk
+      POSTGRES_USER: postgres
+      POSTGRES_INITDB_ARGS: "--auth-host=scram-sha-256 --encoding=UTF8 --locale=C.UTF-8"
+    command:
+      - postgres
+      - -c
+      - shared_buffers=256MB
+      - -c
+      - effective_cache_size=768MB
+      - -c
+      - work_mem=8MB
+      - -c
+      - max_connections=40
+      - -c
+      - log_min_duration_statement=2000
+    shm_size: 256m
+    mem_limit: 1g
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./db/init:/docker-entrypoint-initdb.d:ro
+      - ${LIFEINUK_BACKUPS:-/var/backups/lifeinuk}:/backups
+    networks: [data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d life_in_uk"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+    logging: *logging
+
+  app:
+    image: ${APP_IMAGE:?set APP_IMAGE in /opt/lifeinuk/.env, e.g. lifeinuk-backend:<git sha>}
+    restart: unless-stopped
+    env_file: ${LIFEINUK_ETC:-/etc/lifeinuk}/backend.env
+    environment:
+      DB_URL: jdbc:postgresql://db:5432/life_in_uk
+      DB_USERNAME: life_in_uk_app
+      SPRING_FLYWAY_ENABLED: "true"
+      SERVER_PORT: "8080"
+      JAVA_TOOL_OPTIONS: "-XX:MaxRAMPercentage=70 -XX:+ExitOnOutOfMemoryError -Djava.security.egd=file:/dev/urandom"
+    depends_on:
+      db:
+        condition: service_healthy
+    mem_limit: 1536m
+    read_only: true
+    tmpfs:
+      - /tmp:size=128m
+    security_opt: ["no-new-privileges:true"]
+    ports:
+      - "${LIFEINUK_APP_BIND:-127.0.0.1:8080}:8080"
+    networks: [data, web]
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS -o /dev/null http://127.0.0.1:8080/actuator/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 120s
+    logging: *logging
+
+  proxy:
+    image: nginx:1.28-alpine@sha256:a8b39bd9cf0f83869a2162827a0caf6137ddf759d50a171451b335cecc87d236
+    restart: unless-stopped
+    env_file: ${LIFEINUK_ETC:-/etc/lifeinuk}/proxy.env
+    environment:
+      NGINX_ENVSUBST_OUTPUT_DIR: /etc/nginx/conf.d
+      NGINX_ENVSUBST_FILTER: "^ORIGIN_"
+    depends_on:
+      app:
+        condition: service_healthy
+    mem_limit: 128m
+    read_only: true
+    tmpfs:
+      - /etc/nginx/conf.d
+      - /var/cache/nginx
+      - /run
+      - /tmp
+    security_opt: ["no-new-privileges:true"]
+    ports:
+      - "${LIFEINUK_PROXY_BIND:-0.0.0.0:443}:8443"
+    volumes:
+      - ./nginx/templates:/etc/nginx/templates:ro
+      - ${LIFEINUK_CERTS:-/etc/letsencrypt}:/etc/letsencrypt:ro
+    networks: [web]
+    logging: *logging
+
+  certbot:
+    image: certbot/dns-route53:v5.10.0@sha256:c7bccbc3c8956ec93cebebd95961b1be1489eb30e15a4444f8bc96171bea56e3
+    profiles: [tools]
+    volumes:
+      - ${LIFEINUK_CERTS:-/etc/letsencrypt}:/etc/letsencrypt
+      - certbot-work:/var/lib/letsencrypt
+    networks: [web]
+    logging: *logging
+
+networks:
+  # Database traffic never leaves this network.
+  data:
+    internal: true
+  # nginx ↔ app, and outbound access for the app (provider APIs when enabled) and certbot.
+  web: {}
+
+volumes:
+  pgdata: {}
+  certbot-work: {}

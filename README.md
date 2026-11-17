@@ -1221,3 +1221,12 @@ proxy, the remote address must be the real client address, for example
 `server.forward-headers-strategy=native` with a trusted proxy. Otherwise every
 user shares one client budget. This does not enforce a quota shared across
 instances, and it does not resolve the RDM Schedule 2 policy question.
+
+## Production deployment
+
+`deploy/` holds the production stack (Docker Compose: PostgreSQL 16, the
+backend image from `Dockerfile`, nginx as the TLS origin for CloudFront), the
+operator scripts (backup, restore, seed, certificate) and their systemd
+timers. Start with `deploy/RUNBOOK.md`; content releases are described in
+`deploy/PUBLISHING.md`. `deploy/test/stack-test.sh <seed.dump>` runs the whole
+stack locally with Docker and checks it end to end.

@@ -1,0 +1,11 @@
+[Unit]
+Description=Life in UK database backup (deploy/scripts/backup.sh)
+Requires=docker.service
+After=docker.service
+
+[Service]
+Type=oneshot
+EnvironmentFile=-/etc/lifeinuk/backup.env
+ExecStart=/opt/lifeinuk/scripts/backup.sh
+Nice=10
+IOSchedulingClass=idle
