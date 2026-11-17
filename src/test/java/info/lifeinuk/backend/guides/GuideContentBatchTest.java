@@ -565,6 +565,12 @@ class GuideContentBatchTest {
         // The section's topic hub is listed once per published locale.
         assertThat(sitemap.body()).contains("<loc>http://127.0.0.1:5173/en/health</loc>", "<loc>http://127.0.0.1:5173/zh-CN/health</loc>",
                 "hreflang=\"x-default\" href=\"http://127.0.0.1:5173/zh-CN/health\"");
+        // Home pages: one per locale with the full alternate set; the root is never listed (it redirects to /zh-CN).
+        assertThat(sitemap.body()).contains("<loc>http://127.0.0.1:5173/zh-CN</loc>", "<loc>http://127.0.0.1:5173/ur</loc>",
+                "hreflang=\"x-default\" href=\"http://127.0.0.1:5173/zh-CN\"")
+                .doesNotContain("<loc>http://127.0.0.1:5173/</loc>", "<loc>http://127.0.0.1:5173</loc>",
+                        // Its Family & Visa Guide is not published in this schema, so no topic page is listed.
+                        "/family-visa/topics/");
         assertThat(get("/robots.txt").body()).contains("Sitemap: http://127.0.0.1:5173/sitemap.xml");
 
         jdbc.update("UPDATE guide_locale_current SET valid_until = ? WHERE slug = ?",

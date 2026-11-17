@@ -12,10 +12,20 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-/** Published Guide and topic hub sitemap. Its public origin is explicit so a proxy host cannot poison canonical URLs. */
+/**
+ * Sitemap of the prerendered public pages: published Guides, topic hubs, the five home pages and the
+ * Family & Visa topic pages. Its public origin is explicit so a proxy host cannot poison canonical URLs.
+ */
 @RestController
 class GuideSitemapController {
     private static final List<String> LOCALES = List.of("zh-CN", "zh-TW", "en", "ur", "hi");
+    /**
+     * Family & Visa topic pages (frontend router FAMILY_VISA_TOPICS) and the Simplified Chinese Guide whose verified
+     * content each shows. Listed in every locale while that Guide is published; the frontend release build checks that
+     * the page really shows verified content and fails if this list and the prerendered pages disagree.
+     */
+    private static final Map<String, String> FAMILY_VISA_TOPICS = Map.of(
+            "children-from-previous-relationship", "partner-visa-dependent-children");
     private final GuideQuery query;
     private final String publicBaseUrl;
 
@@ -76,6 +86,13 @@ class GuideSitemapController {
                 xml.append("</url>\n");
             }
         });
+        // Home pages (/{locale}); the root / redirects to /zh-CN on the public host and is not listed.
+        appendLocaleSet(xml, base, locale -> "/" + locale);
+        FAMILY_VISA_TOPICS.forEach((topic, guide) -> {
+            GuideResponse.Metadata source = guides.getOrDefault(guide, Map.of()).get("zh-CN");
+            if (source != null && "family-visa".equals(domainPath(source.category())))
+                appendLocaleSet(xml, base, locale -> "/" + locale + "/family-visa/topics/" + topic);
+        });
         xml.append("</urlset>\n");
         return ResponseEntity.ok().cacheControl(CacheControl.noStore()).contentType(MediaType.APPLICATION_XML).body(xml.toString());
     }
@@ -87,6 +104,20 @@ class GuideSitemapController {
         String base = origin.toString().replaceAll("/$", "");
         return ResponseEntity.ok().cacheControl(CacheControl.noStore()).contentType(MediaType.TEXT_PLAIN)
                 .body("User-agent: *\nAllow: /\nSitemap: " + base + "/sitemap.xml\n");
+    }
+
+    /** One entry per locale for a page that exists in all five, each listing the full alternate set and x-default (zh-CN). */
+    private static void appendLocaleSet(StringBuilder xml, String base, java.util.function.Function<String, String> path) {
+        for (String locale : LOCALES) {
+            xml.append("  <url><loc>").append(xml(base + path.apply(locale))).append("</loc>");
+            for (String available : LOCALES) {
+                xml.append("<xhtml:link rel=\"alternate\" hreflang=\"").append(hreflang(available))
+                        .append("\" href=\"").append(xml(base + path.apply(available))).append("\"/>");
+            }
+            xml.append("<xhtml:link rel=\"alternate\" hreflang=\"x-default\" href=\"")
+                    .append(xml(base + path.apply("zh-CN"))).append("\"/>");
+            xml.append("</url>\n");
+        }
     }
 
     private URI publicOrigin() {
