@@ -128,10 +128,12 @@ The audit trail is `/opt/lifeinuk/releases.log`.
 
 **Deployment files.** When `deploy/compose.yml`, `nginx/`, `db/`, `scripts/` or
 `systemd/` change, sync them before the release (the workflow refuses until
-the server's copy matches the release commit):
+the server's copy matches the release commit). When only `scripts/` or
+`systemd/` change, use the guarded, self-restoring update in
+[docs/deploy-files-update.md](../docs/deploy-files-update.md); otherwise by hand:
 
 ```bash
-rsync -a --delete deploy/compose.yml deploy/nginx deploy/db deploy/scripts deploy/systemd deploy/env ubuntu@<host>:/tmp/lifeinuk/   # workstation, at the release commit
+rsync -a --delete deploy/compose.yml deploy/nginx deploy/db deploy/scripts deploy/systemd deploy/env deploy/certbot ubuntu@<host>:/tmp/lifeinuk/   # workstation, at the release commit
 rsync -a /tmp/lifeinuk/ /opt/lifeinuk/ && chown -R root:root /opt/lifeinuk && rm -rf /tmp/lifeinuk                                 # server
 docker compose up -d                       # only if compose.yml, nginx or db changed; take scripts/backup.sh first
 cp /opt/lifeinuk/systemd/*.service /opt/lifeinuk/systemd/*.timer /etc/systemd/system/ && systemctl daemon-reload   # only if systemd changed
