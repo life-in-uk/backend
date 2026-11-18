@@ -41,6 +41,7 @@ import static org.assertj.core.api.Assertions.*;
 @ContextConfiguration(initializers = IsolatedPostgres.Initializer.class)
 class GuideContentBatchTest {
     @Autowired GuideContentBatchService batches;
+    @Autowired GuidePublicationService publications;
     @Autowired GuideContentBatchStore store;
     @Autowired GuideRevisionService revisions;
     @Autowired GuideImportReader reader;
@@ -584,6 +585,44 @@ class GuideContentBatchTest {
         var report = getWithDraftCredential("/api/editorial/guide-batches/expiry-report");
         assertThat(report.statusCode()).isEqualTo(200);
         assertThat(report.body()).contains(batch.slug(), "EXPIRED_CURRENT_LOCALE");
+    }
+
+    @Test
+    void universitySitemapAndPublicLocalesFollowPublicationAndWithdrawal() throws Exception {
+        var category = "university-applications-student-visas";
+        var source = source("University lifecycle fixture");
+        source.put("category", category);
+        var batch = batches.create(createRequest("university-sitemap-lifecycle", source));
+        fillAndReview(batch, source, "claude-independent");
+        var baseline = get("/sitemap.xml").body();
+        assertThat(baseline).doesNotContain(category);
+        jdbc.update("INSERT INTO guide_workflow_activation (activated_by) VALUES ('synthetic-test')");
+        batches.approve(batch.batchId(), "synthetic-owner");
+        assertThat(get("/sitemap.xml").body()).isEqualTo(baseline);
+        batches.publish(batch.batchId(), new GuideContentBatchService.PublishRequest(null, "standard-v1",
+                LocalDate.now(ZoneOffset.UTC)), "synthetic-owner");
+
+        var xml = get("/sitemap.xml").body();
+        var urls = java.util.regex.Pattern.compile("<loc>([^<]+)</loc>").matcher(xml).results()
+                .map(row -> row.group(1)).toList();
+        assertThat(urls).hasSize(15).doesNotHaveDuplicates();
+        for (String locale : GuideContentBatchService.LOCALES) {
+            var hub = "http://127.0.0.1:5173/" + locale + "/" + category;
+            assertThat(urls).contains(hub, hub + "/" + batch.slug());
+            assertThat(get("/api/guides/" + batch.slug() + "/locales/" + locale).statusCode()).isEqualTo(200);
+        }
+        assertThat(xml).contains("hreflang=\"en-GB\" href=\"http://127.0.0.1:5173/en/" + category)
+                .doesNotContain("hreflang=\"en\"");
+        var publication = jdbc.queryForObject("SELECT id FROM guide_publication WHERE slug = ? AND ended_at IS NULL",
+                UUID.class, batch.slug());
+        assertThatThrownBy(() -> publications.withdraw(batch.slug(), UUID.randomUUID(), "stale rollback", "synthetic-owner"))
+                .isInstanceOf(GuidePublicationService.Refused.class);
+        assertThat(get("/sitemap.xml").body()).isEqualTo(xml);
+        publications.withdraw(batch.slug(), publication, "synthetic rollback", "synthetic-owner");
+        assertThat(get("/sitemap.xml").body()).isEqualTo(baseline);
+        for (String locale : GuideContentBatchService.LOCALES) {
+            assertThat(get("/api/guides/" + batch.slug() + "/locales/" + locale).statusCode()).isEqualTo(404);
+        }
     }
 
     @Test
