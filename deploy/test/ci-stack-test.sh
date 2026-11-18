@@ -14,7 +14,12 @@
 #     deploy, idempotent redeploy, approved migration, rollback with the newer
 #     schema, automatic return to the previous image when a release is
 #     unhealthy, roll-forward, the lock, image pruning, the audit log, and that
-#     database rows survive every step.
+#     database rows survive every step;
+#   - backups to S3 (fake AWS CLI with S3's checksum behaviour): a release is
+#     refused before any change without a backup location, when the upload
+#     fails, when S3 receives other bytes or reports another checksum; a
+#     release's backup lands in S3 byte-identical, with its commit, and
+#     restores; the nightly backup keeps its names, location and local-only mode.
 # Removes everything it created unless KEEP=1.
 set -euo pipefail
 repo=$(git -C "$(dirname "$(readlink -f "$0")")" rev-parse --show-toplevel)
@@ -34,6 +39,11 @@ export RELEASE_HEALTH_SECONDS=240 KEEP_IMAGES=3
 # A repository of its own: release.sh prunes old tags of IMAGE_REPO, and must never touch real images.
 export IMAGE_REPO=lifeinuk-citest
 unset APP_IMAGE # the compose project reads it from $LIFEINUK_DIR/.env, as on the server
+# Backups go to a fake S3 in $tmp/s3 (deploy/test/fake-aws); the real AWS CLI is never called.
+unset BACKUP_S3_URI BACKUP_S3_REQUIRED BACKUP_RELEASE_COMMIT FAKE_S3_MODE
+export LIFEINUK_AWS="$tmp/bin/aws" FAKE_S3_DIR="$tmp/s3" BACKUP_ENV="$tmp/etc/backup.env"
+mkdir -p "$tmp/bin" "$tmp/s3"; ln -s "$repo/deploy/test/fake-aws" "$tmp/bin/aws"
+s3_bucket=lifeinuk-citest-backups; s3_prefix=postgres/
 source "$repo/deploy/scripts/common.sh"
 release="$LIFEINUK_DIR/scripts/release.sh"
 pg_image=$(sed -n 's/^ *image: \(postgres:16[^ ]*\)$/\1/p' "$repo/deploy/compose.yml")
@@ -82,6 +92,7 @@ app_pw=$(openssl rand -hex 32); secret=$(openssl rand -hex 32)
 printf 'POSTGRES_PASSWORD=%s\nAPP_DB_PASSWORD=%s\n' "$(openssl rand -hex 32)" "$app_pw" > "$LIFEINUK_ETC/db.env"
 sed -e "s/^DB_PASSWORD=$/DB_PASSWORD=$app_pw/" "$repo/deploy/env/backend.env.example" > "$LIFEINUK_ETC/backend.env"
 printf 'ORIGIN_SERVER_NAME=origin.test\nORIGIN_VERIFY_SECRET=%s\n' "$secret" > "$LIFEINUK_ETC/proxy.env"
+printf 'BACKUP_S3_URI=s3://%s/%s\nBACKUP_KEEP_DAYS=14\n' "$s3_bucket" "$s3_prefix" > "$BACKUP_ENV"
 openssl req -x509 -newkey rsa:2048 -nodes -days 2 -subj /CN=origin.test -addext subjectAltName=DNS:origin.test \
   -keyout "$LIFEINUK_CERTS/live/origin.test/privkey.pem" -out "$LIFEINUK_CERTS/live/origin.test/fullchain.pem" 2>/dev/null
 chmod 777 "$LIFEINUK_BACKUPS"
@@ -152,12 +163,48 @@ refused "deploy refused when the server's deploy files differ" "differ from the 
 refused "deploy refused for a wrong archive checksum" "checksum differs" "$release" deploy "$commit_b" "$sha_c" "$digest" none
 expect "still on the first image" "$tag_a" "$(current)"
 
+echo "▶ pre-release backup in S3 (fake AWS CLI)"
+s3_objects() { find "$FAKE_S3_DIR" -type f ! -name '*.meta.json' | wc -l | tr -d ' '; }
+pre_b() { compgen -G "$LIFEINUK_BACKUPS/*pre-release-${commit_b:0:12}.dump" | wc -l | tr -d ' '; }
+expect "status: backup location" "s3://$s3_bucket/$s3_prefix" "$(field backup_s3_uri "$("$release" status 2>/dev/null)")"
+BACKUP_ENV=$tmp/etc/absent.env refused "release refused without a backup location" "no off-instance location" "$release" deploy "$commit_b" "$sha_b" "$digest" none
+st=$(BACKUP_ENV=$tmp/etc/absent.env "$release" status 2>/dev/null)
+expect "status: missing backup location" missing "$(field backup_s3_uri "$st")"
+BACKUP_S3_URI=s3://$s3_bucket refused "release refused with a location outside a prefix" "must look like" "$release" deploy "$commit_b" "$sha_b" "$digest" none
+expect "no backup taken by the refusals" 0 "$(pre_b)"
+FAKE_S3_MODE=fail refused "release refused when the upload fails" "verified copy in S3 failed; nothing changed" "$release" deploy "$commit_b" "$sha_b" "$digest" none
+FAKE_S3_MODE=corrupt refused "release refused when S3 receives other bytes (BadDigest)" "verified copy in S3 failed; nothing changed" "$release" deploy "$commit_b" "$sha_b" "$digest" none
+expect "no object stored by the failed or rejected uploads" 0 "$(s3_objects)"
+FAKE_S3_MODE=misreport refused "release refused when S3 reports another checksum" "verified copy in S3 failed; nothing changed" "$release" deploy "$commit_b" "$sha_b" "$digest" none
+expect "an unverified dump gets no .sha256 in S3" "1 0" "$(s3_objects) $(find "$FAKE_S3_DIR" -name '*.dump.sha256' | wc -l | tr -d ' ')"
+rm -rf "${FAKE_S3_DIR:?}"/*
+expect "first image still running after the failed backups" "$tag_a" "$(current)"
+expect "first image healthy" healthy "$(field app_health "$("$release" status 2>/dev/null)")"
+expect "schema unchanged" "$((next - 1))" "$(flyway_version life_in_uk)"
+expect "no release recorded" 0 "$(cat "$LIFEINUK_DIR/releases.log" 2>/dev/null | grep -c ' deploy start ' || true)"
+expect "the dumps whose copy failed stay on the instance" 3 "$(pre_b)"
+rm -f "$LIFEINUK_BACKUPS"/*"pre-release-${commit_b:0:12}".dump*
+
 db_sql postgres life_in_uk "CREATE TABLE ci_marker (note text); INSERT INTO ci_marker VALUES ('kept')"
 out=$("$release" deploy "$commit_b" "$sha_b" "$digest" none 2>/dev/null) && pass "deploy B: $(grep '^RESULT' <<<"$out")" || fail "deploy B failed: $out"
 expect "B running" "$tag_b" "$(current)"
 expect "B healthy" healthy "$(field app_health "$("$release" status 2>/dev/null)")"
 backups=("$LIFEINUK_BACKUPS"/*"pre-release-${commit_b:0:12}.dump")
 expect "pre-release backup taken" 1 "$(compgen -G "${backups[0]}" | wc -l | tr -d ' ')"
+dump=${backups[0]}; key="$s3_prefix$(basename "$dump")"; obj="$FAKE_S3_DIR/$s3_bucket/$key"
+meta() { python3 -c 'import json,sys; m=json.load(open(sys.argv[1])); print(m["Metadata"].get(sys.argv[2], m.get(sys.argv[2], "")))' "$obj.meta.json" "$1"; }
+expect "pre-release backup in S3, byte-identical" "$(cut -c1-64 "$dump.sha256")" "$(sha256sum "$obj" 2>/dev/null | cut -c1-64)"
+expect "its .sha256 in S3" "$(cat "$dump.sha256")" "$(cat "$obj.sha256" 2>/dev/null)"
+expect "S3 metadata: release commit" "$commit_b" "$(meta release-commit)"
+expect "S3 metadata: image running when it was taken" "$tag_a" "$(meta app-image)"
+expect "S3 metadata: Flyway version" "$((next - 1))" "$(meta flyway)"
+expect "S3 metadata: timestamp in the name" "$(meta created)" "$(basename "$dump" | sed 's/^life_in_uk-\([0-9TZ]*\)-.*/\1/')"
+expect "SSE-S3 requested" AES256 "$(meta ServerSideEncryption)"
+grep -q " deploy start image=$tag_b .* backup_s3=s3://$s3_bucket/$key" "$LIFEINUK_DIR/releases.log" && pass "the S3 copy is in the audit trail" || fail "S3 copy not in releases.log"
+mv "$dump" "$tmp/local.dump" && cp "$obj" "$dump"
+out=$("$LIFEINUK_DIR/scripts/restore.sh" check "$dump" 2>&1) && grep -q "restore drill OK: guides=0 .* flyway=V$((next - 1))" <<<"$out" \
+  && pass "the S3 copy restores (restore.sh check)" || fail "restore of the S3 copy: $(tail -2 <<<"$out")"
+mv "$tmp/local.dump" "$dump"
 out=$("$release" deploy "$commit_b" "$sha_b" "$digest" none 2>/dev/null) && grep -q '^RESULT unchanged' <<<"$out" && pass "redeploying the running release changes nothing" || fail "redeploy: $out"
 
 refused "migration refused without approval" "pending for this database: $next; approved: none" "$release" deploy "$commit_c" "$sha_c" "$digest" none
@@ -186,7 +233,6 @@ refused "a second release is refused while one runs" "another release is running
 flock -u 8; exec 8>&-
 
 echo "▶ SSM document and deploy/ci/ssm-release.sh (fake AWS CLI running the document's command)"
-mkdir -p "$tmp/bin"; ln -s "$repo/deploy/test/fake-aws" "$tmp/bin/aws"
 ssm() { PATH="$tmp/bin:$PATH" FAKE_AWS_STATE="$tmp/ssm" INSTANCE_ID=i-test SSM_DOCUMENT=LifeInUK-BackendRelease SSM_POLL_SECONDS=0 SSM_OUT="$tmp/ssm.out" \
   "$repo/deploy/ci/ssm-release.sh" "$@"; }
 ssm status >/dev/null 2>&1 && expect "SSM status reports the running image" "$tag_c" "$(field current_image "$(cat "$tmp/ssm.out")")" || fail "SSM status failed"
@@ -199,6 +245,26 @@ out=$(ssm deploy commit="$commit_c" archiveSha256="$sha_c" filesDigest="$digest"
   && fail "SSM deploy reported success for a refused release" || pass "a refused release fails the SSM command"
 expect "B still running after the refusal" "$tag_b" "$(current)"
 out=$(ssm rollback allowNewerSchema=false 2>&1) && expect "SSM rollback" "$tag_c" "$(current)" || fail "SSM rollback: $(tail -3 <<<"$out")"
+
+echo "▶ nightly backup (lifeinuk-backup.service) compatibility"
+nightly_unit="$repo/deploy/systemd/lifeinuk-backup.service"
+grep -qx 'EnvironmentFile=-/etc/lifeinuk/backup.env' "$nightly_unit" && grep -qx 'ExecStart=/opt/lifeinuk/scripts/backup.sh' "$nightly_unit" \
+  && pass "nightly unit unchanged: backup.sh without a label, backup.env" || fail "nightly unit changed"
+nightly() { env -u BACKUP_S3_URI "$@" "$LIFEINUK_DIR/scripts/backup.sh" 2>/dev/null; }
+before=$(s3_objects)
+out=$(nightly BACKUP_ENV=/dev/null BACKUP_S3_URI="s3://$s3_bucket/$s3_prefix") && name=$(basename "$out") \
+  && [[ "$name" =~ ^life_in_uk-[0-9]{8}T[0-9]{6}Z\.dump$ ]] && [ -f "$FAKE_S3_DIR/$s3_bucket/$s3_prefix$name" ] && [ -f "$FAKE_S3_DIR/$s3_bucket/$s3_prefix$name.sha256" ] \
+  && pass "nightly with BACKUP_S3_URI from the unit's environment: $s3_prefix$name + .sha256" || fail "nightly (environment): $out"
+obj="$FAKE_S3_DIR/$s3_bucket/$s3_prefix$name"
+expect "nightly object has no release commit or label" "|" "$(meta release-commit)|$(meta label)"
+sleep 1
+out=$(nightly) && [ -f "$FAKE_S3_DIR/$s3_bucket/$s3_prefix$(basename "$out")" ] && pass "nightly with BACKUP_S3_URI from backup.env" || fail "nightly (backup.env): $out"
+sleep 1
+before=$(s3_objects)
+out=$(nightly BACKUP_ENV=/dev/null) && [ -f "$out" ] && pass "nightly without a location keeps a local copy only, as before" || fail "nightly (local only): $out"
+expect "nothing uploaded without a location" "$before" "$(s3_objects)"
+sleep 1
+FAKE_S3_MODE=fail nightly >/dev/null && fail "nightly reported success after a failed upload" || pass "a failed nightly upload fails the unit (local dump kept)"
 
 echo "▶ data, images and audit trail"
 expect "rows written before the releases survive" kept "$(db_sql postgres life_in_uk "SELECT note FROM ci_marker")"

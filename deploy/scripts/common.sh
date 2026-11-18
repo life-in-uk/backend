@@ -5,7 +5,8 @@
 # in the db container). Every path can be overridden for the local stack test.
 LIFEINUK_DIR=${LIFEINUK_DIR:-/opt/lifeinuk}
 LIFEINUK_BACKUPS=${LIFEINUK_BACKUPS:-/var/backups/lifeinuk}
-export LIFEINUK_BACKUPS
+BACKUP_ENV=${BACKUP_ENV:-/etc/lifeinuk/backup.env}
+export LIFEINUK_BACKUPS BACKUP_ENV
 
 log() { printf '%s %s\n' "$(date -u +%FT%TZ)" "$*" >&2; }
 die() { log "ERROR: $*"; exit 1; }
@@ -50,6 +51,42 @@ verify_checksum() {
   else
     return 1
   fi
+}
+
+# The off-instance backup location, normalised to end in "/": BACKUP_S3_URI
+# from the environment (the nightly unit may set it) or from $BACKUP_ENV (read,
+# not sourced). Empty when not configured; dies if it is malformed.
+backup_s3_uri() {
+  local uri=${BACKUP_S3_URI:-}
+  if [ -z "$uri" ] && [ -r "$BACKUP_ENV" ]; then
+    uri=$(sed -n 's/^BACKUP_S3_URI=//p' "$BACKUP_ENV" | tail -1)
+    uri=${uri#[\"\']}; uri=${uri%[\"\']}
+  fi
+  [ -n "$uri" ] || return 0
+  uri=${uri%/}/
+  [[ "$uri" =~ ^s3://[a-z0-9][a-z0-9.-]{1,61}[a-z0-9]/([A-Za-z0-9._=-]+/)+$ ]] \
+    || die "BACKUP_S3_URI must look like s3://<bucket>/<prefix>/ (got '$uri')"
+  printf '%s' "$uri"
+}
+
+# Uploads a file in one PutObject that carries its SHA-256 (SSE-S3). S3
+# computes the checksum of the bytes it received and rejects the upload
+# (BadDigest) unless it matches, stores it with the object, and reports it
+# back; that report must match too. PutObject is atomic, so a failure never
+# leaves a partial object. Needs only s3:PutObject; single requests are
+# limited to 5 GB (dumps are a few MB).
+#   s3_put_verified <file> <s3://bucket/key> <sha256 hex> [metadata k=v,...]
+s3_put_verified() {
+  local file=$1 uri=$2 sha=$3 bucket key b64 got
+  local meta_args=()
+  [ -z "${4:-}" ] || meta_args=(--metadata "$4")
+  bucket=${uri#s3://}; key=${bucket#*/}; bucket=${bucket%%/*}
+  [ "$(sha256sum "$file" | cut -c1-64)" = "$sha" ] || { log "$file does not match its SHA-256"; return 1; }
+  b64=$(python3 -c 'import base64,sys; print(base64.b64encode(bytes.fromhex(sys.argv[1])).decode())' "$sha")
+  got=$("${LIFEINUK_AWS:-aws}" s3api put-object --bucket "$bucket" --key "$key" --body "$file" \
+    --server-side-encryption AES256 --checksum-algorithm SHA256 --checksum-sha256 "$b64" "${meta_args[@]}" \
+    --query ChecksumSHA256 --output text) || { log "upload to $uri failed"; return 1; }
+  [ "$got" = "$b64" ] || { log "S3 reports SHA-256 '$got' for $uri, expected $b64"; return 1; }
 }
 
 # Digest of the deployment files that the server runs from (compose.yml, nginx,
