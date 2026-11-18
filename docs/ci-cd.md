@@ -65,7 +65,12 @@ stays the workstation test for the first deployment and backups.
    the image's revision label, takes `backup.sh pre-release-<commit>`, switches
    `APP_IMAGE`, starts the app (Flyway migrates if approved), waits for
    health and checks the API. If the app is not healthy it puts the previous
-   image back and the job fails. Then the job runs `deploy/ci/public-smoke.sh`
+   image back and the job fails. If an approved migration was already applied,
+   that previous image then runs on the newer schema (the database is never
+   rolled back): this restores service after additive migrations; after a
+   destructive one the old image may fail too, and the log says to restore
+   the `pre-release-<commit>` backup by hand. Approve destructive migrations
+   only with that recovery in mind. Then the job runs `deploy/ci/public-smoke.sh`
    through CloudFront.
 6. The summary shows the commit, archive SHA-256, image ID, Flyway before and
    after, the backup name and the smoke results. `/opt/lifeinuk/releases.log`
@@ -95,6 +100,13 @@ rollback rolls forward again.
 digest and rollback target without changing anything.
 
 ## One-time setup (owner approval required; nothing here has been applied)
+
+**Order matters.** Configure the GitHub `production` environment (below)
+*before* creating the IAM role. A job that names an environment makes GitHub
+create it automatically **without protection rules**, and the role's trust
+policy only checks the environment name, so the reviewer rule and the
+`main`-only branch rule are what make approval mandatory. In the environment,
+also untick "Allow administrators to bypass configured protection rules".
 
 **AWS** (eu-west-2; account 919693204623; the GitHub OIDC provider exists):
 
@@ -134,7 +146,7 @@ Check with `/opt/lifeinuk/scripts/release.sh status`.
 
 **GitHub** (repository settings):
 
-- Environment `production`: required reviewer = owner; deployment branches = `main` only.
+- Environment `production`: required reviewer = owner; administrators may not bypass; deployment branches = `main` only.
 - Variables: `AWS_BACKEND_DEPLOY_ROLE_ARN` =
   `arn:aws:iam::919693204623:role/LifeInUK-GitHub-BackendDeploy`,
   `BACKEND_INSTANCE_ID` = `i-0d0c006308c9ffba0`,
