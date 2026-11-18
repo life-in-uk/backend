@@ -103,10 +103,19 @@ digest and rollback target without changing anything.
 
 **Order matters.** Configure the GitHub `production` environment (below)
 *before* creating the IAM role. A job that names an environment makes GitHub
-create it automatically **without protection rules**, and the role's trust
-policy only checks the environment name, so the reviewer rule and the
-`main`-only branch rule are what make approval mandatory. In the environment,
-also untick "Allow administrators to bypass configured protection rules".
+create it automatically **without protection rules**, and the reviewer rule
+is what makes approval mandatory. In the environment, also untick "Allow
+administrators to bypass configured protection rules"; that setting exists
+only in the web UI (Settings → Environments → production), the REST API can
+neither set nor read it.
+
+The trust policy (`infra/aws/backend-deploy-trust.json`) requires, with
+`StringEquals`: audience `sts.amazonaws.com`; the immutable subject
+`repo:life-in-uk@337042510/backend@1402159526:environment:production`
+(organization and repository IDs, so a renamed or re-created repository
+cannot match); and `token.actions.githubusercontent.com:ref` =
+`refs/heads/main`, a GitHub condition key IAM supports. A run from any other
+branch is refused by AWS even if GitHub's branch rule were missing.
 
 **AWS** (eu-west-2; account 919693204623; the GitHub OIDC provider exists):
 
