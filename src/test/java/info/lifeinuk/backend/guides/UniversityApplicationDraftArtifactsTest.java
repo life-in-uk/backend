@@ -1,17 +1,24 @@
 package info.lifeinuk.backend.guides;
 
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
 import java.util.Optional;
+import java.util.Set;
+import java.util.regex.Pattern;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import static org.assertj.core.api.Assertions.assertThat;
 
-/** The unpublished article is local. CI still verifies the topic's review policy. */
+/** The unpublished articles are local. CI still verifies the topic's review policy. */
 class UniversityApplicationDraftArtifactsTest {
-    private static final String SLUG = "uk-undergraduate-application-timeline";
-    private static final Path DRAFT = Path.of("content", "drafts", GuideQualityGate.UNIVERSITY_CATEGORY, SLUG + "-zh.json");
+    private static final Path DRAFTS = Path.of("content", "drafts", GuideQualityGate.UNIVERSITY_CATEGORY);
+    private static final Set<String> OFFICIAL_SOURCE_HOSTS = Set.of(
+            "www.ucas.com", "www.gov.uk", "www.aqa.org.uk");
+    private static final Pattern EVIDENCE_LINK = Pattern.compile("\\]\\(#guide-evidence-([a-z0-9-]+)\\)");
 
     @Test
     void sharedTopicUsesTheStricterEvidenceChecklist() throws Exception {
@@ -24,18 +31,33 @@ class UniversityApplicationDraftArtifactsTest {
         assertThat(GuideQualityGateTest.codes(unused, GuideQualityGate.Severity.BLOCKING)).containsExactly("SOURCE_UNUSED");
     }
 
-    @Test
-    void privateTimelineDraftPassesTheProductionReaderAndQualityGate() throws Exception {
-        Assumptions.assumeTrue(Files.isRegularFile(DRAFT), "private local timeline draft not present");
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "uk-undergraduate-application-timeline",
+            "ucas-undergraduate-application-course-choices",
+            "uk-undergraduate-entry-requirements-predicted-grades",
+            "ucas-personal-statement-three-questions",
+            "ucas-offers-results-day-clearing",
+            "student-finance-england-undergraduate",
+            "uk-student-visa-application",
+            "student-visa-cas-financial-english-evidence",
+            "student-visa-after-approval-arrival-enrolment"
+    })
+    void privateDraftPassesTheProductionReaderAndQualityGate(String slug) throws Exception {
+        Assumptions.assumeTrue(Files.isDirectory(DRAFTS), "private local university drafts not present");
         var reader = new GuideImportReader();
-        var draft = reader.read(DRAFT);
-        assertThat(draft.slug()).isEqualTo(SLUG);
+        var draft = reader.read(DRAFTS.resolve(slug + "-zh.json"));
+        assertThat(draft.slug()).isEqualTo(slug);
         assertThat(draft.category()).isEqualTo(GuideQualityGate.UNIVERSITY_CATEGORY);
         assertThat(draft.status()).isEqualTo(GuideStatus.DRAFT);
         assertThat(draft.publishedAt()).isNull();
-        assertThat(draft.content()).contains("2027 年 1 月 13 日", "Clearing", GuideQualityGate.LAST_UPDATED_MARKER);
+        assertThat(draft.content()).contains(GuideQualityGate.LAST_UPDATED_MARKER);
         assertThat(draft.sources()).allSatisfy(source ->
-                assertThat(source.url()).matches("https://www\\.(ucas\\.com|gov\\.uk)/.+"));
+                assertThat(URI.create(source.url()).getHost()).isIn(OFFICIAL_SOURCE_HOSTS));
+        var linkedEvidence = EVIDENCE_LINK.matcher(draft.content()).results()
+                .map(match -> match.group(1)).distinct().toList();
+        assertThat(draft.evidence()).extracting(GuideImportDefinition.Evidence::key)
+                .containsExactlyInAnyOrderElementsOf(linkedEvidence);
         var gate = new GuideQualityGate(new GuideRevisionService(null, reader));
         var report = gate.check(GuideQualityGateTest.revision(draft), Optional.empty(), Instant.now());
         assertThat(report.checklist()).isEqualTo(GuideQualityGate.Checklist.FAMILY_VISA_V1);
