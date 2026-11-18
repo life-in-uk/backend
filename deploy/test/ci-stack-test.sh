@@ -246,6 +246,27 @@ out=$(ssm deploy commit="$commit_c" archiveSha256="$sha_c" filesDigest="$digest"
 expect "B still running after the refusal" "$tag_b" "$(current)"
 out=$(ssm rollback allowNewerSchema=false 2>&1) && expect "SSM rollback" "$tag_c" "$(current)" || fail "SSM rollback: $(tail -3 <<<"$out")"
 
+echo "▶ backend.env changes take effect only when the app container is recreated"
+export SET_ENV_BACKUPS="$tmp/envbak"
+rail_code() { curl -s http://127.0.0.1:18080/api/rail/stations/KGX/arrivals | python3 -c 'import json,sys; print(json.load(sys.stdin).get("code"))' 2>/dev/null; }
+app_id=$(compose ps -q app); running_image=$(current)
+expect "Rail off in the running app" RAIL_DISABLED "$(rail_code)"
+"$LIFEINUK_DIR/scripts/set-env.sh" "$LIFEINUK_ETC/backend.env" RAIL_ACCESS_ENABLED=true >/dev/null
+expect "after set-env the running app is unchanged" RAIL_DISABLED "$(rail_code)"
+docker restart "$app_id" >/dev/null && wait_healthy app 240
+expect "a container restart (crash, reboot) keeps the old settings" RAIL_DISABLED "$(rail_code)"
+expect "same container" "$app_id" "$(compose ps -q app)"
+compose up -d --no-deps app >/dev/null 2>&1 && wait_healthy app 240
+expect "recreating the app applies the file (no keys here: not configured)" RAIL_NOT_CONFIGURED "$(rail_code)"
+expect "image unchanged by the recreate" "$running_image" "$(current)"
+"$LIFEINUK_DIR/scripts/set-env.sh" "$LIFEINUK_ETC/backend.env" RAIL_ACCESS_ENABLED=false >/dev/null
+# A failed release puts the previous image back by recreating the app, so that image starts with the
+# file as it is: Rail stays off as long as the file says so (docs/travel-release.md keeps it off until
+# the new image is confirmed).
+out=$("$release" deploy "$commit_d" "$sha_d" "$digest" none 2>/dev/null) && fail "broken release reported success" || pass "broken release fails and the previous image is put back"
+expect "previous image running" "$running_image" "$(current)"
+expect "Rail still off on the previous image" RAIL_DISABLED "$(rail_code)"
+
 echo "▶ nightly backup (lifeinuk-backup.service) compatibility"
 nightly_unit="$repo/deploy/systemd/lifeinuk-backup.service"
 grep -qx 'EnvironmentFile=-/etc/lifeinuk/backup.env' "$nightly_unit" && grep -qx 'ExecStart=/opt/lifeinuk/scripts/backup.sh' "$nightly_unit" \
