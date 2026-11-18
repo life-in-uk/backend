@@ -59,11 +59,11 @@ pages stay up). The instance already has outbound internet access (certbot, S3);
 4. `docker compose up -d app`; check the logs for `Roads refresh succeeded` and
    `/api/travel/roads?lat=51.5074&lon=-0.1278` returns 200 with a recent `snapshotAt`.
 
-**3. Rail (blocked).** Not to be enabled until the RDM Platform Agreement Schedule 2 (Policies) has been
-obtained and reviewed, the commercial use of the Departure product is assessed, and the subscribed quota
-is known (rail-production-readiness.md). Then: this fix deployed; the four `NATIONAL_RAIL_*` values and
-`RAIL_ACCESS_ENABLED=true`; and a frontend change, because production builds exclude the Rail tool
-(`railToolEnabled()` is development-only).
+**3. Rail.** Released by the owner on 2026-11-18 (travel-provider-approvals.md §3). Needs this fix
+deployed, the Arrival and Departure keys, `NATIONAL_RAIL_DEPARTURES_BASE_URL` and `RAIL_ACCESS_ENABLED=true`;
+the frontend now ships the Rail tool in production builds.
+
+All three are released together: [travel-release.md](travel-release.md).
 
 **Release order.** This change needs a backend release (new image) through **Deploy production**. If PR #58
 (deploy files) is merged first, the server's deploy files must be updated first (docs/deploy-files-update.md

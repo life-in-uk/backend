@@ -47,7 +47,7 @@ new digest and archive SHA-256 at the merge commit:
 | New digest (branch head) | `936d3bc259824469f69577906f1643c5b2848e2a15e6418d3b367dc8f8cf2761` |
 | Changes on the server | `scripts/` (backup.sh, common.sh, release.sh; renew-cert.sh removed), `systemd/` (unused lifeinuk-cert-renew.* removed), new `certbot/`, `env/backup.env.example` |
 | Unchanged | `compose.yml`, `nginx/`, `db/`, every container, `/etc/systemd/system` |
-| `BACKUP_S3_URI` | `s3://lifeinuk-backups-919693204623-eu-west-2/postgres/` (must equal the nightly drop-in) |
+| `BACKUP_S3_URI` | `s3://lifeinuk-backups-919693204623-eu-west-2/postgres/` (already in `backup.env`, checked 2026-11-18; the nightly unit reads the same file) |
 
 Not between 02:30 and 02:50 UTC (nightly backup).
 

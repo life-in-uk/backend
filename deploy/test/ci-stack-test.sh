@@ -266,6 +266,32 @@ expect "nothing uploaded without a location" "$before" "$(s3_objects)"
 sleep 1
 FAKE_S3_MODE=fail nightly >/dev/null && fail "nightly reported success after a failed upload" || pass "a failed nightly upload fails the unit (local dump kept)"
 
+echo "▶ set-env.sh (secrets never on a command line or in output)"
+setenv="$LIFEINUK_DIR/scripts/set-env.sh"
+envf="$tmp/etc/travel.env"; export SET_ENV_BACKUPS="$tmp/envbak"
+printf '# comment kept\nDB_PASSWORD=dbsecret-unchanged\nOS_NAMES_API_KEY=\nRAIL_ACCESS_ENABLED=false\n' > "$envf"; chmod 600 "$envf"
+before=$(cat "$envf")
+out=$(printf 'os-key-123\nnh-key-456\n' | SET_ENV_STDIN=1 "$setenv" "$envf" OS_NAMES_API_KEY NATIONAL_HIGHWAYS_API_KEY RAIL_ACCESS_ENABLED=true NATIONAL_RAIL_DEPARTURES_BASE_URL=https://example.test/LDBWS 2>"$tmp/set-env.err") \
+  && pass "set-env: secrets prompted, settings given" || fail "set-env: $out $(cat "$tmp/set-env.err")"
+grep -q -e os-key-123 -e nh-key-456 <<<"$out$(cat "$tmp/set-env.err")" && fail "set-env printed a secret value" || pass "set-env prints no secret values (stdout or stderr)"
+expect "set-env: replaced in place, appended, comments and other secrets kept" \
+  "# comment kept|DB_PASSWORD=dbsecret-unchanged|OS_NAMES_API_KEY=os-key-123|RAIL_ACCESS_ENABLED=true|NATIONAL_HIGHWAYS_API_KEY=nh-key-456|NATIONAL_RAIL_DEPARTURES_BASE_URL=https://example.test/LDBWS" \
+  "$(paste -sd'|' "$envf")"
+expect "set-env: file stays 0600" 600 "$(stat -c %a "$envf")"
+expect "set-env: previous file saved" "$before" "$(cat "$SET_ENV_BACKUPS"/travel.env.*)"
+expect "set-env: fingerprint matches its own output" "$(grep '^OS_NAMES_API_KEY ' <<<"$out")" "$("$setenv" --fingerprint "$envf" OS_NAMES_API_KEY)"
+printf 'export OS_NAMES_API_KEY="os-key-123"\n' > "$tmp/local.env"
+expect "env-fingerprint.sh on a local copy (export, quotes) gives the same fingerprint" \
+  "$("$setenv" --fingerprint "$envf" OS_NAMES_API_KEY)" "$("$repo/deploy/ops/env-fingerprint.sh" "$tmp/local.env" OS_NAMES_API_KEY)"
+snapshot=$(cat "$envf")
+refused "set-env refuses a secret on the command line" "looks secret" "$setenv" "$envf" OS_NAMES_API_KEY=leaked
+refused "set-env refuses to prompt for a non-secret" "does not look secret" "$setenv" "$envf" RAIL_ACCESS_ENABLED
+refused "set-env reads secrets only from a terminal" "from a terminal" "$setenv" "$envf" OS_NAMES_API_KEY
+refused "set-env refuses a secret with a space" "spaces or control" bash -c "printf 'a b\n' | SET_ENV_STDIN=1 '$setenv' '$envf' OS_NAMES_API_KEY"
+expect "refusals change nothing" "$snapshot" "$(cat "$envf")"
+printf '\n' | SET_ENV_STDIN=1 "$setenv" "$envf" OS_NAMES_API_KEY >/dev/null 2>&1
+expect "an empty answer keeps the current secret" "OS_NAMES_API_KEY=os-key-123" "$(grep '^OS_NAMES_API_KEY=' "$envf")"
+
 echo "▶ data, images and audit trail"
 expect "rows written before the releases survive" kept "$(db_sql postgres life_in_uk "SELECT note FROM ci_marker")"
 expect "rows written by a release survive" 1 "$(db_sql postgres life_in_uk "SELECT count(*) FROM ci_release_test")"
