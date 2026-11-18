@@ -119,8 +119,8 @@ amended. Recording this cadence is an owner decision.
 ## 3. Rail
 
 ### 3.1 Public release (owner decision, 2026-11-18)
-The owner released Rail arrivals and departures for public use, together with Underground and Roads
-([travel-release.md](travel-release.md)). The owner confirmed that the RDM account, the Arrival and
+The owner approved Rail arrivals and departures for public use, to be released together with Underground
+and Roads ([travel-release.md](travel-release.md); deployment pending). The owner confirmed that the RDM account, the Arrival and
 Departure product subscriptions and their Data Sharing Agreements are in place. Basis in the archived
 documents (checked 2026-11-18; nothing new requested from RDM):
 

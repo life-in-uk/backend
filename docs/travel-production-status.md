@@ -59,11 +59,11 @@ pages stay up). The instance already has outbound internet access (certbot, S3);
 4. `docker compose up -d app`; check the logs for `Roads refresh succeeded` and
    `/api/travel/roads?lat=51.5074&lon=-0.1278` returns 200 with a recent `snapshotAt`.
 
-**3. Rail.** Released by the owner on 2026-11-18 (travel-provider-approvals.md §3). Needs this fix
+**3. Rail.** Approved for public release by the owner on 2026-11-18 (travel-provider-approvals.md §3); not yet deployed. Needs this fix
 deployed, the Arrival and Departure keys, `NATIONAL_RAIL_DEPARTURES_BASE_URL` and `RAIL_ACCESS_ENABLED=true`;
 the frontend now ships the Rail tool in production builds.
 
-All three are released together: [travel-release.md](travel-release.md).
+All three are to be released together: [travel-release.md](travel-release.md) (prepared, not executed).
 
 **Release order.** This change needs a backend release (new image) through **Deploy production**. If PR #58
 (deploy files) is merged first, the server's deploy files must be updated first (docs/deploy-files-update.md
