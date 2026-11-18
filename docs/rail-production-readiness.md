@@ -1,5 +1,10 @@
 # Rail production readiness review
 
+> **2026-11-18:** Rail is released for public use (owner decision; basis and the archived-document check in
+> [travel-provider-approvals.md §3.1](travel-provider-approvals.md)). The per-viewer limit now keys on the
+> CloudFront viewer address (#59). Release procedure: [travel-release.md](travel-release.md). The review
+> below is kept as written on 27 October 2026.
+
 Scope: isolated Rail branch, 27 October 2026. Repository inspection and local,
 mocked tests only. No production host, reverse proxy, secrets, live RDM request,
 licensing attachment or infrastructure was inspected or changed. Production

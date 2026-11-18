@@ -118,6 +118,28 @@ amended. Recording this cadence is an owner decision.
 
 ## 3. Rail
 
+### 3.1 Public release (owner decision, 2026-11-18)
+The owner released Rail arrivals and departures for public use, together with Underground and Roads
+([travel-release.md](travel-release.md)). The owner confirmed that the RDM account, the Arrival and
+Departure product subscriptions and their Data Sharing Agreements are in place. Basis in the archived
+documents (checked 2026-11-18; nothing new requested from RDM):
+
+- **RDM Platform Agreement (Consumer)**, owner's copy of 2026-10-27, 16 pages. Its contents list names
+  Schedule 1 (SLAs, p.16) and Schedule 2 (Policies, p.19); the copy ends on p.16 with clause 23, so
+  neither schedule is in the archive. Clause 4.1 commits the consumer to the Marketplace Policies; clause
+  3.3 lets RDG throttle or suspend access on a "Material Capacity Impact". No clause sets a numeric quota
+  or forbids public display. Keeping a copy of Schedule 2 with the agreement is housekeeping, not a
+  release condition.
+- **Arrival product:** public redistribution with National Rail attribution, open/free licence, no
+  commercial-use restriction in the Special Conditions (owner's review, rail-production-readiness.md).
+- **Departure product:** public redistribution with attribution; no resale "as-is or substantially
+  unmodified"; commercial use needs material augmentation, integration or added value. Life in UK does
+  not resell boards: it shows only disruptions for a station the visitor chose, interpreted (cancelled,
+  delayed, part-cancelled, Delay Repay hint) in five languages beside its other travel tools.
+- **Quota:** none is set in the documents. The app keeps far below anything that could be a capacity
+  impact: no polling, nothing stored, 6 checks per viewer and 60 per instance per minute, 4 concurrent.
+
+### 3.2 Switch
 `life-in-uk.rail-access.enabled` defaults to `false`. While it is off, no Rail endpoint contacts
 RDM, even if Rail credentials are present; responses are `503 RAIL_DISABLED`. It stays off until
 the RDM Schedule 2 policy review, licensing and rate-limit requirements are complete.
