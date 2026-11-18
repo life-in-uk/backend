@@ -1,0 +1,71 @@
+#!/usr/bin/env python3
+"""A stand-in for the AWS CLI's SSM Run Command, for deploy/test/ci-stack-test.sh.
+
+Supports exactly what deploy/ci/ssm-release.sh uses:
+  aws ssm send-command --instance-ids I --document-name D --parameters JSON ... --query Command.CommandId --output text
+  aws ssm get-command-invocation --command-id C --instance-id I --query Status|StandardOutputContent|StandardErrorContent --output text
+
+send-command validates the parameters against infra/aws/ssm-backend-release.yml
+(allowedValues, allowedPattern, defaults) like SSM does, substitutes them into
+the document's runCommand, and runs it synchronously with bash, with
+/opt/lifeinuk replaced by $LIFEINUK_DIR. State lives in $FAKE_AWS_STATE.
+"""
+import json
+import os
+import re
+import subprocess
+import sys
+import uuid
+from pathlib import Path
+
+import yaml
+
+ROOT = Path(__file__).resolve().parents[2]
+DOCUMENT = yaml.safe_load((ROOT / "infra/aws/ssm-backend-release.yml").read_text())
+STATE = Path(os.environ["FAKE_AWS_STATE"])
+STATE.mkdir(parents=True, exist_ok=True)
+
+
+def opt(args, name):
+    return args[args.index(name) + 1]
+
+
+def fail(message, code=254):
+    print(f"\nAn error occurred (InvalidParameters) when calling the SendCommand operation: {message}", file=sys.stderr)
+    sys.exit(code)
+
+
+args = sys.argv[1:]
+if args[:2] == ["ssm", "send-command"]:
+    if opt(args, "--document-name") != os.environ.get("SSM_DOCUMENT", "LifeInUK-BackendRelease"):
+        fail("unknown document")
+    given = {key: value[0] for key, value in json.loads(opt(args, "--parameters")).items()}
+    values = {}
+    for name, spec in DOCUMENT["parameters"].items():
+        value = given.pop(name, spec.get("default"))
+        if value is None:
+            fail(f"missing parameter {name}")
+        if "allowedValues" in spec and value not in spec["allowedValues"]:
+            fail(f"{name} is not an allowed value")
+        if "allowedPattern" in spec and not re.fullmatch(spec["allowedPattern"], value):
+            fail(f"{name} does not match {spec['allowedPattern']}")
+        values[name] = value
+    if given:
+        fail(f"unknown parameters {sorted(given)}")
+    script = "\n".join(DOCUMENT["mainSteps"][0]["inputs"]["runCommand"])
+    script = re.sub(r"\{\{\s*(\w+)\s*\}\}", lambda m: values[m.group(1)], script)
+    script = script.replace("/opt/lifeinuk", os.environ["LIFEINUK_DIR"])
+    run = subprocess.run(["bash", "-c", script], capture_output=True, text=True)
+    command_id = str(uuid.uuid4())
+    (STATE / f"{command_id}.json").write_text(json.dumps({
+        "Status": "Success" if run.returncode == 0 else "Failed",
+        "StandardOutputContent": run.stdout[-24000:],
+        "StandardErrorContent": run.stderr[-8000:],
+    }))
+    print(command_id)
+elif args[:2] == ["ssm", "get-command-invocation"]:
+    record = json.loads((STATE / f"{opt(args, '--command-id')}.json").read_text())
+    print(record[opt(args, "--query")])
+else:
+    print(f"fake-aws: unsupported command {args[:2]}", file=sys.stderr)
+    sys.exit(2)

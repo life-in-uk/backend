@@ -1,0 +1,43 @@
+# SSM Command document "LifeInUK-BackendRelease" (docs/ci-cd.md).
+# The only command the GitHub deploy role may send to the instance: it runs the
+# installed /opt/lifeinuk/scripts/release.sh with validated parameters, so the
+# role cannot run arbitrary shell commands on the server.
+schemaVersion: "2.2"
+description: "Life in UK backend release: status, deploy or rollback of the app image (deploy/scripts/release.sh)."
+parameters:
+  action:
+    type: String
+    allowedValues: [status, deploy, rollback]
+  commit:
+    type: String
+    default: "none"
+    allowedPattern: "^([0-9a-f]{40}|none)$"
+  archiveSha256:
+    type: String
+    default: "none"
+    allowedPattern: "^([0-9a-f]{64}|none)$"
+  filesDigest:
+    type: String
+    default: "none"
+    allowedPattern: "^([0-9a-f]{64}|none)$"
+  approvedMigrations:
+    type: String
+    default: "none"
+    allowedPattern: "^(none|[0-9]{1,4}(,[0-9]{1,4}){0,19})$"
+  allowNewerSchema:
+    type: String
+    default: "false"
+    allowedValues: ["true", "false"]
+mainSteps:
+  - action: aws:runShellScript
+    name: release
+    inputs:
+      timeoutSeconds: "1200"
+      runCommand:
+        - |
+          set -eu
+          case "{{ action }}" in
+            status)   exec /opt/lifeinuk/scripts/release.sh status ;;
+            deploy)   exec /opt/lifeinuk/scripts/release.sh deploy "{{ commit }}" "{{ archiveSha256 }}" "{{ filesDigest }}" "{{ approvedMigrations }}" ;;
+            rollback) exec /opt/lifeinuk/scripts/release.sh rollback "{{ allowNewerSchema }}" ;;
+          esac

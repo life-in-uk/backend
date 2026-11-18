@@ -1,6 +1,9 @@
 # Publishing content to production
 
-Status: **design, not yet implemented** (owner decision 2026-11-17). The
+Status: **design, not yet implemented** (owner decision 2026-11-17; still the
+open follow-up after CI/CD, `docs/ci-cd.md`). Until `promote.py` exists, new
+Guides and translation updates cannot reach production (withdrawal works, see
+below); code releases never change content. The
 first deployment uses the approved seed (RUNBOOK.md section 2); this document
 covers every content release after that.
 
