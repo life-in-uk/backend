@@ -62,7 +62,10 @@ stays the workstation test for the first deployment and backups.
      schema: if not, a rollback will need the pre-release backup.
    - The server repeats the migration check against the image's own jar.
 5. On the server `release.sh deploy`: checks the archive SHA-256 from CI and
-   the image's revision label, takes `backup.sh pre-release-<commit>`, switches
+   the image's revision label, takes `backup.sh pre-release-<commit>` and
+   uploads it to the backups bucket (`BACKUP_S3_URI`, SHA-256 checked by S3,
+   metadata with the release commit; refused before any change if that is
+   not configured or the upload is not verified), switches
    `APP_IMAGE`, starts the app (Flyway migrates if approved), waits for
    health and checks the API. If the app is not healthy it puts the previous
    image back and the job fails. If an approved migration was already applied,
@@ -96,8 +99,12 @@ rollback rolls forward again.
   then `release.sh rollback true`). A restore loses everything written since
   the backup.
 
+A rollback changes only the application image; it never touches the
+database. Restoring the database is a separate, manual and destructive
+operation (RUNBOOK.md section 4).
+
 `action` = status shows the running image, Flyway version, deploy-files
-digest and rollback target without changing anything.
+digest, rollback target and backup location without changing anything.
 
 ## One-time setup (owner approval required; nothing here has been applied)
 

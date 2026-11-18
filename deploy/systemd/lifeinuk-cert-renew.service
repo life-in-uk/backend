@@ -1,8 +1,0 @@
-[Unit]
-Description=Renew the Life in UK origin certificate (deploy/scripts/renew-cert.sh)
-Requires=docker.service
-After=docker.service
-
-[Service]
-Type=oneshot
-ExecStart=/opt/lifeinuk/scripts/renew-cert.sh

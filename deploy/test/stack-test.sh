@@ -27,6 +27,7 @@ compare_api=${COMPARE_API:-http://127.0.0.1:8188}
 tmp=$(mktemp -d)
 export LIFEINUK_DIR="$repo/deploy" LIFEINUK_PROJECT=lifeinuk-stacktest
 export LIFEINUK_ETC="$tmp/etc" LIFEINUK_CERTS="$tmp/letsencrypt" LIFEINUK_BACKUPS="$tmp/backups"
+unset BACKUP_S3_URI; export BACKUP_ENV=/dev/null   # backups stay local; never the real S3 location
 export LIFEINUK_APP_BIND=127.0.0.1:18080 LIFEINUK_PROXY_BIND=127.0.0.1:18443
 export APP_IMAGE=lifeinuk-backend:stacktest
 source "$repo/deploy/scripts/common.sh"

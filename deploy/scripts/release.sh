@@ -15,8 +15,11 @@
 #          checks its revision label.
 #       3. Refuses if the image brings Flyway migrations newer than the
 #          database unless exactly those versions are approved ("16,17").
-#       4. Takes a backup (backup.sh pre-release-<commit12>), switches
-#          APP_IMAGE, starts the app, waits for health and checks the API.
+#       4. Takes a backup (backup.sh pre-release-<commit12>) and its copy in
+#          S3 (BACKUP_S3_URI from /etc/lifeinuk/backup.env, SHA-256 verified
+#          by S3; refuses before any change when that is not configured, and
+#          stops with nothing changed when the backup or its copy fails), then
+#          switches APP_IMAGE, starts the app, waits for health and checks the API.
 #       5. On failure puts the previous image back (the database is never
 #          restored automatically) and exits nonzero.
 #
@@ -132,6 +135,8 @@ status() {
   echo "deploy_files_digest=$(deploy_files_digest "$LIFEINUK_DIR")"
   echo "rollback_image=$(previous_image)"
   echo "app_health=$(app_health)"
+  local s3
+  if s3=$(backup_s3_uri 2>/dev/null); then echo "backup_s3_uri=${s3:-missing}"; else echo "backup_s3_uri=invalid"; fi
 }
 
 fetch_release() {
@@ -161,10 +166,12 @@ deploy() {
   [[ "$commit" =~ ^[0-9a-f]{40}$ ]] || die "commit must be 40 hex characters"
   [[ "$sha" =~ ^[0-9a-f]{64}$ ]] || die "archive sha256 must be 64 hex characters"
   [[ "$approved" =~ ^(none|[0-9]+(,[0-9]+)*)$ ]] || die "approved migrations must be none or a list like 16,17"
-  local tag="$IMAGE_REPO:${commit:0:12}" current flyway_before files pending migrations guides
+  local tag="$IMAGE_REPO:${commit:0:12}" current flyway_before files pending migrations guides backup_s3
   current=$(current_image)
   files=$(deploy_files_digest "$LIFEINUK_DIR")
   [ "$files" = "$digest" ] || die "deployment files on the server ($files) differ from the release commit's ($digest): sync deploy/ first (RUNBOOK.md section 3)"
+  backup_s3=$(backup_s3_uri)
+  [ -n "$backup_s3" ] || die "no off-instance location for the pre-release backup: set BACKUP_S3_URI in $BACKUP_ENV (RUNBOOK.md section 4); nothing changed"
   running db || die "the db service is not running"
   if [ "$current" = "$tag" ] && [ "$(app_health)" = healthy ]; then
     result "unchanged image=$tag (already running and healthy)"; return 0
@@ -180,8 +187,9 @@ deploy() {
   [ -n "$pending" ] || pending=none
   [ "$pending" = "$approved" ] || die "migrations pending for this database: $pending; approved: $approved. Review them and approve exactly these versions (docs/ci-cd.md)"
 
-  backup=$("$here/backup.sh" "pre-release-${commit:0:12}") || die "pre-release backup failed; nothing changed"
-  record "deploy start image=$tag previous=$current flyway_before=$flyway_before pending=$pending backup=$(basename "$backup")"
+  backup=$(BACKUP_S3_URI="$backup_s3" BACKUP_S3_REQUIRED=1 BACKUP_RELEASE_COMMIT="$commit" "$here/backup.sh" "pre-release-${commit:0:12}") \
+    || die "pre-release backup or its verified copy in S3 failed; nothing changed"
+  record "deploy start image=$tag previous=$current flyway_before=$flyway_before pending=$pending backup=$(basename "$backup") backup_s3=$backup_s3$(basename "$backup")"
   if guides=$(switch_to "$tag" "$current"); then
     record "deploy ok image=$tag previous=$current image_id=$(docker image inspect -f '{{.Id}}' "$tag") flyway_before=$flyway_before flyway_after=$(flyway_version life_in_uk) guides=$guides"
     prune_images "$tag" "$current"
