@@ -6,7 +6,8 @@
 # Requires a clean tracked tree, runs `mvn -B verify` (all tests against a
 # temporary PostgreSQL), builds lifeinuk-backend:<12-char commit> and saves it
 # as a gzipped archive for transfer to the server (no registry is used).
-# Set MVN to the Maven binary if it is not on PATH.
+# Set MVN to the Maven binary if it is not on PATH. JAR_VERIFIED=1 skips
+# `mvn verify` when the same job has just run it on this commit (CI only).
 set -euo pipefail
 cd "$(git rev-parse --show-toplevel)"
 log() { printf '%s %s\n' "$(date -u +%FT%TZ)" "$*" >&2; }
@@ -14,11 +15,15 @@ log() { printf '%s %s\n' "$(date -u +%FT%TZ)" "$*" >&2; }
 [ -z "$(git status --porcelain --untracked-files=no)" ] || { log "commit or stash tracked changes first"; exit 1; }
 commit=$(git rev-parse HEAD)
 tag="lifeinuk-backend:${commit:0:12}"
-mvn=${MVN:-$(command -v mvn || ls "$HOME"/.m2/wrapper/dists/apache-maven-*/*/apache-maven-*/bin/mvn 2>/dev/null | tail -1)}
-[ -x "$mvn" ] || { log "Maven not found; set MVN"; exit 1; }
-
-log "mvn verify at ${commit:0:12}"
-"$mvn" -B -q verify
+if [ "${JAR_VERIFIED:-}" = 1 ]; then
+  [ -f target/backend-0.0.1-SNAPSHOT.jar ] || { log "JAR_VERIFIED=1 but target/backend-0.0.1-SNAPSHOT.jar is missing"; exit 1; }
+  log "using the jar verified earlier in this job at ${commit:0:12}"
+else
+  mvn=${MVN:-$(command -v mvn || ls "$HOME"/.m2/wrapper/dists/apache-maven-*/*/apache-maven-*/bin/mvn 2>/dev/null | tail -1)}
+  [ -x "$mvn" ] || { log "Maven not found; set MVN"; exit 1; }
+  log "mvn verify at ${commit:0:12}"
+  "$mvn" -B -q verify
+fi
 docker build --pull=false --build-arg "REVISION=$commit" -t "$tag" .
 out=${OUT_DIR:-$HOME/.local/state/life-in-uk/release-images}
 mkdir -p "$out"

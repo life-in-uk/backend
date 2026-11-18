@@ -1,0 +1,104 @@
+# Backend CI (docs/ci-cd.md). No AWS access and no secrets: safe for pull requests from forks.
+#
+# One job, so the jar is built and tested once and the image is built from
+# that same jar: static configuration and migration checks, the full test
+# suite (temporary PostgreSQL 16 from the runner's binaries; Flyway applies
+# every migration), the production image, and the stack test (real
+# compose.yml: empty-database start, nginx origin protections, and every
+# release.sh deploy/rollback path). On main, the tested image archive is kept
+# as the artifact the production deploy workflow ships.
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  verify:
+    name: Checks, tests, image and stack test
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Lint workflows and shell scripts
+        run: |
+          docker run --rm -v "$PWD:/repo" -w /repo rhysd/actionlint:1.7.12@sha256:b1934ee5f1c509618f2508e6eb47ee0d3520686341fec936f3b79331f9315667 -color
+          docker run --rm -v "$PWD:/mnt" -w /mnt koalaman/shellcheck:v0.10.0@sha256:2097951f02e735b613f4a34de20c40f937a6c8f18ecb170612c88c34517221fb \
+            -x -S warning deploy/scripts/*.sh deploy/ci/*.sh deploy/test/ci-stack-test.sh
+
+      - name: Deployment configuration
+        run: deploy/ci/check-config.sh
+
+      - name: Flyway migrations (existing ones unchanged, new ones reviewed)
+        env:
+          BASE_REF: ${{ github.base_ref }}
+          BEFORE: ${{ github.event.before }}
+        run: |
+          if [ -n "$BASE_REF" ]; then base=$(git merge-base "origin/$BASE_REF" HEAD)
+          elif [ -n "$BEFORE" ] && git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then base=$BEFORE
+          else base=HEAD^; fi
+          python3 deploy/ci/check-migrations.py --base "$base"
+
+      - uses: actions/setup-java@d1374f8ac74474200d16ef8ecee22c7ae7a51880 # v6.3.0
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+
+      - name: PostgreSQL 16 server binaries for the tests
+        run: |
+          if [ ! -x /usr/lib/postgresql/16/bin/initdb ]; then
+            sudo apt-get update -q && sudo apt-get install -y -q postgresql-16
+          fi
+          /usr/lib/postgresql/16/bin/postgres --version
+
+      - name: Tests (mvn verify)
+        run: mvn -B -ntp verify
+
+      - name: Test report
+        if: always()
+        run: python3 deploy/ci/test-summary.py target/surefire-reports >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload test reports
+        if: failure()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: surefire-reports
+          path: target/surefire-reports/
+          retention-days: 14
+
+      - name: Production image (from the tested jar)
+        id: image
+        run: |
+          tag=$(JAR_VERIFIED=1 OUT_DIR="$RUNNER_TEMP/image" deploy/scripts/build-image.sh)
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          echo "Image \`$tag\`, id \`$(docker image inspect -f '{{.Id}}' "$tag")\`" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Stack test (startup, origin protections, deploy and rollback)
+        env:
+          TAG: ${{ steps.image.outputs.tag }}
+        run: |
+          python3 -c 'import yaml' 2>/dev/null || sudo apt-get install -y -q python3-yaml   # fake SSM reads the document
+          deploy/test/ci-stack-test.sh "$TAG"
+
+      - name: Keep the tested image for production deploys
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: backend-image
+          path: ${{ runner.temp }}/image/
+          if-no-files-found: error
+          retention-days: 30
+          compression-level: 0

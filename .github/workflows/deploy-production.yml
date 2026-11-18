@@ -1,0 +1,263 @@
+# Backend production deployment (docs/ci-cd.md). Manual only; the deploy job
+# waits for the owner's approval on the "production" environment.
+#
+#   deploy:   ships the image that CI built and tested for a commit on main
+#             (no rebuild), through S3 and the SSM document
+#             LifeInUK-BackendRelease, which runs deploy/scripts/release.sh on
+#             the instance (backup, switch, health, automatic return to the
+#             previous image on failure).
+#   rollback: back to the previous image kept on the server.
+#   status:   what is running, the Flyway version and the rollback target.
+#
+# Pending Flyway migrations block the deploy until the owner lists exactly
+# those versions in approve_migrations (and, for flagged statements, ticks
+# destructive_migrations_reviewed). The database is never reset, reseeded or
+# restored by this workflow.
+name: Deploy production
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: "deploy, rollback or status"
+        type: choice
+        options: [deploy, rollback, status]
+        default: deploy
+      ref:
+        description: "deploy: commit SHA on main (blank = current main)"
+        required: false
+        default: ""
+      approve_migrations:
+        description: "deploy: pending Flyway versions you reviewed, e.g. 16,17 (none if there are none)"
+        required: false
+        default: "none"
+      destructive_migrations_reviewed:
+        description: "deploy: I reviewed the flagged statements of the pending migrations and the rollback impact"
+        type: boolean
+        default: false
+      allow_newer_schema:
+        description: "rollback: the previous image may run on a schema with newer migrations (checked it is compatible)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: production-backend
+  cancel-in-progress: false
+
+env:
+  PUBLIC_ORIGIN: https://lifeinuk.info
+  AWS_REGION: eu-west-2
+  SSM_DOCUMENT: LifeInUK-BackendRelease
+
+jobs:
+  prepare:
+    name: Select the tested release
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      actions: read # find the CI run of the commit and its image artifact
+    outputs:
+      sha: ${{ steps.select.outputs.sha }}
+      ci_run_id: ${{ steps.select.outputs.ci_run_id }}
+      archive_sha256: ${{ steps.archive.outputs.sha256 }}
+      files_digest: ${{ steps.digest.outputs.digest }}
+    steps:
+      - name: Check inputs
+        env:
+          ACTION: ${{ inputs.action }}
+          REF: ${{ inputs.ref }}
+          APPROVED: ${{ inputs.approve_migrations }}
+        run: |
+          [ "$GITHUB_REF" = refs/heads/main ] || { echo "::error::run this workflow from main"; exit 1; }
+          [ -z "$REF" ] || [[ "$REF" =~ ^[0-9a-f]{40}$ ]] || { echo "::error::ref must be a full 40-character commit SHA"; exit 1; }
+          [[ "$APPROVED" =~ ^(none|[0-9]{1,4}(,[0-9]{1,4}){0,19})$ ]] || { echo "::error::approve_migrations must be none or versions like 16,17"; exit 1; }
+          echo "Action: $ACTION"
+
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Select the commit and its successful CI run on main
+        id: select
+        if: inputs.action == 'deploy'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REF: ${{ inputs.ref }}
+        run: |
+          sha=${REF:-$(git rev-parse origin/main)}
+          git merge-base --is-ancestor "$sha" origin/main || { echo "::error::$sha is not on main"; exit 1; }
+          run=$(gh run list --repo "$GITHUB_REPOSITORY" --workflow ci.yml --branch main --event push --commit "$sha" \
+                  --status success --limit 1 --json databaseId --jq '.[0].databaseId // empty')
+          [ -n "$run" ] || { echo "::error::no successful CI run on main for $sha: wait for CI or rerun it"; exit 1; }
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+          echo "ci_run_id=$run" >> "$GITHUB_OUTPUT"
+          git checkout --quiet --detach "$sha"
+
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        if: inputs.action == 'deploy'
+        with:
+          name: backend-image
+          run-id: ${{ steps.select.outputs.ci_run_id }}
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/image
+
+      - name: Check the image archive
+        id: archive
+        if: inputs.action == 'deploy'
+        env:
+          SHA: ${{ steps.select.outputs.sha }}
+        run: |
+          cd "$RUNNER_TEMP/image"
+          name="lifeinuk-backend-${SHA:0:12}.tar.gz"
+          [ -f "$name" ] || { echo "::error::the CI artifact has no $name"; ls -l; exit 1; }
+          sha256sum -c "$name.sha256"
+          echo "sha256=$(sha256sum "$name" | cut -c1-64)" >> "$GITHUB_OUTPUT"
+
+      - name: Deployment files digest of the release commit
+        id: digest
+        if: inputs.action == 'deploy'
+        run: echo "digest=$(bash -c 'source deploy/scripts/common.sh && deploy_files_digest deploy')" >> "$GITHUB_OUTPUT"
+
+  release:
+    name: ${{ inputs.action }} on production
+    needs: prepare
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    environment:
+      name: production
+      url: https://lifeinuk.info
+    permissions:
+      contents: read
+      actions: read
+      id-token: write # GitHub OIDC → AWS role; no stored AWS keys
+    env:
+      INSTANCE_ID: ${{ vars.BACKEND_INSTANCE_ID }}
+      RELEASE_S3_URI: ${{ vars.BACKEND_RELEASE_S3_URI }}
+      SHA: ${{ needs.prepare.outputs.sha }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ needs.prepare.outputs.sha || github.sha }}
+          persist-credentials: false
+
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        if: inputs.action == 'deploy'
+        with:
+          name: backend-image
+          run-id: ${{ needs.prepare.outputs.ci_run_id }}
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/image
+
+      - name: Same archive as checked
+        if: inputs.action == 'deploy'
+        env:
+          WANT: ${{ needs.prepare.outputs.archive_sha256 }}
+        run: |
+          got=$(sha256sum "$RUNNER_TEMP/image/lifeinuk-backend-${SHA:0:12}.tar.gz" | cut -c1-64)
+          [ "$got" = "$WANT" ] || { echo "::error::archive changed between jobs"; exit 1; }
+
+      - uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # v6.3.0
+        with:
+          role-to-assume: ${{ vars.AWS_BACKEND_DEPLOY_ROLE_ARN }}
+          role-session-name: lifeinuk-backend-${{ github.run_id }}
+          aws-region: ${{ env.AWS_REGION }}
+          role-duration-seconds: 3600
+
+      - name: Production status
+        id: status
+        run: |
+          SSM_OUT=status.txt deploy/ci/ssm-release.sh status
+          for key in current_image flyway_version deploy_files_digest rollback_image app_health; do
+            echo "$key=$(sed -n "s/^$key=//p" status.txt)" >> "$GITHUB_OUTPUT"
+          done
+
+      - name: Release gate (deployment files, Flyway migrations)
+        if: inputs.action == 'deploy'
+        env:
+          SERVER_DIGEST: ${{ steps.status.outputs.deploy_files_digest }}
+          WANT_DIGEST: ${{ needs.prepare.outputs.files_digest }}
+          FLYWAY: ${{ steps.status.outputs.flyway_version }}
+          APPROVED: ${{ inputs.approve_migrations }}
+          REVIEWED: ${{ inputs.destructive_migrations_reviewed }}
+        run: |
+          if [ "$SERVER_DIGEST" != "$WANT_DIGEST" ]; then
+            echo "::error::the server's deployment files (compose.yml, nginx, db, scripts, systemd) differ from deploy/ at $SHA. Sync them first (RUNBOOK.md section 3), then rerun."
+            exit 1
+          fi
+          [[ "$FLYWAY" =~ ^[0-9]+$ ]] || { echo "::error::could not read the production Flyway version"; exit 1; }
+          python3 deploy/ci/check-migrations.py --pending-after "$FLYWAY" --json > pending.json
+          pending=$(python3 -c 'import json; print(",".join(str(r["version"]) for r in json.load(open("pending.json"))) or "none")')
+          flagged=$(python3 -c 'import json; print(sum(len(r["risks"]) for r in json.load(open("pending.json"))))')
+          {
+            echo "### Flyway: production at V$FLYWAY, pending: $pending"
+            python3 deploy/ci/check-migrations.py --pending-after "$FLYWAY" | sed 's/^/    /'
+            for f in $(python3 -c 'import json; print(" ".join(r["file"] for r in json.load(open("pending.json"))))'); do
+              echo "<details><summary>$f</summary>"; echo; echo '```sql'; cat "src/main/resources/db/migration/$f"; echo '```'; echo "</details>"
+            done
+          } >> "$GITHUB_STEP_SUMMARY"
+          if [ "$pending" != "$APPROVED" ]; then
+            echo "::error::pending migrations: $pending; approve_migrations: $APPROVED. Review them (run summary) and rerun with approve_migrations=$pending."
+            exit 1
+          fi
+          if [ "$flagged" -gt 0 ] && [ "$REVIEWED" != true ]; then
+            echo "::error::$flagged flagged statement(s) in the pending migrations (run summary). They can lose data or break the previous image, so a rollback may need a database restore. Rerun with destructive_migrations_reviewed after reviewing."
+            exit 1
+          fi
+          echo "Gate passed: deployment files in sync, migrations: $pending"
+
+      - name: Upload the image archive
+        if: inputs.action == 'deploy'
+        run: |
+          [[ "$RELEASE_S3_URI" =~ ^s3://[a-z0-9.-]+/releases/backend$ ]] || { echo "::error::BACKEND_RELEASE_S3_URI must be s3://<bucket>/releases/backend"; exit 1; }
+          for f in "lifeinuk-backend-${SHA:0:12}.tar.gz" "lifeinuk-backend-${SHA:0:12}.tar.gz.sha256"; do
+            aws s3 cp --only-show-errors --sse AES256 "$RUNNER_TEMP/image/$f" "$RELEASE_S3_URI/$SHA/$f"
+          done
+
+      - name: Deploy on the server
+        id: deploy
+        if: inputs.action == 'deploy'
+        env:
+          ARCHIVE_SHA: ${{ needs.prepare.outputs.archive_sha256 }}
+          DIGEST: ${{ needs.prepare.outputs.files_digest }}
+          APPROVED: ${{ inputs.approve_migrations }}
+        run: |
+          SSM_OUT=release.txt deploy/ci/ssm-release.sh deploy commit="$SHA" archiveSha256="$ARCHIVE_SHA" filesDigest="$DIGEST" approvedMigrations="$APPROVED"
+
+      - name: Roll back on the server
+        id: rollback
+        if: inputs.action == 'rollback'
+        env:
+          ALLOW: ${{ inputs.allow_newer_schema }}
+        run: SSM_OUT=release.txt deploy/ci/ssm-release.sh rollback allowNewerSchema="$ALLOW"
+
+      - name: Public smoke test
+        if: inputs.action != 'status'
+        run: |
+          guides=$(grep -o 'guides=[0-9]*' release.txt | tail -1 | cut -d= -f2 || true)
+          deploy/ci/public-smoke.sh "$PUBLIC_ORIGIN" "$guides"
+
+      - name: Report
+        if: always()
+        env:
+          ACTION: ${{ inputs.action }}
+          JOB_STATUS: ${{ job.status }}
+          BEFORE: ${{ steps.status.outputs.current_image }}
+          FLYWAY: ${{ steps.status.outputs.flyway_version }}
+          ARCHIVE_SHA: ${{ needs.prepare.outputs.archive_sha256 }}
+          CI_RUN: ${{ needs.prepare.outputs.ci_run_id }}
+        run: |
+          {
+            echo "### Backend production $ACTION: $JOB_STATUS"
+            echo "| | |"
+            echo "|---|---|"
+            [ -z "$SHA" ] || echo "| Commit | \`$SHA\` (image from CI run $CI_RUN) |"
+            [ -z "$ARCHIVE_SHA" ] || echo "| Archive SHA-256 | \`$ARCHIVE_SHA\` |"
+            echo "| Before | \`$BEFORE\`, Flyway V$FLYWAY |"
+            if [ -f release.txt ]; then echo "| Result | \`$(grep '^RESULT' release.txt | tail -1)\` |"; fi
+            if [ -f status.txt ]; then echo; echo '```'; cat status.txt; echo '```'; fi
+          } >> "$GITHUB_STEP_SUMMARY"

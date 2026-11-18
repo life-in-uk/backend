@@ -1,0 +1,26 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "UploadReleaseImages",
+      "Effect": "Allow",
+      "Action": "s3:PutObject",
+      "Resource": "arn:aws:s3:::lifeinuk-backups-919693204623-eu-west-2/releases/backend/*"
+    },
+    {
+      "Sid": "RunOnlyTheReleaseDocumentOnTheOriginInstance",
+      "Effect": "Allow",
+      "Action": "ssm:SendCommand",
+      "Resource": [
+        "arn:aws:ec2:eu-west-2:919693204623:instance/i-0d0c006308c9ffba0",
+        "arn:aws:ssm:eu-west-2:919693204623:document/LifeInUK-BackendRelease"
+      ]
+    },
+    {
+      "Sid": "ReadCommandResults",
+      "Effect": "Allow",
+      "Action": "ssm:GetCommandInvocation",
+      "Resource": "*"
+    }
+  ]
+}

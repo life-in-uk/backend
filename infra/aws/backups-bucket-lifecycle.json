@@ -1,0 +1,18 @@
+{
+  "Rules": [
+    {
+      "ID": "LifeInUK-backup-retention",
+      "Filter": { "Prefix": "postgres/" },
+      "Status": "Enabled",
+      "Expiration": { "Days": 30 },
+      "AbortIncompleteMultipartUpload": { "DaysAfterInitiation": 7 }
+    },
+    {
+      "ID": "LifeInUK-release-images",
+      "Filter": { "Prefix": "releases/" },
+      "Status": "Enabled",
+      "Expiration": { "Days": 60 },
+      "AbortIncompleteMultipartUpload": { "DaysAfterInitiation": 1 }
+    }
+  ]
+}

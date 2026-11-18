@@ -117,6 +117,25 @@ After the DNS change, `verify:site --base https://lifeinuk.info --production`.
 
 ## 3. Backend release
 
+Normally from GitHub Actions (**Deploy production**, see `docs/ci-cd.md`): it
+ships the image CI tested and runs `scripts/release.sh deploy` here through
+SSM (pre-release backup, switch, health check, automatic return to the
+previous image). `scripts/release.sh status|rollback` work the same by hand.
+The audit trail is `/opt/lifeinuk/releases.log`.
+
+**Deployment files.** When `deploy/compose.yml`, `nginx/`, `db/`, `scripts/` or
+`systemd/` change, sync them before the release (the workflow refuses until
+the server's copy matches the release commit):
+
+```bash
+rsync -a --delete deploy/compose.yml deploy/nginx deploy/db deploy/scripts deploy/systemd deploy/env ubuntu@<host>:/tmp/lifeinuk/   # workstation, at the release commit
+rsync -a /tmp/lifeinuk/ /opt/lifeinuk/ && chown -R root:root /opt/lifeinuk && rm -rf /tmp/lifeinuk                                 # server
+docker compose up -d                       # only if compose.yml, nginx or db changed; take scripts/backup.sh first
+cp /opt/lifeinuk/systemd/*.service /opt/lifeinuk/systemd/*.timer /etc/systemd/system/ && systemctl daemon-reload   # only if systemd changed
+```
+
+Manual release (fallback when GitHub or SSM is unavailable):
+
 ```bash
 deploy/scripts/build-image.sh                       # workstation; then copy and load the archive as above
 scripts/backup.sh pre-release                       # server

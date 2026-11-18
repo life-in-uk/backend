@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 # Shared helpers for the operator scripts in deploy/scripts (sourced, not run).
 # Production layout: /opt/lifeinuk (compose.yml, scripts, nginx, db),
 # /etc/lifeinuk (env files), /var/backups/lifeinuk (dumps; mounted at /backups
@@ -49,6 +50,20 @@ verify_checksum() {
   else
     return 1
   fi
+}
+
+# Digest of the deployment files that the server runs from (compose.yml, nginx,
+# db init, scripts, systemd), over relative paths and contents. CI computes it
+# for deploy/ of the release commit and release.sh for /opt/lifeinuk: a
+# difference means the server copy is out of date (RUNBOOK.md section 3).
+deploy_files_digest() {
+  (cd "$1" && find compose.yml nginx db scripts systemd -type f ! -name '*.pyc' -print0 | LC_ALL=C sort -z | xargs -0 sha256sum) \
+    | sha256sum | cut -c1-64
+}
+
+# Highest successfully applied Flyway version of a database (0 if none).
+flyway_version() {
+  db_sql postgres "$1" "SELECT coalesce(max(version::int), 0) FROM flyway_schema_history WHERE success AND version IS NOT NULL"
 }
 
 # One line describing the published content of a database.
