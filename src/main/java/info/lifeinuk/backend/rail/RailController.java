@@ -39,7 +39,7 @@ public class RailController {
     }
     /** Budget check after validation, before any provider request; null when the request may proceed. */
     private ResponseEntity<Error> limit(HttpServletRequest request) {
-        return switch (limiter.tryAcquire(request.getRemoteAddr())) {
+        return switch (limiter.tryAcquire(RailClientAddress.of(request))) {
             case ALLOWED -> null;
             case CLIENT_LIMITED -> retryLater(HttpStatus.TOO_MANY_REQUESTS,"RAIL_CLIENT_RATE_LIMIT","Too many rail checks. Please wait a minute and try again.");
             case AGGREGATE_LIMITED -> retryLater(HttpStatus.SERVICE_UNAVAILABLE,"RAIL_RATE_LIMIT","Rail information is temporarily unavailable.");

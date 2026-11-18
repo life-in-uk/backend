@@ -11,8 +11,8 @@ import org.springframework.boot.context.properties.bind.DefaultValue;
  * provider is contacted. Fixed one-minute windows:
  *
  * <ul>
- *   <li>per client (the servlet remote address; behind a reverse proxy this must be the real client
- *       address, e.g. {@code server.forward-headers-strategy=native} with a trusted proxy), and</li>
+ *   <li>per client (the viewer address CloudFront reports, see {@link RailClientAddress}; the servlet
+ *       remote address otherwise), and</li>
  *   <li>aggregate for this instance, independent of client identity.</li>
  * </ul>
  *

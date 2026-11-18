@@ -80,6 +80,57 @@ class RailRateLimiterTest {
     }
 
     @Test
+    void viewersBehindTheProxyEachHaveTheirOwnBudget() throws Exception {
+        // Production: every request comes from nginx (172.18.0.4); CloudFront names the viewer.
+        RailClient client = mock(RailClient.class);
+        when(client.arrivals(anyString(), any(), any())).thenReturn(BOARD);
+        var controller = new RailController(new RailService(client), new RailRateLimiter(new RailRateLimiter.Limits(2, 10), clock));
+        var mvc = MockMvcBuilders.standaloneSetup(controller).build();
+        for (String viewer : new String[] {"198.51.100.7:50123", "198.51.100.7:50999", "203.0.113.9:443", "2001:db8::1:61000"}) {
+            mvc.perform(get("/api/rail/stations/SHF/disruptions").header("CloudFront-Viewer-Address", viewer)
+                    .with(r -> { r.setRemoteAddr("172.18.0.4"); return r; })).andExpect(status().isOk());
+        }
+        // 198.51.100.7 used both of its checks (different source ports); the others are unaffected.
+        mvc.perform(get("/api/rail/stations/SHF/disruptions").header("CloudFront-Viewer-Address", "198.51.100.7:40000")
+                .with(r -> { r.setRemoteAddr("172.18.0.4"); return r; }))
+                .andExpect(status().isTooManyRequests())
+                .andExpect(jsonPath("$.code").value("RAIL_CLIENT_RATE_LIMIT"));
+        mvc.perform(get("/api/rail/stations/SHF/disruptions").header("CloudFront-Viewer-Address", "203.0.113.9:443")
+                .with(r -> { r.setRemoteAddr("172.18.0.4"); return r; })).andExpect(status().isOk());
+        verify(client, times(5)).arrivals(anyString(), any(), any());
+    }
+
+    @Test
+    void viewerAddressIsHonouredOnlyFromThePrivateNetworkAndWhenWellFormed() {
+        var viaNginx = new MockHttpServletRequest();
+        viaNginx.setRemoteAddr("172.18.0.4");
+        viaNginx.addHeader("CloudFront-Viewer-Address", "198.51.100.7:50123");
+        assertThat(RailClientAddress.of(viaNginx)).isEqualTo("198.51.100.7");
+
+        var operatorTunnel = new MockHttpServletRequest();
+        operatorTunnel.setRemoteAddr("127.0.0.1");
+        assertThat(RailClientAddress.of(operatorTunnel)).isEqualTo("127.0.0.1");
+
+        var publicPeer = new MockHttpServletRequest();
+        publicPeer.setRemoteAddr("203.0.113.50");
+        publicPeer.addHeader("CloudFront-Viewer-Address", "198.51.100.7:1");
+        assertThat(RailClientAddress.of(publicPeer)).isEqualTo("203.0.113.50");
+
+        for (String malformed : new String[] {"", "198.51.100.7", "198.51.100.7:", ":80", "example.com:80",
+                "198.51.100.7:http", "198.51.100.7:123456", "1.2.3.4, 5.6.7.8:80", "[2001:db8::1]:80"}) {
+            var request = new MockHttpServletRequest();
+            request.setRemoteAddr("172.18.0.4");
+            request.addHeader("CloudFront-Viewer-Address", malformed);
+            assertThat(RailClientAddress.of(request)).as(malformed).isEqualTo("172.18.0.4");
+        }
+        assertThat(RailClientAddress.viewerIp("2001:0db8:85a3::8a2e:0370:7334:46532")).isEqualTo("2001:0db8:85a3::8a2e:0370:7334");
+        var uniqueLocalV6 = new MockHttpServletRequest();
+        uniqueLocalV6.setRemoteAddr("fd00::4");
+        uniqueLocalV6.addHeader("CloudFront-Viewer-Address", "198.51.100.7:50123");
+        assertThat(RailClientAddress.of(uniqueLocalV6)).isEqualTo("198.51.100.7");
+    }
+
+    @Test
     void controllerReturns503WhenTheInstanceBudgetIsSpent() {
         RailClient client = mock(RailClient.class);
         when(client.arrivals(anyString(), any(), any())).thenReturn(BOARD);
