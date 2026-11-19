@@ -28,6 +28,13 @@ life-in-uk:
       base-url: ${OS_NAMES_BASE_URL:https://api.os.uk/search/names/v1}
       # Secret: environment only. Never commit, persist, log or place it in a URL (sent as the 'key' header).
       api-key: ${OS_NAMES_API_KEY:}
+  weather:
+    met-office:
+      # Must equal the canonical Global spot v0 base; any other value fails startup.
+      base-url: ${MET_OFFICE_BASE_URL:https://data.hub.api.metoffice.gov.uk/sitespecific/v0}
+      # Secret: environment only. Never commit, persist, log or place it in a URL (sent as the 'apikey' header).
+      # Absent: /api/weather/current answers WEATHER_NOT_CONFIGURED and nothing calls the Met Office.
+      api-key: ${MET_OFFICE_API_KEY:}
   rail:
     base-url: ${NATIONAL_RAIL_API_BASE_URL:https://api1.raildata.org.uk/1010-live-arrival-board-arr/LDBWS}
     api-key: ${NATIONAL_RAIL_API_KEY:}
