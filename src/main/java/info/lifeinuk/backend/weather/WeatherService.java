@@ -200,7 +200,7 @@ public class WeatherService {
         if (stored == null || now.isAfter(stored.fetchedAt().plus(MAX_STALE))) { return Optional.empty(); }
         return stored.forecast().currentStep(now).filter(WeatherService::displayable).map(step -> new WeatherResponse(city.id(), iso(step.time()),
                 iso(stored.forecast().modelRunAt()), iso(stored.fetchedAt()), step.temperatureC(), step.feelsLikeC(),
-                step.weatherCode(), step.precipitationProbability(), WeatherResponse.ATTRIBUTION));
+                step.weatherCode(), step.precipitationProbability(), WeatherResponse.ATTRIBUTION, "requested"));
     }
 
     private static String iso(Instant instant) { return instant.truncatedTo(ChronoUnit.SECONDS).toString(); }

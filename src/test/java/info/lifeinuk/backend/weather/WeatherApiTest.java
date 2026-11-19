@@ -45,9 +45,16 @@ class WeatherApiTest {
     @BeforeEach
     void reset() { org.mockito.Mockito.reset(client); }
 
-    HttpResponse<String> get(String rawQuery) throws Exception {
-        return http.send(HttpRequest.newBuilder(URI.create("http://127.0.0.1:" + port + "/api/weather/current" + rawQuery))
-                .timeout(Duration.ofSeconds(10)).GET().build(), HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+    HttpResponse<String> get(String rawQuery, String... headers) throws Exception {
+        var request = HttpRequest.newBuilder(URI.create("http://127.0.0.1:" + port + "/api/weather/current" + rawQuery))
+                .timeout(Duration.ofSeconds(10)).GET();
+        if (headers.length > 0) { request.headers(headers); }
+        return http.send(request.build(), HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+    }
+
+    static byte[] currentHour(double temperature) {
+        String now = java.time.Instant.now().truncatedTo(java.time.temporal.ChronoUnit.HOURS).toString();
+        return HourlyForecastTest.bytes(HourlyForecastTest.response(now, HourlyForecastTest.step(now, temperature, 7)));
     }
 
     @Test
@@ -63,7 +70,7 @@ class WeatherApiTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"", "?city=", "?city=London", "?city=paris", "?city=london%00"})
+    @ValueSource(strings = {"?city=", "?city=London", "?city=paris", "?city=london%00", "?city=london&city=leeds"})
     void unknownCitiesAreRejectedWithoutAnyRequest(String query) throws Exception {
         when(client.configured()).thenReturn(true);
         var response = get(query);
@@ -83,7 +90,8 @@ class WeatherApiTest {
         assertThat(response.headers().firstValue("Cache-Control")).hasValue("no-store");
         var body = json.readTree(response.body());
         assertThat(body.propertyNames()).containsExactlyInAnyOrder("city", "forecastTime", "modelRunAt", "fetchedAt",
-                "temperatureC", "feelsLikeC", "weatherCode", "precipitationProbability", "attribution");
+                "temperatureC", "feelsLikeC", "weatherCode", "precipitationProbability", "attribution", "citySource");
+        assertThat(body.get("citySource").stringValue()).isEqualTo("requested");
         assertThat(body.get("city").stringValue()).isEqualTo("glasgow");
         assertThat(body.get("forecastTime").stringValue()).isEqualTo(now);
         assertThat(body.get("temperatureC").asDouble()).isEqualTo(4.6);
@@ -180,5 +188,67 @@ class WeatherApiTest {
         }
         assertThat(budget.take(day, 10)).isTrue();
         assertThat(budget.used(day)).isEqualTo(2);
+    }
+
+    // --- Automatic city (CloudFront approximate location) ---
+    // The service keeps per-city state for the whole context, so these tests use cities no other test here uses.
+
+    static final String[] SALFORD = {"CloudFront-Viewer-Country", "GB", "CloudFront-Viewer-Latitude", "53.48750",
+            "CloudFront-Viewer-Longitude", "-2.29010"};
+
+    @Test
+    void withoutACityTheNearestCityToCloudFrontsLocationIsUsedAndSharesTheCityCache() throws Exception {
+        when(client.configured()).thenReturn(true);
+        when(client.hourly(WeatherCity.MANCHESTER)).thenReturn(currentHour(11.5));
+        var detected = get("", SALFORD);
+        assertThat(detected.statusCode()).isEqualTo(200);
+        var body = json.readTree(detected.body());
+        assertThat(body.get("city").stringValue()).isEqualTo("manchester");
+        assertThat(body.get("citySource").stringValue()).isEqualTo("detected");
+        assertThat(body.get("attribution").stringValue()).isEqualTo("Data supplied by the Met Office");
+        assertThat(detected.headers().firstValue("Cache-Control")).hasValue("no-store");
+        // Nothing about the location is echoed back.
+        assertThat(detected.body()).doesNotContain("53.48", "-2.29", "GB");
+        // A visitor who chose Manchester, and another detected one, reuse the same stored forecast.
+        var chosen = json.readTree(get("?city=manchester").body());
+        assertThat(chosen.get("citySource").stringValue()).isEqualTo("requested");
+        assertThat(chosen.get("fetchedAt")).isEqualTo(body.get("fetchedAt"));
+        get("", SALFORD);
+        verify(client, times(1)).hourly(WeatherCity.MANCHESTER);
+    }
+
+    @Test
+    void withoutAUsableUkLocationLondonIsTheDefault() throws Exception {
+        when(client.configured()).thenReturn(true);
+        when(client.hourly(WeatherCity.LONDON)).thenReturn(currentHour(12.0));
+        for (String[] headers : new String[][] {{}, {"CloudFront-Viewer-Country", "FR", "CloudFront-Viewer-Latitude", "48.85",
+                "CloudFront-Viewer-Longitude", "2.35"}, {"CloudFront-Viewer-Country", "GB"}}) {
+            var body = json.readTree(get("", headers).body());
+            assertThat(body.get("city").stringValue()).isEqualTo("london");
+            assertThat(body.get("citySource").stringValue()).isEqualTo("default");
+        }
+    }
+
+    @Test
+    void aChosenCityOverridesTheDetectedOne() throws Exception {
+        when(client.configured()).thenReturn(true);
+        when(client.hourly(WeatherCity.LEEDS)).thenReturn(currentHour(8.0));
+        var body = json.readTree(get("?city=leeds", SALFORD).body());
+        assertThat(body.get("city").stringValue()).isEqualTo("leeds");
+        assertThat(body.get("citySource").stringValue()).isEqualTo("requested");
+    }
+
+    @Test
+    void automaticRequestsKeepTheBoundedErrors() throws Exception {
+        when(client.configured()).thenReturn(false);
+        var notConfigured = get("", SALFORD);
+        assertThat(notConfigured.statusCode()).isEqualTo(503);
+        assertThat(json.readTree(notConfigured.body()).get("code").stringValue()).isEqualTo("WEATHER_NOT_CONFIGURED");
+        when(client.configured()).thenReturn(true);
+        when(client.hourly(WeatherCity.BIRMINGHAM)).thenThrow(new WeatherFailure(WeatherFailure.Reason.UNAVAILABLE));
+        var unavailable = get("", "CloudFront-Viewer-Country", "GB", "CloudFront-Viewer-Latitude", "52.4068",
+                "CloudFront-Viewer-Longitude", "-1.5197"); // Coventry -> Birmingham
+        assertThat(unavailable.statusCode()).isEqualTo(502);
+        assertThat(json.readTree(unavailable.body()).get("code").stringValue()).isEqualTo("WEATHER_UNAVAILABLE");
     }
 }
