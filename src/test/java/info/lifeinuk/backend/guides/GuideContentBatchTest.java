@@ -636,19 +636,36 @@ class GuideContentBatchTest {
     @Test
     @EnabledIfEnvironmentVariable(named = "EDUCATION_WAVE1_ARTIFACTS", matches = ".+")
     void privateEducationWaveOneDraftsImportWithoutPublicEffect() throws Exception {
-        var root = Path.of(System.getenv("EDUCATION_WAVE1_ARTIFACTS"));
+        verifyPrivateEducationDrafts(Path.of(System.getenv("EDUCATION_WAVE1_ARTIFACTS")), 1,
+                List.of("joining-school-after-moving-to-uk", "uk-school-stages-and-year-groups",
+                        "in-year-school-admissions-england", "joining-school-during-gcses-england",
+                        "sixth-form-or-fe-college-england"));
+    }
+
+    @Test
+    @EnabledIfEnvironmentVariable(named = "EDUCATION_WAVE2_ARTIFACTS", matches = ".+")
+    void privateEducationWaveTwoDraftsImportWithoutPublicEffect() throws Exception {
+        verifyPrivateEducationDrafts(Path.of(System.getenv("EDUCATION_WAVE2_ARTIFACTS")), 2,
+                List.of("primary-school-reception-applications-england", "secondary-school-year-7-applications-england",
+                        "choosing-a-school-and-admission-appeals-england", "english-language-support-at-school-england",
+                        "send-school-support-england", "school-meals-attendance-and-transport-england"));
+    }
+
+    private void verifyPrivateEducationDrafts(Path root, int wave, List<String> slugs) throws Exception {
         var records = json.readTree(Files.readAllBytes(root.resolve("MANIFEST.json"))).get("records");
-        assertThat(records.size()).isEqualTo(25);
-        var slugs = List.of("joining-school-after-moving-to-uk", "uk-school-stages-and-year-groups",
-                "in-year-school-admissions-england", "joining-school-during-gcses-england", "sixth-form-or-fe-college-england");
+        assertThat(records.size()).isEqualTo(slugs.size() * GuideContentBatchService.LOCALES.size());
         var baselineSitemap = get("/sitemap.xml").body();
         var baselineListing = get("/api/guides").body();
         for (String slug : slugs) {
             var definitions = new java.util.HashMap<String, ObjectNode>();
             var hashes = new java.util.HashMap<String, String>();
+            var linkedSourceHashes = new java.util.HashSet<String>();
             for (var item : records) {
                 if (!item.get("slug").asString().equals(slug)) continue;
                 var locale = item.get("locale").asString();
+                assertThat(locale).isIn(GuideContentBatchService.LOCALES);
+                linkedSourceHashes.add(item.get("sourceContentHash").asString());
+                if (wave == 2) assertThat(item.get("jurisdiction").asString()).isEqualTo("England");
                 var bytes = Files.readAllBytes(root.resolve("drafts").resolve(slug).resolve(locale + ".json"));
                 assertThat(HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(bytes)))
                         .isEqualTo(item.get("sha256").asString());
@@ -664,7 +681,8 @@ class GuideContentBatchTest {
                 definitions.put(locale, (ObjectNode) json.readTree(bytes));
             }
             assertThat(hashes.keySet()).containsExactlyInAnyOrderElementsOf(GuideContentBatchService.LOCALES);
-            var batch = batches.create(createRequest("education-wave1-" + slug, definitions.get("zh-CN")));
+            assertThat(linkedSourceHashes).containsExactly(hashes.get("zh-CN"));
+            var batch = batches.create(createRequest("education-wave" + wave + "-" + slug, definitions.get("zh-CN")));
             assertThat(batch.sourceContentHash()).isEqualTo(hashes.get("zh-CN"));
             assertThat(qualityGate.check(batch.sourceRevisionId(), Instant.now()).findings()).isEmpty();
             var template = batches.translationPackage(batch.batchId()).responseTemplate();
