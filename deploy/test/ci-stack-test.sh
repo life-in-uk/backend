@@ -266,6 +266,32 @@ expect "image unchanged by the recreate" "$running_image" "$(current)"
 out=$("$release" deploy "$commit_d" "$sha_d" "$digest" none 2>/dev/null) && fail "broken release reported success" || pass "broken release fails and the previous image is put back"
 expect "previous image running" "$running_image" "$(current)"
 expect "Rail still off on the previous image" RAIL_DISABLED "$(rail_code)"
+# Weather: the documented way to switch it off (docs/weather.md) is to clear MET_OFFICE_API_KEY with
+# set-env.sh --clear and recreate the app. A placeholder key is used and the endpoint is not called while
+# it is set, so nothing reaches the Met Office.
+weather_code() { curl -s "http://127.0.0.1:18080/api/weather/current?city=london" | python3 -c 'import json,sys; print(json.load(sys.stdin).get("code"))' 2>/dev/null; }
+app_has_key() { docker inspect -f '{{range .Config.Env}}{{println .}}{{end}}' "$(compose ps -q app)" | grep -c '^MET_OFFICE_API_KEY=.' || true; }
+expect "weather off without a key" WEATHER_NOT_CONFIGURED "$(weather_code)"
+printf 'ci-placeholder-not-a-key\n' | SET_ENV_STDIN=1 "$LIFEINUK_DIR/scripts/set-env.sh" "$LIFEINUK_ETC/backend.env" MET_OFFICE_API_KEY >/dev/null 2>&1
+# A hand-edited file can hold the key more than once, also as "export NAME=" (Compose reads both; the last wins).
+printf 'export MET_OFFICE_API_KEY=ci-placeholder-export\nMET_OFFICE_API_KEY=ci-placeholder-duplicate\n' >> "$LIFEINUK_ETC/backend.env"
+# The environment Compose gives the app (no value printed).
+compose_key() { compose config --format json 2>/dev/null | python3 -c 'import json,sys; e=json.load(sys.stdin)["services"]["app"].get("environment") or {}; print("set" if e.get("MET_OFFICE_API_KEY") else "none")'; }
+expect "Compose reads the export and duplicate assignments" set "$(compose_key)"
+compose up -d --no-deps app >/dev/null 2>&1 && wait_healthy app 240
+expect "weather key set and the app recreated: the app has the key" 1 "$(app_has_key)"
+out=$("$LIFEINUK_DIR/scripts/set-env.sh" --clear "$LIFEINUK_ETC/backend.env" MET_OFFICE_API_KEY 2>&1)
+expect "set-env --clear prints no secret" 0 "$(grep -c placeholder <<<"$out" || true)"
+expect "set-env --clear empties the key" "MET_OFFICE_API_KEY empty" "$("$LIFEINUK_DIR/scripts/set-env.sh" --fingerprint "$LIFEINUK_ETC/backend.env" MET_OFFICE_API_KEY)"
+expect "set-env --clear leaves one empty assignment (export and duplicates gone)" "MET_OFFICE_API_KEY=" \
+  "$(grep -E '^[[:space:]]*(export[[:space:]]+)?MET_OFFICE_API_KEY[[:space:]]*=' "$LIFEINUK_ETC/backend.env" | paste -sd'|')"
+expect "set-env --clear: Compose gives the app no key" none "$(compose_key)"
+expect "the running app keeps the key until it is recreated" 1 "$(app_has_key)"
+compose up -d --no-deps app >/dev/null 2>&1 && wait_healthy app 240
+expect "key cleared and the app recreated: no key in the app" 0 "$(app_has_key)"
+expect "key cleared and the app recreated: 503 WEATHER_NOT_CONFIGURED" "503 WEATHER_NOT_CONFIGURED" \
+  "$(curl -s -o /dev/null -w '%{http_code}' "http://127.0.0.1:18080/api/weather/current?city=london") $(weather_code)"
+refused "set-env --clear takes names only" "names only" "$LIFEINUK_DIR/scripts/set-env.sh" --clear "$LIFEINUK_ETC/backend.env" MET_OFFICE_API_KEY=x
 
 echo "▶ nightly backup (lifeinuk-backup.service) compatibility"
 nightly_unit="$repo/deploy/systemd/lifeinuk-backup.service"
@@ -286,6 +312,24 @@ out=$(nightly BACKUP_ENV=/dev/null) && [ -f "$out" ] && pass "nightly without a 
 expect "nothing uploaded without a location" "$before" "$(s3_objects)"
 sleep 1
 FAKE_S3_MODE=fail nightly >/dev/null && fail "nightly reported success after a failed upload" || pass "a failed nightly upload fails the unit (local dump kept)"
+# Names have one-second resolution. Two backups with the same label in the same second (forced here with a
+# date(1) that returns one fixed time for the first two name timestamps) must both be kept: the second must
+# not replace the first, locally or in S3.
+mkdir -p "$tmp/frozen-bin"; : > "$tmp/frozen-calls"
+cat > "$tmp/frozen-bin/date" <<EOF
+#!/bin/sh
+case "\$*" in *%Y%m%dT%H%M%SZ*) echo x >> "$tmp/frozen-calls"
+  [ "\$(wc -l < "$tmp/frozen-calls")" -le 2 ] && { echo 20260101T000000Z; exit 0; } ;; esac
+exec /bin/date "\$@"
+EOF
+chmod +x "$tmp/frozen-bin/date"
+same_second() { env BACKUP_ENV=/dev/null BACKUP_S3_URI="s3://$s3_bucket/$s3_prefix" PATH="$tmp/frozen-bin:$PATH" "$LIFEINUK_DIR/scripts/backup.sh" same-second 2>/dev/null || true; }
+first=$(same_second); second=$(same_second)
+expect "same-second backups: two local dumps" 2 "$(compgen -G "$LIFEINUK_BACKUPS/life_in_uk-*-same-second.dump" | wc -l | tr -d ' ')"
+expect "same-second backups: distinct names" yes "$([ -n "$first" ] && [ -n "$second" ] && [ "$first" != "$second" ] && echo yes)"
+expect "same-second backups: the first dump is intact" OK "$(cd "$LIFEINUK_BACKUPS" && sha256sum -c "$(basename "$first").sha256" 2>/dev/null | sed 's/.*: //')"
+expect "same-second backups: two objects in S3" 2 "$(compgen -G "$FAKE_S3_DIR/$s3_bucket/${s3_prefix}life_in_uk-*-same-second.dump" | wc -l | tr -d ' ')"
+rm -f "$LIFEINUK_BACKUPS"/*-same-second.dump*
 
 echo "▶ set-env.sh (secrets never on a command line or in output)"
 setenv="$LIFEINUK_DIR/scripts/set-env.sh"

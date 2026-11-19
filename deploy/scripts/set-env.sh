@@ -8,6 +8,9 @@
 #                     keeps the current value)
 #       NAME=VALUE    a non-secret setting; refused for names that look secret
 #                     (*KEY*, *PASSWORD*, *SECRET*, *TOKEN*)
+#   set-env.sh --clear <env file> NAME ...
+#       empties each NAME (writes NAME=), e.g. to remove an API key and so
+#       switch its feature off; nothing is prompted for or printed but names.
 #   set-env.sh --fingerprint <env file> NAME ...
 #       prints "NAME sha256:<first 8 hex>" (or "NAME empty"); the same output
 #       as deploy/ops/env-fingerprint.sh on a local copy, to compare without
@@ -38,6 +41,8 @@ if [ "${1:-}" = --fingerprint ]; then
   exit 0
 fi
 
+clear=
+if [ "${1:-}" = --clear ]; then clear=1; shift; fi
 file=${1:?usage: set-env.sh <env file> NAME ... NAME=VALUE ...}; shift
 [ -f "$file" ] || die "$file not found"
 [ $# -gt 0 ] || die "nothing to set"
@@ -47,7 +52,10 @@ for arg in "$@"; do
   name=${arg%%=*}
   [[ "$name" =~ ^[A-Z][A-Z0-9_]*$ ]] || die "bad name $name"
   [ -z "${new[$name]+x}" ] || die "$name given twice"
-  if [[ "$arg" == *=* ]]; then
+  if [ -n "$clear" ]; then
+    [[ "$arg" != *=* ]] || die "--clear takes names only"
+    value=
+  elif [[ "$arg" == *=* ]]; then
     secret_name "$name" && die "$name looks secret: give the name only and enter the value at the prompt"
     value=${arg#*=}
   else
@@ -72,9 +80,13 @@ cp -p "$file" "$backup"
 tmp=$(mktemp "$(dirname "$file")/.$(basename "$file").XXXXXX")
 trap 'rm -f "$tmp"' EXIT
 declare -A done_=()
+# Every assignment of a name being set counts, in any form Compose reads ("NAME=", "export NAME=", leading
+# blanks, blanks before "="): the first is replaced by the new value and any others are dropped, so exactly
+# one assignment of each name is left and no earlier or later one can stay in effect.
 while IFS= read -r line || [ -n "$line" ]; do
-  name=${line%%=*}
-  if [[ "$line" == *=* && -n "${new[$name]+x}" ]]; then
+  name=
+  [[ "$line" =~ ^[[:space:]]*(export[[:space:]]+)?([A-Za-z_][A-Za-z0-9_]*)[[:space:]]*= ]] && name=${BASH_REMATCH[2]}
+  if [[ -n "$name" && -n "${new[$name]+x}" ]]; then
     [ -z "${done_[$name]+x}" ] && printf '%s=%s\n' "$name" "${new[$name]}"
     done_[$name]=1
   else
