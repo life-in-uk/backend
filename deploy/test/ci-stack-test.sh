@@ -286,6 +286,24 @@ out=$(nightly BACKUP_ENV=/dev/null) && [ -f "$out" ] && pass "nightly without a 
 expect "nothing uploaded without a location" "$before" "$(s3_objects)"
 sleep 1
 FAKE_S3_MODE=fail nightly >/dev/null && fail "nightly reported success after a failed upload" || pass "a failed nightly upload fails the unit (local dump kept)"
+# Names have one-second resolution. Two backups with the same label in the same second (forced here with a
+# date(1) that returns one fixed time for the first two name timestamps) must both be kept: the second must
+# not replace the first, locally or in S3.
+mkdir -p "$tmp/frozen-bin"; : > "$tmp/frozen-calls"
+cat > "$tmp/frozen-bin/date" <<EOF
+#!/bin/sh
+case "\$*" in *%Y%m%dT%H%M%SZ*) echo x >> "$tmp/frozen-calls"
+  [ "\$(wc -l < "$tmp/frozen-calls")" -le 2 ] && { echo 20260101T000000Z; exit 0; } ;; esac
+exec /bin/date "\$@"
+EOF
+chmod +x "$tmp/frozen-bin/date"
+same_second() { env BACKUP_ENV=/dev/null BACKUP_S3_URI="s3://$s3_bucket/$s3_prefix" PATH="$tmp/frozen-bin:$PATH" "$LIFEINUK_DIR/scripts/backup.sh" same-second 2>/dev/null || true; }
+first=$(same_second); second=$(same_second)
+expect "same-second backups: two local dumps" 2 "$(compgen -G "$LIFEINUK_BACKUPS/life_in_uk-*-same-second.dump" | wc -l | tr -d ' ')"
+expect "same-second backups: distinct names" yes "$([ -n "$first" ] && [ -n "$second" ] && [ "$first" != "$second" ] && echo yes)"
+expect "same-second backups: the first dump is intact" OK "$(cd "$LIFEINUK_BACKUPS" && sha256sum -c "$(basename "$first").sha256" 2>/dev/null | sed 's/.*: //')"
+expect "same-second backups: two objects in S3" 2 "$(compgen -G "$FAKE_S3_DIR/$s3_bucket/${s3_prefix}life_in_uk-*-same-second.dump" | wc -l | tr -d ' ')"
+rm -f "$LIFEINUK_BACKUPS"/*-same-second.dump*
 
 echo "▶ set-env.sh (secrets never on a command line or in output)"
 setenv="$LIFEINUK_DIR/scripts/set-env.sh"

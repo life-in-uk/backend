@@ -5,7 +5,7 @@
 #
 #   backup.sh [label]
 #
-# Writes <backups>/life_in_uk-<UTC time>[-label].dump (pg_dump custom format of
+# Writes <backups>/life_in_uk-<UTC time>[-label].dump (never replacing an existing one; pg_dump custom format of
 # the whole database, which holds only the public schema; no owners or grants) and a .sha256 next to it, checks that
 # the archive is readable and holds the Guide tables, and deletes local dumps
 # older than BACKUP_KEEP_DAYS (default 14).
@@ -31,18 +31,27 @@ s3=$(backup_s3_uri)
 running db || die "the db service is not running"
 umask 077
 
-created=$(date -u +%Y%m%dT%H%M%SZ)
-name="life_in_uk-$created$label.dump"
-partial=".$name.partial"
+# The dump is written under a private temporary name and then given its final name with ln, which never
+# replaces an existing file: names have one-second resolution, and a second backup with the same label in
+# the same second waits for the next second instead of overwriting the first (locally and in S3).
+partial=".life_in_uk$label.$$.dump.partial"
 trap 'compose exec -T db rm -f "/backups/$partial" >/dev/null 2>&1 || true' EXIT
 
-log "dumping to $LIFEINUK_BACKUPS/$name"
+log "dumping to $LIFEINUK_BACKUPS/$partial"
 compose exec -T db pg_dump -U postgres -d life_in_uk -Fc --no-owner --no-privileges -f "/backups/$partial"
 listing=$(compose exec -T db pg_restore --list "/backups/$partial")
 for table in guide guide_publication guide_locale_current flyway_schema_history; do
   grep -q "TABLE DATA public $table " <<<"$listing" || die "the dump has no data for $table; not keeping it"
 done
-compose exec -T db mv "/backups/$partial" "/backups/$name"
+name=
+for _ in 1 2 3 4 5; do
+  created=$(date -u +%Y%m%dT%H%M%SZ)
+  candidate="life_in_uk-$created$label.dump"
+  if compose exec -T db ln "/backups/$partial" "/backups/$candidate" 2>/dev/null; then name=$candidate; break; fi
+  sleep 1
+done
+[ -n "$name" ] || die "no free backup name after 5 attempts; the dump was not kept"
+compose exec -T db rm -f "/backups/$partial"
 (cd "$LIFEINUK_BACKUPS" && sha256sum "$name" > "$name.sha256")
 log "backup OK: $name ($(du -h "$LIFEINUK_BACKUPS/$name" | cut -f1))"
 
