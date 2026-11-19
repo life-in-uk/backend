@@ -6,6 +6,10 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.security.MessageDigest;
+import java.util.HexFormat;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.time.Instant;
@@ -13,6 +17,9 @@ import java.util.UUID;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -45,6 +52,7 @@ class GuideContentBatchTest {
     @Autowired GuideContentBatchStore store;
     @Autowired GuideRevisionService revisions;
     @Autowired GuideImportReader reader;
+    @Autowired GuideQualityGate qualityGate;
     @Autowired JdbcTemplate jdbc;
     @LocalServerPort int port;
     private final JsonMapper json = JsonMapper.builder().build();
@@ -587,12 +595,12 @@ class GuideContentBatchTest {
         assertThat(report.body()).contains(batch.slug(), "EXPIRED_CURRENT_LOCALE");
     }
 
-    @Test
-    void universitySitemapAndPublicLocalesFollowPublicationAndWithdrawal() throws Exception {
-        var category = "university-applications-student-visas";
+    @ParameterizedTest
+    @ValueSource(strings = {"university-applications-student-visas", "education"})
+    void categorySitemapAndPublicLocalesFollowPublicationAndWithdrawal(String category) throws Exception {
         var source = source("University lifecycle fixture");
         source.put("category", category);
-        var batch = batches.create(createRequest("university-sitemap-lifecycle", source));
+        var batch = batches.create(createRequest(category + "-sitemap-lifecycle", source));
         fillAndReview(batch, source, "claude-independent");
         var baseline = get("/sitemap.xml").body();
         assertThat(baseline).doesNotContain(category);
@@ -623,6 +631,60 @@ class GuideContentBatchTest {
         for (String locale : GuideContentBatchService.LOCALES) {
             assertThat(get("/api/guides/" + batch.slug() + "/locales/" + locale).statusCode()).isEqualTo(404);
         }
+    }
+
+    @Test
+    @EnabledIfEnvironmentVariable(named = "EDUCATION_WAVE1_ARTIFACTS", matches = ".+")
+    void privateEducationWaveOneDraftsImportWithoutPublicEffect() throws Exception {
+        var root = Path.of(System.getenv("EDUCATION_WAVE1_ARTIFACTS"));
+        var records = json.readTree(Files.readAllBytes(root.resolve("MANIFEST.json"))).get("records");
+        assertThat(records.size()).isEqualTo(25);
+        var slugs = List.of("joining-school-after-moving-to-uk", "uk-school-stages-and-year-groups",
+                "in-year-school-admissions-england", "joining-school-during-gcses-england", "sixth-form-or-fe-college-england");
+        var baselineSitemap = get("/sitemap.xml").body();
+        var baselineListing = get("/api/guides").body();
+        for (String slug : slugs) {
+            var definitions = new java.util.HashMap<String, ObjectNode>();
+            var hashes = new java.util.HashMap<String, String>();
+            for (var item : records) {
+                if (!item.get("slug").asString().equals(slug)) continue;
+                var locale = item.get("locale").asString();
+                var bytes = Files.readAllBytes(root.resolve("drafts").resolve(slug).resolve(locale + ".json"));
+                assertThat(HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(bytes)))
+                        .isEqualTo(item.get("sha256").asString());
+                var definition = reader.parse(bytes);
+                assertThat(definition.slug()).isEqualTo(slug);
+                assertThat(definition.category()).isEqualTo("education");
+                assertThat(definition.status()).isEqualTo(GuideStatus.DRAFT);
+                assertThat(definition.evidence()).isNotEmpty();
+                assertThat(definition.sources()).allSatisfy(source -> assertThat(source.url()).startsWith("https://"));
+                var hash = GuideContentDigest.digest(definition);
+                assertThat(hash).isEqualTo(item.get("contentHash").asString());
+                assertThat(hashes.put(locale, hash)).isNull();
+                definitions.put(locale, (ObjectNode) json.readTree(bytes));
+            }
+            assertThat(hashes.keySet()).containsExactlyInAnyOrderElementsOf(GuideContentBatchService.LOCALES);
+            var batch = batches.create(createRequest("education-wave1-" + slug, definitions.get("zh-CN")));
+            assertThat(batch.sourceContentHash()).isEqualTo(hashes.get("zh-CN"));
+            assertThat(qualityGate.check(batch.sourceRevisionId(), Instant.now()).findings()).isEmpty();
+            var template = batches.translationPackage(batch.batchId()).responseTemplate();
+            for (var entry : template.get("translations")) {
+                ((ObjectNode) entry).set("guide", definitions.get(entry.get("locale").asString()));
+            }
+            var receipts = batches.importTranslations(batch.batchId(), template);
+            assertThat(receipts).hasSize(4).allSatisfy(receipt -> {
+                assertThat(receipt.contentHash()).isEqualTo(hashes.get(receipt.locale()));
+                assertThat(receipt.sourceRevisionId()).isEqualTo(batch.sourceRevisionId());
+                assertThat(receipt.validationStatus()).isEqualTo("VALID");
+                assertThat(receipt.reviewedHash()).isNull();
+            });
+            for (String locale : GuideContentBatchService.LOCALES) {
+                assertThat(get("/api/guides/" + slug + "/locales/" + locale).statusCode()).isEqualTo(404);
+            }
+            assertThat(store.byId(batch.batchId()).orElseThrow().status()).isEqualTo("DRAFT");
+        }
+        assertThat(get("/sitemap.xml").body()).isEqualTo(baselineSitemap);
+        assertThat(get("/api/guides").body()).isEqualTo(baselineListing);
     }
 
     @Test
