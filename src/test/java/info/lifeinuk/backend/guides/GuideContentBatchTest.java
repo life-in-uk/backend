@@ -636,19 +636,50 @@ class GuideContentBatchTest {
     @Test
     @EnabledIfEnvironmentVariable(named = "EDUCATION_WAVE1_ARTIFACTS", matches = ".+")
     void privateEducationWaveOneDraftsImportWithoutPublicEffect() throws Exception {
-        var root = Path.of(System.getenv("EDUCATION_WAVE1_ARTIFACTS"));
-        var records = json.readTree(Files.readAllBytes(root.resolve("MANIFEST.json"))).get("records");
-        assertThat(records.size()).isEqualTo(25);
-        var slugs = List.of("joining-school-after-moving-to-uk", "uk-school-stages-and-year-groups",
-                "in-year-school-admissions-england", "joining-school-during-gcses-england", "sixth-form-or-fe-college-england");
+        verifyPrivateEducationDrafts(Path.of(System.getenv("EDUCATION_WAVE1_ARTIFACTS")), 1,
+                List.of("joining-school-after-moving-to-uk", "uk-school-stages-and-year-groups",
+                        "in-year-school-admissions-england", "joining-school-during-gcses-england",
+                        "sixth-form-or-fe-college-england"));
+    }
+
+    @Test
+    @EnabledIfEnvironmentVariable(named = "EDUCATION_WAVE2_ARTIFACTS", matches = ".+")
+    void privateEducationWaveTwoDraftsImportWithoutPublicEffect() throws Exception {
+        verifyPrivateEducationDrafts(Path.of(System.getenv("EDUCATION_WAVE2_ARTIFACTS")), 2,
+                List.of("primary-school-reception-applications-england", "secondary-school-year-7-applications-england",
+                        "choosing-a-school-and-admission-appeals-england", "english-language-support-at-school-england",
+                        "send-school-support-england", "school-meals-attendance-and-transport-england"));
+    }
+
+    private void verifyPrivateEducationDrafts(Path root, int wave, List<String> slugs) throws Exception {
+        var manifest = json.readTree(Files.readAllBytes(root.resolve("MANIFEST.json")));
+        var records = manifest.get("records");
+        assertThat(records.size()).isEqualTo(slugs.size() * GuideContentBatchService.LOCALES.size());
+        Path previousRoot = null;
+        if (manifest.hasNonNull("previousManifest")) {
+            var previous = root.resolve(manifest.get("previousManifest").asString()).normalize();
+            assertThat(HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(Files.readAllBytes(previous))))
+                    .isEqualTo(manifest.get("previousManifestSha256").asString());
+            previousRoot = previous.getParent();
+        }
         var baselineSitemap = get("/sitemap.xml").body();
         var baselineListing = get("/api/guides").body();
+        var baselineLocaleListings = new java.util.HashMap<String, String>();
+        for (String locale : GuideContentBatchService.LOCALES) {
+            baselineLocaleListings.put(locale, get("/api/guides/locales/" + locale).body());
+        }
         for (String slug : slugs) {
             var definitions = new java.util.HashMap<String, ObjectNode>();
             var hashes = new java.util.HashMap<String, String>();
+            var linkedSourceHashes = new java.util.HashSet<String>();
+            var previousSourceHashes = new java.util.HashSet<String>();
             for (var item : records) {
                 if (!item.get("slug").asString().equals(slug)) continue;
                 var locale = item.get("locale").asString();
+                assertThat(locale).isIn(GuideContentBatchService.LOCALES);
+                linkedSourceHashes.add(item.get("sourceContentHash").asString());
+                if (previousRoot != null) previousSourceHashes.add(item.get("previousSourceContentHash").asString());
+                if (wave == 2) assertThat(item.get("jurisdiction").asString()).isEqualTo("England");
                 var bytes = Files.readAllBytes(root.resolve("drafts").resolve(slug).resolve(locale + ".json"));
                 assertThat(HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(bytes)))
                         .isEqualTo(item.get("sha256").asString());
@@ -664,8 +695,31 @@ class GuideContentBatchTest {
                 definitions.put(locale, (ObjectNode) json.readTree(bytes));
             }
             assertThat(hashes.keySet()).containsExactlyInAnyOrderElementsOf(GuideContentBatchService.LOCALES);
-            var batch = batches.create(createRequest("education-wave1-" + slug, definitions.get("zh-CN")));
+            assertThat(linkedSourceHashes).containsExactly(hashes.get("zh-CN"));
+            var request = createRequest("education-wave" + wave + "-" + slug, definitions.get("zh-CN"));
+            GuideContentBatchService.TranslationPackage previousExport = null;
+            if (previousRoot != null) {
+                assertThat(previousSourceHashes).hasSize(1);
+                var previousFile = previousRoot.resolve("drafts").resolve(slug).resolve("zh-CN.json");
+                var previousDigest = GuideContentDigest.digest(reader.read(previousFile));
+                assertThat(previousSourceHashes).containsExactly(previousDigest);
+                if (!previousDigest.equals(hashes.get("zh-CN"))) {
+                    var previousSource = (ObjectNode) json.readTree(Files.readAllBytes(previousFile));
+                    var previousBatch = batches.create(createRequest("education-previous-" + slug, previousSource));
+                    assertThat(previousBatch.sourceContentHash()).isEqualTo(previousDigest);
+                    previousExport = batches.translationPackage(previousBatch.batchId());
+                    request.put("basedOnRevisionId", previousBatch.sourceRevisionId().toString());
+                }
+            }
+            var batch = batches.create(request);
             assertThat(batch.sourceContentHash()).isEqualTo(hashes.get("zh-CN"));
+            if (previousExport != null) {
+                var outdated = previousExport;
+                assertThat(revisions.find(batch.sourceRevisionId()).orElseThrow().basedOnRevisionId())
+                        .isEqualTo(outdated.sourceRevisionId());
+                assertThatThrownBy(() -> batches.importTranslations(outdated.batchId(), outdated.responseTemplate()))
+                        .isInstanceOf(GuideContentBatchStore.StaleLocaleRevision.class);
+            }
             assertThat(qualityGate.check(batch.sourceRevisionId(), Instant.now()).findings()).isEmpty();
             var template = batches.translationPackage(batch.batchId()).responseTemplate();
             for (var entry : template.get("translations")) {
@@ -685,6 +739,11 @@ class GuideContentBatchTest {
         }
         assertThat(get("/sitemap.xml").body()).isEqualTo(baselineSitemap);
         assertThat(get("/api/guides").body()).isEqualTo(baselineListing);
+        for (String locale : GuideContentBatchService.LOCALES) {
+            var listing = get("/api/guides/locales/" + locale);
+            assertThat(listing.statusCode()).isEqualTo(200);
+            assertThat(listing.body()).isEqualTo(baselineLocaleListings.get(locale));
+        }
     }
 
     @Test
