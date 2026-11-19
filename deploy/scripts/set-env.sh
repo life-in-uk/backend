@@ -8,6 +8,9 @@
 #                     keeps the current value)
 #       NAME=VALUE    a non-secret setting; refused for names that look secret
 #                     (*KEY*, *PASSWORD*, *SECRET*, *TOKEN*)
+#   set-env.sh --clear <env file> NAME ...
+#       empties each NAME (writes NAME=), e.g. to remove an API key and so
+#       switch its feature off; nothing is prompted for or printed but names.
 #   set-env.sh --fingerprint <env file> NAME ...
 #       prints "NAME sha256:<first 8 hex>" (or "NAME empty"); the same output
 #       as deploy/ops/env-fingerprint.sh on a local copy, to compare without
@@ -38,6 +41,8 @@ if [ "${1:-}" = --fingerprint ]; then
   exit 0
 fi
 
+clear=
+if [ "${1:-}" = --clear ]; then clear=1; shift; fi
 file=${1:?usage: set-env.sh <env file> NAME ... NAME=VALUE ...}; shift
 [ -f "$file" ] || die "$file not found"
 [ $# -gt 0 ] || die "nothing to set"
@@ -47,7 +52,10 @@ for arg in "$@"; do
   name=${arg%%=*}
   [[ "$name" =~ ^[A-Z][A-Z0-9_]*$ ]] || die "bad name $name"
   [ -z "${new[$name]+x}" ] || die "$name given twice"
-  if [[ "$arg" == *=* ]]; then
+  if [ -n "$clear" ]; then
+    [[ "$arg" != *=* ]] || die "--clear takes names only"
+    value=
+  elif [[ "$arg" == *=* ]]; then
     secret_name "$name" && die "$name looks secret: give the name only and enter the value at the prompt"
     value=${arg#*=}
   else

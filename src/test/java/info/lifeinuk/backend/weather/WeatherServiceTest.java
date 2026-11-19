@@ -3,10 +3,21 @@ package info.lifeinuk.backend.weather;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static info.lifeinuk.backend.weather.HourlyForecastTest.*;
@@ -15,31 +26,38 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-/** Cache, quota and staleness rules with a scripted Met Office boundary: offline. */
+/** Cache, refresh, freshness, quota and staleness rules with a scripted Met Office boundary: offline. */
 class WeatherServiceTest {
+    private static final Duration COLD_WAIT = Duration.ofMillis(100);
     private final MutableClock clock = new MutableClock(Instant.parse("2026-11-19T08:20:00Z"));
+    private final MemoryBudget budget = new MemoryBudget();
     private MetOfficeClient client;
     private WeatherService service;
 
-    /** 48 hourly steps from 06:00 on the clock's day, temperature = hour of day. */
-    static byte[] forecastFrom(String day) {
+    /** 48 hourly steps from 06:00 on the day, run at 05:00, temperature = hour of day. */
+    static byte[] forecastFrom(String day) { return forecast(day + "T05:00Z", Instant.parse(day + "T06:00:00Z"), 48); }
+
+    static byte[] forecast(String modelRun, Instant first, int hours) {
         var steps = new ArrayList<String>();
-        for (int hour = 0; hour < 48; hour++) {
-            Instant time = Instant.parse(day + "T06:00:00Z").plus(Duration.ofHours(hour));
-            steps.add(step(time.toString(), (6 + hour) % 24, 7));
+        for (int hour = 0; hour < hours; hour++) {
+            Instant time = first.plus(Duration.ofHours(hour));
+            steps.add(step(time.toString(), time.atZone(ZoneOffset.UTC).getHour(), 7));
         }
-        return bytes(response(day + "T05:00Z", steps.toArray(String[]::new)));
+        return bytes(response(modelRun, steps.toArray(String[]::new)));
     }
+
+    /** Runs background reads inline: the service then behaves synchronously. */
+    private WeatherService inline() { return new WeatherService(client, budget, clock, Runnable::run, COLD_WAIT); }
 
     @BeforeEach
     void setUp() {
         client = mock(MetOfficeClient.class);
         when(client.configured()).thenReturn(true);
         when(client.hourly(any())).thenReturn(forecastFrom("2026-11-19"));
-        service = new WeatherService(client, clock);
+        service = inline();
     }
 
-    private WeatherFailure.Reason failure(Runnable call) {
+    private static WeatherFailure.Reason failure(Runnable call) {
         var thrown = catchThrowableOfType(WeatherFailure.class, call::run);
         assertThat(thrown).isNotNull();
         return thrown.reason();
@@ -60,10 +78,11 @@ class WeatherServiceTest {
     }
 
     @Test
-    void notConfiguredMakesNoRequest() {
+    void notConfiguredMakesNoRequestAndTakesNoBudget() {
         when(client.configured()).thenReturn(false);
         assertThat(failure(() -> service.current(WeatherCity.LONDON))).isEqualTo(NOT_CONFIGURED);
         verify(client, never()).hourly(any());
+        assertThat(budget.used(LocalDate.parse("2026-11-19"))).isZero();
     }
 
     @Test
@@ -102,19 +121,133 @@ class WeatherServiceTest {
     }
 
     @Test
-    void aFirstReadFailureReportsItsReason() {
+    void aFirstReadFailureReportsItsReasonAndBacksOff() {
         when(client.hourly(any())).thenThrow(new WeatherFailure(INVALID_RESPONSE));
         assertThat(failure(() -> service.current(WeatherCity.LEEDS))).isEqualTo(INVALID_RESPONSE);
-        // Backing off: the next visitor gets "unavailable" without another request.
-        assertThat(failure(() -> service.current(WeatherCity.LEEDS))).isEqualTo(UNAVAILABLE);
+        // Backing off: the next visitor gets the same answer without another request.
+        assertThat(failure(() -> service.current(WeatherCity.LEEDS))).isEqualTo(INVALID_RESPONSE);
         verify(client, times(1)).hourly(WeatherCity.LEEDS);
     }
 
     @Test
-    void aForecastThatDoesNotCoverNowIsNotShown() {
+    void anUnexpectedErrorInARefreshIsUnavailableNotA500() {
+        when(client.hourly(any())).thenThrow(new IllegalStateException("boom"));
+        assertThat(failure(() -> service.current(WeatherCity.LEEDS))).isEqualTo(UNAVAILABLE);
+    }
+
+    // --- Freshness: a new forecast replaces the stored one only if it is usable ---
+
+    @Test
+    void aForecastFromAnOldModelRunIsRejected() {
         when(client.hourly(any())).thenReturn(forecastFrom("2026-11-17"));
         assertThat(failure(() -> service.current(WeatherCity.LONDON))).isEqualTo(UNAVAILABLE);
+        // Covers now, but its model run is more than 12 hours old.
+        when(client.hourly(any())).thenReturn(forecast("2026-11-18T20:00Z", Instant.parse("2026-11-19T06:00:00Z"), 48));
+        clock.advance(Duration.ofMinutes(10));
+        assertThat(failure(() -> service.current(WeatherCity.LONDON))).isEqualTo(UNAVAILABLE);
     }
+
+    @Test
+    void aForecastFromTheFutureIsInvalid() {
+        when(client.hourly(any())).thenReturn(forecast("2026-11-19T10:00Z", Instant.parse("2026-11-19T06:00:00Z"), 48));
+        assertThat(failure(() -> service.current(WeatherCity.LONDON))).isEqualTo(INVALID_RESPONSE);
+    }
+
+    @Test
+    void aForecastWithoutAStepForTheCurrentHourIsNotShownAndNeverReplacesAUsableOne() {
+        // Starts at 10:00: no step for 08:20, and the 10:00 step is not shown in its place.
+        when(client.hourly(any())).thenReturn(forecast("2026-11-19T07:00Z", Instant.parse("2026-11-19T10:00:00Z"), 48));
+        assertThat(failure(() -> service.current(WeatherCity.LONDON))).isEqualTo(UNAVAILABLE);
+        // A usable forecast is stored; at the next refresh the provider returns one with a gap at the current hour.
+        clock.advance(Duration.ofMinutes(10));
+        when(client.hourly(any())).thenReturn(forecastFrom("2026-11-19"));
+        assertThat(service.current(WeatherCity.LONDON).forecastTime()).isEqualTo("2026-11-19T08:00:00Z");
+        clock.advance(Duration.ofMinutes(60)); // 09:30
+        when(client.hourly(any())).thenReturn(forecast("2026-11-19T08:00Z", Instant.parse("2026-11-19T10:00:00Z"), 48));
+        var kept = service.current(WeatherCity.LONDON);
+        assertThat(kept.forecastTime()).isEqualTo("2026-11-19T09:00:00Z");
+        assertThat(kept.modelRunAt()).isEqualTo("2026-11-19T05:00:00Z");
+        assertThat(kept.fetchedAt()).isEqualTo("2026-11-19T08:30:00Z");
+    }
+
+    @Test
+    void anOlderModelRunNeverReplacesANewerOne() {
+        when(client.hourly(any())).thenReturn(forecast("2026-11-19T07:00Z", Instant.parse("2026-11-19T07:00:00Z"), 48));
+        assertThat(service.current(WeatherCity.LONDON).modelRunAt()).isEqualTo("2026-11-19T07:00:00Z");
+        clock.advance(Duration.ofMinutes(61));
+        when(client.hourly(any())).thenReturn(forecastFrom("2026-11-19")); // run 05:00
+        var kept = service.current(WeatherCity.LONDON);
+        assertThat(kept.modelRunAt()).isEqualTo("2026-11-19T07:00:00Z");
+        assertThat(kept.fetchedAt()).isEqualTo("2026-11-19T08:20:00Z");
+        // The same run again is fine: it refreshes the read time.
+        clock.advance(Duration.ofMinutes(10));
+        when(client.hourly(any())).thenReturn(forecast("2026-11-19T07:00Z", Instant.parse("2026-11-19T07:00:00Z"), 48));
+        assertThat(service.current(WeatherCity.LONDON).fetchedAt()).isEqualTo("2026-11-19T09:31:00Z");
+    }
+
+    // --- Requests do not wait for refreshes ---
+
+    @Test
+    void aDueRefreshRunsInTheBackgroundWhileTheStoredForecastIsAnsweredAtOnce() {
+        var queue = new QueueExecutor();
+        service = new WeatherService(client, budget, clock, queue, COLD_WAIT);
+        assertThat(failure(() -> service.current(WeatherCity.LONDON))).isEqualTo(UNAVAILABLE); // cold: bounded wait
+        queue.runAll();
+        assertThat(service.current(WeatherCity.LONDON).fetchedAt()).isEqualTo("2026-11-19T08:20:00Z");
+
+        clock.advance(Duration.ofMinutes(61)); // 09:21: a refresh is due
+        long started = System.nanoTime();
+        for (int i = 0; i < 5; i++) {
+            var answer = service.current(WeatherCity.LONDON);
+            assertThat(answer.forecastTime()).isEqualTo("2026-11-19T09:00:00Z");
+            assertThat(answer.fetchedAt()).isEqualTo("2026-11-19T08:20:00Z");
+        }
+        assertThat(Duration.ofNanos(System.nanoTime() - started)).isLessThan(COLD_WAIT);
+        assertThat(queue.size()).isEqualTo(1); // one refresh for all five requests
+        verify(client, times(1)).hourly(WeatherCity.LONDON);
+        queue.runAll();
+        verify(client, times(2)).hourly(WeatherCity.LONDON);
+        assertThat(service.current(WeatherCity.LONDON).fetchedAt()).isEqualTo("2026-11-19T09:21:00Z");
+    }
+
+    @Test
+    void aColdCacheWaitsABoundedTimeAndConcurrentRequestsShareOneRead() throws Exception {
+        var release = new CountDownLatch(1);
+        var calls = new AtomicInteger();
+        when(client.hourly(any())).thenAnswer(call -> {
+            calls.incrementAndGet();
+            release.await(10, TimeUnit.SECONDS);
+            return forecastFrom("2026-11-19");
+        });
+        ExecutorService refreshPool = Executors.newFixedThreadPool(2);
+        ExecutorService visitors = Executors.newFixedThreadPool(8);
+        try {
+            service = new WeatherService(client, budget, clock, refreshPool, COLD_WAIT);
+            var answers = new ArrayList<Future<WeatherFailure.Reason>>();
+            long started = System.nanoTime();
+            for (int i = 0; i < 8; i++) {
+                answers.add(visitors.submit(() -> failure(() -> service.current(WeatherCity.GLASGOW))));
+            }
+            for (var answer : answers) { assertThat(answer.get(5, TimeUnit.SECONDS)).isEqualTo(UNAVAILABLE); }
+            assertThat(Duration.ofNanos(System.nanoTime() - started)).isLessThan(Duration.ofSeconds(2));
+            release.countDown();
+            // The read finishes in the background; the next request gets it without another read.
+            long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(5);
+            WeatherResponse answer = null;
+            while (answer == null && System.nanoTime() < deadline) {
+                try { answer = service.current(WeatherCity.GLASGOW); } catch (WeatherFailure stillLoading) { Thread.sleep(20); }
+            }
+            assertThat(answer).isNotNull();
+            assertThat(calls.get()).isEqualTo(1);
+            assertThat(budget.used(LocalDate.parse("2026-11-19"))).isEqualTo(1);
+        } finally {
+            release.countDown();
+            visitors.shutdownNow();
+            refreshPool.shutdownNow();
+        }
+    }
+
+    // --- Daily budget ---
 
     @Test
     void readsStopAtTheDailyBudgetAndResumeAfterMidnightUtc() {
@@ -131,6 +264,7 @@ class WeatherServiceTest {
         }
         assertThat(attempts).isEqualTo(cities.size() * 144);
         verify(client, times(WeatherService.DAILY_CALL_BUDGET)).hourly(any());
+        assertThat(budget.used(LocalDate.parse("2026-11-19"))).isEqualTo(WeatherService.DAILY_CALL_BUDGET);
         // A new UTC day has a new budget.
         reset(client);
         when(client.configured()).thenReturn(true);
@@ -140,9 +274,25 @@ class WeatherServiceTest {
     }
 
     @Test
+    void aRestartKeepsTheDaysBudget() {
+        budget.usedUp(LocalDate.parse("2026-11-19"));
+        WeatherService restarted = inline();
+        assertThat(failure(() -> restarted.current(WeatherCity.LONDON))).isEqualTo(UNAVAILABLE);
+        verify(client, never()).hourly(any());
+    }
+
+    @Test
+    void anUnavailableBudgetMeansNoProviderCall() {
+        budget.broken = true;
+        assertThat(failure(() -> service.current(WeatherCity.LONDON))).isEqualTo(UNAVAILABLE);
+        verify(client, never()).hourly(any());
+    }
+
+    @Test
     void normalUseStaysWellUnderTheFreePlan() {
         clock.set(Instant.parse("2026-11-19T00:00:00Z"));
-        when(client.hourly(any())).thenAnswer(call -> forecastFrom("2026-11-18"));
+        when(client.hourly(any())).thenAnswer(call -> forecast(clock.instant().truncatedTo(java.time.temporal.ChronoUnit.HOURS)
+                .minus(Duration.ofHours(2)).toString(), clock.instant().minus(Duration.ofHours(1)), 48));
         // Every city requested every minute for a whole day.
         while (clock.instant().isBefore(Instant.parse("2026-11-20T00:00:00Z"))) {
             for (WeatherCity city : WeatherCity.values()) {
@@ -154,8 +304,34 @@ class WeatherServiceTest {
         assertThat(WeatherCity.values().length * 24).isLessThan(360);
     }
 
+    /** {@link WeatherCallBudget} semantics in memory (the PostgreSQL statement is tested in WeatherApiTest). */
+    static final class MemoryBudget extends WeatherCallBudget {
+        private final Map<LocalDate, Integer> days = new HashMap<>();
+        volatile boolean broken;
+        MemoryBudget() { super(null); }
+        @Override synchronized boolean take(LocalDate day, int limit) {
+            if (broken || days.getOrDefault(day, 0) >= limit) { return false; }
+            days.merge(day, 1, Integer::sum);
+            return true;
+        }
+        @Override synchronized int used(LocalDate day) { return days.getOrDefault(day, 0); }
+        synchronized void usedUp(LocalDate day) { days.put(day, WeatherService.DAILY_CALL_BUDGET); }
+    }
+
+    /** Holds background reads until the test runs them. */
+    static final class QueueExecutor implements Executor {
+        private final ArrayDeque<Runnable> tasks = new ArrayDeque<>();
+        @Override public synchronized void execute(Runnable task) { tasks.add(task); }
+        synchronized int size() { return tasks.size(); }
+        void runAll() {
+            Runnable task;
+            while ((task = poll()) != null) { task.run(); }
+        }
+        private synchronized Runnable poll() { return tasks.poll(); }
+    }
+
     static final class MutableClock extends Clock {
-        private Instant now;
+        private volatile Instant now;
         MutableClock(Instant now) { this.now = now; }
         void advance(Duration duration) { now = now.plus(duration); }
         void set(Instant instant) { now = instant; }

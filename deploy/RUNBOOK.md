@@ -242,7 +242,7 @@ run `deploy/test/stack-test.sh`, commit, then deploy as above
 | `APP_DB_PASSWORD` / `DB_PASSWORD` | `docker compose exec db psql -U postgres -c "ALTER ROLE life_in_uk_app PASSWORD '<new>'"`, update both env files, `docker compose up -d app` |
 | `POSTGRES_PASSWORD` | `ALTER ROLE postgres PASSWORD '<new>'`, update `db.env` (only read at initialisation) |
 | `ORIGIN_VERIFY_SECRET` | update `proxy.env`, `docker compose up -d proxy`, then the CloudFront origin custom header; API answers 403 for the minute in between (static pages unaffected) |
-| Provider keys | `scripts/set-env.sh /etc/lifeinuk/backend.env <NAME>` in an interactive Session Manager session (hidden prompt; compare the fingerprint with `deploy/ops/env-fingerprint.sh` on the workstation), then `docker compose up -d app` |
+| Provider keys | `scripts/set-env.sh /etc/lifeinuk/backend.env <NAME>` in an interactive Session Manager session (hidden prompt; compare the fingerprint with `deploy/ops/env-fingerprint.sh` on the workstation), then `docker compose up -d app`. To remove a key (switch its feature off): `scripts/set-env.sh --clear /etc/lifeinuk/backend.env <NAME>`, then the same recreate |
 
 ## 6. Routine maintenance
 

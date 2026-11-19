@@ -1,7 +1,6 @@
 package info.lifeinuk.backend.weather;
 
 import java.nio.charset.StandardCharsets;
-import java.time.Duration;
 import java.time.Instant;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -69,17 +68,18 @@ class HourlyForecastTest {
     }
 
     @Test
-    void stepAtPicksTheCurrentHourAndRefusesAForecastThatNoLongerCoversNow() {
+    void currentStepIsTheStepForTheHourContainingNowAndNeverANeighbouringHour() {
         var forecast = HourlyForecast.parse(bytes(response("2026-11-19T06:00Z",
-                step("2026-11-19T07:00Z", 6, 7), step("2026-11-19T08:00Z", 7, 8), step("2026-11-19T09:00Z", 8, 1))));
-        Duration tolerance = Duration.ofMinutes(90);
-        assertThat(forecast.stepAt(Instant.parse("2026-11-19T08:59:59Z"), tolerance).orElseThrow().temperatureC()).isEqualTo(7);
-        assertThat(forecast.stepAt(Instant.parse("2026-11-19T08:00:00Z"), tolerance).orElseThrow().temperatureC()).isEqualTo(7);
-        // Before the first step: the first step, if close enough.
-        assertThat(forecast.stepAt(Instant.parse("2026-11-19T06:15:00Z"), tolerance).orElseThrow().temperatureC()).isEqualTo(6);
-        assertThat(forecast.stepAt(Instant.parse("2026-11-19T05:00:00Z"), tolerance)).isEmpty();
-        // After the last step: only within the tolerance.
-        assertThat(forecast.stepAt(Instant.parse("2026-11-19T10:30:00Z"), tolerance).orElseThrow().temperatureC()).isEqualTo(8);
-        assertThat(forecast.stepAt(Instant.parse("2026-11-19T10:31:00Z"), tolerance)).isEmpty();
+                step("2026-11-19T07:00Z", 6, 7), step("2026-11-19T08:00Z", 7, 8), step("2026-11-19T10:00Z", 8, 1))));
+        assertThat(forecast.currentStep(Instant.parse("2026-11-19T08:59:59Z")).orElseThrow().temperatureC()).isEqualTo(7);
+        assertThat(forecast.currentStep(Instant.parse("2026-11-19T08:00:00Z")).orElseThrow().temperatureC()).isEqualTo(7);
+        assertThat(forecast.currentStep(Instant.parse("2026-11-19T07:59:59Z")).orElseThrow().temperatureC()).isEqualTo(6);
+        // Before the first step: nothing (the first step is not shown early).
+        assertThat(forecast.currentStep(Instant.parse("2026-11-19T06:59:59Z"))).isEmpty();
+        // A gap: no 09:00 step, so nothing at 09:30 (neither 08:00 nor 10:00 stands in for it).
+        assertThat(forecast.currentStep(Instant.parse("2026-11-19T09:30:00Z"))).isEmpty();
+        // After the last step's hour: nothing.
+        assertThat(forecast.currentStep(Instant.parse("2026-11-19T10:59:59Z")).orElseThrow().temperatureC()).isEqualTo(8);
+        assertThat(forecast.currentStep(Instant.parse("2026-11-19T11:00:00Z"))).isEmpty();
     }
 }

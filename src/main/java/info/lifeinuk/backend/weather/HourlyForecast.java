@@ -18,6 +18,7 @@ import static info.lifeinuk.backend.weather.WeatherFailure.Reason.INVALID_RESPON
 /** The parts of a Met Office hourly spot forecast that the homepage uses, validated. */
 record HourlyForecast(Instant modelRunAt, List<Step> steps) {
     static final int MAX_STEPS = 200;
+    static final Duration STEP_LENGTH = Duration.ofHours(1);
     private static final JsonMapper JSON = JsonMapper.builder()
             .enable(StreamReadFeature.STRICT_DUPLICATE_DETECTION)
             .enable(DeserializationFeature.FAIL_ON_TRAILING_TOKENS).build();
@@ -30,15 +31,13 @@ record HourlyForecast(Instant modelRunAt, List<Step> steps) {
     }
 
     /**
-     * The step for the hour containing {@code now}: the latest step at or before it, else the first step after it,
-     * as long as it is within {@code tolerance} of now. Empty when the forecast no longer (or not yet) covers now.
+     * The step for the hour containing {@code now}: the step at or before now and less than an hour before it.
+     * Empty when the forecast has no step for the current hour (it starts later, ends earlier or has a gap): a
+     * neighbouring hour is never shown in its place.
      */
-    Optional<Step> stepAt(Instant now, Duration tolerance) {
-        Optional<Step> current = steps.stream().filter(step -> !step.time().isAfter(now))
+    Optional<Step> currentStep(Instant now) {
+        return steps.stream().filter(step -> !step.time().isAfter(now) && now.isBefore(step.time().plus(STEP_LENGTH)))
                 .max(Comparator.comparing(Step::time));
-        Optional<Step> chosen = current.isPresent() ? current
-                : steps.stream().filter(step -> step.time().isAfter(now)).min(Comparator.comparing(Step::time));
-        return chosen.filter(step -> Duration.between(step.time(), now).abs().compareTo(tolerance) <= 0);
     }
 
     static HourlyForecast parse(byte[] body) {

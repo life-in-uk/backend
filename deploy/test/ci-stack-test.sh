@@ -266,6 +266,24 @@ expect "image unchanged by the recreate" "$running_image" "$(current)"
 out=$("$release" deploy "$commit_d" "$sha_d" "$digest" none 2>/dev/null) && fail "broken release reported success" || pass "broken release fails and the previous image is put back"
 expect "previous image running" "$running_image" "$(current)"
 expect "Rail still off on the previous image" RAIL_DISABLED "$(rail_code)"
+# Weather: the documented way to switch it off (docs/weather.md) is to clear MET_OFFICE_API_KEY with
+# set-env.sh --clear and recreate the app. A placeholder key is used and the endpoint is not called while
+# it is set, so nothing reaches the Met Office.
+weather_code() { curl -s "http://127.0.0.1:18080/api/weather/current?city=london" | python3 -c 'import json,sys; print(json.load(sys.stdin).get("code"))' 2>/dev/null; }
+app_has_key() { docker inspect -f '{{range .Config.Env}}{{println .}}{{end}}' "$(compose ps -q app)" | grep -c '^MET_OFFICE_API_KEY=.' || true; }
+expect "weather off without a key" WEATHER_NOT_CONFIGURED "$(weather_code)"
+printf 'ci-placeholder-not-a-key\n' | SET_ENV_STDIN=1 "$LIFEINUK_DIR/scripts/set-env.sh" "$LIFEINUK_ETC/backend.env" MET_OFFICE_API_KEY >/dev/null 2>&1
+compose up -d --no-deps app >/dev/null 2>&1 && wait_healthy app 240
+expect "weather key set and the app recreated: the app has the key" 1 "$(app_has_key)"
+out=$("$LIFEINUK_DIR/scripts/set-env.sh" --clear "$LIFEINUK_ETC/backend.env" MET_OFFICE_API_KEY 2>&1)
+expect "set-env --clear prints no secret" 0 "$(grep -c placeholder <<<"$out" || true)"
+expect "set-env --clear empties the key" "MET_OFFICE_API_KEY empty" "$("$LIFEINUK_DIR/scripts/set-env.sh" --fingerprint "$LIFEINUK_ETC/backend.env" MET_OFFICE_API_KEY)"
+expect "the running app keeps the key until it is recreated" 1 "$(app_has_key)"
+compose up -d --no-deps app >/dev/null 2>&1 && wait_healthy app 240
+expect "key cleared and the app recreated: no key in the app" 0 "$(app_has_key)"
+expect "key cleared and the app recreated: 503 WEATHER_NOT_CONFIGURED" "503 WEATHER_NOT_CONFIGURED" \
+  "$(curl -s -o /dev/null -w '%{http_code}' "http://127.0.0.1:18080/api/weather/current?city=london") $(weather_code)"
+refused "set-env --clear takes names only" "names only" "$LIFEINUK_DIR/scripts/set-env.sh" --clear "$LIFEINUK_ETC/backend.env" MET_OFFICE_API_KEY=x
 
 echo "▶ nightly backup (lifeinuk-backup.service) compatibility"
 nightly_unit="$repo/deploy/systemd/lifeinuk-backup.service"
