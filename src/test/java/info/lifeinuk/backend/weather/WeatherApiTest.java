@@ -161,4 +161,24 @@ class WeatherApiTest {
         verify(client, times(1)).hourly(WeatherCity.CARDIFF);
         assertThat(new WeatherCallBudget(jdbc).used(today)).isEqualTo(before + 1);
     }
+
+    @Test
+    void aLockedBudgetRowTimesOutAndRefusesInsteadOfHanging() throws Exception {
+        LocalDate day = LocalDate.parse("2103-03-03");
+        var budget = new WeatherCallBudget(jdbc, Duration.ofSeconds(1));
+        assertThat(budget.take(day, 10)).isTrue();
+        try (var holder = jdbc.getDataSource().getConnection()) {
+            holder.setAutoCommit(false);
+            try (var lock = holder.prepareStatement("SELECT calls FROM weather_call_budget WHERE day = ? FOR UPDATE")) {
+                lock.setObject(1, day);
+                lock.executeQuery().close();
+            }
+            long started = System.nanoTime();
+            assertThat(budget.take(day, 10)).isFalse(); // fails closed: no provider call
+            assertThat(Duration.ofNanos(System.nanoTime() - started)).isLessThan(Duration.ofSeconds(5));
+            holder.rollback();
+        }
+        assertThat(budget.take(day, 10)).isTrue();
+        assertThat(budget.used(day)).isEqualTo(2);
+    }
 }

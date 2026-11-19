@@ -37,7 +37,8 @@ import static info.lifeinuk.backend.weather.WeatherFailure.Reason.*;
  * {@link #COLD_WAIT} for the read. Concurrent requests for a city share one read.
  *
  * <p>A new forecast replaces the stored one only if it is usable: its model run is neither in the future nor older
- * than {@link #MAX_MODEL_AGE}, not older than the stored one, and it has a step for the current hour. A stored forecast
+ * than {@link #MAX_MODEL_AGE}, not older than the stored one, and it has a step for the current hour with a temperature
+ * or a nameable weather code ({@link #displayable}). A stored forecast
  * is served for up to {@link #MAX_STALE} after it was read, while the Met Office cannot be reached.
  */
 @Service
@@ -182,13 +183,22 @@ public class WeatherService {
         if (run.isAfter(now.plus(MAX_CLOCK_SKEW))) { return new WeatherFailure(INVALID_RESPONSE); }
         if (run.isBefore(now.minus(MAX_MODEL_AGE))) { return new WeatherFailure(UNAVAILABLE); }
         if (stored != null && run.isBefore(stored.forecast().modelRunAt())) { return new WeatherFailure(UNAVAILABLE); }
-        if (forecast.currentStep(now).isEmpty()) { return new WeatherFailure(UNAVAILABLE); }
+        if (forecast.currentStep(now).filter(WeatherService::displayable).isEmpty()) { return new WeatherFailure(UNAVAILABLE); }
         return null;
+    }
+
+    /**
+     * Whether the homepage can show anything for a step: a temperature, or a weather code it can name (every
+     * published code except 4, "Not used"). A step with neither is unusable.
+     */
+    static boolean displayable(HourlyForecast.Step step) {
+        Integer code = step.weatherCode();
+        return step.temperatureC() != null || (code != null && code != 4);
     }
 
     private static Optional<WeatherResponse> answer(WeatherCity city, Stored stored, Instant now) {
         if (stored == null || now.isAfter(stored.fetchedAt().plus(MAX_STALE))) { return Optional.empty(); }
-        return stored.forecast().currentStep(now).map(step -> new WeatherResponse(city.id(), iso(step.time()),
+        return stored.forecast().currentStep(now).filter(WeatherService::displayable).map(step -> new WeatherResponse(city.id(), iso(step.time()),
                 iso(stored.forecast().modelRunAt()), iso(stored.fetchedAt()), step.temperatureC(), step.feelsLikeC(),
                 step.weatherCode(), step.precipitationProbability(), WeatherResponse.ATTRIBUTION));
     }

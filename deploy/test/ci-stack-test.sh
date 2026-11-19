@@ -273,11 +273,19 @@ weather_code() { curl -s "http://127.0.0.1:18080/api/weather/current?city=london
 app_has_key() { docker inspect -f '{{range .Config.Env}}{{println .}}{{end}}' "$(compose ps -q app)" | grep -c '^MET_OFFICE_API_KEY=.' || true; }
 expect "weather off without a key" WEATHER_NOT_CONFIGURED "$(weather_code)"
 printf 'ci-placeholder-not-a-key\n' | SET_ENV_STDIN=1 "$LIFEINUK_DIR/scripts/set-env.sh" "$LIFEINUK_ETC/backend.env" MET_OFFICE_API_KEY >/dev/null 2>&1
+# A hand-edited file can hold the key more than once, also as "export NAME=" (Compose reads both; the last wins).
+printf 'export MET_OFFICE_API_KEY=ci-placeholder-export\nMET_OFFICE_API_KEY=ci-placeholder-duplicate\n' >> "$LIFEINUK_ETC/backend.env"
+# The environment Compose gives the app (no value printed).
+compose_key() { compose config --format json 2>/dev/null | python3 -c 'import json,sys; e=json.load(sys.stdin)["services"]["app"].get("environment") or {}; print("set" if e.get("MET_OFFICE_API_KEY") else "none")'; }
+expect "Compose reads the export and duplicate assignments" set "$(compose_key)"
 compose up -d --no-deps app >/dev/null 2>&1 && wait_healthy app 240
 expect "weather key set and the app recreated: the app has the key" 1 "$(app_has_key)"
 out=$("$LIFEINUK_DIR/scripts/set-env.sh" --clear "$LIFEINUK_ETC/backend.env" MET_OFFICE_API_KEY 2>&1)
 expect "set-env --clear prints no secret" 0 "$(grep -c placeholder <<<"$out" || true)"
 expect "set-env --clear empties the key" "MET_OFFICE_API_KEY empty" "$("$LIFEINUK_DIR/scripts/set-env.sh" --fingerprint "$LIFEINUK_ETC/backend.env" MET_OFFICE_API_KEY)"
+expect "set-env --clear leaves one empty assignment (export and duplicates gone)" "MET_OFFICE_API_KEY=" \
+  "$(grep -E '^[[:space:]]*(export[[:space:]]+)?MET_OFFICE_API_KEY[[:space:]]*=' "$LIFEINUK_ETC/backend.env" | paste -sd'|')"
+expect "set-env --clear: Compose gives the app no key" none "$(compose_key)"
 expect "the running app keeps the key until it is recreated" 1 "$(app_has_key)"
 compose up -d --no-deps app >/dev/null 2>&1 && wait_healthy app 240
 expect "key cleared and the app recreated: no key in the app" 0 "$(app_has_key)"

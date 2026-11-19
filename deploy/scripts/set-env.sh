@@ -80,9 +80,13 @@ cp -p "$file" "$backup"
 tmp=$(mktemp "$(dirname "$file")/.$(basename "$file").XXXXXX")
 trap 'rm -f "$tmp"' EXIT
 declare -A done_=()
+# Every assignment of a name being set counts, in any form Compose reads ("NAME=", "export NAME=", leading
+# blanks, blanks before "="): the first is replaced by the new value and any others are dropped, so exactly
+# one assignment of each name is left and no earlier or later one can stay in effect.
 while IFS= read -r line || [ -n "$line" ]; do
-  name=${line%%=*}
-  if [[ "$line" == *=* && -n "${new[$name]+x}" ]]; then
+  name=
+  [[ "$line" =~ ^[[:space:]]*(export[[:space:]]+)?([A-Za-z_][A-Za-z0-9_]*)[[:space:]]*= ]] && name=${BASH_REMATCH[2]}
+  if [[ -n "$name" && -n "${new[$name]+x}" ]]; then
     [ -z "${done_[$name]+x}" ] && printf '%s=%s\n' "$name" "${new[$name]}"
     done_[$name]=1
   else

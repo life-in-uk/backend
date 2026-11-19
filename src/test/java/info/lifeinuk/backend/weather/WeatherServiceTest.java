@@ -185,6 +185,54 @@ class WeatherServiceTest {
         assertThat(service.current(WeatherCity.LONDON).fetchedAt()).isEqualTo("2026-11-19T09:31:00Z");
     }
 
+    // --- A step the homepage cannot show is unusable ---
+
+    /** One step with optional temperature and weather code (absent when null). */
+    static String rawStep(String time, Double temperature, Integer code) {
+        return "{\"time\":\"" + time + "\"" + (temperature == null ? "" : ",\"screenTemperature\":" + temperature)
+                + (code == null ? "" : ",\"significantWeatherCode\":" + code) + "}";
+    }
+
+    static byte[] singleHour(Double temperature, Integer code) {
+        return bytes(response("2026-11-19T07:00Z", rawStep("2026-11-19T08:00Z", temperature, code),
+                rawStep("2026-11-19T09:00Z", temperature, code)));
+    }
+
+    @Test
+    void aCurrentStepWithNeitherTemperatureNorANameableConditionIsRejected() {
+        when(client.hourly(any())).thenReturn(singleHour(null, null));
+        assertThat(failure(() -> service.current(WeatherCity.LONDON))).isEqualTo(UNAVAILABLE);
+        clock.advance(Duration.ofMinutes(10));
+        when(client.hourly(any())).thenReturn(singleHour(null, 4)); // 4 = "Not used": nothing to name
+        assertThat(failure(() -> service.current(WeatherCity.LONDON))).isEqualTo(UNAVAILABLE);
+        verify(client, times(2)).hourly(WeatherCity.LONDON);
+    }
+
+    @Test
+    void aTemperatureAloneOrAConditionAloneIsEnough() {
+        when(client.hourly(WeatherCity.LONDON)).thenReturn(singleHour(6.5, 4));
+        var temperatureOnly = service.current(WeatherCity.LONDON);
+        assertThat(temperatureOnly.temperatureC()).isEqualTo(6.5);
+        assertThat(temperatureOnly.weatherCode()).isEqualTo(4);
+        when(client.hourly(WeatherCity.LEEDS)).thenReturn(singleHour(null, 12));
+        var conditionOnly = service.current(WeatherCity.LEEDS);
+        assertThat(conditionOnly.temperatureC()).isNull();
+        assertThat(conditionOnly.weatherCode()).isEqualTo(12);
+    }
+
+    @Test
+    void anUnusableResponseNeverReplacesUsableStoredWeather() {
+        assertThat(service.current(WeatherCity.LONDON).temperatureC()).isEqualTo(8.0);
+        clock.advance(Duration.ofMinutes(61)); // 09:21: refresh due; the newer run's 09:00 step is empty
+        when(client.hourly(any())).thenReturn(singleHour(null, null));
+        var kept = service.current(WeatherCity.LONDON);
+        assertThat(kept.forecastTime()).isEqualTo("2026-11-19T09:00:00Z");
+        assertThat(kept.temperatureC()).isEqualTo(9.0);
+        assertThat(kept.modelRunAt()).isEqualTo("2026-11-19T05:00:00Z");
+        assertThat(kept.fetchedAt()).isEqualTo("2026-11-19T08:20:00Z");
+        verify(client, times(2)).hourly(WeatherCity.LONDON);
+    }
+
     // --- Requests do not wait for refreshes ---
 
     @Test
