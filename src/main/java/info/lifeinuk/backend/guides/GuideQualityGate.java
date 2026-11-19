@@ -48,8 +48,10 @@ class GuideQualityGate {
     static final String FAMILY_VISA_CATEGORY = "family-visa";
     static final String WORK_VISA_CATEGORY = "work-visa";
     static final String SETTLEMENT_CATEGORY = "settlement";
+    static final String UNIVERSITY_CATEGORY = "university-applications-student-visas";
     /** Immigration categories: all use the stricter family-visa-v1 checklist and blocking evidence rules. */
-    static final java.util.Set<String> IMMIGRATION_CATEGORIES = java.util.Set.of(FAMILY_VISA_CATEGORY, WORK_VISA_CATEGORY, SETTLEMENT_CATEGORY);
+    static final java.util.Set<String> IMMIGRATION_CATEGORIES = java.util.Set.of(
+            FAMILY_VISA_CATEGORY, WORK_VISA_CATEGORY, SETTLEMENT_CATEGORY, UNIVERSITY_CATEGORY);
     static final List<String> EDITORIAL_MARKERS = List.of("[EDITORIAL", "[EVIDENCE:", "TODO", "待核对");
     static final String LAST_UPDATED_MARKER = "最后更新";
     private static final String EVIDENCE_LINK = "(#guide-evidence-";
@@ -92,7 +94,7 @@ class GuideQualityGate {
             findings.add(new Finding(Severity.BLOCKING, "EVIDENCE_ABSENT", "The evidence collection is absent"));
         } else if (evidence.isEmpty()) {
             findings.add(new Finding(familyVisa ? Severity.BLOCKING : Severity.WARNING, "EVIDENCE_EMPTY",
-                    familyVisa ? "Immigration (family-visa / work-visa / settlement) content requires at least one evidence entry"
+                    familyVisa ? "Immigration content requires at least one evidence entry"
                             : "No evidence entries: claims in this Guide have no recorded support"));
         }
 
