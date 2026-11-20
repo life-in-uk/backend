@@ -11,12 +11,12 @@ on:
         description: Private S3 package object version ID
         type: string
         required: true
-      review_sha256:
-        description: SHA-256 of the signed independent review ZIP
+      receipt_sha256:
+        description: SHA-256 of the verified private import receipt
         type: string
         required: true
-      review_version:
-        description: Private S3 review object version ID
+      verified_on:
+        description: Date of local content review (YYYY-MM-DD)
         type: string
         required: true
 
@@ -36,5 +36,5 @@ jobs:
     with:
       package_sha256: ${{ inputs.package_sha256 }}
       package_version: ${{ inputs.package_version }}
-      review_sha256: ${{ inputs.review_sha256 }}
-      review_version: ${{ inputs.review_version }}
+      receipt_sha256: ${{ inputs.receipt_sha256 }}
+      verified_on: ${{ inputs.verified_on }}

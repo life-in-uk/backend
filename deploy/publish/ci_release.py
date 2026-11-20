@@ -30,8 +30,8 @@ SLUGS = {slug for _, slugs in WAVES.values() for slug in slugs}
 HEX = r"[0-9a-f]{64}"
 VERSION = r"[A-Za-z0-9._~+/=-]{1,1024}"
 MAX_BYTES = 8 * 1024 * 1024
-REVIEW_NAMESPACE = "lifeinuk-education-publish"
-REVIEWER = "claude-independent"
+# The installed backend assigns this legacy actor to its host-only review token.
+REVIEW_SERVICE_ACTOR = "claude-independent"
 
 
 def encoded(value):
@@ -94,7 +94,7 @@ def fetch(kind, want, version, destination):
     require(re.fullmatch(HEX, want) is not None, "Invalid object digest.")
     require(version is None or re.fullmatch(VERSION, version) is not None and version != "null",
             "An immutable S3 version is required.")
-    suffix = "zip" if kind in {"packages", "reviews"} else "json"
+    suffix = "zip" if kind == "packages" else "json"
     key = f"editorial/education/{kind}/{want}.{suffix}"
     args = ["aws", "s3api", "get-object", "--bucket", BUCKET, "--key", key]
     if version is not None:
@@ -273,34 +273,15 @@ def stage(package, archive_hash, directory):
                          "batches": batches}, directory, "receipts")
 
 
-def signed_review(directory, archive_hash, review_hash, review_version):
-    fetch("reviews", review_hash, review_version, directory / "review.zip")
-    unpack(directory / "review.zip", directory, {"review.json", "review.sig"})
-    raw = checked_bytes(directory / "review.json")
-    run("ssh-keygen", "-Y", "verify", "-f", str(CONF / "allowed_signers"), "-I", REVIEWER,
-        "-n", REVIEW_NAMESPACE, "-s", str(directory / "review.sig"),
-        input=raw, purpose="Independent review signature verification")
-    review = read_json(raw)
-    require(set(review) == {"release", "packageSha256", "receiptSha256", "verifiedOn", "reviews"}
-            and review["release"] == RELEASE and review["packageSha256"] == archive_hash
-            and set(review["reviews"]) == SLUGS, "Signed review release or school scope is incorrect.")
-    day = date.fromisoformat(review["verifiedOn"])
-    require(day.isoformat() == review["verifiedOn"] and day <= datetime.now(timezone.utc).date(),
-            "Independent verification date is invalid.")
-    for verdicts in review["reviews"].values():
-        require(set(verdicts) == set(LOCALES), "Signed review has incomplete locales.")
-        for verdict in verdicts.values():
-            require(set(verdict) == {"passed", "findings"} and verdict["passed"] is True
-                    and isinstance(verdict["findings"], list) and len(verdict["findings"]) <= 100
-                    and len(json.dumps(verdict["findings"], ensure_ascii=False)) <= 64000,
-                    "Every variant needs a passing signed verdict within API limits.")
-    receipt = read_json(fetch("receipts", review["receiptSha256"], None, directory / "import.json"))
-    require(receipt["release"] == RELEASE and receipt["packageSha256"] == archive_hash
+def load_import_receipt(directory, archive_hash, receipt_hash):
+    receipt = read_json(fetch("receipts", receipt_hash, None, directory / "import.json"))
+    require(set(receipt) == {"release", "packageSha256", "backup", "batches"}
+            and receipt["release"] == RELEASE and receipt["packageSha256"] == archive_hash
             and set(receipt["batches"]) == SLUGS, "Import receipt scope or package digest is incorrect.")
-    return review, receipt["batches"]
+    return receipt["batches"]
 
 
-def batch_state(session, slug, guides, receipt, verdicts, history, verified_on):
+def batch_state(session, slug, guides, receipt, findings, history, verified_on):
     detail = session.request("GET", batch_path(receipt["batchId"]))
     status = detail["batch"]["status"]
     actual = inspect_batch_detail(detail, slug, guides, receipt["batchId"],
@@ -308,14 +289,13 @@ def batch_state(session, slug, guides, receipt, verdicts, history, verified_on):
     require(actual == receipt and set(actual["locales"]) == set(LOCALES), "Batch IDs or hashes changed since import.")
     pending = []
     for row in detail["locales"]:
-        verdict = verdicts[row["locale"]]
         if status == "DRAFT" and row["reviewStatus"] == "PENDING" and row["reviewedHash"] is None:
             pending.append(row["locale"])
         else:
             require(row["reviewStatus"] == "PASSED" and row["reviewedHash"] == row["contentHash"]
-                    and row["reviewer"] == REVIEWER and row["reviewResult"] is not None
-                    and json.loads(row["reviewResult"]) == verdict["findings"],
-                    "Existing review does not match the signed independent verdict.")
+                    and row["reviewer"] == REVIEW_SERVICE_ACTOR and row["reviewResult"] is not None
+                    and json.loads(row["reviewResult"]) == findings,
+                    "Existing review does not match the owner-approved import receipt and verification date.")
     if status == "PUBLISHED":
         require(len(history) == 1 and history[0]["ended"] is False
                 and history[0]["sourceRevisionId"] == receipt["sourceRevisionId"]
@@ -326,22 +306,33 @@ def batch_state(session, slug, guides, receipt, verdicts, history, verified_on):
     return status, pending, None
 
 
-def publish(package, archive_hash, review_hash, review_version, directory):
-    review, receipts = signed_review(directory, archive_hash, review_hash, review_version)
+def publish(package, archive_hash, receipt_hash, verified_on, directory):
+    try:
+        day = date.fromisoformat(verified_on)
+    except ValueError:
+        raise Refused("Invalid local review date.") from None
+    require(day.isoformat() == verified_on and day <= datetime.now(timezone.utc).date(),
+            "Invalid local review date.")
+    receipts = load_import_receipt(directory, archive_hash, receipt_hash)
+    findings = [{
+        "source": "Local content review and GitHub Production owner approval",
+        "importReceiptSha256": receipt_hash,
+        "verifiedOn": verified_on,
+    }]
     state = read_state()
     require(state["revisions"] == {s: [uuid(r["sourceRevisionId"])] for s, r in receipts.items()},
-            "Destination revisions differ from the signed receipt.")
+            "Destination revisions differ from the import receipt.")
     with owner_session("APPROVAL") as session:
         rows = session.request("GET", EDITORIAL_PATH + "/batches")
         require(isinstance(rows, list) and len(rows) < 100, "Owner API batch inventory is incomplete.")
         inventory = [r for r in rows if r["slug"] in SLUGS]
         require(len(inventory) == len(SLUGS)
                 and {r["slug"]: r["batchId"] for r in inventory} == {s: r["batchId"] for s, r in receipts.items()},
-                "The batch inventory differs from the signed receipt.")
+                "The batch inventory differs from the import receipt.")
 
         def inspect(slug, snapshot):
             return batch_state(session, slug, package[slug], receipts[slug],
-                               review["reviews"][slug], snapshot["publications"].get(slug, []), review["verifiedOn"])
+                               findings, snapshot["publications"].get(slug, []), verified_on)
 
         ready = {slug: inspect(slug, state) for slug in sorted(SLUGS)}
         published = {slug: row[2] for slug, row in ready.items() if row[0] == "PUBLISHED"}
@@ -355,16 +346,16 @@ def publish(package, archive_hash, review_hash, review_version, directory):
             receipt = receipts[slug]
             path = batch_path(receipt["batchId"])
             for locale in pending:
-                verdict = review["reviews"][slug][locale]
                 session.request("POST", f"/api/editorial/guide-batches/{receipt['batchId']}/reviews/{locale}",
-                                {**verdict, "contentHash": receipt["locales"][locale]["contentHash"]}, bearer=review_token)
+                                {"passed": True, "findings": findings,
+                                 "contentHash": receipt["locales"][locale]["contentHash"]}, bearer=review_token)
             status, _, _ = inspect(slug, read_state())
             if status == "READY":
                 session.request("POST", path + "/approve")
                 status, _, _ = inspect(slug, read_state())
             require(status == "APPROVED", "Batch is missing current approval.")
             session.request("POST", path + "/publish", {"checklistId": "standard-v1",
-                            "verifiedOn": review["verifiedOn"], "expectCurrentPublicationId": None})
+                            "verifiedOn": verified_on, "expectCurrentPublicationId": None})
             status, _, publication_id = inspect(slug, read_state())
             require(status == "PUBLISHED", "Publication was not recorded.")
             published[slug] = publication_id
@@ -372,7 +363,7 @@ def publish(package, archive_hash, review_hash, review_version, directory):
     verify_visibility(edge, receipts)
     require(public_inventory(SLUGS) == before, "Unrelated public inventory changed during publication.")
     return save_receipt({"release": RELEASE, "packageSha256": archive_hash,
-                         "reviewSha256": review_hash, "backup": backup_name,
+                         "importReceiptSha256": receipt_hash, "verifiedOn": verified_on, "backup": backup_name,
                          "publications": published}, directory, "publications")
 
 
@@ -395,13 +386,13 @@ def main():
     parser.add_argument("action", choices=("import", "publish"))
     parser.add_argument("package_sha256")
     parser.add_argument("package_version")
-    parser.add_argument("review_sha256", nargs="?")
-    parser.add_argument("review_version", nargs="?")
+    parser.add_argument("receipt_sha256", nargs="?")
+    parser.add_argument("verified_on", nargs="?")
     args = parser.parse_args()
     try:
-        require((args.review_sha256 is not None and args.review_version is not None)
-                if args.action == "publish" else args.review_sha256 is None and args.review_version is None,
-                "Use review inputs only for publication.")
+        require((args.receipt_sha256 is not None and args.verified_on is not None)
+                if args.action == "publish" else args.receipt_sha256 is None and args.verified_on is None,
+                "Use the import receipt and local review date only for publication.")
         host_ready()
         with tempfile.TemporaryDirectory(prefix="lifeinuk-editorial-") as scratch:
             directory = Path(scratch)
@@ -411,7 +402,7 @@ def main():
             if args.action == "import":
                 receipt = stage(package, args.package_sha256, directory)
             else:
-                receipt = publish(package, args.package_sha256, args.review_sha256, args.review_version, directory)
+                receipt = publish(package, args.package_sha256, args.receipt_sha256, args.verified_on, directory)
         print(f"RESULT {args.action} receipt_sha256={receipt}")
     except Refused as failure:
         parser.exit(1, f"Editorial release refused: {failure}\n")

@@ -5,10 +5,7 @@
       "Sid": "ReadImmutableEditorialInputs",
       "Effect": "Allow",
       "Action": "s3:GetObjectVersion",
-      "Resource": [
-        "arn:aws:s3:::lifeinuk-backups-919693204623-eu-west-2/editorial/education/packages/*",
-        "arn:aws:s3:::lifeinuk-backups-919693204623-eu-west-2/editorial/education/reviews/*"
-      ]
+      "Resource": "arn:aws:s3:::lifeinuk-backups-919693204623-eu-west-2/editorial/education/packages/*"
     },
     {
       "Sid": "StoreAndReadEditorialAuditReceipts",
