@@ -42,11 +42,21 @@
 初次开户和抄表步骤参阅站内租房能源指南。 [EN01] [EN05]
 
 同地址换供时，联系新供应商，核对原合同到期、是否有应付退出费、转接日和
-冷静期。Ofgem 的家庭换供说明列出 14 日撤销选择、五个工作日切换的规则和
-可能的补偿；请让供应商确认安排。保存切换确认和结算读数，收到最终账单后
-查看余额和退款记录。账单有争议先找供应商正式投诉，保存照片、编号和书面
-承诺；收到僵局函或八周仍未解决，可按条件向 Energy Ombudsman 转介。
-[EN01] [EN04] [EN05]
+14 天冷静期。在大不列颠，若新供应商未在适用的五个工作日时限内完成换供，
+须自动支付 £40 补偿，款项会进入能源账户或银行账户。
+保存切换确认和结算读数，收到最终账单后查看余额和退款记录。账单有争议先找
+供应商正式投诉，保存照片、编号和书面承诺；收到僵局函或八周仍未解决，可按条件
+向 Energy Ombudsman 转介。 [EN01] [EN04] [EN05]
+
+如果预计付不起账单，尽早联系供应商。供应商须与你商定负担得起的付款计划；
+可请对方复核还款额，或咨询暂缓付款和困难援助。符合条件的家庭可向供应商或
+网络运营方免费申请加入优先服务登记册（Priority Services Register，PSR），
+例如因健康、残障或年龄需要额外帮助时，可询问无障碍账单或停电通知。
+[EN08] [EN09]
+
+闻到燃气味或怀疑泄漏，马上拨打当地燃气应急热线：大不列颠 0800 111 999，
+北爱尔兰 0800 002 001。避免开关电器或使用明火；在安全的情况下打开门窗，
+知道并能安全操作时关闭表前燃气阀。不要等账单客服处理。 [EM06] [EM07]
 
 北爱尔兰的能源市场另有规则。使用 Utility Regulator 与 Consumer Council 的
 北爱尔兰官方入口查电、气、付款方式和当地可选供应。不要把本篇的 GB 上限和
@@ -77,7 +87,7 @@
 来源与查证日期
 
 [EN02] Ofgem · 2026-11-20
-https://www.ofgem.gov.uk/your-energy-supply/your-energy-bill/energy-price-cap-and-standing-charges-explained?jwsource=cl
+https://www.ofgem.gov.uk/your-energy-supply/your-energy-bill/energy-price-cap-and-standing-charges-explained
 
 [EN03] Ofgem · 2026-11-20
 https://www.ofgem.gov.uk/your-energy-supply/your-energy-bill/energy-price-cap-unit-rates-and-standing-charges
@@ -96,3 +106,15 @@ https://www.consumercouncil.org.uk/consumers/help-consumers/electricity-oil-and-
 
 [EN07] Utility Regulator · 2026-11-20
 https://www.uregni.gov.uk/consumer-information
+
+[EN08] Ofgem · 2026-11-20
+https://www.ofgem.gov.uk/your-energy-supply/your-energy-bill/get-help-your-home-or-business-energy-bills
+
+[EN09] Ofgem · 2026-11-20
+https://www.ofgem.gov.uk/your-energy-supply/how-manage-your-energy-supply/join-your-suppliers-priority-services-register
+
+[EM06] HSE · 2026-11-20
+https://www.hse.gov.uk/gas/domestic/faqlandlord.htm
+
+[EM07] nidirect · 2026-11-20
+https://www.nidirect.gov.uk/articles/energy-power-supply-and-utilities

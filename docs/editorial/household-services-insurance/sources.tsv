@@ -1,16 +1,16 @@
 source_id	body	last_verified	scope	URL	use_and_locator
 CORE01	FCA	2026-11-20	UK	https://www.fca.org.uk/consumers/fca-firm-checker	Check firm and relevant permissions; checker cannot determine FOS/FSCS eligibility.
 CORE02	FCA Handbook	2026-11-20	UK	https://handbook.fca.org.uk/handbook/icobs7	ICOBS 7.1.1, 7.1.3, 7.1.5 and 7.2.2; periods, exceptions, start date and cost.
-CORE03	FCA Handbook	2026-11-20	UK	https://handbook.fca.org.uk/handbook/icobs6b	ICOBS 6B.2; equivalent new business price for in-scope home and motor renewals.
+CORE03	FCA Handbook	2026-11-20	UK	https://handbook.fca.org.uk/handbook/icobs6b	ICOBS 6B.2.1R and 6B.2.5R; in-scope renewal price cap, original purchase channel and fallback.
 CORE04	FCA Handbook	2026-11-20	UK	https://handbook.fca.org.uk/handbook/icobs6a	ICOBS 6A.6; accessible automatic renewal opt-out; private medical and pet exclusions.
-CORE05	UK legislation	2026-11-20	UK	https://www.legislation.gov.uk/ukpga/2012/6/body/enacted?view=plain	CIDRA 2012 ss.2–3; reasonable care and consumer representations.
-CORE06	Financial Ombudsman Service	2026-11-20	UK	https://www.financial-ombudsman.org.uk/consumers/how-to-complain	Firm complaint first; referral process. Timing also in CORE07.
-CORE07	Financial Ombudsman Service	2026-11-20	UK	https://www.financial-ombudsman.org.uk/consumers/complaints-can-help/expect/time-limits	Ordinary eight-week response and six-month final-response referral windows for regulated complaints.
+CORE05	UK legislation	2026-11-20	UK	https://www.legislation.gov.uk/ukpga/2012/6	CIDRA 2012 ss.2–4 and Schedule 1; reasonable care, consumer representations and remedies.
+CORE06	Financial Ombudsman Service	2026-11-20	UK	https://www.financial-ombudsman.org.uk/consumers/log-ombudsman-connect/how-to-complain	Firm complaint first; referral process. Timing also in CORE07.
+CORE07	Financial Ombudsman Service	2026-11-20	UK	https://www.financial-ombudsman.org.uk/consumers/complaints-can-help/expect/time-limits	Ordinary eight-week response and six-month referral from valid final response; six-year/three-year limits and exceptions.
 CORE08	FSCS	2026-11-20	UK	https://www.fscs.org.uk/what-we-cover/insurance/	Insurer failure; qualifying claim protection varies with insurance class.
 COMP01	FCA Handbook	2026-11-20	UK	https://handbook.fca.org.uk/handbook/perg8/perg8s2	FSMA s.21 basics; invitation or inducement, permissions, approval or exemption.
 COMP02	FCA Handbook	2026-11-20	UK	https://handbook.fca.org.uk/handbook/perg5	PERG 5, especially arranging/advising and financial promotion pointers; distribution perimeter.
 COMP03	FCA Handbook	2026-11-20	UK	https://handbook.fca.org.uk/handbook/perg8/perg8s18?timeline=true	PERG 8.17A; scope for insurance distribution activities.
-COMP04	FCA Handbook	2026-11-20	UK	https://www.handbook.fca.org.uk/handbook/PERG/8/22.pdf	PERG 8.22; website link, surrounding copy and commercial context.
+COMP04	FCA Handbook	2026-11-20	UK	https://handbook.fca.org.uk/handbook/perg8/perg8s23	PERG 8.22; website link, surrounding copy and commercial context.
 COMP05	FCA Handbook	2026-11-20	UK	https://handbook.fca.org.uk/handbook/icobs2/icobs2s2?date=01-09-2026&timeline=true	ICOBS 2.2; fair, clear and not misleading communications and insurance promotion.
 COMP06	ASA / CAP	2026-11-20	UK	https://www.asa.org.uk/advice-online/affiliate-marketing.html	Advertising recognisability and proximity of intended disclosures; compliance only.
 HOME01	MoneyHelper / MaPS	2026-11-20	UK	https://www.moneyhelper.org.uk/en/everyday-money/insurance/home-insurance-how-to-get-the-best-deal	Buildings and contents, owner/leaseholder/tenant, pay annually versus monthly, cancellation.
@@ -30,7 +30,7 @@ TEL02	Ofcom	2026-11-20	UK	https://www.ofcom.org.uk/phones-and-broadband/coverage
 TEL03	Ofcom	2026-11-20	UK	https://www.ofcom.org.uk/phones-and-broadband/switching-provider/switching-broadband-provider?language=en	One Touch Switch, fees, bundles and potential interruption.
 TEL04	Ofcom	2026-11-20	UK	https://www.ofcom.org.uk/phones-and-broadband/saving-money/telecoms-price-rises-what-are-your-rights	New-contract pounds-and-pence rule beginning January 2025.
 TEL05	Ofcom	2026-11-20	UK	https://www.ofcom.org.uk/phones-and-broadband/service-quality/contracts	Pre-contract information, price changes and right to exit when applicable.
-TEL06	Ofcom	2026-11-20	UK	https://www.ofcom.org.uk/phones-and-broadband/saving-money/in-or-out?language=en	Minimum term, end-of-contract notice, early termination and annual reminders.
+TEL06	Ofcom	2026-11-20	UK	https://www.ofcom.org.uk/phones-and-broadband/saving-money/in-or-out?language=en	Minimum term, early termination, end-of-contract notice 10–40 days before expiry and annual best-deal reminders.
 TEL07	Ofcom	2026-11-20	UK	https://www.ofcom.org.uk/phones-and-broadband/service-quality/broadband-wifi-help	Diagnose premises versus network; guaranteed speed and 30-day remedy where applicable.
 TEL08	Ofcom	2026-11-20	UK	https://www.ofcom.org.uk/phones-and-broadband/service-quality/automatic-compensation-need-know?language=en	Voluntary scheme, types of qualifying event and participating providers.
 TEL09	Ofcom	2026-11-20	UK	https://www.ofcom.org.uk/phones-and-broadband/service-quality/adr-schemes?language=en	Six-week ADR or deadlock letter and complaint handling.
@@ -54,8 +54,8 @@ AGE01	MoneyHelper / MaPS	2026-11-20	UK	https://www.moneyhelper.org.uk/en/family-
 AGE02	FCA	2026-11-20	UK	https://www.fca.org.uk/consumers/funeral-plans-check-provider-authorised	Prepaid funeral plans, permission and protection.
 PET01	MoneyHelper / MaPS	2026-11-20	UK	https://www.moneyhelper.org.uk/en/everyday-money/insurance/do-you-need-pet-insurance.html	Cover types, vet bills, exclusions and cost factors; read pre-existing condition rules separately.
 PET02	Financial Ombudsman Service	2026-11-20	UK	https://www.financial-ombudsman.org.uk/consumers/complaints-can-help/insurance/pet-insurance	Pre-existing condition, co-pay, annual/lifetime limits and disputes.
-EN01	Ofgem	2026-11-20	GB	https://www.ofgem.gov.uk/your-energy-supply/how-manage-your-energy-supply/switch-your-home-energy-supplier	Moving, direct payer, five working days, cooling-off and switching protections.
-EN02	Ofgem	2026-11-20	GB	https://www.ofgem.gov.uk/your-energy-supply/your-energy-bill/energy-price-cap-and-standing-charges-explained?jwsource=cl	Scope of default tariff cap, unit rate and daily charge.
+EN01	Ofgem	2026-11-20	GB	https://www.ofgem.gov.uk/your-energy-supply/how-manage-your-energy-supply/switch-your-home-energy-supplier	Moving, direct payer, cooling-off and automatic £40 for missing the applicable five-working-day switch standard.
+EN02	Ofgem	2026-11-20	GB	https://www.ofgem.gov.uk/your-energy-supply/your-energy-bill/energy-price-cap-and-standing-charges-explained	Scope of default tariff cap, unit rate and daily charge.
 EN03	Ofgem	2026-11-20	GB	https://www.ofgem.gov.uk/your-energy-supply/your-energy-bill/energy-price-cap-unit-rates-and-standing-charges	Regional rates and payment methods; use current period without quoting rates.
 EN04	Ofgem	2026-11-20	GB	https://www.ofgem.gov.uk/your-energy-supply/problems-your-energy-supply/complain-about-your-energy-supplier-or-network-operator	First complaint, deadlock or eight weeks and Energy Ombudsman.
 EN05	Citizens Advice	2026-11-20	England with nation switcher	https://www.citizensadvice.org.uk/consumer/energy/energy-supply/moving-home-your-energy-supply/moving-home-dealing-with-your-energy-supply/	Move-in/move-out readings, supplier, deemed contract and final bill.
@@ -64,4 +64,8 @@ EN07	Utility Regulator	2026-11-20	NI	https://www.uregni.gov.uk/consumer-informat
 CORE09	FCA Handbook	2026-11-20	UK	https://handbook.fca.org.uk/handbook/icobs6/icobs6s1	ICOBS 6.1.10A; IPID for consumer policies other than pure protection under this rule.
 HOME06	GOV.UK	2026-11-20	England and Wales leasehold context	https://www.gov.uk/leasehold-property/service-charges-and-other-expenses	Building insurance and service-charge evidence for in-scope leaseholders.
 MOB06	Ofcom	2026-11-20	UK	https://www.ofcom.org.uk/spectrum/frequencies/mvnos?language=en	MVNO and physical mobile network terminology.
-PET03	CMA / GOV.UK	2026-11-20	UK	https://www.gov.uk/government/publications/veterinary-services-for-household-pets-final-decision-report/summary-of-the-final-report-html?trk=article-ssr-frontend-pulse_little-text-block	Final report section on pet care plans as routine services sold by subscription.
+PET03	CMA / GOV.UK	2026-11-20	UK	https://www.gov.uk/government/publications/veterinary-services-for-household-pets-final-decision-report/summary-of-the-final-report-html	Final report section on pet care plans as routine services sold by subscription.
+CAR08	GOV.UK	2026-11-20	GB penalties; see CAR09 for NI	https://www.gov.uk/vehicle-insurance/driving-without-insurance	Uninsured driving; fixed penalty, points, court sanctions and possible vehicle seizure.
+CAR09	nidirect	2026-11-20	NI	https://www.nidirect.gov.uk/articles/penalties	Local Highway Code penalties table, including driving without insurance.
+EN08	Ofgem	2026-11-20	GB	https://www.ofgem.gov.uk/your-energy-supply/your-energy-bill/get-help-your-home-or-business-energy-bills	Affordable payment plans, payment reviews and hardship support.
+EN09	Ofgem	2026-11-20	GB	https://www.ofgem.gov.uk/your-energy-supply/how-manage-your-energy-supply/join-your-suppliers-priority-services-register	Free Priority Services Register, eligibility and examples of extra help.

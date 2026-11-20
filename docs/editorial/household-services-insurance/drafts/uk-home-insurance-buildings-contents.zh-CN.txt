@@ -12,7 +12,8 @@
 建筑险（buildings insurance）通常针对屋顶、墙体、窗户和固定的厨房、浴室等。
 财物险（contents insurance）主要针对家具、衣物和电子设备等个人物品。可以单买，
 也可以合在一份保单。火灾、失窃、漏水或洪水是否受保，取决于你买的保单对事件的
-定义及除外责任。建筑险和财物险即使一起买，金额和免赔额也可能分开。 [HOME01] [HOME02] [HOME03]
+定义及除外责任。建筑险和财物险即使一起买，金额和免赔额也可能分开。
+[HOME01] [HOME02] [HOME03]
 
 - 租客。房东通常负责房屋结构的保险安排。个人财物保护可另行考虑。若租的是带
   家具公寓，核清家具归谁，再看是否另有租客责任（tenants’ liability）条款。
@@ -37,6 +38,11 @@
 
 三、用同一套输入比报价
 
+投保时应尽合理注意，如实、准确回答保险商的问题。例如问到房屋结构或建材、
+过往索赔、是否出租（包括短租）或会否长期空置，就按实际情况填写；拿不准先问
+保险商。续保或改保时，若被要求确认或更新旧资料，逐项核对。答错可能影响承保
+或理赔，具体后果取决于情形。 [CORE05]
+
 看保费（premium）、强制免赔额（compulsory excess）和自愿免赔额（voluntary
 excess）。问两部分是否相加，以及漏水、洪水或地基沉降（subsidence）是否另有
 免赔额。提高自愿免赔额可能改变保费，也会增加符合条件索赔时自己的负担。
@@ -50,14 +56,27 @@ excess）。问两部分是否相加，以及漏水、洪水或地基沉降（su
 
 四、续保、取消与投诉
 
-收到续保通知，逐项确认价格、保额和条款是否变动。FCA 规定，适用规则内的续保价不能高于同等新业务价格；续保仍可能比上年贵。若打算换保，先取得新保单承保与
-生效确认，再按书面流程退出旧保，避免房屋保障空档。关闭自动续保只处理下一期，
-中途退保另查费用与退款。一般住宅险常有 14 天冷静期，核对起算日、例外及已提供
-保障是否收费。 [CORE02] [CORE03] [CORE04]
+收到续保通知，逐项确认价格、保额和条款。FCA 规定，适用的住宅险续保报价
+不得高于同一机构在续保时为你计算的等价新客价，通常按你首次购买保单的渠道
+比较，例如原来使用的比价网站。续保仍可能比上年贵。若打算换保，先取得新保单
+承保与生效确认，再按书面流程退出旧保，避免保障空档。关闭自动续保只处理
+下一期；中途退保另查费用与退款。 [CORE03] [CORE04]
+
+按 FCA 规则，适用的个人保单通常可在 14 天内取消，无需说明理由。以合同成立日
+和收到保单条款及规定资料之日中较晚的一天起算。例外包括某些保障期不足一个月的
+短期险，以及按你明确要求、在取消前已由双方完全履行的保单。若你要求提前开始
+承保且获告知费用，保险商可按规则就已提供的服务收取相称费用。按保单指引通知
+保险商并保留确认。 [CORE02]
 
 怀疑条款或拒赔处理有问题，保留照片、报案或理赔编号和保险商的书面答复。先向
-保险公司或中介投诉。符合资格时可向金融申诉专员转介。想查询机构权限可用 FCA
-Firm Checker；如果保险商倒闭，另查 FSCS 是不是适用。 [CORE01] [CORE06] [CORE08]
+保险公司或中介投诉。
+符合条件时，若八周内未收到最终答复，或对最终答复不满意，可向金融申诉专员
+（Financial Ombudsman Service，FOS）转介。通常须在机构发出有效最终答复之日
+起六个月内转介。最初投诉通常须在事件发生后六年内提出；如果知道或理应知道有
+理由投诉之日起三年的时限更晚，以较晚的期限为准。例外见最终答复和 FOS 指引。 [CORE06] [CORE07]
+
+想查询机构权限可用 FCA Firm Checker；如果保险商倒闭，另查 FSCS 是否适用。
+[CORE01] [CORE08]
 
 常见问题
 
@@ -98,6 +117,9 @@ https://www.moneyhelper.org.uk/en/everyday-money/insurance/what-is-contents-insu
 [HOME06] GOV.UK · 2026-11-20
 https://www.gov.uk/leasehold-property/service-charges-and-other-expenses
 
+[CORE05] UK legislation · 2026-11-20
+https://www.legislation.gov.uk/ukpga/2012/6
+
 [CORE09] FCA Handbook · 2026-11-20
 https://handbook.fca.org.uk/handbook/icobs6/icobs6s1
 
@@ -114,7 +136,10 @@ https://handbook.fca.org.uk/handbook/icobs6a
 https://www.fca.org.uk/consumers/fca-firm-checker
 
 [CORE06] Financial Ombudsman Service · 2026-11-20
-https://www.financial-ombudsman.org.uk/consumers/how-to-complain
+https://www.financial-ombudsman.org.uk/consumers/log-ombudsman-connect/how-to-complain
+
+[CORE07] Financial Ombudsman Service · 2026-11-20
+https://www.financial-ombudsman.org.uk/consumers/complaints-can-help/expect/time-limits
 
 [CORE08] FSCS · 2026-11-20
 https://www.fscs.org.uk/what-we-cover/insurance/

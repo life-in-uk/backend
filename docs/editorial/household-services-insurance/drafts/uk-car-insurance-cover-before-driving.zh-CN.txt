@@ -16,6 +16,11 @@
 北爱尔兰依本地法规查上路保险，不套用大不列颠 CIE。车辆税、驾照和保险也是
 分别要核对的事项。 [CAR01] [CAR02] [CAR03]
 
+即使车本身有保险，本人未获适用保障就开车，仍属无保险驾驶。在大不列颠，
+警方可处 £300 定额罚款和记 6 分，也可扣车，部分情况下可销毁车辆。若上庭，
+可能面临无上限罚款或禁驾。北爱尔兰的罚款、记分和禁驾按当地规定查。
+[CAR08] [CAR09]
+
 二、三种常见保单的差别
 
 - 第三方险。保障对他人的约定责任。自己的车碰坏、起火或被偷通常需要其他保障。
@@ -49,15 +54,26 @@
 
 五、换保、事故与投诉
 
-续保前看适用的 FCA 等价新业务价格规则及同等保障的费用，不能据此预计一定
-低于去年的保费。确认新保生效时刻后，再办理旧保停止自动续保或终止。通常
-一般保险有 14 天冷静期，保单有例外和已承保费用等条件；取消前仍须维持适用
-上路保障。 [CORE02] [CORE03] [CORE04]
+FCA 规定，适用的车险续保报价不得高于同一机构在续保时为你计算的等价新客价，
+通常按你首次购买保单的渠道比较，例如原来使用的比价网站。续保仍可能比上年贵。
+确认新保生效时刻后，再办理旧保停止自动续保或终止。 [CORE03] [CORE04]
+
+按 FCA 规则，适用的个人保单通常可在 14 天内取消，无需说明理由。以合同成立日
+和收到保单条款及规定资料之日中较晚的一天起算。例外包括某些保障期不足一个月的
+短期险（如部分临时车险），以及按你明确要求、在取消前已由双方完全履行的保单。
+若你要求提前开始承保且获告知费用，保险商可按规则就已提供的服务收取相称费用。
+按保单指引通知保险商并保留确认。取消前仍须确认上路保障连续有效。
+[CORE02]
 
 如果发生造成损害或伤害的事故，按当地官方指引尽快处理安全、交换资料与报警。
 GOV.UK 说明，现场没给出所需资料时，应按要求在 24 小时内报警；即使不准备
 索赔，也通知保险公司。妥善保存照片、保单、证人资料和沟通记录。认为保险商
-处理不妥，先书面投诉，再查金融申诉专员的转介条件。 [CAR06] [CORE06]
+处理不妥，先向保险公司或中介书面投诉。 [CAR06]
+
+符合条件时，若八周内未收到最终答复，或对最终答复不满意，可向金融申诉专员
+（Financial Ombudsman Service，FOS）转介。通常须在机构发出有效最终答复之日
+起六个月内转介。最初投诉通常须在事件发生后六年内提出；如果知道或理应知道有
+理由投诉之日起三年的时限更晚，以较晚的期限为准。例外见最终答复和 FOS 指引。 [CORE06] [CORE07]
 
 常见问题
 
@@ -94,6 +110,12 @@ https://www.gov.uk/vehicle-insurance/uninsured-vehicles
 [CAR03] nidirect · 2026-11-20
 https://www.nidirect.gov.uk/articles/motor-vehicle-documentation-learner-and-newly-qualified-driver-requirements
 
+[CAR08] GOV.UK · 2026-11-20
+https://www.gov.uk/vehicle-insurance/driving-without-insurance
+
+[CAR09] nidirect · 2026-11-20
+https://www.nidirect.gov.uk/articles/penalties
+
 [CAR04] Motor Insurers’ Bureau · 2026-11-20
 https://www.mib.org.uk/check-and-stay-insured/am-i-insured/
 
@@ -101,7 +123,7 @@ https://www.mib.org.uk/check-and-stay-insured/am-i-insured/
 https://www.abi.org.uk/policy-and-guidance/insurance/personal-insurance/motor-insurance
 
 [CORE05] UK legislation · 2026-11-20
-https://www.legislation.gov.uk/ukpga/2012/6/body/enacted?view=plain
+https://www.legislation.gov.uk/ukpga/2012/6
 
 [CAR07] MoneyHelper / MaPS · 2026-11-20
 https://www.moneyhelper.org.uk/en/everyday-money/insurance/car-insurance-what-you-need-to-know
@@ -119,7 +141,10 @@ https://handbook.fca.org.uk/handbook/icobs6a
 https://www.gov.uk/vehicle-insurance/if-youre-in-an-accident
 
 [CORE06] Financial Ombudsman Service · 2026-11-20
-https://www.financial-ombudsman.org.uk/consumers/how-to-complain
+https://www.financial-ombudsman.org.uk/consumers/log-ombudsman-connect/how-to-complain
+
+[CORE07] Financial Ombudsman Service · 2026-11-20
+https://www.financial-ombudsman.org.uk/consumers/complaints-can-help/expect/time-limits
 
 [CORE01] FCA · 2026-11-20
 https://www.fca.org.uk/consumers/fca-firm-checker
