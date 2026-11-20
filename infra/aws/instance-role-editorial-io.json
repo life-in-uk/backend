@@ -20,7 +20,8 @@
       "Resource": [
         "arn:aws:s3:::lifeinuk-backups-919693204623-eu-west-2/editorial/education/receipts/*",
         "arn:aws:s3:::lifeinuk-backups-919693204623-eu-west-2/editorial/education/publications/*",
-        "arn:aws:s3:::lifeinuk-backups-919693204623-eu-west-2/editorial/household/receipts/*"
+        "arn:aws:s3:::lifeinuk-backups-919693204623-eu-west-2/editorial/household/receipts/*",
+        "arn:aws:s3:::lifeinuk-backups-919693204623-eu-west-2/editorial/household/publications/*"
       ]
     }
   ]

@@ -3,8 +3,13 @@ name: Publish reviewed guides
 on:
   workflow_dispatch:
     inputs:
+      release:
+        description: Reviewed batch to publish
+        type: choice
+        options: [education, household]
+        default: education
       package_sha256:
-        description: SHA-256 of the approved Education package ZIP
+        description: SHA-256 of the approved package ZIP
         type: string
         required: true
       package_version:
@@ -34,6 +39,7 @@ jobs:
       contents: read
       id-token: write
     with:
+      release: ${{ inputs.release }}
       package_sha256: ${{ inputs.package_sha256 }}
       package_version: ${{ inputs.package_version }}
       receipt_sha256: ${{ inputs.receipt_sha256 }}
