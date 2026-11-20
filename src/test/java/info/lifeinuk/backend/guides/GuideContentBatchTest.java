@@ -19,7 +19,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -596,9 +596,12 @@ class GuideContentBatchTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"university-applications-student-visas", "education"})
-    void categorySitemapAndPublicLocalesFollowPublicationAndWithdrawal(String category) throws Exception {
-        var source = source("University lifecycle fixture");
+    @CsvSource({
+        "university-applications-student-visas, family-visa-v1",
+        "education, standard-v1"
+    })
+    void categorySitemapAndPublicLocalesFollowPublicationAndWithdrawal(String category, String checklistId) throws Exception {
+        var source = source("Category lifecycle fixture");
         source.put("category", category);
         var batch = batches.create(createRequest(category + "-sitemap-lifecycle", source));
         fillAndReview(batch, source, "claude-independent");
@@ -607,7 +610,7 @@ class GuideContentBatchTest {
         jdbc.update("INSERT INTO guide_workflow_activation (activated_by) VALUES ('synthetic-test')");
         batches.approve(batch.batchId(), "synthetic-owner");
         assertThat(get("/sitemap.xml").body()).isEqualTo(baseline);
-        batches.publish(batch.batchId(), new GuideContentBatchService.PublishRequest(null, "standard-v1",
+        batches.publish(batch.batchId(), new GuideContentBatchService.PublishRequest(null, checklistId,
                 LocalDate.now(ZoneOffset.UTC)), "synthetic-owner");
 
         var xml = get("/sitemap.xml").body();
