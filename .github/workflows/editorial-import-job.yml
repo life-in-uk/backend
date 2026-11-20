@@ -3,6 +3,9 @@ name: Education editorial import job
 on:
   workflow_call:
     inputs:
+      release:
+        type: string
+        default: education
       package_sha256:
         type: string
         required: true
@@ -24,9 +27,16 @@ jobs:
           persist-credentials: false
       - env:
           ENABLED: ${{ vars.EDITORIAL_CI_ENABLED }}
+          RELEASE: ${{ inputs.release }}
           PACKAGE_SHA256: ${{ inputs.package_sha256 }}
           PACKAGE_VERSION: ${{ inputs.package_version }}
-        run: python3 -B deploy/ci/check-editorial-inputs.py import "$PACKAGE_SHA256" "$PACKAGE_VERSION"
+        run: |
+          case "$RELEASE" in
+            education) action=import ;;
+            household) action=import-household ;;
+            *) exit 1 ;;
+          esac
+          python3 -B deploy/ci/check-editorial-inputs.py "$action" "$PACKAGE_SHA256" "$PACKAGE_VERSION"
   import:
     name: Import private drafts
     needs: prepare
@@ -49,7 +59,13 @@ jobs:
       - env:
           INSTANCE_ID: ${{ vars.BACKEND_INSTANCE_ID }}
           SSM_DOCUMENT: LifeInUK-ImportEducationDrafts
+          RELEASE: ${{ inputs.release }}
           PACKAGE_SHA256: ${{ inputs.package_sha256 }}
           PACKAGE_VERSION: ${{ inputs.package_version }}
         run: |
-          deploy/ci/ssm-release.sh import packageSha256="$PACKAGE_SHA256" packageVersion="$PACKAGE_VERSION"
+          case "$RELEASE" in
+            education) args=() ;;
+            household) args=(release=household) ;;
+            *) exit 1 ;;
+          esac
+          deploy/ci/ssm-release.sh import packageSha256="$PACKAGE_SHA256" packageVersion="$PACKAGE_VERSION" "${args[@]}"

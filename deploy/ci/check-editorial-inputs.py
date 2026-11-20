@@ -11,7 +11,7 @@ action, *values = sys.argv[1:]
 if (os.environ.get("ENABLED") != "true" or os.environ.get("GITHUB_REF") != "refs/heads/main"
         or os.environ.get("GITHUB_EVENT_NAME") != "workflow_dispatch"):
     raise SystemExit("Editorial dispatch requires the enabled, protected main workflow.")
-if action not in {"import", "publish"} or len(values) != (2 if action == "import" else 4):
+if action not in {"import", "import-household", "publish"} or len(values) != (4 if action == "publish" else 2):
     raise SystemExit("Incorrect number of editorial inputs.")
 package_hash, package_version = values[:2]
 if (not re.fullmatch(r"[0-9a-f]{64}", package_hash)
@@ -30,7 +30,8 @@ if action == "publish":
         raise SystemExit("A valid, non-future local review date (YYYY-MM-DD) is required.")
 
 with Path(os.environ["GITHUB_STEP_SUMMARY"]).open("a") as summary:
-    print(f"## Education {action}\n\nPackage SHA-256: `{package_hash}`", file=summary)
+    heading = "Household Services & Insurance private draft import" if action == "import-household" else f"Education {action}"
+    print(f"## {heading}\n\nPackage SHA-256: `{package_hash}`", file=summary)
     print(f"\nPackage S3 version ID: `{package_version}`", file=summary)
     if action == "publish":
         print(f"\nPrivate import receipt SHA-256: `{receipt_hash}`", file=summary)

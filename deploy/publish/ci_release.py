@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Host-only Education release runner. SSM supplies object identities, never secrets."""
+"""Host-only editorial release runner. SSM supplies object identities, never secrets."""
 
 import argparse
 from base64 import b64encode
@@ -18,8 +18,9 @@ from uuid import UUID
 from xml.etree import ElementTree
 from zipfile import BadZipFile, ZipFile
 
+import household
 from promote import (
-    EDITORIAL_PATH, LOCALES, RELEASE, WAVES, OwnerSession, Refused, batch_path,
+    EDITORIAL_PATH, EDUCATION_IDENTITY, LOCALES, RELEASE, WAVES, OwnerSession, Refused, batch_path,
     import_drafts, inspect_batch_detail, latest_target_batches, load_package, require,
 )
 
@@ -90,12 +91,12 @@ def package_names():
     }
 
 
-def fetch(kind, want, version, destination):
+def fetch(kind, want, version, destination, *, prefix="education"):
     require(re.fullmatch(HEX, want) is not None, "Invalid object digest.")
     require(version is None or re.fullmatch(VERSION, version) is not None and version != "null",
             "An immutable S3 version is required.")
     suffix = "zip" if kind == "packages" else "json"
-    key = f"editorial/education/{kind}/{want}.{suffix}"
+    key = f"editorial/{prefix}/{kind}/{want}.{suffix}"
     args = ["aws", "s3api", "get-object", "--bucket", BUCKET, "--key", key]
     if version is not None:
         args += ["--version-id", version]
@@ -105,12 +106,12 @@ def fetch(kind, want, version, destination):
     return checked_bytes(destination, want)
 
 
-def save_receipt(receipt, directory, kind):
+def save_receipt(receipt, directory, kind, *, prefix="education"):
     raw = encoded(receipt)
     want = digest(raw)
     path = directory / "receipt.json"
     path.write_bytes(raw)
-    key = f"editorial/education/{kind}/{want}.json"
+    key = f"editorial/{prefix}/{kind}/{want}.json"
     # Single-write object. A lost S3 response is recoverable by comparing already stored bytes.
     checksum = b64encode(bytes.fromhex(want)).decode()
     result = subprocess.run(
@@ -120,7 +121,7 @@ def save_receipt(receipt, directory, kind):
         capture_output=True, cwd=HOST, check=False,
     )
     if result.returncode:
-        require(fetch(kind, want, None, directory / "existing.json") == raw, "Stored receipt mismatch.")
+        require(fetch(kind, want, None, directory / "existing.json", prefix=prefix) == raw, "Stored receipt mismatch.")
     else:
         require(json.loads(result.stdout).get("ChecksumSHA256") == checksum, "S3 receipt checksum mismatch.")
     return want
@@ -160,7 +161,7 @@ def edge(path, status):
         connection.close()
 
 
-def public_inventory(expected):
+def public_inventory(expected, *, category="education", slugs=SLUGS):
     for path in ("/api/owner/editorial/session", "/api/editorial/guide-batches/visibility-check"):
         edge(path, 404)
     snapshot = {}
@@ -169,24 +170,24 @@ def public_inventory(expected):
         rows = json.loads(edge(path, 200))
         require(all(row["category"] != "university-applications-student-visas" for row in rows),
                 "University is present in a public listing.")
-        education = {row["slug"] for row in rows if row["category"] == "education" or row["slug"] in SLUGS}
-        require(education == expected, "Public Education listing has unexpected scope.")
-        snapshot[locale] = sorted((row for row in rows if row["slug"] not in SLUGS), key=lambda row: row["slug"])
+        target = {row["slug"] for row in rows if row["category"] == category or row["slug"] in slugs}
+        require(target == expected, f"Public {category} listing has unexpected scope.")
+        snapshot[locale] = sorted((row for row in rows if row["slug"] not in slugs), key=lambda row: row["slug"])
     xml = ElementTree.fromstring(edge("/sitemap.xml", 200))
     paths = {loc.text for loc in xml.iter("{http://www.sitemaps.org/schemas/sitemap/0.9}loc")}
     require(all("/university-applications-student-visas" not in path for path in paths),
             "University is present in the sitemap.")
-    education = {path for path in paths if "/education" in path}
-    expected_paths = ({f"https://lifeinuk.info/{locale}/education" for locale in LOCALES}
+    target_paths = {path for path in paths if f"/{category}" in path}
+    expected_paths = ({f"https://lifeinuk.info/{locale}/{category}" for locale in LOCALES}
                       if expected else set())
-    expected_paths.update(f"https://lifeinuk.info/{locale}/education/{slug}" for slug in expected for locale in LOCALES)
-    require(education == expected_paths, "Public Education sitemap has unexpected scope.")
-    snapshot["sitemap"] = sorted(paths - education)
+    expected_paths.update(f"https://lifeinuk.info/{locale}/{category}/{slug}" for slug in expected for locale in LOCALES)
+    require(target_paths == expected_paths, f"Public {category} sitemap has unexpected scope.")
+    snapshot["sitemap"] = sorted(paths - target_paths)
     return snapshot
 
 
-def verify_visibility(reader, expected):
-    for slug in sorted(SLUGS):
+def verify_visibility(reader, expected, *, slugs=SLUGS):
+    for slug in sorted(slugs):
         for locale in LOCALES:
             path = f"/api/guides/{slug}/locales/{locale}"
             if slug not in expected:
@@ -212,9 +213,9 @@ def local_reader(path, status):
         conn.close()
 
 
-def read_state():
+def read_state(*, slugs=SLUGS):
     # Read-only audit. All Guide writes and transitions use the editorial API.
-    slugs = ", ".join("'" + slug + "'" for slug in sorted(SLUGS))
+    slugs = ", ".join("'" + slug + "'" for slug in sorted(slugs))
     sql = f"""
       BEGIN READ ONLY;
       SELECT jsonb_build_object(
@@ -253,24 +254,31 @@ def prepare_import(session, package, state):
             "Target revision history does not match the resumable draft batches.")
 
 
-def stage(package, archive_hash, directory):
-    before = public_inventory(set())
+def stage(package, archive_hash, directory, *, household_drafts=False):
+    category, prefix, slugs, identity = (
+        (household.CATEGORY, "household", household.SLUGS, household.IDENTITY) if household_drafts
+        else ("education", "education", SLUGS, EDUCATION_IDENTITY)
+    )
+    require(set(package) == slugs and all(set(guides) == set(LOCALES) for guides in package.values()),
+            "Draft package does not match the release allowlist.")
+    before = public_inventory(set(), category=category, slugs=slugs)
     with owner_session("DRAFT") as session:
-        prepare_import(session, package, read_state())
-        verify_visibility(local_reader, {})
-        backup_name = backup("pre-education-import")
-        batches = import_drafts(session, package)
-        prepare_import(session, package, read_state())
+        prepare_import(session, package, read_state(slugs=slugs))
+        verify_visibility(local_reader, {}, slugs=slugs)
+        backup_name = backup(f"pre-{prefix}-import")
+        batches = import_drafts(session, package, identity=identity)
+        prepare_import(session, package, read_state(slugs=slugs))
         verified = {slug: inspect_batch_detail(session.request("GET", batch_path(row["batchId"])),
-                    slug, package[slug], row["batchId"], statuses={"DRAFT"}, reviewed=False)
+                    slug, package[slug], row["batchId"], statuses={"DRAFT"}, reviewed=False, identity=identity)
                     for slug, row in batches.items()}
-        require(verified == batches and set(verified) == SLUGS
+        require(verified == batches and set(verified) == slugs
                 and all(set(row["locales"]) == set(LOCALES) for row in verified.values()),
-                "Final draft receipt does not contain exactly 55 verified variants.")
-    verify_visibility(edge, {})
-    require(public_inventory(set()) == before, "Public inventory changed during private import.")
-    return save_receipt({"release": RELEASE, "packageSha256": archive_hash, "backup": backup_name,
-                         "batches": batches}, directory, "receipts")
+                f"Final draft receipt does not contain exactly {len(slugs) * len(LOCALES)} verified variants.")
+    verify_visibility(edge, {}, slugs=slugs)
+    require(public_inventory(set(), category=category, slugs=slugs) == before,
+            "Public inventory changed during private import.")
+    return save_receipt({"release": identity.release, "packageSha256": archive_hash, "backup": backup_name,
+                         "batches": batches}, directory, "receipts", prefix=prefix)
 
 
 def load_import_receipt(directory, archive_hash, receipt_hash):
@@ -383,7 +391,7 @@ def host_ready():
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("action", choices=("import", "publish"))
+    parser.add_argument("action", choices=("import", "import-household", "publish"))
     parser.add_argument("package_sha256")
     parser.add_argument("package_version")
     parser.add_argument("receipt_sha256", nargs="?")
@@ -396,13 +404,19 @@ def main():
         host_ready()
         with tempfile.TemporaryDirectory(prefix="lifeinuk-editorial-") as scratch:
             directory = Path(scratch)
-            fetch("packages", args.package_sha256, args.package_version, directory / "package.zip")
-            unpack(directory / "package.zip", directory, package_names())
-            package = load_package(directory)
-            if args.action == "import":
-                receipt = stage(package, args.package_sha256, directory)
+            if args.action == "import-household":
+                fetch("packages", args.package_sha256, args.package_version, directory / "package.zip", prefix="household")
+                unpack(directory / "package.zip", directory, household.package_names())
+                package = household.load_package(directory, read_json)
+                receipt = stage(package, args.package_sha256, directory, household_drafts=True)
             else:
-                receipt = publish(package, args.package_sha256, args.receipt_sha256, args.verified_on, directory)
+                fetch("packages", args.package_sha256, args.package_version, directory / "package.zip")
+                unpack(directory / "package.zip", directory, package_names())
+                package = load_package(directory)
+                if args.action == "import":
+                    receipt = stage(package, args.package_sha256, directory)
+                else:
+                    receipt = publish(package, args.package_sha256, args.receipt_sha256, args.verified_on, directory)
         print(f"RESULT {args.action} receipt_sha256={receipt}")
     except Refused as failure:
         parser.exit(1, f"Editorial release refused: {failure}\n")

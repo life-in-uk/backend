@@ -141,6 +141,7 @@ class GuideSitemapController {
             case "renting" -> "renting";
             case "university-applications-student-visas" -> "university-applications-student-visas";
             case "education" -> "education";
+            case "household-services" -> "household-services";
             default -> null;
         };
     }

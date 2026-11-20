@@ -63,7 +63,7 @@ class EditorialReleaseChecks(unittest.TestCase):
             backup=Mock(side_effect=ci.Refused("backup failed")), import_drafts=Mock(),
         ):
             with self.assertRaisesRegex(ci.Refused, "backup failed"):
-                ci.stage({}, "a" * 64, Path(tmp))
+                ci.stage({slug: dict.fromkeys(ci.LOCALES) for slug in ci.SLUGS}, "a" * 64, Path(tmp))
             ci.import_drafts.assert_not_called()
 
     def test_publish_backup_failure_prevents_review_and_publication_writes(self):

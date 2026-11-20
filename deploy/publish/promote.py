@@ -9,6 +9,7 @@ from http.client import HTTPConnection, HTTPException
 from http.cookies import SimpleCookie
 import json
 from pathlib import Path
+from typing import NamedTuple
 import re
 import sys
 from uuid import UUID
@@ -44,6 +45,15 @@ RELEASE = "education-20261119T2330Z"
 VALID_FROM = "2026-11-19T23:30:00Z"
 EDITORIAL_PATH = "/api/owner/editorial"
 CANONICAL_VERSION = "guide-content-v1"
+
+
+class BatchIdentity(NamedTuple):
+    release: str
+    policy: str
+    valid_from: str
+
+
+EDUCATION_IDENTITY = BatchIdentity(RELEASE, POLICY, VALID_FROM)
 
 
 class Refused(Exception):
@@ -196,19 +206,19 @@ def latest_target_batches(session, package):
     return targets
 
 
-def inspect_batch(session, slug, guides, batch_id, *, reviewed=False):
+def inspect_batch(session, slug, guides, batch_id, *, reviewed=False, identity=EDUCATION_IDENTITY):
     detail = session.request("GET", batch_path(batch_id))
     status = "READY" if reviewed else "DRAFT"
-    return inspect_batch_detail(detail, slug, guides, batch_id, statuses={status}, reviewed=reviewed)
+    return inspect_batch_detail(detail, slug, guides, batch_id, statuses={status}, reviewed=reviewed, identity=identity)
 
 
-def inspect_batch_detail(detail, slug, guides, batch_id, *, statuses, reviewed):
+def inspect_batch_detail(detail, slug, guides, batch_id, *, statuses, reviewed, identity=EDUCATION_IDENTITY):
     batch = detail["batch"]
     source_id = batch["sourceRevisionId"]
     require(str(UUID(source_id)) == source_id, f"{slug}: invalid source revision UUID.")
     require(batch["batchId"] == batch_id and batch["slug"] == slug and batch["status"] in statuses and
-            batch["sourceContentHash"] == guides["zh-CN"][1] and detail["policyVersion"] == POLICY and
-            detail["sourceVersion"] == RELEASE and utc(batch["validFrom"]) == utc(VALID_FROM) and
+            batch["sourceContentHash"] == guides["zh-CN"][1] and detail["policyVersion"] == identity.policy and
+            detail["sourceVersion"] == identity.release and utc(batch["validFrom"]) == utc(identity.valid_from) and
             batch["validUntil"] is None,
             f"{slug}: unexpected batch identity, release metadata, source hash or state (expected {' or '.join(sorted(statuses))}).")
     locales = {}
@@ -234,18 +244,19 @@ def inspect_batch_detail(detail, slug, guides, batch_id, *, statuses, reviewed):
             "sourceContentHash": batch["sourceContentHash"], "locales": locales}
 
 
-def import_drafts(session, package):
+def import_drafts(session, package, *, identity=EDUCATION_IDENTITY):
     targets = latest_target_batches(session, package)
     # Reconcile every existing target before creating or modifying any Guide.
-    staged = {slug: inspect_batch(session, slug, package[slug], row["batchId"]) for slug, row in targets.items()}
+    staged = {slug: inspect_batch(session, slug, package[slug], row["batchId"], identity=identity)
+              for slug, row in targets.items()}
     for slug, guides in package.items():
         if slug not in staged:
             batch = session.request("POST", EDITORIAL_PATH + "/batches", {
-                "idempotencyKey": RELEASE + ":" + slug, "policyVersion": POLICY,
-                "sourceVersion": RELEASE, "validFrom": VALID_FROM, "validUntil": None,
+                "idempotencyKey": identity.release + ":" + slug, "policyVersion": identity.policy,
+                "sourceVersion": identity.release, "validFrom": identity.valid_from, "validUntil": None,
                 "source": guides["zh-CN"][0],
             })
-            staged[slug] = inspect_batch(session, slug, guides, batch["batchId"])
+            staged[slug] = inspect_batch(session, slug, guides, batch["batchId"], identity=identity)
         receipt = staged[slug]
         if set(receipt["locales"]) == set(LOCALES):
             continue
@@ -262,7 +273,7 @@ def import_drafts(session, package):
                     f"{slug}: destination translation references the wrong source.")
             row["guide"] = guides[row["locale"]][0]
         session.request("POST", path + "/translations/import", template)
-        staged[slug] = inspect_batch(session, slug, guides, receipt["batchId"])
+        staged[slug] = inspect_batch(session, slug, guides, receipt["batchId"], identity=identity)
         require(set(staged[slug]["locales"]) == set(LOCALES), f"{slug}: translations are incomplete.")
     return staged
 
