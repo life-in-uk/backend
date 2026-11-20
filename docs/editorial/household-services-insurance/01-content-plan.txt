@@ -1,0 +1,93 @@
+Life in UK｜家庭服务与保险
+内容架构、选题与制作计划 · 2026-11-20 · 供业主审阅
+
+交付说明
+
+02-research-dossiers.txt 有九份研究档案、FAQ 和选择清单。sources.tsv
+记录查证日期、管辖地域和可复核的原始页面。03-guide-template.txt 是可复用写作
+模板。drafts/ 有四篇简体中文首稿。本文中的页面和 slug 都是拟案。
+
+栏目与九个分类页
+
+统一栏目拟名「家庭服务与保险」，英文 Household Services & Insurance，拟用
+household-services 作为一个 Guide domain 和一个 API category。九个主题是编辑分组，
+如 Education Hub 的主题分组。栏目可以先展示分组卡片，未来可为每组增加落地页。
+拟占位地址 /{locale}/household-services/{topic} 只用于讨论导航；Guide 仍使用
+/{locale}/household-services/{guide-slug}，不再加一层分类。下列 topic 与文章
+slug 不重名。独立分类页、导航、路由、sitemap 和发布清单需要未来单独评审。
+
+主题页 | 入口模块 | 拟刊文章标题 · 全局 slug
+住宅保险 / home-insurance | 先按租客、屋主、租赁产权公寓分流；建筑与财物对照；免赔额
+  英国住宅保险：建筑险和财物险怎么分，租客和屋主查什么 · uk-home-insurance-buildings-contents
+  住宅保险理赔：漏水、洪水、空置与免赔额怎么查 · uk-home-insurance-claims-exclusions
+  租客财物险：贵重物品、合租与房东财物 · uk-renters-contents-insurance
+汽车保险 / car-insurance | 法定最低保障；车辆用途；已投保核对
+  英国汽车保险：第三方险、综合险与开车前检查 · uk-car-insurance-cover-before-driving
+  汽车保险报价与续保：主要驾驶人、用途和无索赔折扣 · uk-car-insurance-quotes-renewal
+  英国发生交通事故后：记资料、报保险与索赔 · uk-car-insurance-accident-claim
+家庭宽带 / broadband | 按地址查线路；合约总价表；换网
+  英国宽带怎么选：查地址、比较总价与办理换网 · uk-broadband-contracts-switching
+  宽带慢或断网：测速、报障、退出与补偿 · uk-broadband-speed-faults-compensation
+手机网络与 SIM / mobile-sim | 先查信号；SIM 与设备账单；携号转网
+  英国手机套餐：预付费、SIM-only 和手机合约 · uk-mobile-sim-plans
+  英国手机携号转网：PAC、STAC 和漫游账单 · uk-mobile-number-switching-roaming
+家庭紧急维修保障 / home-emergency-cover | 租客维修入口；保险与保养计划；紧急事故联系
+  英国家庭紧急维修保障：锅炉、水管、保险与保养计划 · uk-home-emergency-cover-vs-service-plan
+  锅炉故障与爆管：租客和屋主先联系谁 · uk-boiler-breakdown-burst-pipe
+人寿保险 / life-insurance | 保障目的；定期和终身；雇主保障
+  英国人寿保险：定期、终身和雇主身故保障 · uk-life-insurance-term-whole-life
+  人寿保险换保与理赔：健康问题、保障空档和索赔材料 · uk-life-insurance-replacement-claims
+50 岁以上人寿保险 / over-50s-life-insurance | 准入与等待期；累计保费；殡葬计划区别
+  英国 50 岁以上人寿保险：等待期、赔付与累计保费 · uk-over-50s-life-insurance-explained
+  50 岁以上寿险与预付殡葬计划有什么不同 · uk-over-50s-cover-vs-funeral-plan
+宠物保险 / pet-insurance | 四类保单；既往病症；共付与续保
+  英国宠物保险：四类保单、兽医费用与既往病症 · uk-pet-insurance-vet-fees
+  宠物险续保与转保：终身限额、共付和病史 · uk-pet-insurance-renewal-switching
+能源供应商 / energy-suppliers | 英国地区分流；电气账单；资费与换供应商
+  英国家庭电与燃气账单：单位价、每日固定费和更换供应商 · uk-energy-tariffs-switching
+  北爱尔兰家庭能源：查当地供应与更换电力或燃气供应商 · northern-ireland-energy-switching
+  英国能源账单有误怎么办：抄表、估算与正式投诉 · uk-energy-bill-errors-complaints
+
+分类页通用顺序
+
+1. 显示适用地域、一句话范围和关键入口，例如车辆上路法定要求、查宽带地址、
+   燃气泄漏应急入口或北爱单独市场。
+2. 三个读者入口「第一次办」「已有合同」「出了问题」连到经过审阅的文章。选项按
+   办事顺序排；给出中英术语、空白对照表和简明清单，官方查询与投诉入口易找。
+3. 可选商业位只在版式预留。置于独立资料与任务已完整展示之后，位于一个可单独
+   隐藏的边界内。宽带、手机、能源分类在总费用清单之后；保险类在条款与消费者
+   权利之后；50+ 专题默认保留在设计稿，后续需单独评估版面与读者脆弱性。
+   空状态不渲染。正文、FAQ、证据、排序和结构化数据不依赖该位。
+4. 需要合法启动时，业主另行批准。若构成广告，启用之前应以五语就地显示清楚的
+   「广告 / Ad」识别，不把通用页脚、含糊说明或仅写 affiliate 当作充分披露。
+   金融推广与保险分销是两项分别判断的合规问题。详见第三份文件。
+   [COMP01–COMP06]
+
+与现有内容衔接
+
+保留 renting-broadband 的入住、安装和搬家流程；新宽带文章聚焦按地址比较、
+合约总成本、现有合约换网和权利。保留 renting-energy 的开户、抄表及入住账户流程；
+新能源文章以同用量比资费、price cap 和换供应商为主。双向用相关指南互链，
+请不要改名或复制原文。现有 Renting 商业位仅有 broadband-comparison 和
+energy-comparison，均默认关闭。新分类页预留只是内容设计，不变更现有代码或配置。
+
+生产顺序
+
+P0 · 首批四篇，均附简体中文草稿。车险先解决上路前的法定要求；住宅险解决
+房东/房客、贷款和楼宇责任；宽带与能源解决短时间内要签约、迁移或换供应商的问题。
+编辑验收应优先核对车险地域与未投保后果、能源换供补偿与应急入口、宽带期满通知与
+换网例外，以及保险如实答问、续保比较渠道、取消权和投诉时限。
+
+P1 · 手机 SIM 与携号转网、家庭紧急维修保障、宠物险；各先做一篇主文。
+它们补齐入住通信、故障处理及高损失风险。紧急维修稿须逐一核定所描述的产品
+究竟是保单、服务合同还是组合；宠物稿须验证既往病症、限额与共付不会被简化。
+
+P2 · 人寿保险，然后 50 岁以上人寿保险；先用普通寿险文章解释期限和承保，再写
+免健康问询的产品。优先复核易误读的赔付条件、撤销与中断、身故保障与殡葬计划。
+其余二级文章按问题日志和编辑带宽规划，确定读者任务足够独立才生产。
+
+每波顺序是简中审阅 → 锁定源修订及 canonical hash → 四语
+翻译包 → 五语逐项对照、独立审核记录绑定 hash → 学习区同类的私稿可见性验证
+→ 人工批准与单独发布决策。首批四篇未来完整覆盖五语时是 20 个变体；本包仅
+四个 zh-CN 文字稿。源英文专有名词、法律条件、时限、地域及依据定位五语一致，
+保留 en 对外 hreflang en-GB，乌尔都独立核对 RTL、数字与英文术语方向。

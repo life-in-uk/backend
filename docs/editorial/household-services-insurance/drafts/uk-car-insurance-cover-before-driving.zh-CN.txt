@@ -1,0 +1,150 @@
+【简体中文草稿 · 待独立审阅】
+英国汽车保险：第三方险、综合险与开车前检查
+拟用 slug　uk-car-insurance-cover-before-driving
+范围　英国个人汽车保险。大不列颠和北爱尔兰的未投保车辆制度分别说明。
+最后核验　2026-11-20
+
+提车、借车或试驾之前，先确认三个问题：这辆车、这个驾驶人和这次用途有没有有效
+保障？把保单生效时刻和书面确认存好，签约完成和保障已生效可能是两个时间点。
+
+一、上路最低要保什么
+
+英国上路驾驶要有有效汽车保险，法定最低是第三方险（third party insurance）。
+它为你对他人及其财物造成的约定损害提供保障。大不列颠有持续投保规定
+（continuous insurance enforcement，CIE）。不驾驶本身并不免除登记车主的
+投保义务；如车辆不上公共道路并已正式作 SORN（法定离路声明），可适用例外。
+北爱尔兰依本地法规查上路保险，不套用大不列颠 CIE。车辆税、驾照和保险也是
+分别要核对的事项。 [CAR01] [CAR02] [CAR03]
+
+即使车本身有保险，本人未获适用保障就开车，仍属无保险驾驶。在大不列颠，
+警方可处 £300 定额罚款和记 6 分，也可扣车，部分情况下可销毁车辆。若上庭，
+可能面临无上限罚款或禁驾。北爱尔兰的罚款、记分和禁驾按当地规定查。
+[CAR08] [CAR09]
+
+二、三种常见保单的差别
+
+- 第三方险。保障对他人的约定责任。自己的车碰坏、起火或被偷通常需要其他保障。
+- 第三方、火灾及盗窃险（TPFT）。在第三方责任基础上增加本车符合条款的火灾和
+  盗窃保障。自己开车发生碰撞导致本车损坏，仍要看有无其他保障。
+- 综合险（comprehensive）。在上述基础上通常还包括本车事故损坏。玻璃、代步车、
+  故障救援和车内物品等是否包括，逐项看条款。保障名称不决定最后报价。
+  [CAR01] [CAR04] [CAR05]
+
+三、报价时如实确认驾驶人和用途
+
+把真正主要用车的人写成主要驾驶人（main driver），其他人在获得保险商确认后
+按规定列名。为压低保费把常用车的人写成偶尔开的驾驶人，是所谓 fronting，
+可能构成保险欺诈。填职业、停放地点、里程、改装和过往索赔时，按保险商所问
+认真回答，拿不准先问。通勤、探亲用车、工作途中使用和有偿送货或载客分别
+查权限；不要把普通家用或通勤保险当作商务或有偿用车保险。 [CAR04] [CAR05] [CORE05]
+
+借车时，请向保险商核实本人是否为列名驾驶人（named driver），或有适用于
+该车和用途的其他保障。自己有综合险不自动取得驾驶其他车辆（DOC）的保障；
+如有，范围也可能只有第三方，并有其他条件。用 MIB 查车是否有有效记录可以
+辅助核对，仍应以保单及保险商确认判断这次驾驶是否受保。 [CAR04] [CAR05]
+
+四、用同样的输入比较总钱和要自付的钱
+
+保费会受驾驶经历、车型、地址、里程、使用方式、索赔与违章历史等影响。查看
+无索赔折扣（no-claims discount，NCD）；换保时问能否转移、是否接纳海外记录
+及需要哪些证明。折扣保护不等于来年保费不变。比较选择时同时写下全年成本、
+月付融资成本、强制和自愿免赔额是否叠加，以及玻璃或额外驾驶人有无不同免赔额。
+同一保单是否供代步车、谁可开以及多长时间，也要在实际条款中确认。
+[CAR04] [CAR05] [CAR07]
+
+五、换保、事故与投诉
+
+FCA 规定，适用的车险续保报价不得高于同一机构在续保时为你计算的等价新客价，
+通常按你首次购买保单的渠道比较，例如原来使用的比价网站。续保仍可能比上年贵。
+确认新保生效时刻后，再办理旧保停止自动续保或终止。 [CORE03] [CORE04]
+
+按 FCA 规则，适用的个人保单通常可在 14 天内取消，无需说明理由。以合同成立日
+和收到保单条款及规定资料之日中较晚的一天起算。例外包括某些保障期不足一个月的
+短期险（如部分临时车险），以及按你明确要求、在取消前已由双方完全履行的保单。
+若你要求提前开始承保且获告知费用，保险商可按规则就已提供的服务收取相称费用。
+按保单指引通知保险商并保留确认。取消前仍须确认上路保障连续有效。
+[CORE02]
+
+如果发生造成损害或伤害的事故，按当地官方指引尽快处理安全、交换资料与报警。
+GOV.UK 说明，现场没给出所需资料时，应按要求在 24 小时内报警；即使不准备
+索赔，也通知保险公司。妥善保存照片、保单、证人资料和沟通记录。认为保险商
+处理不妥，先向保险公司或中介书面投诉。 [CAR06]
+
+符合条件时，若八周内未收到最终答复，或对最终答复不满意，可向金融申诉专员
+（Financial Ombudsman Service，FOS）转介。通常须在机构发出有效最终答复之日
+起六个月内转介。最初投诉通常须在事件发生后六年内提出；如果知道或理应知道有
+理由投诉之日起三年的时限更晚，以较晚的期限为准。例外见最终答复和 FOS 指引。 [CORE06] [CORE07]
+
+常见问题
+
+问：新买的车停在家里，晚些再办保险可以吗？
+答：先看地点和登记车主的规定。GB 离路且有 SORN 等例外，不能仅以没开作判断；
+如果要开上路，先核实有效保障。 [CAR01] [CAR02] [CAR03]
+
+问：可以只用保险数据库记录作为我能开这辆车的证明吗？
+答：数据库核验的是车辆的保单记录。再核对保单上的生效时刻、驾驶人及用途。
+[CAR04] [CAR05]
+
+问：新保单生效日期与旧保单结束日期是同一天，需要再查吗？
+答：还要确认一天里的精确时间，分别取得双方书面记录。没有明确覆盖前不要上路。
+[CAR01] [CAR04]
+
+开车前清单
+
+- 核对车型、登记号、实际主驾、其他驾驶人、用途、开始和结束时间。
+- 如实填过往资料，确认 NCD 的证明格式及接受范围。
+- 记录同等保障的全年总价、总免赔额和玻璃、代步车、故障救援的限制。
+- 保存保险凭证、理赔联系方式和旧保单退出确认。
+- 借车、试驾、送货或其他用途变更时单独确认适用保障。
+
+本文提供一般消费者信息，不按个人情况推荐保险。 [CORE01]
+
+来源与查证日期
+
+[CAR01] GOV.UK · 2026-11-20
+https://www.gov.uk/vehicle-insurance
+
+[CAR02] DVLA / GOV.UK · 2026-11-20
+https://www.gov.uk/vehicle-insurance/uninsured-vehicles
+
+[CAR03] nidirect · 2026-11-20
+https://www.nidirect.gov.uk/articles/motor-vehicle-documentation-learner-and-newly-qualified-driver-requirements
+
+[CAR08] GOV.UK · 2026-11-20
+https://www.gov.uk/vehicle-insurance/driving-without-insurance
+
+[CAR09] nidirect · 2026-11-20
+https://www.nidirect.gov.uk/articles/penalties
+
+[CAR04] Motor Insurers’ Bureau · 2026-11-20
+https://www.mib.org.uk/check-and-stay-insured/am-i-insured/
+
+[CAR05] ABI · 2026-11-20
+https://www.abi.org.uk/policy-and-guidance/insurance/personal-insurance/motor-insurance
+
+[CORE05] UK legislation · 2026-11-20
+https://www.legislation.gov.uk/ukpga/2012/6
+
+[CAR07] MoneyHelper / MaPS · 2026-11-20
+https://www.moneyhelper.org.uk/en/everyday-money/insurance/car-insurance-what-you-need-to-know
+
+[CORE02] FCA Handbook · 2026-11-20
+https://handbook.fca.org.uk/handbook/icobs7
+
+[CORE03] FCA Handbook · 2026-11-20
+https://handbook.fca.org.uk/handbook/icobs6b
+
+[CORE04] FCA Handbook · 2026-11-20
+https://handbook.fca.org.uk/handbook/icobs6a
+
+[CAR06] GOV.UK · 2026-11-20
+https://www.gov.uk/vehicle-insurance/if-youre-in-an-accident
+
+[CORE06] Financial Ombudsman Service · 2026-11-20
+https://www.financial-ombudsman.org.uk/consumers/log-ombudsman-connect/how-to-complain
+
+[CORE07] Financial Ombudsman Service · 2026-11-20
+https://www.financial-ombudsman.org.uk/consumers/complaints-can-help/expect/time-limits
+
+[CORE01] FCA · 2026-11-20
+https://www.fca.org.uk/consumers/fca-firm-checker

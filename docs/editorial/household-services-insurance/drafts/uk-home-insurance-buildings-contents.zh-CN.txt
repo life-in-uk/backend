@@ -1,0 +1,154 @@
+【简体中文草稿 · 待独立审阅】
+英国住宅保险：建筑险和财物险怎么分，租客和屋主查什么
+拟用 slug　uk-home-insurance-buildings-contents
+范围　英国自住住宅及租客。房东出租、短租和非标准房屋需核对专门保单。
+最后核验　2026-11-20
+
+先弄清谁负责房屋本身，再看谁承担屋内物品损坏的损失。如果你租一套房，先读租约；
+如果你买的是公寓，先向管理方查整楼保单。拿到这些资料后，再决定要比较哪一种保障。
+
+一、建筑险与财物险保不同东西
+
+建筑险（buildings insurance）通常针对屋顶、墙体、窗户和固定的厨房、浴室等。
+财物险（contents insurance）主要针对家具、衣物和电子设备等个人物品。可以单买，
+也可以合在一份保单。火灾、失窃、漏水或洪水是否受保，取决于你买的保单对事件的
+定义及除外责任。建筑险和财物险即使一起买，金额和免赔额也可能分开。
+[HOME01] [HOME02] [HOME03]
+
+- 租客。房东通常负责房屋结构的保险安排。个人财物保护可另行考虑。若租的是带
+  家具公寓，核清家具归谁，再看是否另有租客责任（tenants’ liability）条款。
+- 自住屋主。有按揭时贷款方通常要求建筑险。请读贷款条款并书面确认需要从哪天开始
+  承保。财物险是另一个决定。
+- 租赁产权公寓（leasehold）。先向业主、楼管或律师查建筑险由谁安排、是否列在
+  服务费及本套房适用的条件；再核对个人财物、装修和贷款方要求。不要仅凭服务费
+  的名称认定已受保。英格兰和威尔士的相关租赁产权资料可从 GOV.UK 核对。
+  [HOME01] [HOME03] [HOME06]
+
+二、先估两项金额
+
+建筑险的重建成本（rebuild cost）是拆清后把结构重建起来的估计，与房屋成交价
+采用不同的计算基础。核对估算是否包括清理及适用专业费用。不容易估算的非标准
+房屋可请合适的专业人员估值。保额不够时，某些条款可能影响部分损失赔付。
+[HOME02]
+
+财物险按房间列清单，记下更换衣物、家具和电器的累计金额。确认理赔按约定的新品
+重置（new for old）还是其他基础。首饰、相机、乐器等还要看单件限额和贵重物品
+总限额。超过单件上限时，问物品是否可单独列名，以及随身携带或在境外受不受保。
+[HOME03]
+
+三、用同一套输入比报价
+
+投保时应尽合理注意，如实、准确回答保险商的问题。例如问到房屋结构或建材、
+过往索赔、是否出租（包括短租）或会否长期空置，就按实际情况填写；拿不准先问
+保险商。续保或改保时，若被要求确认或更新旧资料，逐项核对。答错可能影响承保
+或理赔，具体后果取决于情形。 [CORE05]
+
+看保费（premium）、强制免赔额（compulsory excess）和自愿免赔额（voluntary
+excess）。问两部分是否相加，以及漏水、洪水或地基沉降（subsidence）是否另有
+免赔额。提高自愿免赔额可能改变保费，也会增加符合条件索赔时自己的负担。
+[HOME01] [HOME02]
+
+逐项查看地址风险、结构、重建值、理赔史、安防和可能空置的时间。核对普通
+磨损、维护不善、缓慢发生的问题与漏水造成的损失怎样区分。意外损坏、屋外财物
+以及家庭紧急维修都可能需要另外确认。月付先查全年总额和是否有融资费用；每份
+报价按同一保额、自付额和附加范围比较。先看适用的保险产品信息文件（IPID），
+最后以明细和完整条款核对。 [HOME01] [HOME02] [HOME03] [CORE09]
+
+四、续保、取消与投诉
+
+收到续保通知，逐项确认价格、保额和条款。FCA 规定，适用的住宅险续保报价
+不得高于同一机构在续保时为你计算的等价新客价，通常按你首次购买保单的渠道
+比较，例如原来使用的比价网站。续保仍可能比上年贵。若打算换保，先取得新保单
+承保与生效确认，再按书面流程退出旧保，避免保障空档。关闭自动续保只处理
+下一期；中途退保另查费用与退款。 [CORE03] [CORE04]
+
+按 FCA 规则，适用的个人保单通常可在 14 天内取消，无需说明理由。以合同成立日
+和收到保单条款及规定资料之日中较晚的一天起算。例外包括某些保障期不足一个月的
+短期险，以及按你明确要求、在取消前已由双方完全履行的保单。若你要求提前开始
+承保且获告知费用，保险商可按规则就已提供的服务收取相称费用。按保单指引通知
+保险商并保留确认。 [CORE02]
+
+怀疑条款或拒赔处理有问题，保留照片、报案或理赔编号和保险商的书面答复。先向
+保险公司或中介投诉。
+符合条件时，若八周内未收到最终答复，或对最终答复不满意，可向金融申诉专员
+（Financial Ombudsman Service，FOS）转介。通常须在机构发出有效最终答复之日
+起六个月内转介。最初投诉通常须在事件发生后六年内提出；如果知道或理应知道有
+理由投诉之日起三年的时限更晚，以较晚的期限为准。例外见最终答复和 FOS 指引。 [CORE06] [CORE07]
+
+想查询机构权限可用 FCA Firm Checker；如果保险商倒闭，另查 FSCS 是否适用。
+[CORE01] [CORE08]
+
+常见问题
+
+问：水管漏了，换水管和地板损坏一起赔吗？
+答：分开确认修理管道及后续水损。家庭应急附加保障可能只处理止漏，建筑、财物
+损坏仍分别看其条款。 [HOME02] [EM01]
+
+问：假期离开家，保单还能用吗？
+答：查保单对空置、通知和防护的限制，尤其是长时间不住。准备长时间离开时尽早
+问保险商，留书面答复。 [HOME02]
+
+问：供应商说地址洪水风险高，可以找谁？
+答：从政府的洪水资料进入你所在地区的查询工具，询问保险商是否有可用的 Flood Re
+安排及资格。不能根据邮编直接推断一定受保。 [HOME04] [HOME05]
+
+签约前清单
+
+- 写明房屋产权、负责建筑险的一方，以及按揭与整楼保险的要求。
+- 列出两类保额、单件和值钱物品上限、申报和屋外范围。
+- 用一行记下漏水、洪水、沉降和空置的关键条件及各自自付额。
+- 比较全年总价、分期费用、开始日期、自动续保、退保及申诉方式。
+- 将明细、保单条款、照片和重要物品收据放在能找到的地方。
+
+本文提供英国一般消费者信息。涉及非标准房屋、特殊用途或个人保障安排时，
+可自行核对有相应权限的专业方。 [CORE01]
+
+来源与查证日期
+
+[HOME01] MoneyHelper / MaPS · 2026-11-20
+https://www.moneyhelper.org.uk/en/everyday-money/insurance/home-insurance-how-to-get-the-best-deal
+
+[HOME02] MoneyHelper / MaPS · 2026-11-20
+https://www.moneyhelper.org.uk/en/everyday-money/insurance/buildings-insurance-what-does-a-good-policy-look-like
+
+[HOME03] MoneyHelper / MaPS · 2026-11-20
+https://www.moneyhelper.org.uk/en/everyday-money/insurance/what-is-contents-insurance
+
+[HOME06] GOV.UK · 2026-11-20
+https://www.gov.uk/leasehold-property/service-charges-and-other-expenses
+
+[CORE05] UK legislation · 2026-11-20
+https://www.legislation.gov.uk/ukpga/2012/6
+
+[CORE09] FCA Handbook · 2026-11-20
+https://handbook.fca.org.uk/handbook/icobs6/icobs6s1
+
+[CORE02] FCA Handbook · 2026-11-20
+https://handbook.fca.org.uk/handbook/icobs7
+
+[CORE03] FCA Handbook · 2026-11-20
+https://handbook.fca.org.uk/handbook/icobs6b
+
+[CORE04] FCA Handbook · 2026-11-20
+https://handbook.fca.org.uk/handbook/icobs6a
+
+[CORE01] FCA · 2026-11-20
+https://www.fca.org.uk/consumers/fca-firm-checker
+
+[CORE06] Financial Ombudsman Service · 2026-11-20
+https://www.financial-ombudsman.org.uk/consumers/log-ombudsman-connect/how-to-complain
+
+[CORE07] Financial Ombudsman Service · 2026-11-20
+https://www.financial-ombudsman.org.uk/consumers/complaints-can-help/expect/time-limits
+
+[CORE08] FSCS · 2026-11-20
+https://www.fscs.org.uk/what-we-cover/insurance/
+
+[EM01] Financial Ombudsman Service · 2026-11-20
+https://www.financial-ombudsman.org.uk/consumers/complaints-can-help/insurance/home-insurance/home-emergency-insurance
+
+[HOME04] GOV.UK · 2026-11-20
+https://www.gov.uk/prepare-for-flooding
+
+[HOME05] GOV.UK · 2026-11-20
+https://www.gov.uk/prepare-for-flooding/get-insurance
