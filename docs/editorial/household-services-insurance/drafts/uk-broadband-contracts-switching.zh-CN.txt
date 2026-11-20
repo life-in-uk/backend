@@ -1,0 +1,117 @@
+【简体中文草稿 · 待独立审阅】
+英国宽带怎么选：查地址、比较总价与办理换网
+拟用 slug　uk-broadband-contracts-switching
+范围　英国住宅宽带，重点是比较合约和已联网用户换网。
+最后核验　2026-11-20
+
+先查完整地址能用哪种线路，再拿书面的合约摘要比较整个最低合约期的成本。如果
+已有宽带，保存现在的合约、期满日期和设备编号，再让新供应商确认换网流程。
+
+一、先按门牌查，再按使用场景比
+
+同一邮编的不同公寓可能有不同的可安装线路。用 Ofcom 查询出发，再在供应商那里
+确认具体门牌、线路类型、预计开通日期和是否需要工程。新租客如需钻孔或新布线，
+先确认租约、房东和楼管安排。首次安装和搬家流程参阅站内租房宽带指南。
+[TEL01] [TEL02]
+
+- 全光纤（full fibre / FTTP）。光纤接到住宅。核对实际可用档和上传速度。
+- 部分光纤（part fibre / FTTC）。光纤到街柜，最后一段通常用铜线。
+- Cable（有线宽带）。常用同轴线入户，问清具体技术与地址的速度。
+- 4G/5G 家用宽带、固定无线和卫星。查室内信号、设备位置、流量限制和不同时段
+  可能的变动。家里用的移动网络套餐也有单独的合同和取消规则。 [TEL01] [TEL02]
+
+“Mbps”是连接传输速率。多人上网、视频会议和常上传文件时，下载与上传都值得看。
+请区分广告速度、地址预计速度和书面保证的最低下载速度。卧室 Wi-Fi 信号还受
+路由器位置、墙壁和设备影响。能用网线时，用有线测试协助确认是哪一段出问题。
+[TEL01] [TEL07]
+
+二、把首月价格换算成完整合约的账
+
+在两份合约摘要旁写下：初装或送货费、设备费、每段月租、每次约定涨价的金额与
+日期、附加服务、最低期结束后的月价、提前退出费和退设备要求。计算时把各段
+月费乘以相应的月份后相加，再计入一次性费用；不要把一段促销价乘以全部月份。
+想加座机、电视或别的服务，单独问加入或移除后会怎样收费。 [TEL05] [TEL06]
+
+从 2025 年 1 月起，新的适用通信合约不得把预设合约内涨价写成通胀挂钩或百分比。
+如果有预设涨价，签约前须写明英镑金额和何时上涨。已清楚约定的涨价本身不会
+自动给你免罚退出权。超出原约定的变更，则向供应商确认通知和退出权。
+有资格领取指定福利的家庭，可从 Ofcom 的 social tariff（社会资费）入口核对。
+[TEL04] [TEL05] [TEL10]
+
+三、换网按新供应商的流程走
+
+一般家庭用 One Touch Switch（一步换网），由计划转入的供应商联系旧方。准备
+账单上的账户姓名和地址，让新方核实服务与计划日期。看清旧方告知的提前退出费、
+捆绑服务影响、电话保号、设备退还和可能中断多久。若套装有电视，可能要单独联系
+旧方取消电视。使用一步换网时，旧方不应收取换网日期之后的通知期费用。除非你有意选其他安排并了解后果，先不要自己取消旧线路。搬家或有电话、
+电视、无障碍设备等服务时，先分别确认地址、号码和特殊安排。 [TEL03] [TEL06]
+
+四、网络不好时先报障
+
+保存有线与无线测试、时间和报障单。签署 Ofcom 宽带速度守则的供应商，如果
+自身网络问题使速度低于合适的地址最低保证，按守则在 30 个日历日内无法解决，
+可能需允许免提前解约费离开。查当前供应商是否参与以及故障认定。自动补偿
+是另一套方案，也有参与名单、合资格故障、延迟安装和爽约条件；断网先报障。
+[TEL07] [TEL08]
+
+有争议先正式投诉并保存编号。发起投诉六周后还未解决，或得到僵局函
+（deadlock letter），可按条件找该供应商加入的独立解决机构（ADR）。线上或电话
+订立的服务也应查冷静期及适用例外。Ofcom 的换网指引说明，下单后可在 14 个
+日历日内取消；已开通时可能须付已用服务与安装费用，旧线路也不会自动恢复。
+[TEL03] [TEL09] [EM04]
+
+常见问题
+
+问：只有部分光纤就一定不能视频会议吗？
+答：看地址预计上传、下载的稳定性和你家同时使用人数。接入线路的名称不能代替
+具体速度和 Wi-Fi 表现。 [TEL01] [TEL07]
+
+问：转网是不是一定没有任何费用？
+答：确认旧合约是否仍在最低期、哪些捆绑服务剩余、退设备要求，以及新方安装或
+设备收费。 [TEL03] [TEL05] [TEL06]
+
+问：收到到期提醒就会自动换到更低价格吗？
+答：提醒帮助你核对到期后的收费与备选合约，仍需要自己核对和办理。 [TEL06]
+
+签约与换网清单
+
+- 查完整地址、线路、工程预约及入户许可。
+- 保存预计下载、上传与最低保证速度。
+- 逐段算最低期总价、期满月租及提前解约/设备费用。
+- 记下新方和旧方的确认、日期、号码与捆绑变更。
+- 开通后检查速度、保存旧设备寄回凭证和最后一张账单。
+
+来源与查证日期
+
+[TEL01] Ofcom · 2026-11-20
+https://www.ofcom.org.uk/phones-and-broadband/saving-money/choosing-broadband
+
+[TEL02] Ofcom · 2026-11-20
+https://www.ofcom.org.uk/phones-and-broadband/coverage-and-speeds/Ofcom-checker
+
+[TEL07] Ofcom · 2026-11-20
+https://www.ofcom.org.uk/phones-and-broadband/service-quality/broadband-wifi-help
+
+[TEL05] Ofcom · 2026-11-20
+https://www.ofcom.org.uk/phones-and-broadband/service-quality/contracts
+
+[TEL06] Ofcom · 2026-11-20
+https://www.ofcom.org.uk/phones-and-broadband/saving-money/in-or-out?language=en
+
+[TEL04] Ofcom · 2026-11-20
+https://www.ofcom.org.uk/phones-and-broadband/saving-money/telecoms-price-rises-what-are-your-rights
+
+[TEL10] Ofcom · 2026-11-20
+https://www.ofcom.org.uk/phones-and-broadband/saving-money/social-tariffs?language=en
+
+[TEL03] Ofcom · 2026-11-20
+https://www.ofcom.org.uk/phones-and-broadband/switching-provider/switching-broadband-provider?language=en
+
+[TEL08] Ofcom · 2026-11-20
+https://www.ofcom.org.uk/phones-and-broadband/service-quality/automatic-compensation-need-know?language=en
+
+[TEL09] Ofcom · 2026-11-20
+https://www.ofcom.org.uk/phones-and-broadband/service-quality/adr-schemes?language=en
+
+[EM04] UK legislation · 2026-11-20
+https://www.legislation.gov.uk/uksi/2013/3134/2026-01-01?wrap=true

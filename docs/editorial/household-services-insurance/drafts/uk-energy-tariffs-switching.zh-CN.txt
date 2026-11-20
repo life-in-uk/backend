@@ -1,0 +1,98 @@
+【简体中文草稿 · 待独立审阅】
+英国家庭电与燃气账单：单位价、每日固定费和更换供应商
+拟用 slug　uk-energy-tariffs-switching
+范围　英格兰、苏格兰、威尔士家庭的电与管道燃气；北爱尔兰有单独入口。
+最后核验　2026-11-20
+
+先找最近的账单或账户用量，把电和气分别记下来。比较时用同一邮编、同一付款方式
+和同一段时间的 kWh。先看按这些条件算的总价，再看每月扣多少钱。
+
+一、看账单的三项
+
+- 单位价（unit rate）。每使用 1 kWh 的费率；有日间和夜间价时分开算。
+- 每日固定费（standing charge）。合同如收取这项费，即使某天没有用电或用气
+  也会照收。查电、气各自的每日费。
+- 银行自动扣款（Direct Debit）。付款办法。固定月扣和固定单价是两件事。
+  用量、账单期间、季节或余额都会影响账单核对。 [EN02] [EN03]
+
+比较两份合约时，先取相同的用量。可用这个式子核对：各时段的 kWh × 对应单价，
+全部相加，再加每日固定费 × 计费天数。分别给电和气计算，并确认比较时是否
+同样包含税及附加费用。如果旧账单只是 estimated（估读），有可用的实读时先
+核对表读数，再估全年。按月的预算和真正耗能成本分开记。 [EN02] [EN03] [EN05]
+
+二、固定价、浮动价和分时价
+
+固定资费（fixed tariff）按约定在期限中固定适用费率，消耗量仍然会变；到期后
+查后续套餐和有无提前退出费。默认或标准浮动资费（standard variable tariff）
+的费率会调整。Ofgem 的 price cap 适用于大不列颠符合条件的默认浮动资费，
+按地区、付款办法、燃料和表型等有差异，限制适用的单位费率和固定费，并不
+封顶你家的总账单。固定套餐、商业供能和集中供热不套用这一家庭默认价规则。
+[EN01] [EN02] [EN03]
+
+在考虑峰谷或分时套餐前，把自己的时段用量填进去，问相应电表和安装资格。电和
+气打包时也按同样用量分别拆开，再看组合收费。换供要区分零售供应商与网络公司。
+账单和合约由供应商处理，停电等网络问题看所在地的网络运营方。 [EN01] [EN02] [EN04]
+
+三、搬家或换供时先处理账户
+
+入住或搬出时拍下每个表的读数、日期和编号。作为直接付费的人，搬入后先找出
+新址现有供应商，提供起始读数和入住日期。刚入住时，用能可能按原供应商的
+默认合约（deemed contract）收费，再决定是否换。租房先查谁直接付账；如果
+能源含在房租里，与房东核对合同和分账，别直接假定你能接管供应合同。
+初次开户和抄表步骤参阅站内租房能源指南。 [EN01] [EN05]
+
+同地址换供时，联系新供应商，核对原合同到期、是否有应付退出费、转接日和
+冷静期。Ofgem 的家庭换供说明列出 14 日撤销选择、五个工作日切换的规则和
+可能的补偿；请让供应商确认安排。保存切换确认和结算读数，收到最终账单后
+查看余额和退款记录。账单有争议先找供应商正式投诉，保存照片、编号和书面
+承诺；收到僵局函或八周仍未解决，可按条件向 Energy Ombudsman 转介。
+[EN01] [EN04] [EN05]
+
+北爱尔兰的能源市场另有规则。使用 Utility Regulator 与 Consumer Council 的
+北爱尔兰官方入口查电、气、付款方式和当地可选供应。不要把本篇的 GB 上限和
+换供时限直接套到北爱尔兰。 [EN06] [EN07]
+
+常见问题
+
+问：天气变冷，即使是固定费率，为什么账单也高了？
+答：固定的通常是约定费率。用得更多，账单仍可能增加。对照 kWh、计费天数和
+同期读数。 [EN02] [EN03]
+
+问：换供应商会把表或电线换掉吗？
+答：普通账单换供和新装电表、线路工程是不同事项。由新方确认你申请的流程和
+是否还需要处理电表功能。 [EN01] [EN04]
+
+问：付款方式不同可以直接比较广告里的单价吗？
+答：把付款方式、实际用量、地区和每日费都对齐再比。预付表、收账单后付和银行
+扣款可能对应不同报价。 [EN02] [EN03]
+
+比较与换供清单
+
+- 写下所在地区、谁是直接付费人、表号、实际年耗与各时段用量。
+- 确认每 kWh 费率和每日固定费对应的日数，把表读数与账单核上。
+- 记录价款有效期、旧合同到期、退出费、换供与撤销的日期。
+- 保存开关账户确认、读数照片、最后账单和余额退款。
+- 发现争议书面投诉，记录发起日期、答复和适用地区的申诉入口。
+
+来源与查证日期
+
+[EN02] Ofgem · 2026-11-20
+https://www.ofgem.gov.uk/your-energy-supply/your-energy-bill/energy-price-cap-and-standing-charges-explained?jwsource=cl
+
+[EN03] Ofgem · 2026-11-20
+https://www.ofgem.gov.uk/your-energy-supply/your-energy-bill/energy-price-cap-unit-rates-and-standing-charges
+
+[EN05] Citizens Advice · 2026-11-20
+https://www.citizensadvice.org.uk/consumer/energy/energy-supply/moving-home-your-energy-supply/moving-home-dealing-with-your-energy-supply/
+
+[EN01] Ofgem · 2026-11-20
+https://www.ofgem.gov.uk/your-energy-supply/how-manage-your-energy-supply/switch-your-home-energy-supplier
+
+[EN04] Ofgem · 2026-11-20
+https://www.ofgem.gov.uk/your-energy-supply/problems-your-energy-supply/complain-about-your-energy-supplier-or-network-operator
+
+[EN06] Consumer Council · 2026-11-20
+https://www.consumercouncil.org.uk/consumers/help-consumers/electricity-oil-and-gas/switching-electricity-or-gas-supplier
+
+[EN07] Utility Regulator · 2026-11-20
+https://www.uregni.gov.uk/consumer-information
