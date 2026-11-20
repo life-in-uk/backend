@@ -7,7 +7,7 @@ from promote import BatchIdentity, LOCALES, canonical_form, require
 CATEGORY = "household-services"
 IDENTITY = BatchIdentity("household-20261120", "household-draft-v1", "2026-11-20T21:28:14Z")
 MANIFEST = "EDITORIAL-MANIFEST.json"
-MANIFEST_SHA256 = "1588d4408582fc7c90eb7bcf0c2c453870b71b4a151e099b458b055d5e4ed4ab"
+MANIFEST_SHA256 = "f0071db2905ff168749c0711ffcb9350cefe0ea766e6f4ed6453131d5afb9f9d"
 SLUGS = frozenset({
     "uk-home-insurance-buildings-contents",
     "uk-home-emergency-cover-vs-service-plan",
