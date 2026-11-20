@@ -130,12 +130,15 @@ The audit trail is `/opt/lifeinuk/releases.log`.
 `systemd/` change, sync them before the release (the workflow refuses until
 the server's copy matches the release commit). When only `scripts/` or
 `systemd/` change, use the guarded, self-restoring update in
-[docs/deploy-files-update.md](../docs/deploy-files-update.md); otherwise by hand:
+[docs/deploy-files-update.md](../docs/deploy-files-update.md). When only
+`nginx/` (and `env/*.example`) change, use `deploy/ops/update-nginx-files.sh`
+from the same document's "nginx changes" section, then recreate the proxy. Otherwise by hand:
 
 ```bash
 rsync -a --delete deploy/compose.yml deploy/nginx deploy/db deploy/scripts deploy/systemd deploy/env deploy/certbot ubuntu@<host>:/tmp/lifeinuk/   # workstation, at the release commit
 rsync -a /tmp/lifeinuk/ /opt/lifeinuk/ && chown -R root:root /opt/lifeinuk && rm -rf /tmp/lifeinuk                                 # server
-docker compose up -d                       # only if compose.yml, nginx or db changed; take scripts/backup.sh first
+docker compose up -d                       # only if compose.yml or db changed; take scripts/backup.sh first
+docker compose up -d --force-recreate --no-deps proxy   # only if nginx/ changed: templates render at container start, and plain `up -d` keeps the old proxy
 cp /opt/lifeinuk/systemd/*.service /opt/lifeinuk/systemd/*.timer /etc/systemd/system/ && systemctl daemon-reload   # only if systemd changed
 ```
 

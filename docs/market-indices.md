@@ -324,7 +324,8 @@ approval and after a backup.
 The collector posts to `https://lifeinuk.info/api/internal/market-indices/{observations,heartbeat}`. The request
 passes CloudFront, then nginx, then the app. Each layer allows exactly these two paths.
 
-**nginx** (`deploy/nginx/templates/lifeinuk.conf.template`, shipped with the deploy files):
+**nginx** (`deploy/nginx/templates/lifeinuk.conf.template`, shipped with the deploy files; installed with
+`deploy/ops/update-nginx-files.sh` and applied by recreating the proxy, see the enablement order below):
 
 - Two exact locations, `POST` only. Any other method answers 403 `ORIGIN_FORBIDDEN`.
 - Bodies of at most 4 KB. Larger bodies answer 413 `PAYLOAD_TOO_LARGE`.
@@ -405,14 +406,30 @@ aws cloudfront wait distribution-deployed --id $DIST
 
 **Production enablement order** (each step owner-approved):
 
-1. Release the backend with `approve_migrations=17` after a verified backup. The deploy files change (nginx), so
-   update them first. Ingestion and the public read stay off.
-2. Apply the CloudFront change above.
-3. The owner creates the collector token on the PC (collector README). Then enter `keyId:sha256:mock` with
+1. Install the new nginx template on the server with `deploy/ops/update-nginx-files.sh`
+   ([deploy-files-update.md](deploy-files-update.md#nginx-changes)). `update-deploy-files.sh` cannot be used: it
+   refuses nginx changes. The release workflow refuses until the server digest matches the release commit, so
+   this comes first. The script installs only the changed files in place and validates the template with
+   `nginx -t` in a throwaway container. The running proxy keeps its old configuration.
+2. Release the backend with `approve_migrations=17`. `release.sh` takes the pre-release backup and verifies its
+   upload to S3 before changing anything. Ingestion and the public read stay off.
+3. Recreate the proxy to apply the template. nginx renders templates only when its container starts, and
+   `docker compose up -d` alone keeps the running container, because compose does not watch the content of a
+   bind-mounted directory:
+
+   ```bash
+   bash $d/update-nginx-files.sh validate     # read-only nginx -t of the installed templates ($d: deploy-files-update.md)
+   docker compose -f /opt/lifeinuk/compose.yml up -d --force-recreate --no-deps proxy
+   ```
+
+   The API answers 502 for a few seconds through CloudFront; static pages are unaffected. Then `GET
+   /api/internal/market-indices/heartbeat` answers 403 `ORIGIN_FORBIDDEN` (it answered 404 before).
+4. Apply the CloudFront change above.
+5. The owner creates the collector token on the PC (collector README). Then enter `keyId:sha256:mock` with
    `set-env.sh … MARKET_INDICES_COLLECTOR_KEYS`, set `MARKET_INDICES_ACCEPTED_SOURCES=mock`, and recreate the app.
-4. Set `backend_url` and `token_file` in the collector's `config.json` and restart its service. This is the private
+6. Set `backend_url` and `token_file` in the collector's `config.json` and restart its service. This is the private
    burn-in with mock data. The public read stays off, because `mock` can never be a public source.
-5. Public display only with a licensed provider and source, `MARKET_INDICES_PUBLIC_SOURCES`, attribution and
+7. Public display only with a licensed provider and source, `MARKET_INDICES_PUBLIC_SOURCES`, attribution and
    `MARKET_INDICES_PUBLIC_ENABLED=true`, in a separate approval.
 
 ## Operations
