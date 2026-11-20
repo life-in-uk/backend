@@ -38,6 +38,91 @@ independently reviewed release definition.
    Verify the SSH host key and use an exclusive editorial window. Keep
    credentials out of Git, command arguments, shell history, logs and chat.
 
+## Handling secrets for manual API calls
+
+Use a private interactive terminal. Disable tracing before handling any secrets.
+Keep request bodies, curl header configuration, cookies and login responses in a
+temporary directory readable only by the operator. Prompt with `getpass` in
+Python so passwords and bearer tokens never enter shell history, arguments or
+exported variables. Use `curl -q --noproxy '*'` without verbose, trace or
+redirect flags. Use file arguments for credentials and output; do not print the
+files or attach them to a rehearsal report.
+
+Each operator starts this in their own dedicated shell:
+
+~~~sh
+set +x
+umask 077
+auth_dir=$(mktemp -d)
+trap 'rm -rf -- "$auth_dir"' EXIT
+base=http://127.0.0.1:18080
+~~~
+
+The independent reviewer creates a private curl config and uses it for the
+hash-bound review request. `review_json` is a private file containing just the
+review payload described below. Set `batch_id` and `locale` from the verified
+batch details.
+
+~~~sh
+python3 - "$auth_dir/reviewer.curl" <<'PYSECRET'
+from getpass import getpass, GetPassWarning
+import json
+from pathlib import Path
+import sys
+import warnings
+
+warnings.simplefilter("error", GetPassWarning)
+token = getpass("Independent review token: ")
+if not token or not token.isascii() or any(ord(c) < 33 or ord(c) > 126 for c in token):
+    raise SystemExit("Expected a nonempty visible-ASCII bearer token")
+Path(sys.argv[1]).write_text("header = " + json.dumps("Authorization: Bearer " + token) + "\n")
+PYSECRET
+curl -q --noproxy '*' -fsS --config "$auth_dir/reviewer.curl" \
+  --header 'Content-Type: application/json' --data-binary "@$review_json" \
+  --output "$auth_dir/review-response.json" \
+  "$base/api/editorial/guide-batches/$batch_id/reviews/$locale"
+~~~
+
+The owner creates an APPROVAL session separately. Do this only after the
+independent verification gate. Keep its session files separate from the
+reviewer's files.
+
+~~~sh
+python3 - "$auth_dir/login.json" <<'PYSECRET'
+from getpass import getpass, GetPassWarning
+import json
+from pathlib import Path
+import sys
+import warnings
+
+warnings.simplefilter("error", GetPassWarning)
+password = getpass("Owner APPROVAL password: ")
+Path(sys.argv[1]).write_text(json.dumps({"role": "APPROVAL", "credential": password}))
+PYSECRET
+curl -q --noproxy '*' -fsS --header "Origin: $base" --header 'Content-Type: application/json' \
+  --data-binary "@$auth_dir/login.json" --cookie-jar "$auth_dir/cookies" \
+  --output "$auth_dir/session.json" "$base/api/owner/editorial/session" &&
+  rm -f -- "$auth_dir/login.json"
+python3 - "$auth_dir" <<'PYSECRET'
+import json
+from pathlib import Path
+import sys
+
+root = Path(sys.argv[1])
+view = json.loads((root / "session.json").read_text())
+if view["role"] != "APPROVAL" or not view["csrfToken"]:
+    raise SystemExit("Approval session was not established")
+(root / "owner.curl").write_text(
+    "header = " + json.dumps("X-CSRF-Token: " + view["csrfToken"]) + "\n")
+PYSECRET
+~~~
+
+For approval and publication below, pass `--config "$auth_dir/owner.curl"`,
+`--cookie "$auth_dir/cookies"` and `--header "Origin: $base"`. For publication,
+put the JSON payload in a private file and use `--data-binary @file`.
+Send each API response to a private file with `--output`. If any login or
+setup command fails, stop before making write calls.
+
 ## 1. Verify the package and import DRAFTs
 
 Use Python 3.11 or newer at the approved backend checkout on the workstation.
@@ -151,8 +236,49 @@ Smoke-test the school API and canonical pages, five Education hubs, sitemap
 and hreflang. Confirm all 45 known University detail API paths still return 404
 and University is absent from listings, navigation and sitemap. Check public
 editorial paths still return 404 and Live Services still match the baseline.
-Close the tunnel. Removing or rotating temporary credentials requires
-separate owner authorization.
+
+## 4. Close the editorial window
+
+Include this cleanup in the owner-approved window, even if the release stops
+after draft import. When the owner is done, invalidate the APPROVAL session
+before closing the tunnel. Exit the owner and reviewer shells so their private
+scratch files are removed. Keep only content-free ID/hash receipts and release
+records.
+
+~~~sh
+curl -q --noproxy '*' -fsS --config "$auth_dir/owner.curl" \
+  --cookie "$auth_dir/cookies" --header "Origin: $base" \
+  --request DELETE --output /dev/null "$base/api/owner/editorial/session"
+~~~
+
+On the production host, remove the temporary owner draft and approval
+passwords, independent review credential and approval actor from
+`/etc/lifeinuk/backend.env`. Remove the temporary
+`EDITORIAL_OWNER_ORIGINS` and `EDITORIAL_SESSION_COOKIE_SECURE=false`
+overrides, restoring the previously recorded safe settings and secure-cookie
+default. Keep mock, local, bearer draft and bearer approval tokens unset.
+Recreate only the app from `/opt/lifeinuk` after the authorized edit.
+
+~~~sh
+docker compose up -d --no-deps --force-recreate app
+~~~
+
+Use the read-only checker from the workstation immediately before
+publication. It checks the running and effective Compose configuration and
+returns only booleans. Stop if any result is false or the check fails.
+
+~~~sh
+ssh ubuntu@PRODUCTION_HOST 'cd /opt/lifeinuk && sudo -n python3 -' \
+  < deploy/publish/check-production-editorial.py
+~~~
+
+After cleanup and once the app is healthy, rerun with
+`sudo -n python3 - --after-cleanup`. This also requires all temporary
+credential and loopback override keys to be absent.
+Check both public editorial route families still return 404, and confirm
+Guide and Live Services smoke results still match the post-release baseline.
+Escalate a failed cleanup to the owner. Do not reopen public access or print
+configuration values while diagnosing it.
 
 ## Recovery and rollback
 

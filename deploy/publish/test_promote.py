@@ -1,4 +1,6 @@
 import copy
+from getpass import GetPassWarning
+from io import StringIO
 from hashlib import sha256
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
@@ -214,6 +216,29 @@ class PromotionChecks(unittest.TestCase):
             promote.import_drafts(self.owner, self.package)
         self.assertTrue(all(method == "GET" for method, _ in self.owner.calls))
 
+    def test_refuses_a_truncated_batch_inventory(self):
+        inventory = [{"slug": f"unrelated-{index}"} for index in range(100)]
+        with patch.object(self.owner, "request", return_value=inventory) as request:
+            with self.assertRaisesRegex(promote.Refused, "inventory is incomplete"):
+                promote.import_drafts(self.owner, self.package)
+        request.assert_called_once_with("GET", promote.EDITORIAL_PATH + "/batches")
+
+    def test_refuses_multiple_batches_for_a_target(self):
+        with patch.object(self.owner, "request", return_value=[{"slug": SLUG}, {"slug": SLUG}]) as request:
+            with self.assertRaisesRegex(promote.Refused, "multiple destination batches"):
+                promote.import_drafts(self.owner, self.package)
+        request.assert_called_once_with("GET", promote.EDITORIAL_PATH + "/batches")
+
+    def test_refuses_import_after_any_review_activity(self):
+        receipt = promote.import_drafts(self.owner, self.package)
+        batch = self.owner.details[receipt[SLUG]["batchId"]]
+        first_locale = batch["locales"][0]
+        first_locale.update(reviewStatus="PASSED", reviewedHash=first_locale["contentHash"])
+        self.owner.calls.clear()
+        with self.assertRaisesRegex(promote.Refused, "already has review activity"):
+            promote.import_drafts(self.owner, self.package)
+        self.assertTrue(all(method == "GET" for method, _ in self.owner.calls))
+
     def test_refuses_existing_public_guide(self):
         request = self.owner.request
 
@@ -246,6 +271,32 @@ class PromotionChecks(unittest.TestCase):
             promote.verify_drafts(self.owner, self.package, receipt)
 
 
+class CommandSafetyChecks(unittest.TestCase):
+    def test_password_input_requires_a_private_terminal(self):
+        with patch.object(promote, "load_package", return_value={}), \
+             patch.object(promote, "OwnerSession") as session, \
+             patch.object(promote, "getpass", side_effect=GetPassWarning), \
+             patch("sys.argv", ["promote.py", "import-drafts", "unused"]), \
+             patch("sys.stderr", new_callable=StringIO) as errors:
+            self.assertEqual(promote.main(), 1)
+        session.return_value.login.assert_not_called()
+        session.return_value.close.assert_called_once()
+        self.assertIn("private interactive terminal is required", errors.getvalue())
+
+    def test_connection_errors_do_not_log_credentials(self):
+        secret_marker = "synthetic-password-should-never-appear"
+        with patch.object(promote, "load_package", return_value={}), \
+             patch.object(promote, "OwnerSession") as session, \
+             patch.object(promote, "getpass", return_value=secret_marker), \
+             patch("sys.argv", ["promote.py", "import-drafts", "unused"]), \
+             patch("sys.stderr", new_callable=StringIO) as errors, \
+             patch("sys.stdout", new_callable=StringIO) as output:
+            session.return_value.login.side_effect = OSError(secret_marker)
+            self.assertEqual(promote.main(), 1)
+        self.assertNotIn(secret_marker, errors.getvalue())
+        self.assertNotIn(secret_marker, output.getvalue())
+
+
 class LoopbackSessionChecks(unittest.TestCase):
     def test_session_uses_loopback_origin_cookie_and_csrf_and_refuses_redirects(self):
         calls = []
@@ -267,6 +318,7 @@ class LoopbackSessionChecks(unittest.TestCase):
                 self.send_response(302)
                 self.send_header("Location", "/must-not-follow")
                 self.end_headers()
+                self.wfile.write(b"synthetic-secret-must-not-appear")
 
             def do_DELETE(self):
                 calls.append((self.command, self.path, self.headers["Cookie"], self.headers["X-CSRF-Token"]))
@@ -281,8 +333,9 @@ class LoopbackSessionChecks(unittest.TestCase):
             origin = f"http://127.0.0.1:{server.server_port}"
             try:
                 session.login("synthetic-password")
-                with self.assertRaisesRegex(promote.Refused, "HTTP 302"):
+                with self.assertRaisesRegex(promote.Refused, "HTTP 302") as failure:
                     session.request("GET", promote.EDITORIAL_PATH + "/batches")
+                self.assertNotIn("synthetic-secret-must-not-appear", str(failure.exception))
             finally:
                 session.close()
                 server.shutdown()
