@@ -1,8 +1,11 @@
-name: Education editorial publish job
+name: Editorial publish job
 
 on:
   workflow_call:
     inputs:
+      release:
+        type: string
+        required: true
       package_sha256:
         type: string
         required: true
@@ -30,11 +33,18 @@ jobs:
           persist-credentials: false
       - env:
           ENABLED: ${{ vars.EDITORIAL_CI_ENABLED }}
+          RELEASE: ${{ inputs.release }}
           PACKAGE_SHA256: ${{ inputs.package_sha256 }}
           PACKAGE_VERSION: ${{ inputs.package_version }}
           RECEIPT_SHA256: ${{ inputs.receipt_sha256 }}
           VERIFIED_ON: ${{ inputs.verified_on }}
-        run: python3 -B deploy/ci/check-editorial-inputs.py publish "$PACKAGE_SHA256" "$PACKAGE_VERSION" "$RECEIPT_SHA256" "$VERIFIED_ON"
+        run: |
+          case "$RELEASE" in
+            education) action=publish ;;
+            household) action=publish-household ;;
+            *) exit 1 ;;
+          esac
+          python3 -B deploy/ci/check-editorial-inputs.py "$action" "$PACKAGE_SHA256" "$PACKAGE_VERSION" "$RECEIPT_SHA256" "$VERIFIED_ON"
   publish:
     name: Publish reviewed guides
     needs: prepare
@@ -57,9 +67,15 @@ jobs:
       - env:
           INSTANCE_ID: ${{ vars.BACKEND_INSTANCE_ID }}
           SSM_DOCUMENT: LifeInUK-PublishEducationGuides
+          RELEASE: ${{ inputs.release }}
           PACKAGE_SHA256: ${{ inputs.package_sha256 }}
           PACKAGE_VERSION: ${{ inputs.package_version }}
           RECEIPT_SHA256: ${{ inputs.receipt_sha256 }}
           VERIFIED_ON: ${{ inputs.verified_on }}
         run: |
-          deploy/ci/ssm-release.sh publish packageSha256="$PACKAGE_SHA256" packageVersion="$PACKAGE_VERSION" receiptSha256="$RECEIPT_SHA256" verifiedOn="$VERIFIED_ON"
+          case "$RELEASE" in
+            education) args=() ;;
+            household) args=(release=household) ;;
+            *) exit 1 ;;
+          esac
+          deploy/ci/ssm-release.sh publish packageSha256="$PACKAGE_SHA256" packageVersion="$PACKAGE_VERSION" receiptSha256="$RECEIPT_SHA256" verifiedOn="$VERIFIED_ON" "${args[@]}"

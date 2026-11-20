@@ -149,45 +149,72 @@ and sitemap before any frontend rebuild or rollback. Reconcile the same release
 after a failed run. Database restore is a last resort and requires separate
 authorization. See the [backend recovery runbook](RUNBOOK.md).
 
-## Household Services & Insurance private draft integration
+## Household Services & Insurance import and publication
 
-The same protected **Import private drafts** workflow has a `household` choice.
-Its pinned editorial manifest and seven-slug allowlist are separate from the
-Education manifests. The existing **Publish reviewed guides** workflow remains
-Education-only. The Household import uses the DRAFT role and has no approval
-or publication step.
+The protected **Import private drafts** and **Publish reviewed guides** workflows
+each have a `household` choice. The Household manifest pin
+(`deploy/publish/household.py`) and its seven-slug allowlist are separate from
+the Education manifests and slugs. Both families run through the same fixed SSM
+documents (`LifeInUK-ImportEducationDrafts`, `LifeInUK-PublishEducationGuides`).
+Their `release` parameter defaults to `education`, so Education dispatches are
+unchanged. The GitHub roles, their trust and their SSM permissions are unchanged.
 
-The handoff contains 35 unchanged Guide files in five locales. Keep the
-unpublished handoff in private storage. Build the private import ZIP from
-exactly `EDITORIAL-MANIFEST.json` and `guides/<slug>/<locale>.json` (35 files),
-without directory entries. Keep the original handoff and review notes with the
-reviewer. The runner verifies the ZIP digest, its S3 version, the pinned manifest,
-the per-file and canonical content hashes and the source-to-translation linkage
-before opening the editorial session. The batch must be tagged `EDITORIAL_DRAFT`.
+The final handoff is 35 Guide files in five locales with Sol's PASS sign-off
+for every variant. Build the private ZIP from exactly `EDITORIAL-MANIFEST.json`
+and `guides/<slug>/<locale>.json` (35 files), without directory entries, and
+keep it private. The runner verifies the ZIP digest, its S3 version, the pinned
+manifest, every file and canonical content hash, DRAFT status and the
+source-to-translation linkage before opening an editorial session.
 
-This change reuses the current roles, host, immutable S3 bucket and fixed
-`LifeInUK-ImportEducationDrafts` document. For an owner-approved rollout, install
-`ci_release.py`, `promote.py`, `household.py` and the existing
-`check-production-editorial.py` together. Update the existing instance-role S3
-policy and the default version of the import document. Do this with dispatch
-disabled and under the existing host release lock. The `education` default and
-the publish document keep their current scope. The new sitemap mapping ships in
-the regular backend release independently of the draft import. This integration
-adds no migration.
+### One-time rollout (owner-approved, dispatch disabled)
+
+With `EDITORIAL_CI_ENABLED` unset and under the host release lock:
+
+1. Release the backend from `main` through **Deploy production**
+   (`approve_migrations=none`). It carries the `household-services` sitemap
+   mapping, which the runner's public sitemap check requires.
+2. Install `ci_release.py`, `promote.py`, `household.py` and
+   `check-production-editorial.py` together in `/opt/lifeinuk/editorial-ci/`,
+   root-owned and root-writable only.
+3. Replace the instance-role inline policy `LifeInUK-EditorialIO` with
+   [editorial S3 I/O](../infra/aws/instance-role-editorial-io.json). It adds
+   exactly `editorial/household/packages/*` (versioned reads) and
+   `editorial/household/receipts/*` and `editorial/household/publications/*`
+   (receipt reads and writes). Apply it before any Household publication: a run
+   without the `publications/` grant publishes and then fails to store its
+   receipt. Recovery is a rerun after the grant, which publishes nothing new.
+4. Create new default versions of both SSM documents from
+   [the import document](../infra/aws/ssm-editorial-import.yml) and
+   [the publish document](../infra/aws/ssm-editorial-publish.yml).
+5. Re-enable dispatch.
+
+### Import, publish, then the frontend
 
 Upload the versioned ZIP privately to
-`editorial/household/packages/<archive SHA-256>.zip`. After confirming inputs
-and granting the normal GitHub Production approval, the host checks current
-revisions, requires a verified off-instance backup, imports as private DRAFT,
-and verifies all 35 revision IDs and hashes. It checks that the public listings
-and sitemap stayed unchanged and all target details still return 404. The
-content-addressed receipt is under `editorial/household/receipts/`. For any
-interruption, retry the same version and digest. Existing matching DRAFT
-batches are reconciled; conflicting state requires operator reconciliation.
+`editorial/household/packages/<archive SHA-256>.zip` with the release
+operator's upload identity, and record the version ID. Then:
 
-Before a separate publication change, retain and resolve the handoff's factual
-flags (insurance scope, exclusions, waiting periods and policy limits; GB/NI
-rules and emergency numbers; current Ofcom ADR/compensation and Ofgem switching
-rules). Obtain the outstanding independent fluent-language review, in
-particular Urdu and Hindi. Record approval against the exact locale hashes.
-Neither a successful import nor this PR is publication authorization.
+1. **Import private drafts** with `release=household`. The host requires a
+   verified off-instance backup and imports 7 private DRAFT batches (35
+   variants). It then checks that the public listings and sitemap are unchanged
+   and that all 35 details return 404. The receipt is stored under
+   `editorial/household/receipts/`.
+2. **Publish reviewed guides** with `release=household`, the same package digest
+   and version, the import receipt digest and the review date. The host checks
+   the receipt scope and package digest and requires another verified backup.
+   It records the passing reviews against the exact hashes, then approves and
+   publishes the 7 batches. It verifies all 35 public variants against the
+   receipt, the Household sitemap scope (35 Guides and 5 hubs) and that
+   unrelated public inventory is unchanged. The receipt is stored under
+   `editorial/household/publications/`.
+3. Deploy the frontend from `main`. The release build prerenders the 35
+   Household pages and 5 hubs from the published inventory and checks them
+   against the backend sitemap. Until it ships, the Household URLs in the
+   backend sitemap return 404 at the edge, so keep this step immediate.
+
+An interrupted run is resumed by rerunning it with the same inputs. Existing
+publications are kept and none is duplicated. A rerun after completion changes
+nothing. An import after publication is refused. To roll back, withdraw each
+Household publication with the existing owner command (`--guide-withdraw=<slug>
+--expect-current=<publication UUID>`) as in **Withdrawal and recovery**. Then
+redeploy the frontend so the Household pages are removed.

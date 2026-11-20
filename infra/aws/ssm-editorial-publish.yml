@@ -1,9 +1,14 @@
 schemaVersion: "2.2"
-description: "Life in UK Education editorial publish. Fixed host command."
+description: "Life in UK editorial publish. Fixed host command."
 parameters:
   action:
     type: String
     allowedValues: [publish]
+  release:
+    type: String
+    default: education
+    interpolationType: ENV_VAR
+    allowedValues: [education, household]
   packageSha256:
     type: String
     interpolationType: ENV_VAR
@@ -22,7 +27,7 @@ parameters:
     allowedPattern: "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
 mainSteps:
   - action: aws:runShellScript
-    name: publishEducation
+    name: publishGuides
     inputs:
       timeoutSeconds: "1100"
       runCommand:
@@ -30,5 +35,10 @@ mainSteps:
           set -eu
           umask 077
           export AWS_DEFAULT_REGION=eu-west-2
+          if [ "$SSM_release" = household ]; then
+            exec /usr/bin/flock -n /run/lock/lifeinuk-release.lock /usr/bin/python3 -E -s -B \
+              /opt/lifeinuk/editorial-ci/ci_release.py publish-household "$SSM_packageSha256" "$SSM_packageVersion" "$SSM_receiptSha256" "$SSM_verifiedOn"
+          fi
+          test "$SSM_release" = education
           exec /usr/bin/flock -n /run/lock/lifeinuk-release.lock /usr/bin/python3 -E -s -B \
             /opt/lifeinuk/editorial-ci/ci_release.py publish "$SSM_packageSha256" "$SSM_packageVersion" "$SSM_receiptSha256" "$SSM_verifiedOn"

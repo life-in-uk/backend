@@ -10,6 +10,7 @@ from http.client import HTTPConnection, HTTPSConnection
 import json
 from pathlib import Path
 import re
+from typing import NamedTuple
 import stat
 import subprocess
 import tempfile
@@ -20,7 +21,7 @@ from zipfile import BadZipFile, ZipFile
 
 import household
 from promote import (
-    EDITORIAL_PATH, EDUCATION_IDENTITY, LOCALES, RELEASE, WAVES, OwnerSession, Refused, batch_path,
+    EDITORIAL_PATH, EDUCATION_IDENTITY, LOCALES, RELEASE, WAVES, BatchIdentity, OwnerSession, Refused, batch_path,
     import_drafts, inspect_batch_detail, latest_target_batches, load_package, require,
 )
 
@@ -33,6 +34,18 @@ VERSION = r"[A-Za-z0-9._~+/=-]{1,1024}"
 MAX_BYTES = 8 * 1024 * 1024
 # The installed backend assigns this legacy actor to its host-only review token.
 REVIEW_SERVICE_ACTOR = "claude-independent"
+
+
+class Release(NamedTuple):
+    """One editorial release family: its S3 prefix (name), Guide category, slug allowlist and batch identity."""
+    name: str
+    category: str
+    slugs: frozenset
+    identity: BatchIdentity
+
+
+EDUCATION = Release("education", "education", frozenset(SLUGS), EDUCATION_IDENTITY)
+HOUSEHOLD = Release("household", household.CATEGORY, household.SLUGS, household.IDENTITY)
 
 
 def encoded(value):
@@ -186,7 +199,7 @@ def public_inventory(expected, *, category="education", slugs=SLUGS):
     return snapshot
 
 
-def verify_visibility(reader, expected, *, slugs=SLUGS):
+def verify_visibility(reader, expected, *, slugs=SLUGS, category="education"):
     for slug in sorted(slugs):
         for locale in LOCALES:
             path = f"/api/guides/{slug}/locales/{locale}"
@@ -195,7 +208,7 @@ def verify_visibility(reader, expected, *, slugs=SLUGS):
                 continue
             row = json.loads(reader(path, 200))
             receipt = expected[slug]
-            require(row["locale"] == locale and row["guide"]["slug"] == slug and row["guide"]["category"] == "education"
+            require(row["locale"] == locale and row["guide"]["slug"] == slug and row["guide"]["category"] == category
                     and row["sourceRevisionId"] == receipt["sourceRevisionId"]
                     and row["contentHash"] == receipt["locales"][locale]["contentHash"],
                     "Public variant differs from the release receipt.")
@@ -254,17 +267,14 @@ def prepare_import(session, package, state):
             "Target revision history does not match the resumable draft batches.")
 
 
-def stage(package, archive_hash, directory, *, household_drafts=False):
-    category, prefix, slugs, identity = (
-        (household.CATEGORY, "household", household.SLUGS, household.IDENTITY) if household_drafts
-        else ("education", "education", SLUGS, EDUCATION_IDENTITY)
-    )
+def stage(package, archive_hash, directory, *, release=EDUCATION):
+    category, prefix, slugs, identity = release.category, release.name, release.slugs, release.identity
     require(set(package) == slugs and all(set(guides) == set(LOCALES) for guides in package.values()),
             "Draft package does not match the release allowlist.")
     before = public_inventory(set(), category=category, slugs=slugs)
     with owner_session("DRAFT") as session:
         prepare_import(session, package, read_state(slugs=slugs))
-        verify_visibility(local_reader, {}, slugs=slugs)
+        verify_visibility(local_reader, {}, slugs=slugs, category=category)
         backup_name = backup(f"pre-{prefix}-import")
         batches = import_drafts(session, package, identity=identity)
         prepare_import(session, package, read_state(slugs=slugs))
@@ -274,26 +284,26 @@ def stage(package, archive_hash, directory, *, household_drafts=False):
         require(verified == batches and set(verified) == slugs
                 and all(set(row["locales"]) == set(LOCALES) for row in verified.values()),
                 f"Final draft receipt does not contain exactly {len(slugs) * len(LOCALES)} verified variants.")
-    verify_visibility(edge, {}, slugs=slugs)
+    verify_visibility(edge, {}, slugs=slugs, category=category)
     require(public_inventory(set(), category=category, slugs=slugs) == before,
             "Public inventory changed during private import.")
     return save_receipt({"release": identity.release, "packageSha256": archive_hash, "backup": backup_name,
                          "batches": batches}, directory, "receipts", prefix=prefix)
 
 
-def load_import_receipt(directory, archive_hash, receipt_hash):
-    receipt = read_json(fetch("receipts", receipt_hash, None, directory / "import.json"))
+def load_import_receipt(directory, archive_hash, receipt_hash, release=EDUCATION):
+    receipt = read_json(fetch("receipts", receipt_hash, None, directory / "import.json", prefix=release.name))
     require(set(receipt) == {"release", "packageSha256", "backup", "batches"}
-            and receipt["release"] == RELEASE and receipt["packageSha256"] == archive_hash
-            and set(receipt["batches"]) == SLUGS, "Import receipt scope or package digest is incorrect.")
+            and receipt["release"] == release.identity.release and receipt["packageSha256"] == archive_hash
+            and set(receipt["batches"]) == release.slugs, "Import receipt scope or package digest is incorrect.")
     return receipt["batches"]
 
 
-def batch_state(session, slug, guides, receipt, findings, history, verified_on):
+def batch_state(session, slug, guides, receipt, findings, history, verified_on, identity=EDUCATION_IDENTITY):
     detail = session.request("GET", batch_path(receipt["batchId"]))
     status = detail["batch"]["status"]
     actual = inspect_batch_detail(detail, slug, guides, receipt["batchId"],
-                                  statuses={"DRAFT", "READY", "APPROVED", "PUBLISHED"}, reviewed=None)
+                                  statuses={"DRAFT", "READY", "APPROVED", "PUBLISHED"}, reviewed=None, identity=identity)
     require(actual == receipt and set(actual["locales"]) == set(LOCALES), "Batch IDs or hashes changed since import.")
     pending = []
     for row in detail["locales"]:
@@ -314,39 +324,40 @@ def batch_state(session, slug, guides, receipt, findings, history, verified_on):
     return status, pending, None
 
 
-def publish(package, archive_hash, receipt_hash, verified_on, directory):
+def publish(package, archive_hash, receipt_hash, verified_on, directory, *, release=EDUCATION):
     try:
         day = date.fromisoformat(verified_on)
     except ValueError:
         raise Refused("Invalid local review date.") from None
     require(day.isoformat() == verified_on and day <= datetime.now(timezone.utc).date(),
             "Invalid local review date.")
-    receipts = load_import_receipt(directory, archive_hash, receipt_hash)
+    slugs, category = release.slugs, release.category
+    receipts = load_import_receipt(directory, archive_hash, receipt_hash, release)
     findings = [{
         "source": "Local content review and GitHub Production owner approval",
         "importReceiptSha256": receipt_hash,
         "verifiedOn": verified_on,
     }]
-    state = read_state()
+    state = read_state(slugs=slugs)
     require(state["revisions"] == {s: [uuid(r["sourceRevisionId"])] for s, r in receipts.items()},
             "Destination revisions differ from the import receipt.")
     with owner_session("APPROVAL") as session:
         rows = session.request("GET", EDITORIAL_PATH + "/batches")
         require(isinstance(rows, list) and len(rows) < 100, "Owner API batch inventory is incomplete.")
-        inventory = [r for r in rows if r["slug"] in SLUGS]
-        require(len(inventory) == len(SLUGS)
+        inventory = [r for r in rows if r["slug"] in slugs]
+        require(len(inventory) == len(slugs)
                 and {r["slug"]: r["batchId"] for r in inventory} == {s: r["batchId"] for s, r in receipts.items()},
                 "The batch inventory differs from the import receipt.")
 
         def inspect(slug, snapshot):
             return batch_state(session, slug, package[slug], receipts[slug],
-                               findings, snapshot["publications"].get(slug, []), verified_on)
+                               findings, snapshot["publications"].get(slug, []), verified_on, release.identity)
 
-        ready = {slug: inspect(slug, state) for slug in sorted(SLUGS)}
+        ready = {slug: inspect(slug, state) for slug in sorted(slugs)}
         published = {slug: row[2] for slug, row in ready.items() if row[0] == "PUBLISHED"}
-        before = public_inventory(set(published))
-        verify_visibility(local_reader, {s: receipts[s] for s in published})
-        backup_name = backup("pre-education-publish")
+        before = public_inventory(set(published), category=category, slugs=slugs)
+        verify_visibility(local_reader, {s: receipts[s] for s in published}, slugs=slugs, category=category)
+        backup_name = backup(f"pre-{release.name}-publish")
         review_token = credential("review")
         for slug, (status, pending, _) in ready.items():
             if status == "PUBLISHED":
@@ -357,22 +368,23 @@ def publish(package, archive_hash, receipt_hash, verified_on, directory):
                 session.request("POST", f"/api/editorial/guide-batches/{receipt['batchId']}/reviews/{locale}",
                                 {"passed": True, "findings": findings,
                                  "contentHash": receipt["locales"][locale]["contentHash"]}, bearer=review_token)
-            status, _, _ = inspect(slug, read_state())
+            status, _, _ = inspect(slug, read_state(slugs=slugs))
             if status == "READY":
                 session.request("POST", path + "/approve")
-                status, _, _ = inspect(slug, read_state())
+                status, _, _ = inspect(slug, read_state(slugs=slugs))
             require(status == "APPROVED", "Batch is missing current approval.")
             session.request("POST", path + "/publish", {"checklistId": "standard-v1",
                             "verifiedOn": verified_on, "expectCurrentPublicationId": None})
-            status, _, publication_id = inspect(slug, read_state())
+            status, _, publication_id = inspect(slug, read_state(slugs=slugs))
             require(status == "PUBLISHED", "Publication was not recorded.")
             published[slug] = publication_id
             print(f"Published {slug} {publication_id}", flush=True)
-    verify_visibility(edge, receipts)
-    require(public_inventory(SLUGS) == before, "Unrelated public inventory changed during publication.")
-    return save_receipt({"release": RELEASE, "packageSha256": archive_hash,
+    verify_visibility(edge, receipts, slugs=slugs, category=category)
+    require(public_inventory(set(slugs), category=category, slugs=slugs) == before,
+            "Unrelated public inventory changed during publication.")
+    return save_receipt({"release": release.identity.release, "packageSha256": archive_hash,
                          "importReceiptSha256": receipt_hash, "verifiedOn": verified_on, "backup": backup_name,
-                         "publications": published}, directory, "publications")
+                         "publications": published}, directory, "publications", prefix=release.name)
 
 
 def host_ready():
@@ -391,24 +403,29 @@ def host_ready():
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("action", choices=("import", "import-household", "publish"))
+    parser.add_argument("action", choices=("import", "import-household", "publish", "publish-household"))
     parser.add_argument("package_sha256")
     parser.add_argument("package_version")
     parser.add_argument("receipt_sha256", nargs="?")
     parser.add_argument("verified_on", nargs="?")
     args = parser.parse_args()
     try:
+        publishing = args.action in ("publish", "publish-household")
         require((args.receipt_sha256 is not None and args.verified_on is not None)
-                if args.action == "publish" else args.receipt_sha256 is None and args.verified_on is None,
+                if publishing else args.receipt_sha256 is None and args.verified_on is None,
                 "Use the import receipt and local review date only for publication.")
         host_ready()
         with tempfile.TemporaryDirectory(prefix="lifeinuk-editorial-") as scratch:
             directory = Path(scratch)
-            if args.action == "import-household":
+            if args.action in ("import-household", "publish-household"):
                 fetch("packages", args.package_sha256, args.package_version, directory / "package.zip", prefix="household")
                 unpack(directory / "package.zip", directory, household.package_names())
                 package = household.load_package(directory, read_json)
-                receipt = stage(package, args.package_sha256, directory, household_drafts=True)
+                if args.action == "import-household":
+                    receipt = stage(package, args.package_sha256, directory, release=HOUSEHOLD)
+                else:
+                    receipt = publish(package, args.package_sha256, args.receipt_sha256, args.verified_on, directory,
+                                      release=HOUSEHOLD)
             else:
                 fetch("packages", args.package_sha256, args.package_version, directory / "package.zip")
                 unpack(directory / "package.zip", directory, package_names())
