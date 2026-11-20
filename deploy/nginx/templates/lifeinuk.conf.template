@@ -7,7 +7,8 @@
 #   2. TLS: CloudFront connects with HTTPS only and validates this certificate.
 #   3. X-Origin-Verify: the secret header only our distribution adds.
 #   4. Allowlist: GET/HEAD on the public API, /sitemap.xml and /robots.txt;
-#      owner and editorial APIs and everything else answer 404 here.
+#      POST on exactly the two stock index collector paths (docs/market-indices.md);
+#      owner, editorial and other internal APIs and everything else answer 404 here.
 
 server_tokens off;
 # The origin secret is 64 hex characters; the default bucket is too small for that map key.
@@ -27,6 +28,8 @@ limit_req_zone $viewer_ip zone=api_viewer:10m rate=10r/s;
 limit_req_zone $viewer_ip zone=places_viewer:10m rate=30r/m;
 # Place search spends the OS Names quota: an overall cap as well.
 limit_req_zone $server_name zone=places_all:1m rate=300r/m;
+# Stock index collector: one batch and one heartbeat per 2-minute cycle, plus outbox draining after an outage.
+limit_req_zone $viewer_ip zone=market_collector:1m rate=60r/m;
 limit_req_status 429;
 
 server {
@@ -54,9 +57,11 @@ server {
     error_page 403 = @forbidden;
     error_page 404 = @not_found;
     error_page 429 = @rate_limited;
+    error_page 413 = @payload_too_large;
     location @forbidden    { default_type application/json; add_header Cache-Control no-store always; return 403 '{"code":"ORIGIN_FORBIDDEN"}'; }
     location @not_found    { default_type application/json; add_header Cache-Control no-store always; return 404 '{"code":"NOT_FOUND"}'; }
     location @rate_limited { default_type application/json; add_header Cache-Control no-store always; return 429 '{"code":"RATE_LIMITED"}'; }
+    location @payload_too_large { default_type application/json; add_header Cache-Control no-store always; return 413 '{"code":"PAYLOAD_TOO_LARGE"}'; }
 
     if ($origin_verified = 0) {
         return 403;
@@ -77,6 +82,23 @@ server {
 
     location ^~ /api/owner/     { return 404; }
     location ^~ /api/editorial/ { return 404; }
+
+    # Stock index collector (docs/market-indices.md): POST only, small bodies, its own rate limit. No
+    # proxy_set_header here, so the server-level lines above still strip Cookie, Authorization and
+    # X-Origin-Verify; X-Market-Collector-Token passes through and the app checks it.
+    location = /api/internal/market-indices/observations {
+        limit_except POST { deny all; }
+        client_max_body_size 4k;
+        limit_req zone=market_collector burst=30 nodelay;
+        proxy_pass $app;
+    }
+    location = /api/internal/market-indices/heartbeat {
+        limit_except POST { deny all; }
+        client_max_body_size 4k;
+        limit_req zone=market_collector burst=30 nodelay;
+        proxy_pass $app;
+    }
+    location ^~ /api/internal/ { return 404; }
 
     location = /api/places/search {
         limit_except GET HEAD { deny all; }

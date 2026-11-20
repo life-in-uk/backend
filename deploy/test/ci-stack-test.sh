@@ -146,6 +146,22 @@ expect "owner API blocked" 404 "$(status "${H[@]}" "$origin/api/owner/editorial/
 expect "editorial API blocked" 404 "$(status "${H[@]}" "$origin/api/editorial/guide-batches/x")"
 expect "POST refused" 403 "$(status "${H[@]}" -X POST -d '{}' "$origin/api/guides")"
 expect "actuator not exposed" 404 "$(status "${H[@]}" "$origin/actuator/health")"
+# Stock index collector route (docs/market-indices.md): POST only on two exact paths, through to the app.
+mi=$origin/api/internal/market-indices
+J=(-H 'Content-Type: application/json')
+code() { req "$@" | python3 -c 'import json,sys; print(json.load(sys.stdin).get("code"))' 2>/dev/null; }
+expect "collector batch POST reaches the app (no key: 503 MARKET_INGEST_DISABLED)" "503 MARKET_INGEST_DISABLED" \
+  "$(status "${H[@]}" "${J[@]}" -X POST -d '{}' "$mi/observations") $(code "${H[@]}" "${J[@]}" -X POST -d '{}' "$mi/observations")"
+expect "collector heartbeat POST reaches the app (no key: 503)" 503 "$(status "${H[@]}" "${J[@]}" -X POST -d '{}' "$mi/heartbeat")"
+expect "collector POST without the origin secret → 403" 403 "$(status "${J[@]}" -X POST -d '{}' "$mi/observations")"
+expect "collector path refuses GET" "403 ORIGIN_FORBIDDEN" "$(status "${H[@]}" "$mi/observations") $(code "${H[@]}" "$mi/observations")"
+expect "other internal paths blocked" 404 "$(status "${H[@]}" "${J[@]}" -X POST -d '{}' "$mi/other")"
+expect "public market read stays GET-only" 403 "$(status "${H[@]}" "${J[@]}" -X POST -d '{}' "$origin/api/market-indices/latest")"
+big=$(head -c 5000 /dev/zero | tr '\0' 'x')
+expect "collector body over 4 KB → 413 PAYLOAD_TOO_LARGE" "413 PAYLOAD_TOO_LARGE" \
+  "$(status "${H[@]}" "${J[@]}" -X POST --data-binary "$big" "$mi/observations") $(code "${H[@]}" "${J[@]}" -X POST --data-binary "$big" "$mi/observations")"
+expect "public read off by default (404 MARKET_INDICES_DISABLED)" "404 MARKET_INDICES_DISABLED" \
+  "$(status "${H[@]}" "$origin/api/market-indices/latest") $(code "${H[@]}" "$origin/api/market-indices/latest")"
 expect "robots.txt names the public sitemap" "Sitemap: https://lifeinuk.info/sitemap.xml" "$(req "${H[@]}" "$origin/robots.txt" | grep '^Sitemap:')"
 expect "editorial API not configured → 503" 503 "$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:18080/api/editorial/guide-batches/x)"
 expect "database has no published port" "" "$(docker inspect -f '{{range $p, $b := .HostConfig.PortBindings}}{{$p}}{{end}}' "$(compose ps -q db)")"
@@ -292,6 +308,30 @@ expect "key cleared and the app recreated: no key in the app" 0 "$(app_has_key)"
 expect "key cleared and the app recreated: 503 WEATHER_NOT_CONFIGURED" "503 WEATHER_NOT_CONFIGURED" \
   "$(curl -s -o /dev/null -w '%{http_code}' "http://127.0.0.1:18080/api/weather/current?city=london") $(weather_code)"
 refused "set-env --clear takes names only" "names only" "$LIFEINUK_DIR/scripts/set-env.sh" --clear "$LIFEINUK_ETC/backend.env" MET_OFFICE_API_KEY=x
+
+echo "▶ stock index collector through nginx (mock source, public read off)"
+# A CI-only key bound to "mock", set the documented way (the hash goes in on stdin as it names a KEY).
+ci_secret=$(openssl rand -hex 24)
+printf 'ci-collector:%s:mock\n' "$(printf '%s' "$ci_secret" | sha256sum | cut -d' ' -f1)" \
+  | SET_ENV_STDIN=1 "$LIFEINUK_DIR/scripts/set-env.sh" "$LIFEINUK_ETC/backend.env" MARKET_INDICES_COLLECTOR_KEYS >/dev/null 2>&1
+"$LIFEINUK_DIR/scripts/set-env.sh" "$LIFEINUK_ETC/backend.env" MARKET_INDICES_ACCEPTED_SOURCES=mock >/dev/null
+compose up -d --no-deps app >/dev/null 2>&1 && wait_healthy app 240
+T=(-H "X-Market-Collector-Token: ci-collector.$ci_secret")
+mock_batch=$(python3 -c 'import datetime,json,uuid; t=datetime.datetime.now(datetime.UTC).isoformat().replace("+00:00","Z"); print(json.dumps({"schemaVersion":1,"batchId":str(uuid.uuid4()),"source":"mock","collectedAt":t,"observations":[{"symbol":"UKX","value":"8250.5000","previousClose":"8200.0000","observedAt":t,"observedAtSource":"COLLECTOR"}]}))')
+ack() { req "${H[@]}" "${J[@]}" "$@" | python3 -c 'import json,sys; b=json.load(sys.stdin); print(b.get("status") or b.get("code"), b.get("replay", ""))' 2>/dev/null; }
+# The browser-style headers must not matter: nginx strips Cookie and Authorization before the app.
+expect "batch through nginx: stored" "ACCEPTED False" "$(ack "${T[@]}" -H 'Cookie: s=1' -H 'Authorization: Bearer x' -X POST -d "$mock_batch" "$mi/observations")"
+expect "identical retry: acknowledged as a replay" "ACCEPTED True" "$(ack "${T[@]}" -X POST -d "$mock_batch" "$mi/observations")"
+expect "wrong collector token → 401" "401 COLLECTOR_UNAUTHORIZED" \
+  "$(status "${H[@]}" "${J[@]}" -H 'X-Market-Collector-Token: ci-collector.wrongwrongwrongwrongwrongwrongwrong' -X POST -d "$mock_batch" "$mi/observations") $(code "${H[@]}" "${J[@]}" -H 'X-Market-Collector-Token: ci-collector.wrongwrongwrongwrongwrongwrongwrong' -X POST -d "$mock_batch" "$mi/observations")"
+heartbeat=$(python3 -c 'import datetime,json; t=datetime.datetime.now(datetime.UTC).isoformat().replace("+00:00","Z"); print(json.dumps({"schemaVersion":1,"source":"mock","sentAt":t,"collectorStatus":"OK","lastAttemptAt":t,"lastSuccessfulCollectionAt":t,"pendingBatches":0}))')
+expect "heartbeat through nginx" ACCEPTED "$(ack "${T[@]}" -X POST -d "$heartbeat" "$mi/heartbeat" | cut -d' ' -f1)"
+expect "one stored mock observation" 1 "$(db_sql postgres life_in_uk "SELECT count(*) FROM market_index_observation WHERE source = 'mock'")"
+expect "public read still off with ingestion on" "404 MARKET_INDICES_DISABLED" \
+  "$(status "${H[@]}" "$origin/api/market-indices/latest") $(code "${H[@]}" "$origin/api/market-indices/latest")"
+"$LIFEINUK_DIR/scripts/set-env.sh" --clear "$LIFEINUK_ETC/backend.env" MARKET_INDICES_COLLECTOR_KEYS MARKET_INDICES_ACCEPTED_SOURCES >/dev/null
+compose up -d --no-deps app >/dev/null 2>&1 && wait_healthy app 240
+expect "keys cleared and the app recreated: ingestion off again" 503 "$(status "${H[@]}" "${J[@]}" "${T[@]}" -X POST -d "$mock_batch" "$mi/observations")"
 
 echo "▶ nightly backup (lifeinuk-backup.service) compatibility"
 nightly_unit="$repo/deploy/systemd/lifeinuk-backup.service"
