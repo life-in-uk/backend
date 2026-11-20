@@ -243,6 +243,25 @@ run `deploy/test/stack-test.sh`, commit, then deploy as above
 | `POSTGRES_PASSWORD` | `ALTER ROLE postgres PASSWORD '<new>'`, update `db.env` (only read at initialisation) |
 | `ORIGIN_VERIFY_SECRET` | update `proxy.env`, `docker compose up -d proxy`, then the CloudFront origin custom header; API answers 403 for the minute in between (static pages unaffected) |
 | Provider keys | `scripts/set-env.sh /etc/lifeinuk/backend.env <NAME>` in an interactive Session Manager session (hidden prompt; compare the fingerprint with `deploy/ops/env-fingerprint.sh` on the workstation), then `docker compose up -d app`. To remove a key (switch its feature off): `scripts/set-env.sh --clear /etc/lifeinuk/backend.env <NAME>`, then the same recreate |
+| Market index collector key (`MARKET_INDICES_COLLECTOR_KEYS`, hashes only) | owner only, after separate approval: add the new `keyId:sha256hex:source[|source]` entry (bound to exactly the sources that collector may write) beside the current one with `scripts/set-env.sh`, recreate the app, switch the collector, confirm the new `credential_id` in `market_index_ingest_batch`, then remove the old entry and recreate ([docs/market-indices.md](../docs/market-indices.md)). Unset = ingestion answers 503 |
+
+## 5a. Stock indices (phase 1: off)
+
+Release V17 like any migration (`approve_migrations=17`, fresh backup first). It only adds three
+`market_index_*` tables. After the release, nothing is active: no collector key, no accepted source, and
+`GET /api/market-indices/latest` answers 404. Check:
+
+~~~sh
+curl -s -o /dev/null -w '%{http_code}\n' https://lifeinuk.info/api/market-indices/latest   # 404
+docker compose exec db psql -U postgres -d life_in_uk -c "SELECT count(*) FROM market_index_observation"   # 0
+~~~
+
+The collector route is not routed by nginx or CloudFront in phase 1. Enabling ingestion (keys, sources,
+edge route) and public display (licence, `MARKET_INDICES_PUBLIC_SOURCES`, attribution) are separate,
+owner-approved steps. Contract, settings and rollback: [docs/market-indices.md](../docs/market-indices.md).
+Rollback: the previous image ignores the new tables; no database restore is needed (rehearsed V16 → V17 → previous
+image, see "Release" in docs/market-indices.md). Retention runs in the background (hourly by default) even with
+ingestion off; with no rows it does nothing.
 
 ## 6. Routine maintenance
 

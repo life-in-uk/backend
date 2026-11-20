@@ -23,12 +23,16 @@ want "LIFE_IN_UK_PUBLIC_BASE_URL=https://lifeinuk.info"
 want "RAIL_ACCESS_ENABLED=false"
 want "TRAVEL_REFRESH_UNDERGROUND_ENABLED=false"
 want "TRAVEL_REFRESH_ROADS_ENABLED=false"
+want "MARKET_INDICES_PUBLIC_ENABLED=false"
+if grep -qE '^MARKET_INDICES_(COLLECTOR_KEYS|PUBLIC_SOURCES)=' deploy/env/backend.env.example; then
+  fail "backend.env.example configures a market index collector key or public source"
+else ok "no market index collector key or public source configured"; fi
 if grep -qE '^(SPRING_PROFILES_ACTIVE|LIFE_IN_UK_EDITORIAL_LOCAL_REVIEW_TOKEN|EDITORIAL_[A-Z_]+|LIFE_IN_UK_EDITORIAL_REVIEW_TOKEN)=' deploy/env/backend.env.example; then
   fail "backend.env.example enables a profile or editorial credentials"
 else ok "no profile and no editorial credentials enabled"; fi
 
 # 3. Application defaults stay off when the environment does not set them.
-for default in 'RAIL_ACCESS_ENABLED:false' 'TRAVEL_REFRESH_UNDERGROUND_ENABLED:false' 'TRAVEL_REFRESH_ROADS_ENABLED:false'; do
+for default in 'RAIL_ACCESS_ENABLED:false' 'TRAVEL_REFRESH_UNDERGROUND_ENABLED:false' 'TRAVEL_REFRESH_ROADS_ENABLED:false' 'MARKET_INDICES_PUBLIC_ENABLED:false'; do
   grep -qF "\${$default}" src/main/resources/application.yml && ok "application.yml default \${$default}" || fail "application.yml must default \${$default}"
 done
 grep -q 'ddl-auto: validate' src/main/resources/application.yml && ok "Hibernate validates, never changes, the schema" || fail "spring.jpa.hibernate.ddl-auto must be validate"
