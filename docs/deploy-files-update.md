@@ -236,7 +236,7 @@ Not between 02:30 and 02:50 UTC. Each step needs the owner's approval.
 
    Expect `RESULT valid`, a new proxy container, and `2`. Then, from anywhere:
    `GET https://lifeinuk.info/api/guides` returns 200, and `GET …/api/internal/market-indices/heartbeat`
-   returns 403 `{"code":"ORIGIN_FORBIDDEN"}` (404 before).
+   returns 403 `{"code":"ORIGIN_FORBIDDEN"}`. Before the recreate it returns 405 from the new app (404 before step 3).
 
 **Undo.**
 

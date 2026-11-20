@@ -341,7 +341,8 @@ behaviour allows GET/HEAD only. CloudFront itself refuses a POST there with 403 
 request method"). Add:
 
 - A new origin request policy, `lifeinuk-market-collector`. It forwards only the headers
-  `X-Market-Collector-Token` and `CloudFront-Viewer-Address`, with no cookies and no query strings. The shared
+  `X-Market-Collector-Token`, `Content-Type` and `CloudFront-Viewer-Address`, with no cookies and no query strings.
+  `Content-Type` is listed explicitly because the app answers 415 to anything but `application/json`. The shared
   `lifeinuk-api` policy stays unchanged, so the token header is never forwarded for public reads.
 - A new cache behaviour, path pattern `/api/internal/market-indices/*`, ordered before `/api/*`:
   - same origin as `/api/*` (so the same `X-Origin-Verify` header and HTTPS-only connection)
@@ -356,7 +357,7 @@ request method"). Add:
 DIST=E2VQEY0DI83CFH
 aws cloudfront create-origin-request-policy --origin-request-policy-config '{"Name":"lifeinuk-market-collector",
   "Comment":"Stock index collector POSTs: token and viewer address only",
-  "HeadersConfig":{"HeaderBehavior":"whitelist","Headers":{"Quantity":2,"Items":["X-Market-Collector-Token","CloudFront-Viewer-Address"]}},
+  "HeadersConfig":{"HeaderBehavior":"whitelist","Headers":{"Quantity":3,"Items":["X-Market-Collector-Token","Content-Type","CloudFront-Viewer-Address"]}},
   "CookiesConfig":{"CookieBehavior":"none"},"QueryStringsConfig":{"QueryStringBehavior":"none"}}' \
   --query OriginRequestPolicy.Id --output text > orp-market-id
 aws cloudfront get-distribution-config --id $DIST > dist-before.json        # keep this file: it is the rollback
@@ -423,7 +424,8 @@ aws cloudfront wait distribution-deployed --id $DIST
    ```
 
    The API answers 502 for a few seconds through CloudFront; static pages are unaffected. Then `GET
-   /api/internal/market-indices/heartbeat` answers 403 `ORIGIN_FORBIDDEN` (it answered 404 before).
+   /api/internal/market-indices/heartbeat` answers 403 `ORIGIN_FORBIDDEN` (before the recreate it answered 405
+   from the app, which nginx still passed through under `/api/`).
 4. Apply the CloudFront change above.
 5. The owner creates the collector token on the PC (collector README). Then enter `keyId:sha256:mock` with
    `set-env.sh … MARKET_INDICES_COLLECTOR_KEYS`, set `MARKET_INDICES_ACCEPTED_SOURCES=mock`, and recreate the app.
