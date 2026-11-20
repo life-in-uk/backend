@@ -1,117 +1,180 @@
-# Publishing content to production
+# Incremental Guide publishing
 
-Status: **design, not yet implemented** (owner decision 2026-11-17; still the
-open follow-up after CI/CD, `docs/ci-cd.md`). Until `promote.py` exists, new
-Guides and translation updates cannot reach production (withdrawal works, see
-below); code releases never change content. The
-first deployment uses the approved seed (RUNBOOK.md section 2); this document
-covers every content release after that.
+The first Education Hub release uses a workstation client and the existing
+Guide editorial APIs through a loopback SSH tunnel. The client stages only
+the 55 approved Education drafts and verifies staged results after review.
+The owner approves and publishes in a separate session. The backend still
+enforces exact hashes, review, approval, the category checklist, optimistic
+concurrency and publication activation.
 
-## Requirements
+The client is pinned to this release. It accepts the two approved manifest
+hashes and the 11 school slugs in [promote.py](publish/promote.py). Each slug
+must have exactly five locales (zh-CN, zh-TW, en, ur and hi), with category
+education, DRAFT status and a null publication time. Future packages need an
+independently reviewed release definition.
 
-- Incremental: one Guide (or a few) per release, not the whole database.
-- Preserves production-only data (travel state and evidence once refresh is
-  enabled, ingestion history, production's own publication history) and the
-  Flyway history.
-- Repeatable, and safe to retry after any failure.
-- Keeps every invariant the schema and `GuidePublicationService` enforce.
-- Simple enough for one person.
+## Owner authorization and setup
 
-## Rejected approaches
+1. Approve the release commit and CI-tested backend artifact, the exact two
+   manifests and 11-slug allowlist, and the production import window. Deploy the
+   approved backend first. Follow [the backend release runbook](RUNBOOK.md).
+   Confirm publication is active and production contains no prior revisions or
+   batches for the target slugs. Approve first-production import without a
+   destination predecessor. The manifests retain external predecessor provenance.
+   If a target already has prior content, stop for owner reconciliation.
+2. Separately authorize the production editorial environment setup in
+   `/etc/lifeinuk/backend.env`. Provision distinct, production-only
+   `EDITORIAL_OWNER_DRAFT_PASSWORD`, `EDITORIAL_OWNER_APPROVAL_PASSWORD` and
+   `LIFE_IN_UK_EDITORIAL_REVIEW_TOKEN`, plus `LIFE_IN_UK_EDITORIAL_APPROVAL_ACTOR`.
+   Keep the approval password with the owner and the review credential with
+   the independent reviewer. Set
+   `EDITORIAL_OWNER_ORIGINS=http://127.0.0.1:18080` and
+   `EDITORIAL_SESSION_COOKIE_SECURE=false` for the HTTP loopback tunnel.
+   Apply the approved environment change by recreating the app through the
+   normal Compose procedure. Keep bearer draft, bearer approval, mock review
+   and local review credentials unset. Keep the `local` profile disabled.
+3. Verify the app port is still bound to `127.0.0.1:8080` and both
+   `/api/owner/**` and `/api/editorial/**` return 404 at the public edge.
+   Verify the SSH host key and use an exclusive editorial window. Keep
+   credentials out of Git, command arguments, shell history, logs and chat.
 
-- **Replace the production schema from a local dump** for each release:
-  destroys production-only data and history (owner decision: not allowed).
-- **Copy rows between databases** (insert-if-absent on the Guide tables):
-  the schema deliberately makes Guide data writable only through the
-  publication service (session-flag guards on `guide`, `guide_source`,
-  `guide_evidence*`; append-only revisions and publications; digest checks).
-  A row copy would have to bypass those guards and could leave production
-  in a state the application never produces.
+## 1. Verify the package and import DRAFTs
 
-## Design: replay the editorial workflow through production's own API
+Use Python 3.11 or newer at the approved backend checkout on the workstation.
+The check command is offline. All modes verify both manifest SHA-256 values,
+each file SHA-256, each computed guide-content-v1 digest and its linked
+Chinese source hash before opening a session.
 
-Production publishes the same inputs through exactly the code path that
-local publishing uses, and the result is checked against the local result by
-content hash.
+~~~sh
+package="$HOME/.local/state/life-in-uk/education-claude-corrections-20261119T2330Z"
+umask 077
+receipts=$(mktemp -d "$HOME/.local/state/life-in-uk/education-import.XXXXXXXX")
+python3 -B deploy/publish/promote.py check-package "$package"
+~~~
 
-```
-workstation (local pipeline finished)                     production (via SSH tunnel to 127.0.0.1:8080)
-  draft JSON, translation response,  ──── same inputs ───►  create batch → import → reviews → approve → publish
-  review findings, checklist, date                          (GuideContentBatchService / GuidePublicationService)
-  local content hashes  ◄──────────── must be equal ─────  production content hashes
-```
+On the host as the authorized operator in `/opt/lifeinuk`, take and verify the
+off-instance backup before the first editorial write.
 
-### One-time setup (needs owner approval)
+~~~sh
+BACKUP_S3_REQUIRED=1 scripts/backup.sh pre-education-import
+~~~
 
-1. Production-only editorial credentials in `/etc/lifeinuk/backend.env`, all
-   distinct from the local ones: `EDITORIAL_OWNER_DRAFT_PASSWORD`,
-   `EDITORIAL_OWNER_APPROVAL_PASSWORD`, `LIFE_IN_UK_EDITORIAL_REVIEW_TOKEN`
-   (the production review credential; the local-only review token is refused
-   outside the `local` profile), `EDITORIAL_OWNER_ORIGINS=http://127.0.0.1:18080`
-   and `EDITORIAL_SESSION_COOKIE_SECURE=false` (the tunnel is plain HTTP on
-   loopback, encrypted by SSH). Then `docker compose up -d app`.
-2. These routes stay unreachable from the internet: CloudFront's function
-   and nginx both answer 404 for `/api/owner/**` and `/api/editorial/**`, and
-   port 8080 is bound to the host's loopback only.
+Open the loopback tunnel in a separate terminal.
 
-### Per release
+~~~sh
+ssh -N -o ExitOnForwardFailure=yes -L 127.0.0.1:18080:127.0.0.1:8080 ubuntu@PRODUCTION_HOST
+~~~
 
-1. Finish the release locally (published and checked on :8188), keeping the
-   inputs: the zh-CN draft, the translation response, the per-locale review
-   findings, checklist id and verified-on date (the section `pub/` folders
-   already keep these per slug).
-2. Server: `scripts/backup.sh pre-publish`.
-3. Workstation: `ssh -N -L 18080:127.0.0.1:8080 ubuntu@<host>`.
-4. `promote` (to be implemented, `deploy/publish/promote.py`), per slug:
-   1. Read production's current publication for the slug (owner API) and
-      local's published batch and locale hashes.
-   2. **Skip** if production already serves the same content hashes
-      (makes retries and re-runs safe).
-   3. Create the batch in production from the same draft. **Stop** unless
-      the package's `sourceContentHash` equals the local batch's.
-   4. Import the same translation response. **Stop** unless every locale's
-      `contentHash` equals the local one.
-   5. Submit the reviews with the production review token and the same
-      findings, approve with the approval session, and publish with
-      `expectCurrentPublicationId` set to production's current publication
-      (optimistic concurrency: a concurrent change makes it fail instead
-      of overwriting).
-   6. Nothing is public until step 5 succeeds, and publication is one
-      transaction. An unfinished batch can be left to expire; the next run
-      creates a new one.
-5. Verify: `python3 deploy/seed/compare-api.py http://127.0.0.1:8188 http://127.0.0.1:18080
-   --ignore-key sourceRevisionId --skip /sitemap.xml --skip /robots.txt` must report
-   no differences. Revision IDs differ because production made its own
-   revisions; content and hashes must not.
-6. Frontend: `build:release` with `API_BASE=http://127.0.0.1:18080`, then
-   `deploy:site --execute` and `verify:site --production`.
+On the workstation:
 
-Withdrawing a Guide uses the backend's explicit `--guide-withdraw`
-operation (with `--expect-current` and `--reason`), run in a one-off
-`docker compose run --rm app …` container. The command runs at startup, and
-the application then keeps running, so stop the one-off container once it has
-logged the result. A frontend release follows, which removes the page.
+~~~sh
+python3 -B deploy/publish/promote.py import-drafts "$package" > "$receipts/import.json.new" &&
+  mv "$receipts/import.json.new" "$receipts/import.json"
+~~~
 
-### Properties
+The client prompts privately for the owner DRAFT password and keeps the cookie
+and CSRF token in memory. It connects directly to loopback and rejects redirects.
+It checks for public school slugs and conflicting batches before staging. It
+creates Chinese sources with stable per-slug idempotency keys through
+`POST /api/owner/editorial/batches`. It fills the destination translation
+export with the four approved Guide objects and posts it to that batch's
+translation import endpoint. The receipt contains only IDs and hashes.
+The client has no review, approval or publication mode.
 
-- Only the Guides being released change. Travel data, ingestion evidence,
-  other Guides' history and `flyway_schema_history` are untouched.
-- Every production write goes through the same services, guards and
-  triggers as local publishing.
-- It is idempotent and retryable. A failed run leaves production as it was,
-  except for an unpublished batch.
-- Each run is checked twice: by hash before publishing, and by the full
-  public API comparison after.
+Compare `/sitemap.xml`, the five public locale listings and school detail
+responses with the pre-import baseline. All 11 batches must remain private.
 
-### To implement next (after approval)
+## 2. Require independent verification before approval
 
-- `deploy/publish/promote.py`: stdlib Python, built from the `owner.py`
-  calls used locally, with the base URL and credentials as parameters.
-  Production credentials are read from a file outside the repository and
-  never printed.
-- Tests: extend `deploy/test/stack-test.sh` to give the test stack editorial
-  credentials, promote one Guide from local pipeline artifacts, and check:
-  - hash equality;
-  - the "skip when already published" path;
-  - the refusal on a stale `expectCurrentPublicationId`;
-  - that travel and ingestion tables are unchanged.
+Give the independent reviewer the approved package and complete import receipt.
+The owner retrieves fresh details using a DRAFT session and
+`GET /api/owner/editorial/batches/{batchId}` over the loopback tunnel. The
+reviewer independently compares the fresh details with the receipt and the
+approved files, including batch IDs, Chinese source revision
+IDs and hashes, and all five locale revision IDs and hashes. The reviewer uses
+only the independent production review bearer credential to submit actual
+review results through the tunnel.
+
+~~~
+POST /api/editorial/guide-batches/{batchId}/reviews/{locale}
+Authorization: Bearer <independent production review credential>
+Content-Type: application/json
+
+{"contentHash":"<verified locale content hash>","passed":true,"findings":[...]}
+~~~
+
+After all reviews are recorded, use a fresh DRAFT session to run the second
+check. It reads Guide data and requires READY batches, exact canonical content,
+matching `claude-independent` reviews and the original batch and revision IDs.
+
+~~~sh
+python3 -B deploy/publish/promote.py verify-drafts "$package" \
+  --receipt "$receipts/import.json" > "$receipts/verified.json.new" &&
+  mv "$receipts/verified.json.new" "$receipts/verified.json"
+~~~
+
+The independent reviewer signs off on the verified receipt. The owner requires
+that sign-off and both receipts before approval. A batch, revision or hash change
+invalidates the sign-off and requires a fresh independent verification.
+
+## 3. Approve and publish school batches only
+
+Take and verify a fresh off-instance backup.
+
+~~~sh
+BACKUP_S3_REQUIRED=1 scripts/backup.sh pre-education-publish
+~~~
+
+The owner identifies each school batch in the verified receipt and checks its
+current publication state. In a separate APPROVAL session, use the cookie and
+CSRF token obtained via `POST /api/owner/editorial/session` with
+`{"role":"APPROVAL","credential":"<owner approval password>"}`. Send the
+configured Origin, session cookie and `X-CSRF-Token` with writes.
+
+~~~
+POST /api/owner/editorial/batches/{batchId}/approve
+POST /api/owner/editorial/batches/{batchId}/publish
+Content-Type: application/json
+
+{"checklistId":"standard-v1","verifiedOn":"<actual ISO verification date>","expectCurrentPublicationId":null}
+~~~
+
+Null is for a verified first publication. Stop on any unexpected publication
+or ID conflict. Select only the verified school batch IDs. Record each new
+publication UUID as soon as it succeeds. Each publish updates one school's
+five locales atomically. If interrupted, reconcile public state before
+continuing with any remaining verified batch.
+
+Confirm the API returns all 55 school locales before building the frontend.
+Use the normal frontend production workflow against the published inventory.
+Smoke-test the school API and canonical pages, five Education hubs, sitemap
+and hreflang. Confirm all 45 known University detail API paths still return 404
+and University is absent from listings, navigation and sitemap. Check public
+editorial paths still return 404 and Live Services still match the baseline.
+Close the tunnel. Removing or rotating temporary credentials requires
+separate owner authorization.
+
+## Recovery and rollback
+
+- **Interrupted staging.** Before reviews begin, repeat the same import.
+  The client resumes matching source-only DRAFTs and skips complete matching
+  DRAFTs. It refuses conflicting batches, changed content, public slugs and
+  review activity. Keep the complete receipt before review. If review or
+  approval started without it, stop for owner reconciliation. A failed
+  private import needs no database restore.
+- **Wrong publication.** From `/opt/lifeinuk`, the owner uses the recorded
+  current UUID and a reason to withdraw only the affected slug. Stop the
+  one-off app once it reports withdrawal if it remains running.
+
+  ~~~sh
+  docker compose run --rm -e LIFE_IN_UK_OPERATOR="$OPERATOR" app \
+    --guide-withdraw="$SCHOOL_SLUG" --expect-current="$PUBLICATION_ID" --reason="$REASON"
+  ~~~
+
+  Confirm API and sitemap removal. Rebuild against the corrected inventory or
+  redeploy the prior frontend artifact for full rollback. A frontend artifact
+  rollback alone leaves Guide publications in the API.
+- **Code or data recovery.** Follow [the release and restore runbook](RUNBOOK.md)
+  for backend image rollback or an owner-authorized whole-database restore.
+  A restore loses intervening writes. Use the editorial workflow for all
+  Guide writes and leave direct SQL row copying and the legacy importer unused.
