@@ -1,8 +1,10 @@
-# Stock index ingestion (phase 1)
+# Stock index ingestion
 
 Status: implemented behind defaults that are all **off**. Design review 2026-11-20, owner-approved phase 1.
-Phase 1 is backend only. The collector, nginx and CloudFront changes are phase 2 and need separate approval.
-Public display needs a market-data display licence first.
+Phase 1 is the backend API. Phase 2 (owner decision 2026-11-20: keep the local-PC push design) adds the nginx route
+in this repository, the collector's outbox and sender in the Stock Index Collector repository, and a CloudFront
+behaviour that is applied only with owner approval (see "Phase 2: collector route"). Public display needs a
+market-data display licence first.
 
 The external Stock Index Collector runs on the owner's PC (WSL2, Python, SQLite, systemd, 120 s interval). After
 each collection it pushes one batch of up to four observations to the backend. The backend stores them in
@@ -317,12 +319,106 @@ Rollback is an image rollback only. The V17 tables stay, unused, and no database
 be removed after a rollback, drop the three `market_index_*` tables and the V17 history row, but only with owner
 approval and after a backup.
 
-## Operations (phase 1)
+## Phase 2: collector route
 
-- Production stays fully off after deploying phase 1: no keys, no sources, public read disabled.
-- The collector route is not yet available at the edge. nginx `/api/` is GET-only and strips headers, and the
-  CloudFront `/api/*` behaviour is GET/HEAD only. Phase 2 adds an exact-path nginx location and CloudFront
-  behaviour (design review, "Edge changes"). Until then a POST from outside cannot reach the app.
+The collector posts to `https://lifeinuk.info/api/internal/market-indices/{observations,heartbeat}`. The request
+passes CloudFront, then nginx, then the app. Each layer allows exactly these two paths.
+
+**nginx** (`deploy/nginx/templates/lifeinuk.conf.template`, shipped with the deploy files):
+
+- Two exact locations, `POST` only. Any other method answers 403 `ORIGIN_FORBIDDEN`.
+- Bodies of at most 4 KB. Larger bodies answer 413 `PAYLOAD_TOO_LARGE`.
+- Their own per-viewer rate limit (`market_collector`, 60/min, burst 30).
+- No location-level `proxy_set_header`, so the server-level lines still strip `Cookie`, `Authorization` and
+  `X-Origin-Verify`. `X-Market-Collector-Token` passes through to the app, which checks it.
+- Every other `/api/internal/` path answers 404. The origin secret check still applies first.
+- `deploy/test/ci-stack-test.sh` checks all of this through nginx. With a CI-only key bound to `mock`, it also
+  checks a stored batch, a replay, a 401 and a heartbeat, and that the public read stays disabled.
+
+**CloudFront** (owner approval before it is applied; nothing here has been applied). The existing `/api/*`
+behaviour allows GET/HEAD only. CloudFront itself refuses a POST there with 403 ("not configured to allow the HTTP
+request method"). Add:
+
+- A new origin request policy, `lifeinuk-market-collector`. It forwards only the headers
+  `X-Market-Collector-Token` and `CloudFront-Viewer-Address`, with no cookies and no query strings. The shared
+  `lifeinuk-api` policy stays unchanged, so the token header is never forwarded for public reads.
+- A new cache behaviour, path pattern `/api/internal/market-indices/*`, ordered before `/api/*`:
+  - same origin as `/api/*` (so the same `X-Origin-Verify` header and HTTPS-only connection)
+  - viewer protocol `https-only`
+  - all methods (CloudFront has no POST-only setting; nginx enforces POST)
+  - managed cache policy `CachingDisabled`
+  - the new origin request policy
+  - the same viewer-request function and response headers policy as `/api/*`. The function passes every `/api/`
+    request through unchanged.
+
+```bash
+DIST=E2VQEY0DI83CFH
+aws cloudfront create-origin-request-policy --origin-request-policy-config '{"Name":"lifeinuk-market-collector",
+  "Comment":"Stock index collector POSTs: token and viewer address only",
+  "HeadersConfig":{"HeaderBehavior":"whitelist","Headers":{"Quantity":2,"Items":["X-Market-Collector-Token","CloudFront-Viewer-Address"]}},
+  "CookiesConfig":{"CookieBehavior":"none"},"QueryStringsConfig":{"QueryStringBehavior":"none"}}' \
+  --query OriginRequestPolicy.Id --output text > orp-market-id
+aws cloudfront get-distribution-config --id $DIST > dist-before.json        # keep this file: it is the rollback
+python3 - "$(cat orp-market-id)" <<'PY'
+import json, sys
+before = json.load(open("dist-before.json"))
+config = before["DistributionConfig"]
+json.dump(config, open("dist-rollback.json", "w"), indent=2)
+behaviours = config["CacheBehaviors"]
+api = next(b for b in behaviours["Items"] if b["PathPattern"] == "/api/*")
+collector = dict(api, PathPattern="/api/internal/market-indices/*", ViewerProtocolPolicy="https-only", Compress=False,
+    CachePolicyId="4135ea2d-6df8-44a3-9df3-4b5a84be39ad",   # managed CachingDisabled
+    OriginRequestPolicyId=sys.argv[1],
+    AllowedMethods={"Quantity": 7, "Items": ["GET", "HEAD", "OPTIONS", "PUT", "POST", "PATCH", "DELETE"],
+                    "CachedMethods": {"Quantity": 2, "Items": ["GET", "HEAD"]}})
+behaviours["Items"].insert(behaviours["Items"].index(api), collector)   # CloudFront matches in order
+behaviours["Quantity"] = len(behaviours["Items"])
+json.dump(config, open("dist-after.json", "w"), indent=2)
+open("dist-etag", "w").write(before["ETag"])
+PY
+diff dist-rollback.json dist-after.json      # one added behaviour only
+aws cloudfront update-distribution --id $DIST --if-match "$(cat dist-etag)" --distribution-config file://dist-after.json
+aws cloudfront wait distribution-deployed --id $DIST
+```
+
+Check, with no collector key configured yet: `POST` with an empty JSON body to
+`https://lifeinuk.info/api/internal/market-indices/heartbeat` answers 503 `MARKET_INGEST_DISABLED` from the app, and
+`GET` on the same path answers 403.
+
+Rollback: restore `dist-rollback.json` with the current ETag. Then delete the new origin request policy, which can
+be deleted once no behaviour uses it.
+
+```bash
+aws cloudfront update-distribution --id $DIST --distribution-config file://dist-rollback.json \
+  --if-match "$(aws cloudfront get-distribution-config --id $DIST --query ETag --output text)"
+aws cloudfront wait distribution-deployed --id $DIST
+```
+
+**Collector side** (Stock Index Collector repository, README "Deliver to the Life in UK backend"):
+
+- An outbox row is written in the same SQLite transaction as the snapshot. Retries reuse the same `batchId` and
+  body, and a heartbeat is sent after every cycle.
+- The credential is read from a mode-600 file.
+- Mock data is always source `mock` with `COLLECTOR` times.
+- Its `scripts/e2e_backend.py` runs the collector against this backend's jar and a disposable PostgreSQL, using
+  mock data only.
+
+**Production enablement order** (each step owner-approved):
+
+1. Release the backend with `approve_migrations=17` after a verified backup. The deploy files change (nginx), so
+   update them first. Ingestion and the public read stay off.
+2. Apply the CloudFront change above.
+3. The owner creates the collector token on the PC (collector README). Then enter `keyId:sha256:mock` with
+   `set-env.sh … MARKET_INDICES_COLLECTOR_KEYS`, set `MARKET_INDICES_ACCEPTED_SOURCES=mock`, and recreate the app.
+4. Set `backend_url` and `token_file` in the collector's `config.json` and restart its service. This is the private
+   burn-in with mock data. The public read stays off, because `mock` can never be a public source.
+5. Public display only with a licensed provider and source, `MARKET_INDICES_PUBLIC_SOURCES`, attribution and
+   `MARKET_INDICES_PUBLIC_ENABLED=true`, in a separate approval.
+
+## Operations
+
+- Production stays fully off after deploying: no keys, no sources, public read disabled. Until the CloudFront
+  behaviour exists, a POST from outside stops at CloudFront.
 - Logs: one INFO line per batch (batchId, source, key id, stored/duplicate counts, oldest observation age), a WARN
   on a reported provider failure, and a WARN if retention fails. Tokens and bodies are never logged.
 - Disable: unset `MARKET_INDICES_COLLECTOR_KEYS` (ingestion 503) and/or set `MARKET_INDICES_PUBLIC_ENABLED=false`
