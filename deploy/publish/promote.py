@@ -128,17 +128,20 @@ def load_package(root):
 
 
 class OwnerSession:
-    def __init__(self, port):
+    def __init__(self, port, *, secure_cookie=False):
         self.connection = HTTPConnection("127.0.0.1", port, timeout=20)
         self.origin = f"http://127.0.0.1:{port}"
+        self.secure_cookie = secure_cookie
         self.cookie = None
         self.csrf = None
 
-    def request(self, method, path, payload=None, expected=200):
+    def request(self, method, path, payload=None, expected=200, *, bearer=None):
         headers = {"Origin": self.origin, "Accept": "application/json"}
-        if self.cookie:
+        if bearer is not None:
+            headers["Authorization"] = "Bearer " + bearer
+        if self.cookie and bearer is None:
             headers["Cookie"] = self.cookie
-        if self.csrf:
+        if self.csrf and bearer is None:
             headers["X-CSRF-Token"] = self.csrf
         if payload is not None:
             headers["Content-Type"] = "application/json"
@@ -155,14 +158,14 @@ class OwnerSession:
                         cookies.load(value)
                 require("JSESSIONID" in cookies, "Owner API did not issue a session cookie.")
                 cookie = cookies["JSESSIONID"]
-                require(not cookie["secure"], "Owner API is not configured for the HTTP SSH loopback tunnel.")
+                require(bool(cookie["secure"]) == self.secure_cookie, "Unexpected owner session cookie security setting.")
                 self.cookie = "JSESSIONID=" + cookie.coded_value
             return json.loads(raw) if expected == 200 else None
 
-    def login(self, password):
-        view = self.request("POST", EDITORIAL_PATH + "/session", {"role": "DRAFT", "credential": password})
+    def login(self, password, role="DRAFT"):
+        view = self.request("POST", EDITORIAL_PATH + "/session", {"role": role, "credential": password})
         self.csrf = view["csrfToken"]
-        require(view["role"] == "DRAFT" and self.csrf, "Expected an authenticated DRAFT session.")
+        require(view["role"] == role and self.csrf, "Unexpected owner session role.")
 
     def close(self):
         try:
@@ -194,17 +197,20 @@ def latest_target_batches(session, package):
 
 
 def inspect_batch(session, slug, guides, batch_id, *, reviewed=False):
-    path = batch_path(batch_id)
-    detail = session.request("GET", path)
+    detail = session.request("GET", batch_path(batch_id))
+    status = "READY" if reviewed else "DRAFT"
+    return inspect_batch_detail(detail, slug, guides, batch_id, statuses={status}, reviewed=reviewed)
+
+
+def inspect_batch_detail(detail, slug, guides, batch_id, *, statuses, reviewed):
     batch = detail["batch"]
     source_id = batch["sourceRevisionId"]
     require(str(UUID(source_id)) == source_id, f"{slug}: invalid source revision UUID.")
-    status = "READY" if reviewed else "DRAFT"
-    require(batch["batchId"] == batch_id and batch["slug"] == slug and batch["status"] == status and
+    require(batch["batchId"] == batch_id and batch["slug"] == slug and batch["status"] in statuses and
             batch["sourceContentHash"] == guides["zh-CN"][1] and detail["policyVersion"] == POLICY and
             detail["sourceVersion"] == RELEASE and utc(batch["validFrom"]) == utc(VALID_FROM) and
             batch["validUntil"] is None,
-            f"{slug}: unexpected batch identity, release metadata, source hash or state (expected {status}).")
+            f"{slug}: unexpected batch identity, release metadata, source hash or state (expected {' or '.join(sorted(statuses))}).")
     locales = {}
     for row in detail["locales"]:
         locale = row["locale"]
@@ -218,7 +224,7 @@ def inspect_batch(session, slug, guides, batch_id, *, reviewed=False):
         if reviewed:
             require(row["reviewStatus"] == "PASSED" and row["reviewedHash"] == content_hash and
                     row["reviewer"] == "claude-independent", f"{slug}/{locale}: independent hash-bound review missing.")
-        else:
+        elif reviewed is False:
             require(row["reviewStatus"] == "PENDING" and row["reviewedHash"] is None,
                     f"{slug}/{locale}: destination already has review activity.")
         locales[locale] = {"localeRevisionId": revision_id, "contentHash": content_hash}

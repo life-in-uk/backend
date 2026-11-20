@@ -1,0 +1,30 @@
+name: Import private drafts
+
+on:
+  workflow_dispatch:
+    inputs:
+      package_sha256:
+        description: SHA-256 of the approved Education package ZIP
+        type: string
+        required: true
+      package_version:
+        description: Private S3 package object version ID
+        type: string
+        required: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: production-backend
+  cancel-in-progress: false
+
+jobs:
+  import:
+    uses: ./.github/workflows/editorial-import-job.yml
+    permissions:
+      contents: read
+      id-token: write
+    with:
+      package_sha256: ${{ inputs.package_sha256 }}
+      package_version: ${{ inputs.package_version }}

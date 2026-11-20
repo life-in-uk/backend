@@ -1,0 +1,26 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "ReadImmutableEditorialInputs",
+      "Effect": "Allow",
+      "Action": "s3:GetObjectVersion",
+      "Resource": [
+        "arn:aws:s3:::lifeinuk-backups-919693204623-eu-west-2/editorial/education/packages/*",
+        "arn:aws:s3:::lifeinuk-backups-919693204623-eu-west-2/editorial/education/reviews/*"
+      ]
+    },
+    {
+      "Sid": "StoreAndReadEditorialAuditReceipts",
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::lifeinuk-backups-919693204623-eu-west-2/editorial/education/receipts/*",
+        "arn:aws:s3:::lifeinuk-backups-919693204623-eu-west-2/editorial/education/publications/*"
+      ]
+    }
+  ]
+}
