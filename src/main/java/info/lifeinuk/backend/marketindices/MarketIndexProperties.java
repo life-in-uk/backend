@@ -26,8 +26,9 @@ public record MarketIndexProperties(
         @DefaultValue("PT60M") Duration staleAfter,
         @DefaultValue("PT30M") Duration closeTolerance,
         @DefaultValue("PT6M") Duration heartbeatTimeout,
-        @DefaultValue("PT2M") Duration futureSkew,
-        @DefaultValue("PT5M") Duration collectorClockSkew) {
+        @DefaultValue("PT30S") Duration futureSkew,
+        @DefaultValue("PT5M") Duration collectorClockSkew,
+        @DefaultValue("PT1H") Duration retentionInterval) {
 
     static final Pattern SOURCE = Pattern.compile("^[a-z0-9][a-z0-9._-]{0,39}$");
     static final String MOCK_SOURCE = "mock";
@@ -60,8 +61,9 @@ public record MarketIndexProperties(
         if (staleAfter.compareTo(freshWithin) <= 0) throw new IllegalArgumentException("stale-after must exceed fresh-within");
         within(closeTolerance, Duration.ZERO, Duration.ofHours(2), "close-tolerance");
         within(heartbeatTimeout, Duration.ofMinutes(1), Duration.ofHours(2), "heartbeat-timeout");
-        within(futureSkew, Duration.ZERO, Duration.ofMinutes(10), "future-skew");
+        within(futureSkew, Duration.ZERO, Duration.ofMinutes(2), "future-skew");
         within(collectorClockSkew, Duration.ofSeconds(30), Duration.ofMinutes(30), "collector-clock-skew");
+        within(retentionInterval, Duration.ofMinutes(5), Duration.ofHours(24), "retention-interval");
     }
 
     private static List<String> sources(List<String> raw, String kind) {

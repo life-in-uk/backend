@@ -33,9 +33,14 @@ CREATE TABLE market_index_observation (
 );
 
 CREATE INDEX market_index_observation_batch ON market_index_observation (batch_id);
+-- Retention scans: oldest observations first, and batches by receipt time (docs/market-indices.md, query plans).
+CREATE INDEX market_index_observation_observed_at ON market_index_observation (observed_at);
+CREATE INDEX market_index_ingest_batch_received_at ON market_index_ingest_batch (received_at);
 
--- Collector liveness, one row per source: the newest report by the collector's own sent_at wins. A heartbeat is not
--- an observation: it never creates, changes or dates an index value.
+-- Collector status, one row per source. The reported status fields come from the newest report by the collector's
+-- own sent_at; received_at (liveness) is refreshed by every authenticated heartbeat, so a collector clock that steps
+-- backwards cannot make a live collector look disconnected. A heartbeat is not an observation: it never creates,
+-- changes or dates an index value.
 CREATE TABLE market_index_collector_heartbeat (
     source                         text PRIMARY KEY CHECK (source ~ '^[a-z0-9][a-z0-9._-]{0,39}$'),
     credential_id                  text NOT NULL,
@@ -47,5 +52,8 @@ CREATE TABLE market_index_collector_heartbeat (
     pending_batches                integer NOT NULL CHECK (pending_batches BETWEEN 0 AND 1000000),
     oldest_pending_collected_at    timestamptz,
     received_at                    timestamptz NOT NULL DEFAULT clock_timestamp(),
-    CHECK ((collector_status = 'PROVIDER_FAILED') = (provider_failure_code IS NOT NULL))
+    CHECK ((collector_status = 'PROVIDER_FAILED') = (provider_failure_code IS NOT NULL)),
+    -- OK means the last attempt succeeded; PROVIDER_FAILED means the last attempt came after the last success.
+    CHECK (collector_status <> 'OK' OR (last_successful_collection_at IS NOT NULL AND last_successful_collection_at >= last_attempt_at)),
+    CHECK (collector_status <> 'PROVIDER_FAILED' OR last_successful_collection_at IS NULL OR last_successful_collection_at < last_attempt_at)
 );

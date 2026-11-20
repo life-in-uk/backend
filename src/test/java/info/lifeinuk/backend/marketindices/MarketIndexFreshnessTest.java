@@ -58,6 +58,23 @@ class MarketIndexFreshnessTest {
     }
 
     @Test
+    void closedWindowIsBoundedOnBothSidesOfTheLastClose() {
+        // Weekend: Friday's LSE close is 16:30 UTC; a stamp on Saturday or long after the close is not a closing value.
+        Instant sunday = Instant.parse("2026-11-22T12:00:00Z");
+        var weekend = MarketCalendar.Exchange.LSE.session(sunday);
+        assertThat(status(Instant.parse("2026-11-20T17:00:00Z"), TimeSource.EXCHANGE, weekend, sunday)).isEqualTo(Status.MARKET_CLOSED);
+        assertThat(status(Instant.parse("2026-11-20T17:00:01Z"), TimeSource.EXCHANGE, weekend, sunday)).isEqualTo(Status.MARKET_STATUS_UNKNOWN);
+        assertThat(status(Instant.parse("2026-11-21T10:00:00Z"), TimeSource.PROVIDER, weekend, sunday)).isEqualTo(Status.MARKET_STATUS_UNKNOWN);
+        // Early close (NYSE 13:00 ET = 18:00 UTC on 27 Nov 2026): a regular 16:00 ET stamp cannot be that day's close.
+        Instant evening = Instant.parse("2026-11-28T15:00:00Z");
+        var nyse = MarketCalendar.Exchange.NYSE.session(evening);
+        assertThat(nyse.lastClose()).isEqualTo(Instant.parse("2026-11-27T18:00:00Z"));
+        assertThat(status(Instant.parse("2026-11-27T18:05:00Z"), TimeSource.EXCHANGE, nyse, evening)).isEqualTo(Status.MARKET_CLOSED);
+        assertThat(status(Instant.parse("2026-11-27T21:00:00Z"), TimeSource.EXCHANGE, nyse, evening)).isEqualTo(Status.MARKET_STATUS_UNKNOWN);
+        assertThat(status(Instant.parse("2026-11-27T17:29:59Z"), TimeSource.EXCHANGE, nyse, evening)).isEqualTo(Status.STALE);
+    }
+
+    @Test
     void earlyCloseAndHolidayAreConservative() {
         Instant afterEarlyClose = Instant.parse("2026-11-27T19:00:00Z");
         var nyse = MarketCalendar.Exchange.NYSE.session(afterEarlyClose);
@@ -72,7 +89,12 @@ class MarketIndexFreshnessTest {
     void missingValueAndFutureTimes() {
         assertThat(MarketIndexFreshness.evaluate(null, null, LSE_OPEN, NOW, DEFAULTS))
                 .isEqualTo(new MarketIndexFreshness.Result(Status.UNAVAILABLE, null));
-        assertThat(MarketIndexFreshness.evaluate(NOW.plusSeconds(30), TimeSource.EXCHANGE, LSE_OPEN, NOW, DEFAULTS).ageSeconds()).isZero();
+        // A future-dated observation is never FRESH, whatever its source.
+        for (var source : TimeSource.values()) {
+            assertThat(status(NOW.plusSeconds(1), source, LSE_OPEN, NOW)).isEqualTo(Status.MARKET_TIME_UNKNOWN);
+            assertThat(status(NOW.plusSeconds(1), source, MarketCalendar.Exchange.LSE.session(Instant.parse("2026-11-21T12:00:00Z")),
+                    Instant.parse("2026-11-21T12:00:00Z").minusSeconds(5))).isNotEqualTo(Status.FRESH);
+        }
     }
 
     /** Sweeps 2026-2028 every 7 minutes for every exchange: FRESH only ever for a market time in an OPEN, known session. */
@@ -82,7 +104,7 @@ class MarketIndexFreshnessTest {
             for (Instant now = Instant.parse("2026-01-01T00:00:00Z"); now.isBefore(Instant.parse("2028-03-01T00:00:00Z"));
                     now = now.plus(Duration.ofMinutes(7))) {
                 var session = exchange.session(now);
-                for (long ageSeconds : List.of(0L, 600L, 1500L)) {
+                for (long ageSeconds : List.of(-60L, 0L, 600L, 1500L, 7200L)) {
                     Instant observedAt = now.minusSeconds(ageSeconds);
                     for (var source : TimeSource.values()) {
                         var status = status(observedAt, source, session, now);
@@ -90,6 +112,10 @@ class MarketIndexFreshnessTest {
                             assertThat(source).isNotEqualTo(TimeSource.COLLECTOR);
                             assertThat(session.state()).isEqualTo(MarketCalendar.State.OPEN);
                             assertThat(observedAt).isAfterOrEqualTo(session.openedAt());
+                        }
+                        if (status == Status.MARKET_CLOSED) {
+                            assertThat(session.state()).isEqualTo(MarketCalendar.State.CLOSED);
+                            assertThat(Duration.between(session.lastClose(), observedAt).abs()).isLessThanOrEqualTo(DEFAULTS.closeTolerance());
                         }
                         if (session.state() == MarketCalendar.State.UNKNOWN) {
                             assertThat(status).isNotIn(Status.FRESH, Status.MARKET_CLOSED, Status.DELAYED);

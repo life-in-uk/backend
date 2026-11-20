@@ -32,8 +32,7 @@ class MarketIndexController {
     @PostMapping(OBSERVATIONS)
     ResponseEntity<?> observations(HttpServletRequest request) throws IOException {
         byte[] body = body(request);
-        var batch = MarketIndexPayloads.batch(body, service.now(), service.properties());
-        return ok(service.ingest(batch, credential(request)));
+        return ok(service.ingest(MarketIndexPayloads.batch(body), credential(request)));
     }
 
     @PostMapping(HEARTBEAT)
@@ -74,8 +73,8 @@ class MarketIndexController {
                 "The body must be at most " + MarketIndexPayloads.MAX_BODY_BYTES + " bytes.");
     }
 
-    private static String credential(HttpServletRequest request) {
-        return (String) request.getAttribute(MarketIndexIngestSecurity.CREDENTIAL_ATTRIBUTE);
+    private static MarketIndexIngestSecurity.Key credential(HttpServletRequest request) {
+        return (MarketIndexIngestSecurity.Key) request.getAttribute(MarketIndexIngestSecurity.CREDENTIAL_ATTRIBUTE);
     }
 
     @ExceptionHandler(MarketIndexPayloads.Rejected.class)

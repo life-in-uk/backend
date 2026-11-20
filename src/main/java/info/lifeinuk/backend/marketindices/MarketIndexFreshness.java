@@ -19,8 +19,10 @@ final class MarketIndexFreshness {
     static Result evaluate(Instant observedAt, MarketIndexSymbol.TimeSource timeSource, MarketCalendar.Session session,
             Instant now, MarketIndexProperties properties) {
         if (observedAt == null || timeSource == null) return new Result(Status.UNAVAILABLE, null);
+        // A time later than now is not a usable market time (the latest-value query never selects one; this guards
+        // every other caller).
+        if (observedAt.isAfter(now)) return new Result(Status.MARKET_TIME_UNKNOWN, 0L);
         Duration age = Duration.between(observedAt, now);
-        if (age.isNegative()) age = Duration.ZERO;
         long ageSeconds = age.toSeconds();
         boolean stale = age.compareTo(properties.staleAfter()) > 0;
         // A collector-derived time is at or after the real market time, so its age is a lower bound: if even that is
@@ -34,8 +36,14 @@ final class MarketIndexFreshness {
             case OPEN -> new Result(stale ? Status.STALE
                     : !observedAt.isBefore(session.openedAt()) && age.compareTo(properties.freshWithin()) <= 0
                     ? Status.FRESH : Status.DELAYED, ageSeconds);
-            case CLOSED -> new Result(observedAt.isBefore(session.lastClose().minus(properties.closeTolerance()))
-                    ? Status.STALE : Status.MARKET_CLOSED, ageSeconds);
+            // The closing value must be stamped within close-tolerance either side of the last scheduled close (early
+            // closes included). Earlier is an older session; later (e.g. a weekend or after-hours stamp, or the regular
+            // close time on an early-close day) is not a time that session can have produced.
+            case CLOSED -> observedAt.isBefore(session.lastClose().minus(properties.closeTolerance()))
+                    ? new Result(Status.STALE, ageSeconds)
+                    : observedAt.isAfter(session.lastClose().plus(properties.closeTolerance()))
+                    ? new Result(Status.MARKET_STATUS_UNKNOWN, ageSeconds)
+                    : new Result(Status.MARKET_CLOSED, ageSeconds);
         };
     }
 }

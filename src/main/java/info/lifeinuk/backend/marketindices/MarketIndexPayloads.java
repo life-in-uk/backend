@@ -65,7 +65,13 @@ final class MarketIndexPayloads {
 
     // ---------------------------------------------------------------- observations
 
-    static Batch batch(byte[] body, Instant now, MarketIndexProperties properties) {
+    /**
+     * Structural parsing plus content invariants that never change with time (mock data must carry a COLLECTOR time).
+     * Source authorization ({@link #requireAuthorized}) and the time window ({@link #requireWithinWindow}) are
+     * separate steps: an identical retry of an already committed batch is acknowledged as a replay even after its
+     * observations have crossed the backfill cutoff, but never without authentication and source authorization.
+     */
+    static Batch batch(byte[] body) {
         final String invalid = "MARKET_BATCH_INVALID";
         JsonNode root = parse(body, invalid);
         fields(root, "", Set.of("schemaVersion", "batchId", "source", "collectedAt", "observations"), Set.of(), invalid);
@@ -97,18 +103,30 @@ final class MarketIndexPayloads {
             observations.add(new Observation(symbol, value, previousClose, observedAt, timeSource));
         }
         observations.sort(Comparator.comparing(Observation::symbol));
+        for (var o : observations) {
+            if (MarketIndexProperties.MOCK_SOURCE.equals(source) && o.timeSource() != MarketIndexSymbol.TimeSource.COLLECTOR) {
+                throw unprocessable("MOCK_TIME_SOURCE_INVALID", "observations[" + o.symbol() + "].observedAtSource must be COLLECTOR for mock data.");
+            }
+        }
+        return new Batch(batchId, source, collectedAt, List.copyOf(observations), canonicalHash(batchId, source, collectedAt, observations));
+    }
 
-        // Semantics (422): the request is well-formed but cannot be accepted.
+    /** The source must be accepted by this server (422) and bound to the authenticated collector key (403). */
+    static void requireAuthorized(String source, java.util.Set<String> keySources, MarketIndexProperties properties) {
         if (!properties.acceptedSources().contains(source)) throw unprocessable("SOURCE_NOT_ACCEPTED", "source is not accepted by this server.");
-        if (collectedAt.isAfter(now.plus(properties.collectorClockSkew()))) {
+        if (keySources == null || !keySources.contains(source)) {
+            throw new Rejected(HttpStatus.FORBIDDEN, "SOURCE_NOT_AUTHORIZED", "This collector credential may not write this source.");
+        }
+    }
+
+    /** Time-window rules for a batch that is not already stored (422). */
+    static void requireWithinWindow(Batch batch, Instant now, MarketIndexProperties properties) {
+        if (batch.collectedAt().isAfter(now.plus(properties.collectorClockSkew()))) {
             throw unprocessable("COLLECTOR_CLOCK_SKEW", "collectedAt is ahead of server time; check the collector clock.");
         }
-        for (int i = 0; i < observations.size(); i++) {
-            var o = observations.get(i);
+        Instant collectedAt = batch.collectedAt();
+        for (var o : batch.observations()) {
             String at = "observations[" + o.symbol() + "]";
-            if (MarketIndexProperties.MOCK_SOURCE.equals(source) && o.timeSource() != MarketIndexSymbol.TimeSource.COLLECTOR) {
-                throw unprocessable("MOCK_TIME_SOURCE_INVALID", at + ".observedAtSource must be COLLECTOR for mock data.");
-            }
             if (o.observedAt().isAfter(now.plus(properties.futureSkew()))) {
                 throw unprocessable("FUTURE_OBSERVATION", at + ".observedAt is ahead of server time.");
             }
@@ -119,7 +137,6 @@ final class MarketIndexPayloads {
                 throw unprocessable("OBSERVATION_TOO_OLD", at + ".observedAt is older than the backfill window.");
             }
         }
-        return new Batch(batchId, source, collectedAt, List.copyOf(observations), canonicalHash(batchId, source, collectedAt, observations));
     }
 
     /** Hash of the normalised content: key order, whitespace and equivalent spellings of one value do not matter. */
@@ -169,7 +186,13 @@ final class MarketIndexPayloads {
                 || pending.intValue() < 0 || pending.intValue() > 1_000_000) {
             throw bad(invalid, "pendingBatches must be an integer from 0 to 1000000.");
         }
-        if (!properties.acceptedSources().contains(source)) throw unprocessable("SOURCE_NOT_ACCEPTED", "source is not accepted by this server.");
+        // OK means the last attempt was a successful collection; PROVIDER_FAILED means it was not.
+        if (status == CollectorStatus.OK && (lastSuccess == null || lastSuccess.isBefore(lastAttemptAt))) {
+            throw bad(invalid, "collectorStatus OK requires lastSuccessfulCollectionAt at or after lastAttemptAt.");
+        }
+        if (status == CollectorStatus.PROVIDER_FAILED && lastSuccess != null && !lastSuccess.isBefore(lastAttemptAt)) {
+            throw bad(invalid, "collectorStatus PROVIDER_FAILED requires the last attempt to be later than the last success.");
+        }
         // Heartbeats report the present; they are never queued and replayed later.
         if (sentAt.isAfter(now.plus(properties.collectorClockSkew())) || sentAt.isBefore(now.minus(properties.collectorClockSkew()))) {
             throw unprocessable("HEARTBEAT_CLOCK_SKEW", "sentAt is too far from server time; heartbeats are not replayed.");

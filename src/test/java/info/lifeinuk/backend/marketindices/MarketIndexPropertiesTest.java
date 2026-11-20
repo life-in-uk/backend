@@ -15,7 +15,7 @@ class MarketIndexPropertiesTest {
             Duration backfill, Duration retention) {
         return new MarketIndexProperties(keys, accepted, publicEnabled, publicSources, "", backfill, retention,
                 Duration.ofMinutes(20), Duration.ofMinutes(60), Duration.ofMinutes(30), Duration.ofMinutes(6),
-                Duration.ofMinutes(2), Duration.ofMinutes(5));
+                Duration.ofMinutes(2), Duration.ofMinutes(5), Duration.ofHours(1));
     }
 
     @Test

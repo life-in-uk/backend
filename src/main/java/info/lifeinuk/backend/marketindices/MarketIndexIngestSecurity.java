@@ -20,9 +20,12 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 /**
  * Dedicated collector credential for {@code /api/internal/market-indices/**} only, separate from website sessions and
  * every editorial credential. The header {@code X-Market-Collector-Token: <keyId>.<secret>} is checked against
- * configured SHA-256 hashes ({@code MARKET_INDICES_COLLECTOR_KEYS=keyId:hex[,keyId:hex]}, at most two for rotation)
- * with constant-time comparison over every configured key. The server never holds the secret. No key configured:
- * 503 MARKET_INGEST_DISABLED. The header value is never logged or echoed.
+ * configured SHA-256 hashes with constant-time comparison over every configured key; the server never holds the
+ * secret. Each key is bound to the source ids it may write:
+ * {@code MARKET_INDICES_COLLECTOR_KEYS=keyId:sha256hex:source[|source][,...]} (at most two keys, for rotation).
+ * A key may only submit observations and heartbeats for its own sources (403 SOURCE_NOT_AUTHORIZED otherwise), so a
+ * mock-only credential can never write a licensed source. No key configured: 503 MARKET_INGEST_DISABLED. The
+ * header value is never logged or echoed.
  */
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(MarketIndexProperties.class)
@@ -39,7 +42,10 @@ class MarketIndexIngestSecurity implements WebMvcConfigurer {
             "life-in-uk.editorial.local-review-token", "life-in-uk.editorial.owner-draft-password",
             "life-in-uk.editorial.owner-approval-password");
 
-    record Key(String id, byte[] hash) { }
+    /** A configured key: id, SHA-256 of the secret and the sources it may write. */
+    record Key(String id, byte[] hash, java.util.Set<String> sources) {
+        boolean authorizes(String source) { return sources.contains(source); }
+    }
 
     private final List<Key> keys;
 
@@ -62,11 +68,17 @@ class MarketIndexIngestSecurity implements WebMvcConfigurer {
         if (configured == null || configured.isBlank()) return List.of();
         for (String entry : configured.split(",")) {
             String[] parts = entry.strip().split(":", -1);
-            if (parts.length != 2 || !KEY_ID.matcher(parts[0]).matches() || !HASH.matcher(parts[1]).matches()) {
-                throw new IllegalArgumentException("MARKET_INDICES_COLLECTOR_KEYS entries must be keyId:sha256hex");
+            if (parts.length != 3 || !KEY_ID.matcher(parts[0]).matches() || !HASH.matcher(parts[1]).matches()) {
+                throw new IllegalArgumentException("MARKET_INDICES_COLLECTOR_KEYS entries must be keyId:sha256hex:source[|source]");
+            }
+            var sources = new java.util.LinkedHashSet<String>();
+            for (String source : parts[2].split("\\|", -1)) {
+                if (!MarketIndexProperties.SOURCE.matcher(source).matches() || !sources.add(source)) {
+                    throw new IllegalArgumentException("Each collector key needs one or more distinct, valid source ids");
+                }
             }
             if (parsed.stream().anyMatch(k -> k.id().equals(parts[0]))) throw new IllegalArgumentException("Duplicate collector key id");
-            parsed.add(new Key(parts[0], HexFormat.of().parseHex(parts[1])));
+            parsed.add(new Key(parts[0], HexFormat.of().parseHex(parts[1]), java.util.Set.copyOf(sources)));
         }
         if (parsed.size() > 2) throw new IllegalArgumentException("At most two collector keys (current and next)");
         if (parsed.size() == 2 && MessageDigest.isEqual(parsed.get(0).hash(), parsed.get(1).hash())) {
@@ -85,8 +97,8 @@ class MarketIndexIngestSecurity implements WebMvcConfigurer {
 
     boolean configured() { return !keys.isEmpty(); }
 
-    /** The matching key id, or null. Every configured key is compared, so timing does not reveal which one matched. */
-    String authenticate(String header) {
+    /** The matching key, or null. Every configured key is compared, so timing does not reveal which one matched. */
+    Key authenticate(String header) {
         if (header == null || header.length() > 300) return null;
         int dot = header.indexOf('.');
         if (dot <= 0) return null;
@@ -94,10 +106,10 @@ class MarketIndexIngestSecurity implements WebMvcConfigurer {
         String secret = header.substring(dot + 1);
         if (secret.length() < 32) return null;
         byte[] supplied = sha256(secret);
-        String matched = null;
+        Key matched = null;
         for (Key key : keys) {
             boolean equal = MessageDigest.isEqual(key.hash(), supplied);
-            if (equal && key.id().equals(id)) matched = key.id();
+            if (equal && key.id().equals(id)) matched = key;
         }
         return matched;
     }
@@ -110,7 +122,7 @@ class MarketIndexIngestSecurity implements WebMvcConfigurer {
                 if (!configured()) {
                     return reject(response, HttpStatus.SERVICE_UNAVAILABLE, "MARKET_INGEST_DISABLED", "Market index ingestion is not configured.");
                 }
-                String credential = authenticate(request.getHeader(HEADER));
+                Key credential = authenticate(request.getHeader(HEADER));
                 if (credential == null) {
                     return reject(response, HttpStatus.UNAUTHORIZED, "COLLECTOR_UNAUTHORIZED", "A valid collector credential is required.");
                 }

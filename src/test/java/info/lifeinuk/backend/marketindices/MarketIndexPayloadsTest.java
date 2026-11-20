@@ -27,17 +27,26 @@ class MarketIndexPayloadsTest {
                 + "\",\"observedAtSource\":\"" + timeSource + "\"}";
     }
 
+    static final java.util.Set<String> KEY_SOURCES = java.util.Set.of("mock", "provider-x");
+
+    /** The controller/service order: parse, authorize the source for the key, then the time window for a new batch. */
+    static MarketIndexPayloads.Batch full(byte[] body) {
+        var batch = MarketIndexPayloads.batch(body);
+        MarketIndexPayloads.requireAuthorized(batch.source(), KEY_SOURCES, PROPS);
+        MarketIndexPayloads.requireWithinWindow(batch, NOW, PROPS);
+        return batch;
+    }
+
     static MarketIndexPayloads.Rejected reject(String body) {
-        return catchThrowableOfType(MarketIndexPayloads.Rejected.class,
-                () -> MarketIndexPayloads.batch(body.getBytes(StandardCharsets.UTF_8), NOW, PROPS));
+        return catchThrowableOfType(MarketIndexPayloads.Rejected.class, () -> full(body.getBytes(StandardCharsets.UTF_8)));
     }
 
     @Test
     void validBatchIsNormalisedAndSorted() {
-        var batch = MarketIndexPayloads.batch(batch("provider-x", "2026-11-20T14:32:05.214+00:00",
+        var batch = full(batch("provider-x", "2026-11-20T14:32:05.214+00:00",
                 obs("SPX", "5987.21", "2026-11-20T14:16:30Z", "EXCHANGE") + ","
                         + "{\"symbol\":\"UKX\",\"value\":\"8123.45\",\"previousClose\":\"8100.12\",\"observedAt\":\"2026-11-20T09:15:00-05:00\",\"observedAtSource\":\"PROVIDER\"}")
-                .getBytes(StandardCharsets.UTF_8), NOW, PROPS);
+                .getBytes(StandardCharsets.UTF_8));
         assertThat(batch.batchId()).isEqualTo(UUID.fromString(BATCH));
         assertThat(batch.observations()).extracting(MarketIndexPayloads.Observation::symbol)
                 .containsExactly(MarketIndexSymbol.UKX, MarketIndexSymbol.SPX);
@@ -50,15 +59,15 @@ class MarketIndexPayloadsTest {
 
     @Test
     void hashIgnoresKeyOrderWhitespaceAndEquivalentSpellings() {
-        var a = MarketIndexPayloads.batch(batch("provider-x", "2026-11-20T14:32:05Z",
-                obs("UKX", "8123.45", "2026-11-20T14:15:00Z", "PROVIDER")).getBytes(StandardCharsets.UTF_8), NOW, PROPS);
+        var a = full(batch("provider-x", "2026-11-20T14:32:05Z",
+                obs("UKX", "8123.45", "2026-11-20T14:15:00Z", "PROVIDER")).getBytes(StandardCharsets.UTF_8));
         String reordered = "{ \"observations\": [ {\"observedAtSource\":\"PROVIDER\",\"observedAt\":\"2026-11-20T14:15:00.000+00:00\","
                 + "\"value\":\"8123.4500\",\"symbol\":\"UKX\"} ], \"collectedAt\":\"2026-11-20T14:32:05.000Z\","
                 + "\"source\":\"provider-x\", \"batchId\":\"" + BATCH + "\", \"schemaVersion\": 1 }";
-        var b = MarketIndexPayloads.batch(reordered.getBytes(StandardCharsets.UTF_8), NOW, PROPS);
+        var b = full(reordered.getBytes(StandardCharsets.UTF_8));
         assertThat(b.requestSha256()).isEqualTo(a.requestSha256());
-        var c = MarketIndexPayloads.batch(batch("provider-x", "2026-11-20T14:32:05Z",
-                obs("UKX", "8123.46", "2026-11-20T14:15:00Z", "PROVIDER")).getBytes(StandardCharsets.UTF_8), NOW, PROPS);
+        var c = full(batch("provider-x", "2026-11-20T14:32:05Z",
+                obs("UKX", "8123.46", "2026-11-20T14:15:00Z", "PROVIDER")).getBytes(StandardCharsets.UTF_8));
         assertThat(c.requestSha256()).isNotEqualTo(a.requestSha256());
     }
 
@@ -101,6 +110,19 @@ class MarketIndexPayloadsTest {
     }
 
     @Test
+    void sourceMustBeAcceptedAndBoundToTheKey() {
+        var batch = MarketIndexPayloads.batch(batch("provider-x", "2026-11-20T14:32:05Z",
+                obs("UKX", "1", "2026-11-20T14:15:00Z", "PROVIDER")).getBytes(StandardCharsets.UTF_8));
+        var forbidden = catchThrowableOfType(MarketIndexPayloads.Rejected.class,
+                () -> MarketIndexPayloads.requireAuthorized(batch.source(), java.util.Set.of("mock"), PROPS));
+        assertThat(forbidden.status.value()).isEqualTo(403);
+        assertThat(forbidden.code).isEqualTo("SOURCE_NOT_AUTHORIZED");
+        var unaccepted = catchThrowableOfType(MarketIndexPayloads.Rejected.class,
+                () -> MarketIndexPayloads.requireAuthorized("provider-y", java.util.Set.of("provider-y"), PROPS));
+        assertThat(unaccepted.code).isEqualTo("SOURCE_NOT_ACCEPTED");
+    }
+
+    @Test
     void semanticRulesAre422() {
         assertThat(reject(batch("provider-y", "2026-11-20T14:32:05Z", obs("UKX", "1", "2026-11-20T14:15:00Z", "PROVIDER"))).code)
                 .isEqualTo("SOURCE_NOT_ACCEPTED");
@@ -114,8 +136,8 @@ class MarketIndexPayloadsTest {
                 .isEqualTo("OBSERVATION_AFTER_COLLECTION");
         assertThat(reject(batch("provider-x", "2026-11-20T14:00:00Z", obs("UKX", "1", "2026-10-20T14:32:59Z", "PROVIDER"))).code)
                 .isEqualTo("OBSERVATION_TOO_OLD");
-        var withinBackfill = MarketIndexPayloads.batch(batch("provider-x", "2026-11-20T14:00:00Z",
-                obs("UKX", "1", "2026-10-21T14:34:00Z", "PROVIDER")).getBytes(StandardCharsets.UTF_8), NOW, PROPS);
+        var withinBackfill = full(batch("provider-x", "2026-11-20T14:00:00Z",
+                obs("UKX", "1", "2026-10-21T14:34:00Z", "PROVIDER")).getBytes(StandardCharsets.UTF_8));
         assertThat(withinBackfill.observations()).hasSize(1);
     }
 
@@ -127,6 +149,7 @@ class MarketIndexPayloadsTest {
     static String heartbeat(String status, String failure, String sentAt) {
         return "{\"schemaVersion\":1,\"source\":\"mock\",\"sentAt\":\"" + sentAt + "\",\"collectorStatus\":\"" + status + "\","
                 + (failure == null ? "" : "\"providerFailureCode\":\"" + failure + "\",")
+                + ("OK".equals(status) ? "\"lastSuccessfulCollectionAt\":\"2026-11-20T14:31:00Z\"," : "")
                 + "\"lastAttemptAt\":\"2026-11-20T14:31:00Z\",\"pendingBatches\":0}";
     }
 
@@ -141,6 +164,13 @@ class MarketIndexPayloadsTest {
         assertThat(rejectHeartbeat(heartbeat("OK", "TIMEOUT", "2026-11-20T14:32:00Z")).code).isEqualTo("HEARTBEAT_INVALID");
         assertThat(rejectHeartbeat(heartbeat("PROVIDER_FAILED", "timeout", "2026-11-20T14:32:00Z")).code).isEqualTo("HEARTBEAT_INVALID");
         assertThat(rejectHeartbeat(heartbeat("DOWN", null, "2026-11-20T14:32:00Z")).code).isEqualTo("HEARTBEAT_INVALID");
+        // OK must mean the last attempt succeeded; PROVIDER_FAILED must mean it did not.
+        String okWithoutSuccess = heartbeat("OK", null, "2026-11-20T14:32:00Z").replace("\"lastSuccessfulCollectionAt\":\"2026-11-20T14:31:00Z\",", "");
+        assertThat(rejectHeartbeat(okWithoutSuccess).getMessage()).contains("lastSuccessfulCollectionAt");
+        String okWithOldSuccess = heartbeat("OK", null, "2026-11-20T14:32:00Z").replace("\"lastSuccessfulCollectionAt\":\"2026-11-20T14:31:00Z\"", "\"lastSuccessfulCollectionAt\":\"2026-11-20T14:29:00Z\"");
+        assertThat(rejectHeartbeat(okWithOldSuccess).code).isEqualTo("HEARTBEAT_INVALID");
+        String failedAfterSuccess = heartbeat("PROVIDER_FAILED", "TIMEOUT", "2026-11-20T14:32:00Z").replace("\"lastAttemptAt\"", "\"lastSuccessfulCollectionAt\":\"2026-11-20T14:31:00Z\",\"lastAttemptAt\"");
+        assertThat(rejectHeartbeat(failedAfterSuccess).code).isEqualTo("HEARTBEAT_INVALID");
         assertThat(rejectHeartbeat(heartbeat("OK", null, "2026-11-20T14:20:00Z")).code).isEqualTo("HEARTBEAT_CLOCK_SKEW");
         assertThat(rejectHeartbeat(heartbeat("OK", null, "2026-11-20T14:40:00Z")).code).isEqualTo("HEARTBEAT_CLOCK_SKEW");
         assertThat(rejectHeartbeat(heartbeat("OK", null, "2026-11-20T14:28:00Z")).code).isEqualTo("HEARTBEAT_TIME_INVALID");

@@ -63,7 +63,8 @@ life-in-uk:
   market-indices:
     # Collector-pushed stock index observations (docs/market-indices.md). Everything is OFF by default:
     # no collector key (POST answers 503), no accepted source, public read disabled (404), no public source.
-    # Hashes only, never secrets: keyId:sha256hex[,keyId:sha256hex] (two keys during rotation).
+    # Hashes only, never secrets, each bound to the sources it may write:
+    # keyId:sha256hex:source[|source][,keyId:sha256hex:source[|source]] (two keys during rotation).
     collector-keys: ${MARKET_INDICES_COLLECTOR_KEYS:}
     accepted-sources: ${MARKET_INDICES_ACCEPTED_SOURCES:}
     # Requires a display licence for the configured public sources. "mock" can never be public (startup fails).
@@ -73,3 +74,5 @@ life-in-uk:
     # Bounded: backfill PT1H..P365D; retention P30D..P3650D and at least one day longer than backfill.
     max-backfill: ${MARKET_INDICES_MAX_BACKFILL:P30D}
     retention: ${MARKET_INDICES_RETENTION:P730D}
+    # Background retention cadence (PT5M..PT24H); never on the ingestion path.
+    retention-interval: ${MARKET_INDICES_RETENTION_INTERVAL:PT1H}
