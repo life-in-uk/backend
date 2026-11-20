@@ -1,0 +1,34 @@
+schemaVersion: "2.2"
+description: "Life in UK Education editorial publish. Fixed host command."
+parameters:
+  action:
+    type: String
+    allowedValues: [publish]
+  packageSha256:
+    type: String
+    interpolationType: ENV_VAR
+    allowedPattern: "^[0-9a-f]{64}$"
+  packageVersion:
+    type: String
+    interpolationType: ENV_VAR
+    allowedPattern: "^[A-Za-z0-9._~+/=-]{1,1024}$"
+  reviewSha256:
+    type: String
+    interpolationType: ENV_VAR
+    allowedPattern: "^[0-9a-f]{64}$"
+  reviewVersion:
+    type: String
+    interpolationType: ENV_VAR
+    allowedPattern: "^[A-Za-z0-9._~+/=-]{1,1024}$"
+mainSteps:
+  - action: aws:runShellScript
+    name: publishEducation
+    inputs:
+      timeoutSeconds: "1100"
+      runCommand:
+        - |
+          set -eu
+          umask 077
+          export AWS_DEFAULT_REGION=eu-west-2
+          exec /usr/bin/flock -n /run/lock/lifeinuk-release.lock /usr/bin/python3 -E -s -B \
+            /opt/lifeinuk/editorial-ci/ci_release.py publish "$SSM_packageSha256" "$SSM_packageVersion" "$SSM_reviewSha256" "$SSM_reviewVersion"

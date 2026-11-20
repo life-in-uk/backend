@@ -8,7 +8,7 @@ frontend has its own pipeline (frontend repository, `docs/ci-cd.md`).
 | Workflow | When | AWS access |
 |---|---|---|
 | `.github/workflows/ci.yml` | every pull request and push to `main` | none |
-| `.github/workflows/deploy-production.yml` | manual, then owner approval | OIDC role, release job only |
+| `.github/workflows/deploy-production.yml` | manual, then owner approval | OIDC role, reusable release job only |
 
 ```
 CI (push to main) ── mvn verify ─► image from that jar ─► stack test ─► artifact backend-image (30 days)
@@ -121,8 +121,10 @@ The trust policy (`infra/aws/backend-deploy-trust.json`) requires, with
 `repo:life-in-uk@337042510/backend@1402159526:environment:production`
 (organization and repository IDs, so a renamed or re-created repository
 cannot match); and `token.actions.githubusercontent.com:ref` =
-`refs/heads/main`, a GitHub condition key IAM supports. A run from any other
-branch is refused by AWS even if GitHub's branch rule were missing.
+`refs/heads/main`. It also requires the `Deploy production` workflow name and
+the exact `deploy-production-job.yml@refs/heads/main` reusable workflow claim.
+A different Production workflow cannot use the backend deploy role. See the
+[editorial setup boundary](../deploy/PUBLISHING.md#one-time-setup-in-this-order).
 
 **AWS** (eu-west-2; account 919693204623; the GitHub OIDC provider exists):
 

@@ -1,0 +1,40 @@
+name: Publish reviewed guides
+
+on:
+  workflow_dispatch:
+    inputs:
+      package_sha256:
+        description: SHA-256 of the approved Education package ZIP
+        type: string
+        required: true
+      package_version:
+        description: Private S3 package object version ID
+        type: string
+        required: true
+      review_sha256:
+        description: SHA-256 of the signed independent review ZIP
+        type: string
+        required: true
+      review_version:
+        description: Private S3 review object version ID
+        type: string
+        required: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: production-backend
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    uses: ./.github/workflows/editorial-publish-job.yml
+    permissions:
+      contents: read
+      id-token: write
+    with:
+      package_sha256: ${{ inputs.package_sha256 }}
+      package_version: ${{ inputs.package_version }}
+      review_sha256: ${{ inputs.review_sha256 }}
+      review_version: ${{ inputs.review_version }}

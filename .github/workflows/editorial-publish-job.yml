@@ -1,0 +1,65 @@
+name: Education editorial publish job
+
+on:
+  workflow_call:
+    inputs:
+      package_sha256:
+        type: string
+        required: true
+      package_version:
+        type: string
+        required: true
+      review_sha256:
+        type: string
+        required: true
+      review_version:
+        type: string
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  prepare:
+    name: Verify release inputs before owner approval
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - env:
+          ENABLED: ${{ vars.EDITORIAL_CI_ENABLED }}
+          PACKAGE_SHA256: ${{ inputs.package_sha256 }}
+          PACKAGE_VERSION: ${{ inputs.package_version }}
+          REVIEW_SHA256: ${{ inputs.review_sha256 }}
+          REVIEW_VERSION: ${{ inputs.review_version }}
+        run: python3 -B deploy/ci/check-editorial-inputs.py publish "$PACKAGE_SHA256" "$PACKAGE_VERSION" "$REVIEW_SHA256" "$REVIEW_VERSION"
+  publish:
+    name: Publish reviewed guides
+    needs: prepare
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    environment: production
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # v6.3.0
+        with:
+          role-to-assume: ${{ vars.AWS_EDITORIAL_PUBLISH_ROLE_ARN }}
+          role-session-name: lifeinuk-editorial-publish-${{ github.run_id }}
+          aws-region: eu-west-2
+          role-duration-seconds: 1800
+      - env:
+          INSTANCE_ID: ${{ vars.BACKEND_INSTANCE_ID }}
+          SSM_DOCUMENT: LifeInUK-PublishEducationGuides
+          PACKAGE_SHA256: ${{ inputs.package_sha256 }}
+          PACKAGE_VERSION: ${{ inputs.package_version }}
+          REVIEW_SHA256: ${{ inputs.review_sha256 }}
+          REVIEW_VERSION: ${{ inputs.review_version }}
+        run: |
+          deploy/ci/ssm-release.sh publish packageSha256="$PACKAGE_SHA256" packageVersion="$PACKAGE_VERSION" reviewSha256="$REVIEW_SHA256" reviewVersion="$REVIEW_VERSION"
