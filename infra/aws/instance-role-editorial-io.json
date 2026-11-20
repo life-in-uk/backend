@@ -5,7 +5,10 @@
       "Sid": "ReadImmutableEditorialInputs",
       "Effect": "Allow",
       "Action": "s3:GetObjectVersion",
-      "Resource": "arn:aws:s3:::lifeinuk-backups-919693204623-eu-west-2/editorial/education/packages/*"
+      "Resource": [
+        "arn:aws:s3:::lifeinuk-backups-919693204623-eu-west-2/editorial/education/packages/*",
+        "arn:aws:s3:::lifeinuk-backups-919693204623-eu-west-2/editorial/household/packages/*"
+      ]
     },
     {
       "Sid": "StoreAndReadEditorialAuditReceipts",
@@ -16,7 +19,8 @@
       ],
       "Resource": [
         "arn:aws:s3:::lifeinuk-backups-919693204623-eu-west-2/editorial/education/receipts/*",
-        "arn:aws:s3:::lifeinuk-backups-919693204623-eu-west-2/editorial/education/publications/*"
+        "arn:aws:s3:::lifeinuk-backups-919693204623-eu-west-2/editorial/education/publications/*",
+        "arn:aws:s3:::lifeinuk-backups-919693204623-eu-west-2/editorial/household/receipts/*"
       ]
     }
   ]

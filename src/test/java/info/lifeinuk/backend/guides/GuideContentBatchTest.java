@@ -598,7 +598,8 @@ class GuideContentBatchTest {
     @ParameterizedTest
     @CsvSource({
         "university-applications-student-visas, family-visa-v1",
-        "education, standard-v1"
+        "education, standard-v1",
+        "household-services, standard-v1"
     })
     void categorySitemapAndPublicLocalesFollowPublicationAndWithdrawal(String category, String checklistId) throws Exception {
         var source = source("Category lifecycle fixture");

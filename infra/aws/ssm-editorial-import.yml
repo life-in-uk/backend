@@ -1,9 +1,14 @@
 schemaVersion: "2.2"
-description: "Life in UK Education editorial import. Fixed host command."
+description: "Life in UK editorial draft import. Fixed host command."
 parameters:
   action:
     type: String
     allowedValues: [import]
+  release:
+    type: String
+    default: education
+    interpolationType: ENV_VAR
+    allowedValues: [education, household]
   packageSha256:
     type: String
     interpolationType: ENV_VAR
@@ -11,10 +16,10 @@ parameters:
   packageVersion:
     type: String
     interpolationType: ENV_VAR
-    allowedPattern: "^[A-Za-z0-9._~+/=-]{1,1024}$"
+    allowedPattern: "^[A-Za-z0-9._~+/=-]{1,1000}[A-Za-z0-9._~+/=-]{0,24}$"
 mainSteps:
   - action: aws:runShellScript
-    name: importEducation
+    name: importDrafts
     inputs:
       timeoutSeconds: "1100"
       runCommand:
@@ -22,5 +27,10 @@ mainSteps:
           set -eu
           umask 077
           export AWS_DEFAULT_REGION=eu-west-2
+          if [ "$SSM_release" = household ]; then
+            exec /usr/bin/flock -n /run/lock/lifeinuk-release.lock /usr/bin/python3 -E -s -B \
+              /opt/lifeinuk/editorial-ci/ci_release.py import-household "$SSM_packageSha256" "$SSM_packageVersion"
+          fi
+          test "$SSM_release" = education
           exec /usr/bin/flock -n /run/lock/lifeinuk-release.lock /usr/bin/python3 -E -s -B \
             /opt/lifeinuk/editorial-ci/ci_release.py import "$SSM_packageSha256" "$SSM_packageVersion"

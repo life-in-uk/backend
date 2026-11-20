@@ -148,3 +148,46 @@ recorded current publication UUID and a reason. Verify removal from the API
 and sitemap before any frontend rebuild or rollback. Reconcile the same release
 after a failed run. Database restore is a last resort and requires separate
 authorization. See the [backend recovery runbook](RUNBOOK.md).
+
+## Household Services & Insurance private draft integration
+
+The same protected **Import private drafts** workflow has a `household` choice.
+Its pinned editorial manifest and seven-slug allowlist are separate from the
+Education manifests. The existing **Publish reviewed guides** workflow remains
+Education-only. The Household import uses the DRAFT role and has no approval
+or publication step.
+
+The handoff contains 35 unchanged Guide files in five locales. Keep the
+unpublished handoff in private storage. Build the private import ZIP from
+exactly `EDITORIAL-MANIFEST.json` and `guides/<slug>/<locale>.json` (35 files),
+without directory entries. Keep the original handoff and review notes with the
+reviewer. The runner verifies the ZIP digest, its S3 version, the pinned manifest,
+the per-file and canonical content hashes and the source-to-translation linkage
+before opening the editorial session. The batch must be tagged `EDITORIAL_DRAFT`.
+
+This change reuses the current roles, host, immutable S3 bucket and fixed
+`LifeInUK-ImportEducationDrafts` document. For an owner-approved rollout, install
+`ci_release.py`, `promote.py`, `household.py` and the existing
+`check-production-editorial.py` together. Update the existing instance-role S3
+policy and the default version of the import document. Do this with dispatch
+disabled and under the existing host release lock. The `education` default and
+the publish document keep their current scope. The new sitemap mapping ships in
+the regular backend release independently of the draft import. This integration
+adds no migration.
+
+Upload the versioned ZIP privately to
+`editorial/household/packages/<archive SHA-256>.zip`. After confirming inputs
+and granting the normal GitHub Production approval, the host checks current
+revisions, requires a verified off-instance backup, imports as private DRAFT,
+and verifies all 35 revision IDs and hashes. It checks that the public listings
+and sitemap stayed unchanged and all target details still return 404. The
+content-addressed receipt is under `editorial/household/receipts/`. For any
+interruption, retry the same version and digest. Existing matching DRAFT
+batches are reconciled; conflicting state requires operator reconciliation.
+
+Before a separate publication change, retain and resolve the handoff's factual
+flags (insurance scope, exclusions, waiting periods and policy limits; GB/NI
+rules and emergency numbers; current Ofcom ADR/compensation and Ofgem switching
+rules). Obtain the outstanding independent fluent-language review, in
+particular Urdu and Hindi. Record approval against the exact locale hashes.
+Neither a successful import nor this PR is publication authorization.
