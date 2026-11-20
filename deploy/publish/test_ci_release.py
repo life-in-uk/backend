@@ -2,10 +2,12 @@
 
 from contextlib import nullcontext
 from copy import deepcopy
-from datetime import date
-from io import BytesIO
+from datetime import datetime, timezone
 import json
+import os
 from pathlib import Path
+import subprocess
+import sys
 import tempfile
 import unittest
 from unittest.mock import Mock, patch
@@ -69,61 +71,73 @@ class EditorialReleaseChecks(unittest.TestCase):
                     for index, slug in enumerate(sorted(ci.SLUGS), 1)}
         session = Mock()
         session.request.return_value = [{"slug": slug, **receipt} for slug, receipt in receipts.items()]
-        review = {"verifiedOn": "2026-11-20", "reviews": dict.fromkeys(ci.SLUGS, {})}
         state = {"revisions": {slug: [receipt["sourceRevisionId"]] for slug, receipt in receipts.items()},
                  "publications": {}}
         with tempfile.TemporaryDirectory() as tmp, patch.multiple(
-            ci, signed_review=Mock(return_value=(review, receipts)), read_state=Mock(return_value=state),
+            ci, load_import_receipt=Mock(return_value=receipts), read_state=Mock(return_value=state),
             owner_session=Mock(return_value=nullcontext(session)), batch_state=Mock(return_value=("DRAFT", [], None)),
             public_inventory=Mock(return_value={}), verify_visibility=Mock(),
             backup=Mock(side_effect=ci.Refused("backup failed")), credential=Mock(),
         ):
             with self.assertRaisesRegex(ci.Refused, "backup failed"):
-                ci.publish(dict.fromkeys(ci.SLUGS, {}), "a" * 64, "b" * 64, "v1", Path(tmp))
+                ci.publish(dict.fromkeys(ci.SLUGS, {}), "a" * 64, "b" * 64, "2025-01-01", Path(tmp))
             self.assertEqual([call.args[0] for call in session.request.call_args_list], ["GET"])
             ci.credential.assert_not_called()
 
-    def test_signed_review_fails_before_backup_on_invalid_signature(self):
-        with tempfile.TemporaryDirectory() as tmp:
+    def test_receipt_digest_mismatch_prevents_backup_and_editorial_session(self):
+        with tempfile.TemporaryDirectory() as tmp, patch.multiple(ci, backup=Mock(), owner_session=Mock()):
             root = Path(tmp)
-            signed_zip = BytesIO()
-            with ZipFile(signed_zip, "w") as writer:
-                writer.writestr("review.json", "{}")
-                writer.writestr("review.sig", "invalid")
-            raw = signed_zip.getvalue()
 
-            def fetch(kind, want, version, destination):
-                self.assertEqual(kind, "reviews")
-                destination.write_bytes(raw)
-                return raw
+            def download(*args, purpose):
+                self.assertIn(f"editorial/education/receipts/{'b' * 64}.json", args)
+                Path(args[-1]).write_bytes(b"replaced receipt")
+                return b"{}"
 
-            with patch.multiple(ci, fetch=Mock(side_effect=fetch),
-                                run=Mock(side_effect=ci.Refused("signature failed")), backup=Mock()):
-                with self.assertRaisesRegex(ci.Refused, "signature failed"):
-                    ci.publish({}, "a" * 64, ci.digest(raw), "v1", root)
-                ci.backup.assert_not_called()
+            with patch.object(ci, "run", side_effect=download):
+                with self.assertRaisesRegex(ci.Refused, "SHA-256 does not match"):
+                    ci.publish({}, "a" * 64, "b" * 64, "2025-01-01", root)
+            ci.owner_session.assert_not_called()
+            ci.backup.assert_not_called()
 
-    def test_signed_review_rejects_extra_school_and_duplicate_json(self):
-        with self.assertRaisesRegex(ci.Refused, "Duplicate JSON field"):
-            ci.read_json(b'{"passed":false,"passed":true}')
-        with tempfile.TemporaryDirectory() as tmp:
+    def test_receipt_must_match_package_and_school_scope(self):
+        batches = dict.fromkeys(ci.SLUGS, {})
+        receipt = {"release": ci.RELEASE, "packageSha256": "a" * 64, "backup": "backup", "batches": batches}
+        changed = ({**receipt, "batches": {**batches, "university-guide": {}}},
+                   {**receipt, "batches": {}}, {**receipt, "packageSha256": "c" * 64})
+        with tempfile.TemporaryDirectory() as tmp, patch.object(ci, "fetch") as fetch:
             root = Path(tmp)
-            with ZipFile(root / "input.zip", "w") as writer:
-                writer.writestr("review.json", ci.encoded({
-                    "release": ci.RELEASE, "packageSha256": "a" * 64, "receiptSha256": "c" * 64,
-                    "verifiedOn": date.today().isoformat(), "reviews": {"university-guide": {}},
-                }))
-                writer.writestr("review.sig", "test")
-            raw = (root / "input.zip").read_bytes()
+            fetch.return_value = ci.encoded(receipt)
+            self.assertEqual(ci.load_import_receipt(root, "a" * 64, "b" * 64), batches)
+            for wrong in changed:
+                with self.subTest(wrong=wrong), self.assertRaisesRegex(ci.Refused, "scope or package digest"):
+                    fetch.return_value = ci.encoded(wrong)
+                    ci.load_import_receipt(root, "a" * 64, "b" * 64)
+            fetch.return_value = b'{"batches":{},"batches":{}}'
+            with self.assertRaisesRegex(ci.Refused, "Duplicate JSON field"):
+                ci.load_import_receipt(root, "a" * 64, "b" * 64)
 
-            def fetch(kind, want, version, destination):
-                destination.write_bytes(raw)
-                return raw
+    def test_invalid_review_dates_block_publication_before_receipt_fetch(self):
+        with tempfile.TemporaryDirectory() as tmp, patch.object(ci, "load_import_receipt") as load:
+            for invalid in ("20250101", "2025-02-30", "9999-01-01"):
+                with self.subTest(invalid=invalid), self.assertRaisesRegex(ci.Refused, "Invalid local review date"):
+                    ci.publish({}, "a" * 64, "b" * 64, invalid, Path(tmp))
+            load.assert_not_called()
 
-            with patch.multiple(ci, fetch=Mock(side_effect=fetch), run=Mock()):
-                with self.assertRaisesRegex(ci.Refused, "school scope"):
-                    ci.signed_review(root, "a" * 64, ci.digest(raw), "v1")
-                self.assertEqual(ci.fetch.call_count, 1)
+    def test_approval_preview_displays_exact_inputs_and_rejects_invalid_inputs(self):
+        preview = Path(__file__).resolve().parents[1] / "ci/check-editorial-inputs.py"
+        day = datetime.now(timezone.utc).date().isoformat()
+        with tempfile.TemporaryDirectory() as tmp:
+            summary = Path(tmp) / "summary.md"
+            env = dict(os.environ, ENABLED="true", GITHUB_REF="refs/heads/main",
+                       GITHUB_EVENT_NAME="workflow_dispatch", GITHUB_STEP_SUMMARY=str(summary))
+            command = [sys.executable, str(preview), "publish", "a" * 64, "v1"]
+            for receipt, verified_on in (("invalid", day), ("b" * 64, "20250202"), ("b" * 64, "9999-01-01")):
+                result = subprocess.run([*command, receipt, verified_on], env=env, capture_output=True)
+                self.assertNotEqual(result.returncode, 0)
+                self.assertFalse(summary.exists())
+            subprocess.run([*command, "b" * 64, day], env=env, check=True)
+            for value in ("a" * 64, "v1", "b" * 64, day):
+                self.assertIn(f"`{value}`", summary.read_text())
 
     def test_published_resume_requires_exact_open_publication_and_receipt(self):
         slug = sorted(ci.SLUGS)[0]
@@ -132,17 +146,17 @@ class EditorialReleaseChecks(unittest.TestCase):
         publication = str(UUID(int=3))
         receipt = {"sourceRevisionId": source, "batchId": identifier,
                    "locales": {locale: {} for locale in ci.LOCALES}}
-        verdicts = {locale: {"passed": True, "findings": []} for locale in ci.LOCALES}
+        findings = [{"importReceiptSha256": "b" * 64, "verifiedOn": "2025-01-01"}]
         detail = {"batch": {"status": "PUBLISHED"}, "locales": [
             {"locale": locale, "reviewStatus": "PASSED", "reviewedHash": "hash", "contentHash": "hash",
-             "reviewer": ci.REVIEWER, "reviewResult": "[]"} for locale in ci.LOCALES
+             "reviewer": ci.REVIEW_SERVICE_ACTOR, "reviewResult": json.dumps(findings)} for locale in ci.LOCALES
         ]}
         history = [{"id": publication, "ended": False, "sourceRevisionId": source,
                     "checklistId": "standard-v1", "verifiedOn": "2026-11-20"}]
         session = Mock()
         session.request.return_value = detail
         with patch.object(ci, "inspect_batch_detail", return_value=receipt) as inspect:
-            verify = lambda records: ci.batch_state(session, slug, {}, receipt, verdicts, records, "2026-11-20")
+            verify = lambda records: ci.batch_state(session, slug, {}, receipt, findings, records, "2026-11-20")
             self.assertEqual(verify(history), ("PUBLISHED", [], publication))
             for field, value in (("ended", True), ("sourceRevisionId", publication),
                                  ("checklistId", "family-visa-v1"), ("verifiedOn", "2026-11-19")):
@@ -150,6 +164,10 @@ class EditorialReleaseChecks(unittest.TestCase):
                 bad[0][field] = value
                 with self.subTest(field=field), self.assertRaisesRegex(ci.Refused, "conflicting"):
                     verify(bad)
+            detail["locales"][0]["reviewResult"] = "[]"
+            with self.assertRaisesRegex(ci.Refused, "does not match the owner-approved import receipt"):
+                verify(history)
+            detail["locales"][0]["reviewResult"] = json.dumps(findings)
             inspect.return_value = {**receipt, "sourceRevisionId": publication}
             with self.assertRaisesRegex(ci.Refused, "changed since import"):
                 verify(history)

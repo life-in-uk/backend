@@ -36,22 +36,18 @@ application image change or Flyway step in either workflow.
    all command output limited to status, hashes and audit IDs.
    Set `AWS_EDITORIAL_IMPORT_ROLE_ARN` and `AWS_EDITORIAL_PUBLISH_ROLE_ARN`.
 3. Extend the existing instance role with [editorial S3 I/O](../infra/aws/instance-role-editorial-io.json).
-   In the existing private bucket, require versioned input objects under
-   `editorial/education/packages/` and `editorial/education/reviews/`.
-   Keep the inputs and receipts private, and grant release operators and
-   reviewer accounts only the specific upload and read access they need.
+   In the existing private bucket, require versioned packages under
+   `editorial/education/packages/`. Keep packages and receipts private and
+   limit the release operator's access to package uploads and receipt reads.
    The host stores content-addressed receipts under `receipts/` and
    `publications/` in the same prefix. Approve bucket versioning and any
    lifecycle changes separately. The GitHub runner never downloads draft text,
-   review findings or credentials.
+   receipt contents or credentials.
 4. Install the reviewed `ci_release.py`, `promote.py` and
    `check-production-editorial.py` together in
    `/opt/lifeinuk/editorial-ci/`, owned by root and writable only by root.
    The SSM documents run these installed files under the same host lock as
-   backend deployment. Register the independent reviewer's public signing key
-   in root-controlled `/etc/lifeinuk/editorial-ci/allowed_signers`. Use the
-   principal `claude-independent` and restrict it to the
-   `lifeinuk-education-publish` SSH signature namespace.
+   backend deployment.
 5. Privately generate three distinct production-only app credentials once,
    each at least 32 visible ASCII characters. Configure
    `EDITORIAL_OWNER_DRAFT_PASSWORD`, `EDITORIAL_OWNER_APPROVAL_PASSWORD` and
@@ -62,10 +58,12 @@ application image change or Flyway step in either workflow.
    Store the corresponding credentials as root-owned 0600 files named
    `draft`, `approval` and `review` in the root-only editorial directory.
    The import command reads only `draft`. The publish command reads
-   `approval` and uses `review` solely to relay the signed verdicts.
-   Secrets stay on the host. Keep the reviewer signing key and owner GitHub
-   approval with their respective holders. Rotate host credentials through
-   the same private provisioning procedure if needed.
+   `approval` and uses the host-only `review` service credential solely to
+   record passing reviews for the exact approved hashes through the existing
+   API. The installed backend labels this service actor `claude-independent`.
+   The stored findings identify local review and GitHub owner approval as the
+   source. All three service secrets stay on the host. Rotate them through the
+   same private provisioning procedure if needed.
 6. Apply the approved host settings once via the normal Compose app recreation.
    Confirm that the deployed backend is healthy, port 8080 is loopback-only,
    and both editorial families return
@@ -77,10 +75,22 @@ application image change or Flyway step in either workflow.
    To disable the workflows, unset the flag and revoke the editorial roles
    if access needs immediate revocation.
 
+## Updating an existing installation
+
+Keep `EDITORIAL_CI_ENABLED` unset while updating the host runner and the default
+version of the fixed publish SSM document. Apply the updated instance-role S3
+policy to drop access to the former review archive prefix. Remove any obsolete
+`allowed_signers` file specific to this runner and revoke any access granted
+solely to upload signed reviews. Retain existing private audit records. Verify
+the updated setup before enabling dispatch. This update uses the existing host
+service credentials and needs no app recreation, image deployment or migration.
+
 ## Import and verify private drafts
 
-Build the package ZIP from the two approved wave manifests and their 55 listed
-draft files. File entries must be exactly `waveN/MANIFEST.json` and
+Review the 55 variants locally against both approved wave manifests. Run
+`python3 -B -m unittest discover -s deploy/publish` and require passing CI on
+the workflow revision. Build the package ZIP from the approved manifests and
+their 55 listed draft files. File entries must be exactly `waveN/MANIFEST.json` and
 `waveN/drafts/<slug>/<locale>.json`, without directory entries. Upload it to
 `editorial/education/packages/<archive SHA-256>.zip` with an approved private
 upload identity. Record its S3 version ID.
@@ -99,42 +109,37 @@ If import stops partway, rerun the same immutable package. Existing source-only
 or complete matching DRAFT batches are reused. Any conflicting revision,
 review activity or publication history stops the run for reconciliation.
 
-## Independent evidence and publication
+## Local review and publication
 
-The independent reviewer compares the approved contents with the import receipt
-and signs the exact bytes of a review object. Its fields are:
+Read the private import receipt and verify its SHA-256 against the successful
+import run. Compare its package digest, 11 school slugs, five locales per
+school, and all content hashes against the locally reviewed package. Record the
+actual local review date. Keep the receipt and its batch, source and localized
+revision IDs for release verification.
 
-| Field | Value |
-| --- | --- |
-| `release` | `education-20261119T2330Z` |
-| `packageSha256` | Approved package archive digest |
-| `receiptSha256` | Exact import receipt digest |
-| `verifiedOn` | Actual ISO verification date |
-| `reviews` | Each of the 11 slugs maps to all five locales. Each locale maps to `{"passed":true,"findings":[]}` with the reviewer's actual findings. |
+Dispatch **Publish reviewed guides** with the package digest and S3 version,
+the import receipt SHA-256 and the local review date (`YYYY-MM-DD`). Before
+approving the protected GitHub job, compare all four inputs in the run summary
+with the reviewed release. That GitHub Production owner approval authorizes
+publication.
 
-Sign with `ssh-keygen -Y sign -f <reviewer-key> -n lifeinuk-education-publish review.json`.
-Put the unchanged `review.json` and the resulting signature in a ZIP as
-`review.json` and `review.sig`. Upload to
-`editorial/education/reviews/<review archive SHA-256>.zip` and record its version ID.
+The host fetches the content-addressed receipt, verifies its digest and checks
+all 55 exact revisions and hashes against the package and live batches before
+any write. After a verified `pre-education-publish` backup, it records the
+owner-authorized review findings through the existing review API, then approves
+and publishes through the existing APIs with `standard-v1` and a null expected
+predecessor. Each school publishes its five locales in one database transaction.
+GitHub records the owner approval. The backend records the service actor, the
+import receipt digest in the review findings and the exact reviewed hashes.
 
-Dispatch **Publish reviewed guides** with the package and review digests and
-versions. Compare both digests with the accepted evidence and give a new owner
-approval in GitHub. The host verifies the signature and reads the live batch and
-locale revisions again. It checks all 55 against the private receipt before any
-editorial write. After a verified `pre-education-publish` backup, it records
-the signed verdicts through the review API, then approves and publishes through
-the existing APIs with `standard-v1` and a null expected predecessor. Each
-school publishes its five locales in one database transaction. The GitHub run
-records owner approval. The backend records the configured automation actor,
-the reviewer identity and the exact reviewed hashes.
-
-For a lost response or interruption, rerun with the same immutable inputs and
-a new GitHub approval. The host checks every batch before proceeding. It skips
-a school only if its exact signed revision set is still public under the same
-checklist and verification date. Conflicting, replaced or withdrawn
-publications require owner reconciliation. A successful run reports a private
-publication receipt containing the 11 publication UUIDs and verifies all 55
-public API variants and the sitemap. The frontend release remains separate.
+For a lost response or interruption, rerun with the same package, import
+receipt and review date, and give a fresh GitHub approval. The host checks every
+batch before proceeding. It skips a school only if the exact imported revisions
+are still public under the same checklist and date and their review records
+match. Conflicting, replaced or withdrawn publications require owner
+reconciliation. A successful run writes a private publication receipt with the
+11 publication UUIDs and verifies all 55 public API variants, the public
+listings and the sitemap. The frontend release remains separate.
 
 ## Withdrawal and recovery
 
