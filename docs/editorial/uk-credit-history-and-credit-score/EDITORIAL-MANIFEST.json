@@ -1,0 +1,41 @@
+{
+  "slug": "uk-credit-history-and-credit-score",
+  "category": "money",
+  "status": "DRAFT",
+  "sourceLocale": "zh-CN",
+  "sourcesVerifiedOn": "2026-11-21",
+  "editorialStatus": "pending-independent-review",
+  "canonicalization": "guide-content-v1",
+  "variants": [
+    {
+      "locale": "zh-CN",
+      "path": "drafts/zh-CN.json",
+      "sha256": "f98d56bb79e1a724b14e21478fc1a94eaa4d13f3134400388479cc5dec4e9255",
+      "contentSha256": "c2d128235db379f97b874bf5e89d3e1548c9619396788526208a41092e1b90d7"
+    },
+    {
+      "locale": "zh-TW",
+      "path": "drafts/zh-TW.json",
+      "sha256": "b3a76d18df5d90f0c70e1fd1630db953ff0c61c4d464f97e7b3889a634678c1b",
+      "contentSha256": "9d4cc583aa1c06130c7a0f83518c00b0473eccf40ec4db67223a7fe952d4d692"
+    },
+    {
+      "locale": "en",
+      "path": "drafts/en.json",
+      "sha256": "6971797bde3468d608f1a56a5a13bc903478ecdc29ec63e34c3ff8f8a945d544",
+      "contentSha256": "122e8670c5851e6d7025ecb7d1c6095f258b4a4d455234a388192ae58c502df7"
+    },
+    {
+      "locale": "ur",
+      "path": "drafts/ur.json",
+      "sha256": "55f7933093aa0a49c7638672c5330444150135252891eb5e545ca199875dc9fe",
+      "contentSha256": "68f5046ba2c82877f0d5404a4bad314e2f6a5a438ea52d605906c854643af329"
+    },
+    {
+      "locale": "hi",
+      "path": "drafts/hi.json",
+      "sha256": "54519a0adbd3b465ed855d59b6ab3989b8a73954a22fda1238180b46a732a9fe",
+      "contentSha256": "94732405e0d12e8d1a2b5ea86f80e34fe1b7ea36f77dcf05ef5234a40bb3d246"
+    }
+  ]
+}
