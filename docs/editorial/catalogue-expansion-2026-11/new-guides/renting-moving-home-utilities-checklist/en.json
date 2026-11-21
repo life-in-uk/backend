@@ -1,0 +1,109 @@
+{
+  "slug": "renting-moving-home-utilities-checklist",
+  "category": "renting",
+  "title": "Moving home in England: a utilities and Council Tax checklist",
+  "summary": "A before, during and after checklist for energy, water, broadband, Council Tax and final bills.",
+  "content": "# Moving home in England: a utilities and Council Tax checklist\n\nLast updated: 2026-11-21\n\n## Before moving\nThis checklist is for renters in England. If moving across a UK border, check the local water, energy and Council Tax rules. Northern Ireland uses domestic rates. [Land & Property Services](#guide-evidence-rates)\n\n- Record the old tenancy end date, new start date and both key handovers. A physical moving day can differ from the dates used for billing. Check [moving out and getting your deposit back](/en/renting/renting-moving-out-deposit).\n- Check which bills the rent includes at each address. Where you pay, tell the old energy supplier and water company the dates and forwarding address. Ask each about notice and closing readings. [Energy move](#guide-evidence-energy) · [Water move](#guide-evidence-water)\n- Check broadband at the full new address. Ask your provider about transfer, any new minimum term, setup or exit charge and router return. If changing provider, confirm who stops the old service and when the new one goes live. Arrange access for a technician if needed. [Ofcom moving tips](#guide-evidence-broadband)\n- Tell the relevant council or councils about both addresses, the dates and who lives there. Check [Council Tax liability and discounts](/en/renting/renting-council-tax). [Council Tax guidance](#guide-evidence-council)\n\n## On the day\n- At each address photograph the gas, electricity and water meters where fitted and safe to reach. Save the date, the numbers on the display and the meter serial numbers. Keep readings for both addresses in separate folders, including smart-meter readings if accessible.\n- At the old home, send closing readings. At the new home, send opening readings and your start date to the supplier already serving it if you pay the bill. You can check tariffs after registering. Contact the water company for the new address separately. [Energy move](#guide-evidence-energy) · [Water move](#guide-evidence-water)\n- Save checkout photos and key-return confirmation. At the new property, record any existing damage in the [check-in inventory](/en/renting/renting-moving-in-inventory).\n\n## After the move\nCheck final bills, adjusted Council Tax or any credit and refunds. If the dates or readings are wrong, challenge them in writing and attach your dated records. Keep receipts and equipment-return tracking. Update your address with your bank, employer, insurer and relevant public bodies. Keep old account references until all balances are settled.\n\nFor account details see [energy](/en/renting/renting-energy), [water](/en/renting/renting-water) and [broadband](/en/renting/renting-broadband).\n\n**What if the homes overlap?** Give actual occupancy and tenancy dates to each organisation and ask which period it will bill. Do not assume one provider’s notification closes other accounts.\n",
+  "status": "DRAFT",
+  "publishedAt": null,
+  "updatedAt": "2026-11-21T19:41:12Z",
+  "sources": [
+    {
+      "key": "energy",
+      "organisation": "Citizens Advice",
+      "title": "Moving home – dealing with your energy supply",
+      "url": "https://www.citizensadvice.org.uk/consumer/energy/energy-supply/moving-home-your-energy-supply/moving-home-dealing-with-your-energy-supply/",
+      "accessedAt": "2026-11-21T00:00:00Z"
+    },
+    {
+      "key": "water",
+      "organisation": "Citizens Advice",
+      "title": "Moving home and water bills",
+      "url": "https://www.citizensadvice.org.uk/consumer/water/paying-your-water-bill/moving-home-and-water-bills/",
+      "accessedAt": "2026-11-21T00:00:00Z"
+    },
+    {
+      "key": "broadband",
+      "organisation": "Ofcom",
+      "title": "Moving home: tips for keeping connected",
+      "url": "https://www.ofcom.org.uk/phones-and-broadband/coverage-and-speeds/moving-home-tips-for-keeping-connected",
+      "accessedAt": "2026-11-21T00:00:00Z"
+    },
+    {
+      "key": "council",
+      "organisation": "GOV.UK",
+      "title": "Paying the right level of Council Tax",
+      "url": "https://www.gov.uk/government/publications/paying-the-right-level-of-council-tax-a-plain-english-guide-to-council-tax/paying-the-right-level-of-council-tax-a-plain-english-guide-to-council-tax",
+      "accessedAt": "2026-11-21T00:00:00Z"
+    },
+    {
+      "key": "rates",
+      "organisation": "nidirect",
+      "title": "Occupying and leaving a property",
+      "url": "https://www.nidirect.gov.uk/articles/occupying-and-leaving-property",
+      "accessedAt": "2026-11-21T00:00:00Z"
+    }
+  ],
+  "evidence": [
+    {
+      "key": "energy",
+      "statement": "Opening and closing readings, forwarding address and incumbent supplier.",
+      "supports": [
+        {
+          "sourceKey": "energy",
+          "locator": "Before and after you move",
+          "excerpt": null,
+          "note": "Opening and closing readings, forwarding address and incumbent supplier."
+        }
+      ]
+    },
+    {
+      "key": "water",
+      "statement": "Contact water companies and read metered supplies.",
+      "supports": [
+        {
+          "sourceKey": "water",
+          "locator": "When you have moved",
+          "excerpt": null,
+          "note": "Contact water companies and read metered supplies."
+        }
+      ]
+    },
+    {
+      "key": "broadband",
+      "statement": "Check availability, installation and contract charges.",
+      "supports": [
+        {
+          "sourceKey": "broadband",
+          "locator": "Contact your provider",
+          "excerpt": null,
+          "note": "Check availability, installation and contract charges."
+        }
+      ]
+    },
+    {
+      "key": "council",
+      "statement": "Notify the council and check who pays and when.",
+      "supports": [
+        {
+          "sourceKey": "council",
+          "locator": "Moving and liability",
+          "excerpt": null,
+          "note": "Notify the council and check who pays and when."
+        }
+      ]
+    },
+    {
+      "key": "rates",
+      "statement": "Northern Ireland domestic rates are administered by Land & Property Services.",
+      "supports": [
+        {
+          "sourceKey": "rates",
+          "locator": "Changes in ownership or occupancy",
+          "excerpt": null,
+          "note": "Northern Ireland domestic rates are administered by Land & Property Services."
+        }
+      ]
+    }
+  ]
+}

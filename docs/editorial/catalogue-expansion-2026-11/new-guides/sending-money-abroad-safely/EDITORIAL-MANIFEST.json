@@ -1,0 +1,41 @@
+{
+  "slug": "sending-money-abroad-safely",
+  "category": "money",
+  "status": "DRAFT",
+  "sourceLocale": "zh-CN",
+  "sourcesVerifiedOn": "2026-11-21",
+  "editorialStatus": "DRAFT. Independent AI editorial and locale recheck complete; owner publication approval pending. See follow-up review.",
+  "canonicalization": "guide-content-v1",
+  "variants": [
+    {
+      "locale": "en",
+      "path": "en.json",
+      "sha256": "8f193b7de68148aaf56977b9d43698601e7a5c9a30e4e688fe7aa2a9e743a630",
+      "contentSha256": "c291edbe5a8e4bdc4ca85b69ca1d829883c3f97ca4206a95643182f1de71053a"
+    },
+    {
+      "locale": "zh-CN",
+      "path": "zh-CN.json",
+      "sha256": "5748e606a3a473594371f4ea0bb8b18f560d3f7db1a9b385b1bfa2da00d65cb4",
+      "contentSha256": "3e8e463fc578bbc2d0fa7d18b84e9024f9070d6d15459dda1482ccd54e03cc98"
+    },
+    {
+      "locale": "zh-TW",
+      "path": "zh-TW.json",
+      "sha256": "cdae3e57339d112e6a8bdd2283106fbd5c30ef8486462be8d3813a28c10f52f6",
+      "contentSha256": "e4d310ade6deba60d48092af8f46f66a9478bc8c3b6c672e46581b7d7dbe85da"
+    },
+    {
+      "locale": "ur",
+      "path": "ur.json",
+      "sha256": "1f6eba193fba7ce94f68c3d77eeae6bd6b3937e27157ce0f0a077850686bff92",
+      "contentSha256": "bd83240c83c411f101ee71a66393e049a4828a51346265448b899a1e1001f1ab"
+    },
+    {
+      "locale": "hi",
+      "path": "hi.json",
+      "sha256": "88f0b66645d4ae50dfa85574a72e4e0ed577d0a27d9b64b51ac0948808fe2528",
+      "contentSha256": "2b011690ca2bfe0ceeda444bd99a311a6e04313a12360922a651fa30dce626c4"
+    }
+  ]
+}

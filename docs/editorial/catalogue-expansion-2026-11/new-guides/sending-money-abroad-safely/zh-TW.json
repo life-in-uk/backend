@@ -1,0 +1,122 @@
+{
+  "slug": "sending-money-abroad-safely",
+  "category": "money",
+  "title": "從英國匯款到海外：比費用及防詐騙",
+  "summary": "匯款前查總花費、業者及收款資料，知道款項有問題時怎麼處理。",
+  "content": "# 從英國匯款到海外：比費用及防詐騙\n\n最後更新: 2026-11-21\n\n## 用相同條件比較報價\n用同一個匯款金額、目的地、收款幣別及方式。比較自己會付多少、對方實際會收到多少。查匯率、匯差加價、匯費，以及中間銀行或收款銀行可能另扣的費用。問清匯率與入帳金額是否鎖定、報價何時失效。標示免手續費，也可能透過匯率收取成本。[FCA 定價說明](#guide-evidence-pricing)\n\n## 確認業者及收款人\n在 FCA 登記冊查提供服務的法律實體及許可。從官方管道查聯絡方式，避免使用別人傳來的連結。銀行存款與非銀行支付機構代管款項的保障不同，匯款前先問這項服務適用哪些保障。[FCA 業者查核](#guide-evidence-provider) · [開立英國帳戶](/zh-TW/money/open-uk-bank-account-new-arrival)\n\n核對收款人姓名、帳號或 IBAN、需要的銀行識別碼、目的地及幣別。有新增或更改資料時，用你本來就知道的電話直接核實。詢問金額上限、到帳時間，以及如何取消或追蹤。保留報價、收據及交易編號。[MoneyHelper 轉帳說明](#guide-evidence-payment)\n\n## 匯錯、逾期或疑似詐騙\n從官方管道儘快聯絡業者，詢問能否追蹤、攔截或申請退回。懷疑詐騙時，保留訊息，立即通報銀行或付款機構。英國銀行轉帳詐騙強制賠付規則適用於透過 Faster Payments 或 CHAPS 完成且符合條件的境內付款。匯往海外的款項不在這套規則內。向業者確認這筆交易的保障和追款方式。[FCA 詐騙付款說明](#guide-evidence-fraud)\n\n爭議未解決，先向業者提出申訴。保留約定日期、費用及匯率。收到最終答覆或業者逾期未回覆後，符合條件可向金融申訴專員服務機構詢問轉介。[金融申訴說明](#guide-evidence-complaints)\n",
+  "status": "DRAFT",
+  "publishedAt": null,
+  "updatedAt": "2026-11-21T19:41:12Z",
+  "sources": [
+    {
+      "key": "pricing",
+      "organisation": "FCA",
+      "title": "Consumer Duty: International payment pricing transparency",
+      "url": "https://www.fca.org.uk/publications/good-and-poor-practice/consumer-duty-international-payment-pricing-transparency-good-poor-practice",
+      "accessedAt": "2026-11-21T00:00:00Z"
+    },
+    {
+      "key": "provider",
+      "organisation": "FCA",
+      "title": "Using payment service providers",
+      "url": "https://www.fca.org.uk/consumers/using-payment-service-providers",
+      "accessedAt": "2026-11-21T00:00:00Z"
+    },
+    {
+      "key": "payment",
+      "organisation": "MoneyHelper",
+      "title": "How to make a bank transfer",
+      "url": "https://www.moneyhelper.org.uk/en/everyday-money/banking/making-phone-or-online-transfers.html",
+      "accessedAt": "2026-11-21T00:00:00Z"
+    },
+    {
+      "key": "fraud",
+      "organisation": "FCA",
+      "title": "Fraudulent payments",
+      "url": "https://www.fca.org.uk/consumers/fraudulent-payments",
+      "accessedAt": "2026-11-21T00:00:00Z"
+    },
+    {
+      "key": "complaints",
+      "organisation": "Financial Ombudsman Service",
+      "title": "Sending money abroad",
+      "url": "https://www.financial-ombudsman.org.uk/consumers/complaints-can-help/banking-and-payments/sending-money-abroad",
+      "accessedAt": "2026-11-21T00:00:00Z"
+    },
+    {
+      "key": "psr-app",
+      "organisation": "Payment Systems Regulator",
+      "title": "APP scams reimbursement requirement: consolidated policy statement",
+      "url": "https://www.psr.org.uk/publications/policy-statements/ps255-app-scams-reimbursement-requirement/",
+      "accessedAt": "2026-11-21T19:41:12Z"
+    }
+  ],
+  "evidence": [
+    {
+      "key": "pricing",
+      "statement": "比較總費用、匯率加價和實際入帳金額。",
+      "supports": [
+        {
+          "sourceKey": "pricing",
+          "locator": "Total fees and exchange rate",
+          "excerpt": null,
+          "note": "比較總費用、匯率加價和實際入帳金額。"
+        }
+      ]
+    },
+    {
+      "key": "provider",
+      "statement": "確認業者許可及資金適用的保障。",
+      "supports": [
+        {
+          "sourceKey": "provider",
+          "locator": "Who provides the service",
+          "excerpt": null,
+          "note": "確認業者許可及資金適用的保障。"
+        }
+      ]
+    },
+    {
+      "key": "payment",
+      "statement": "跨境轉帳可能需要 IBAN、SWIFT/BIC 及其他收款資料。",
+      "supports": [
+        {
+          "sourceKey": "payment",
+          "locator": "International payments",
+          "excerpt": null,
+          "note": "跨境轉帳可能需要 IBAN、SWIFT/BIC 及其他收款資料。"
+        }
+      ]
+    },
+    {
+      "key": "fraud",
+      "statement": "英國銀行轉帳詐騙強制賠付規則適用於透過 Faster Payments 或 CHAPS 完成且符合條件的境內付款。匯往海外的款項不在這套規則內。向業者確認這筆交易的保障和追款方式。",
+      "supports": [
+        {
+          "sourceKey": "fraud",
+          "locator": "Reporting and payment type",
+          "excerpt": null,
+          "note": "英國銀行轉帳詐騙強制賠付規則適用於透過 Faster Payments 或 CHAPS 完成且符合條件的境內付款。匯往海外的款項不在這套規則內。向業者確認這筆交易的保障和追款方式。"
+        },
+        {
+          "sourceKey": "psr-app",
+          "locator": "PS25/5, table 2, policy 1",
+          "excerpt": null,
+          "note": "英國銀行轉帳詐騙強制賠付規則適用於透過 Faster Payments 或 CHAPS 完成且符合條件的境內付款。匯往海外的款項不在這套規則內。向業者確認這筆交易的保障和追款方式。"
+        }
+      ]
+    },
+    {
+      "key": "complaints",
+      "statement": "先向業者申訴並保存交易證明。",
+      "supports": [
+        {
+          "sourceKey": "complaints",
+          "locator": "How to complain",
+          "excerpt": null,
+          "note": "先向業者申訴並保存交易證明。"
+        }
+      ]
+    }
+  ]
+}

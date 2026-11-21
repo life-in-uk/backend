@@ -1,0 +1,41 @@
+{
+  "slug": "renting-repairs-damp-mould-england",
+  "category": "renting",
+  "status": "DRAFT",
+  "sourceLocale": "zh-CN",
+  "sourcesVerifiedOn": "2026-11-21",
+  "editorialStatus": "DRAFT. Independent AI editorial and locale recheck complete; owner publication approval pending. See follow-up review.",
+  "canonicalization": "guide-content-v1",
+  "variants": [
+    {
+      "locale": "en",
+      "path": "en.json",
+      "sha256": "04199af46304f211eefc99415b74a48eb21468a928bffec7f4dee3c3c9dbced2",
+      "contentSha256": "deb1e10f32291d3e5f464f3bd726d03f66af4a42c12573febddab0bc73fa54e1"
+    },
+    {
+      "locale": "zh-CN",
+      "path": "zh-CN.json",
+      "sha256": "89beb78f347e805ec33117ba097b83edc7e46dd1d1bc8cb054ac0cd65d7c22f5",
+      "contentSha256": "e3e71ab7b337e2895767d359d62da277cde343f909360906a036289730f3967f"
+    },
+    {
+      "locale": "zh-TW",
+      "path": "zh-TW.json",
+      "sha256": "cf487515281c0566f71247b5d0e938982b030e5165a80a239324ef665287d745",
+      "contentSha256": "45a6a9b69b03b5485c455bd217f637289b3f44fea809df59d7b09643847fe6b6"
+    },
+    {
+      "locale": "ur",
+      "path": "ur.json",
+      "sha256": "c14001b17eb4743fa26d878cbbdf255648bafd874f4ddfd2e9f9caa6d32a6d32",
+      "contentSha256": "178e71108039684f6036497fb7d87bac4e938eace21243073f3e8189478f753b"
+    },
+    {
+      "locale": "hi",
+      "path": "hi.json",
+      "sha256": "4a85f14f6fffc91cb72f4c0727369ac7647993693edaf0e1e25a80ab3b04e3a7",
+      "contentSha256": "7c5593e363304a2047b37c1eb875a78827f698077157c106ab731e7a79da71bd"
+    }
+  ]
+}

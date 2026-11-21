@@ -1,0 +1,41 @@
+{
+  "slug": "uk-mobile-plans-sim-only-payg",
+  "category": "household-services",
+  "status": "DRAFT",
+  "sourceLocale": "zh-CN",
+  "sourcesVerifiedOn": "2026-11-21",
+  "editorialStatus": "DRAFT. Independent AI editorial and locale recheck complete; owner publication approval pending. See follow-up review.",
+  "canonicalization": "guide-content-v1",
+  "variants": [
+    {
+      "locale": "en",
+      "path": "en.json",
+      "sha256": "933ff33ddefbb28376b0a72d0983ad30b94cbb3b574dc8bcfee37e5b345f0f7a",
+      "contentSha256": "6cfcd07f637fcb1a2f5ad989d2d2701a91589492a7ae5a6ec2bf83385c0b47b7"
+    },
+    {
+      "locale": "zh-CN",
+      "path": "zh-CN.json",
+      "sha256": "0d46ee06c9a5b919241ccac3e569b0d324819cd955aec70e63dd48ea0a33e508",
+      "contentSha256": "377bd271f2c4a1d4f3bbd73571f5910eadebb35b3e083852ebc6ee6ad8b8daac"
+    },
+    {
+      "locale": "zh-TW",
+      "path": "zh-TW.json",
+      "sha256": "c3551aad050ac2fd3fddde9690204f6bb3c46dec92764d4663b1880f6545c613",
+      "contentSha256": "75fa648de7c837272b8bca1a8fd261fb162affe14dda416122df3b3a156c7b44"
+    },
+    {
+      "locale": "ur",
+      "path": "ur.json",
+      "sha256": "5437706792632128f5a6f7edc8f22d065b35f6e0ed334c5af9e63f55f7044b06",
+      "contentSha256": "c31a173fce35ecaa29594adde5ee03275d24d6fafd8695dcf6fd3dbb813a2d53"
+    },
+    {
+      "locale": "hi",
+      "path": "hi.json",
+      "sha256": "f5221072d7d8fc228e4cf10ffe2b99af342ca62543b2dfce526190bec2566f9d",
+      "contentSha256": "06751918ce07eae3848b4fbf00528c0581bd8a1b8458c297ee0ae136ab5d1e07"
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "slug": "renting-moving-home-utilities-checklist",
+  "category": "renting",
+  "status": "DRAFT",
+  "sourceLocale": "zh-CN",
+  "sourcesVerifiedOn": "2026-11-21",
+  "editorialStatus": "DRAFT. Independent AI editorial and locale recheck complete; owner publication approval pending. See follow-up review.",
+  "canonicalization": "guide-content-v1",
+  "variants": [
+    {
+      "locale": "en",
+      "path": "en.json",
+      "sha256": "0dee7e7610773bd4e7dd171dd2716cd8d25dedba0dc54457b0a6799575c07a6a",
+      "contentSha256": "6c7e76118f2d56f8e704dfb3d022ab1a9555e10a26910285bb4ee080c170ad7a"
+    },
+    {
+      "locale": "zh-CN",
+      "path": "zh-CN.json",
+      "sha256": "389091530b392e496ef2de433c4c95f09fed80fd58194393c952bec2e8c5d577",
+      "contentSha256": "fa5f81977fc08fd86f02502248342fcf0bc7cc227b4765ab1edf9d14adafbde2"
+    },
+    {
+      "locale": "zh-TW",
+      "path": "zh-TW.json",
+      "sha256": "a27eb831a6009ac2bfba4249c189542f75d09de68f42c51830f9bb716b52b5de",
+      "contentSha256": "0b3f96ff4ddbc2efcd8bced738c5b4ad80d178fe10ff6c9c3fd017ccb9cc4c69"
+    },
+    {
+      "locale": "ur",
+      "path": "ur.json",
+      "sha256": "d9570de898fec8b66ec145c4121fcd5beecc2374435fe494a6881b5e21d50cba",
+      "contentSha256": "8f2e9821b0c2275a83f061cc50e003fd5dc99c7bdc60860205003b373f2a9dc5"
+    },
+    {
+      "locale": "hi",
+      "path": "hi.json",
+      "sha256": "fe8735fa27244fc52fd53923e67e7f95bf39410b14d1627f92350b23c8acc952",
+      "contentSha256": "d8f61643f660b823631d5d571f89061a3c50195a98601cd4bd9c4058aca91846"
+    }
+  ]
+}
