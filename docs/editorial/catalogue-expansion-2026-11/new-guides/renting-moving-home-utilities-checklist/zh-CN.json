@@ -6,7 +6,7 @@
   "content": "# 英格兰租房搬家清单：能源、水费、宽带与市政税\n\n最后更新: 2026-11-21\n\n## 搬家前\n本清单适用于英格兰租户。跨英国各地搬家时，请确认当地的水务、能源和市政税制度；北爱尔兰适用住宅差饷。[北爱尔兰差饷机构](#guide-evidence-rates)\n\n- 记下旧租约结束、新租约开始和两边交接钥匙的日期。实际搬运日期和计费日期可能不同。参见[退租和领回押金](/zh-CN/renting/renting-moving-out-deposit)。\n- 确认两处房屋的租金各包含哪些账单。自付能源和水费时，向旧供应商报日期和转寄地址，并问需要提前多久通知、如何提交最后读数。[能源搬迁](#guide-evidence-energy) · [水务搬迁](#guide-evidence-water)\n- 用新房的完整地址查宽带。问能否迁移、会不会重启最低合约期、安装或解约收费，以及旧路由器要不要寄回。换运营商时，确认由谁停旧服务、新服务何时能用；必要时安排人员上门。[Ofcom 搬家指南](#guide-evidence-broadband)\n- 通知涉及的地方议会两处地址、日期和住户情况。查看[市政税责任与折扣](/zh-CN/renting/renting-council-tax)。[市政税官方指南](#guide-evidence-council)\n\n## 搬家当天\n- 如装有电表、燃气表或水表并能安全接近，分别为两处拍照。留存日期、读数和表号；如能查看智能表，也记录读数。按地址分开保存。\n- 给旧房供应商提交最后读数。若自己承担新房账单，先向新房现有能源供应商报起算日和起始读数，再考虑换套餐；新地址的水务公司需另行联系。[能源搬迁](#guide-evidence-energy) · [水务搬迁](#guide-evidence-water)\n- 保存退房照片和还钥匙凭证。新房已有的损坏记入[入住清单](/zh-CN/renting/renting-moving-in-inventory)。\n\n## 搬家后\n核对最后账单、市政税调整和结余或退款。日期或读数有误时，用书面方式提出并附上带日期的证据。保存收据和设备退还单号。通知银行、雇主、保险公司及相关公共机构改地址。款项结清前别丢掉旧账号。\n\n开户细节参见[电和燃气](/zh-CN/renting/renting-energy)、[水费](/zh-CN/renting/renting-water)及[宽带](/zh-CN/renting/renting-broadband)。\n\n**两处租期重叠怎么办？** 向各机构提供实际入住、搬出和租约日期，请对方确认计费区间。通知一家机构不会自动结束其他账户。\n",
   "status": "DRAFT",
   "publishedAt": null,
-  "updatedAt": "2026-11-21T00:00:00Z",
+  "updatedAt": "2026-11-21T19:41:12Z",
   "sources": [
     {
       "key": "energy",
@@ -53,7 +53,7 @@
           "sourceKey": "energy",
           "locator": "Before and after you move",
           "excerpt": null,
-          "note": "Opening and closing readings, forwarding address and incumbent supplier."
+          "note": "搬家时提交起止读数和转寄地址，并联系新地址当前的供应商。"
         }
       ]
     },
@@ -65,7 +65,7 @@
           "sourceKey": "water",
           "locator": "When you have moved",
           "excerpt": null,
-          "note": "Contact water companies and read metered supplies."
+          "note": "搬家时通知水务公司，装有水表则抄表。"
         }
       ]
     },
@@ -77,7 +77,7 @@
           "sourceKey": "broadband",
           "locator": "Contact your provider",
           "excerpt": null,
-          "note": "Check availability, installation and contract charges."
+          "note": "确认新址可用的服务、安装安排和合约收费。"
         }
       ]
     },
@@ -89,7 +89,7 @@
           "sourceKey": "council",
           "locator": "Moving and liability",
           "excerpt": null,
-          "note": "Notify the council and check who pays and when."
+          "note": "搬家时通知地方议会，确认缴税责任和起止日期。"
         }
       ]
     },
@@ -101,7 +101,7 @@
           "sourceKey": "rates",
           "locator": "Changes in ownership or occupancy",
           "excerpt": null,
-          "note": "Northern Ireland domestic rates are administered by Land & Property Services."
+          "note": "北爱尔兰的住宅差饷由土地与物业服务局管理。"
         }
       ]
     }

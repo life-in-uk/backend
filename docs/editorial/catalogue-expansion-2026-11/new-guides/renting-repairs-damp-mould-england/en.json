@@ -3,10 +3,10 @@
   "category": "renting",
   "title": "Repairs, damp and mould in an England private rental",
   "summary": "Find out what to report, what evidence to keep and when to ask the council for help.",
-  "content": "# Repairs, damp and mould in an England private rental\n\nLast updated: 2026-11-21\n\n## Who fixes what?\nThis Guide is for private renters in England. Your landlord is generally responsible for the structure and exterior, plumbing and drains, heating and hot water and fixed gas and electrical installations. You should report faults promptly. Take reasonable care and record any damage you or a visitor causes. If a leak, electrical fault or other hazard poses an immediate risk, move to safety and use the appropriate emergency service. [Repair responsibilities](#guide-evidence-duties)\n\n## Report the problem in writing\n1. Contact the landlord or managing agent through the repair channel in your agreement. If you called first, send a written record as well. Note the room, when you first saw it, how it has changed and why it is urgent.\n2. Keep dated photos and a basic log. For damp and mould, note any leak, cold wall, broken extractor or heating problem, and whether it returns after cleaning. The cause may need inspection. Report effects on anyone’s health or ability to use a room.\n3. Ask for an inspection date and a repair plan. Offer reasonable access, agree a visit time and keep any messages, reports and promised dates. Photograph new damage separately from the [check-in inventory](/en/renting/renting-moving-in-inventory). [Reporting repairs and mould](#guide-evidence-duties)\n\n## If the landlord does not act\nFollow up in writing. For a serious or unresolved hazard, contact the council’s private-sector housing or environmental health team. Give them the address, timeline, photos, contact details and the landlord’s response. The council can decide whether to inspect and what enforcement is appropriate. Keep paying rent while you wait and get housing advice before arranging work yourself or trying to recover costs. [Council hazard assessment](#guide-evidence-hazards) · [GOV.UK repairs](#guide-evidence-duties)\n\n**Do social-housing deadlines apply?** England’s private rental sector has existing repair and safety duties. Check current GOV.UK guidance before relying on a deadline from Awaab’s Law for social housing. The published consultation on the private-sector requirements is a proposal. [Private-sector consultation](#guide-evidence-proposal)\n",
+  "content": "# Repairs, damp and mould in an England private rental\n\nLast updated: 2026-11-21\n\n## Who fixes what?\nThis Guide is for private renters in England. Your landlord is generally responsible for the structure and exterior, plumbing and drains, heating and hot water and fixed gas and electrical installations. You should report faults promptly. Take reasonable care and record any damage you or a visitor causes. If a leak, electrical fault or other hazard poses an immediate risk, move to safety and use the appropriate emergency service. [Repair responsibilities](#guide-evidence-duties)\n\nFor most private tenancies, sections 9A and 11 of the Landlord and Tenant Act 1985 cover fitness for habitation and repairing duties. Serious damp can affect whether a home is fit to live in. [Fitness and repair duties](#guide-evidence-fitness)\n\n## Report the problem in writing\n1. Contact the landlord or managing agent through the repair channel in your agreement. If you called first, send a written record as well. Note the room, when you first saw it, how it has changed and why it is urgent.\n2. Keep dated photos and a basic log. For damp and mould, note any leak, cold wall, broken extractor or heating problem, and whether it returns after cleaning. The cause may need inspection. Report effects on anyone’s health or ability to use a room.\n3. Ask for an inspection date and a repair plan. Offer reasonable access, agree a visit time and keep any messages, reports and promised dates. Photograph new damage separately from the [check-in inventory](/en/renting/renting-moving-in-inventory). [Reporting repairs and mould](#guide-evidence-duties)\n\n## If the landlord does not act\nFollow up in writing. For a serious or unresolved hazard, contact the council’s private-sector housing or environmental health team. Give them the address, timeline, photos, contact details and the landlord’s response. The council can decide whether to inspect and what enforcement is appropriate. Keep paying rent while you wait and get housing advice before arranging work yourself or trying to recover costs. [Council hazard assessment](#guide-evidence-hazards) · [GOV.UK repairs](#guide-evidence-duties)\n\n**Do social-housing deadlines apply?** England’s private rental sector has existing repair and safety duties. Check current GOV.UK guidance before relying on a deadline from Awaab’s Law for social housing. The government was still consulting on the private-sector timetable at this review date. The proposed private-sector deadlines do not yet apply. [Private-sector consultation](#guide-evidence-proposal)\n",
   "status": "DRAFT",
   "publishedAt": null,
-  "updatedAt": "2026-11-21T00:00:00Z",
+  "updatedAt": "2026-11-21T19:41:12Z",
   "sources": [
     {
       "key": "duties",
@@ -28,6 +28,13 @@
       "title": "Extending Awaab’s Law to private rented tenancies and to licences",
       "url": "https://www.gov.uk/government/consultations/extending-awaabs-law-to-private-rented-tenancies-and-to-licences/extending-awaabs-law-to-private-rented-tenancies-and-to-licences",
       "accessedAt": "2026-11-21T00:00:00Z"
+    },
+    {
+      "key": "fitness",
+      "organisation": "GOV.UK",
+      "title": "Homes (Fitness for Human Habitation) Act 2018: guide for landlords",
+      "url": "https://www.gov.uk/government/publications/homes-fitness-for-human-habitation-act-2018/guide-for-landlords-homes-fitness-for-human-habitation-act-2018",
+      "accessedAt": "2026-11-21T19:41:12Z"
     }
   ],
   "evidence": [
@@ -64,6 +71,18 @@
           "locator": "Scope of consultation",
           "excerpt": null,
           "note": "Proposed private rented requirements are distinct from social-sector deadlines."
+        }
+      ]
+    },
+    {
+      "key": "fitness",
+      "statement": "For most private tenancies, sections 9A and 11 of the Landlord and Tenant Act 1985 cover fitness for habitation and repairing duties. Serious damp can affect whether a home is fit to live in.",
+      "supports": [
+        {
+          "sourceKey": "fitness",
+          "locator": "Fitness for human habitation and section 10",
+          "excerpt": null,
+          "note": "For most private tenancies, sections 9A and 11 of the Landlord and Tenant Act 1985 cover fitness for habitation and repairing duties. Serious damp can affect whether a home is fit to live in."
         }
       ]
     }

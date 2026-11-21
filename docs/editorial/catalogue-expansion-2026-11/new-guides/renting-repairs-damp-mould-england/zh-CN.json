@@ -3,10 +3,10 @@
   "category": "renting",
   "title": "英格兰私人租房：维修、渗潮和霉菌",
   "summary": "了解哪些问题应报告、怎样留证，以及什么情况找地方议会处理。",
-  "content": "# 英格兰私人租房：维修、渗潮和霉菌\n\n最后更新: 2026-11-21\n\n## 哪些问题由房东处理？\n本文适用英格兰私人租户。房屋结构和外部、管道和排水、暖气和热水、固定燃气和电气设施通常由房东维修。租户要及时报修，合理爱护房屋，并记录自己或访客造成的损坏。漏水、电气故障或其他危险如威胁人身安全，应先到安全地点，并联系相应的紧急服务。[维修责任](#guide-evidence-duties)\n\n## 用书面方式报修\n1. 通过租约指明的途径联系房东或物业代理。先打过电话也要补一份书面记录。写清房间、首次发现的日期、问题如何发展以及紧急程度。\n2. 保存带日期的照片和简要记录。遇到渗潮或发霉，记录是否漏水、墙面发冷、排风扇损坏、无法供暖，以及清理后是否复发。原因可能需要现场检查。说明是否影响健康或某个房间的使用。\n3. 请对方告知检查日期和维修计划。配合合理入屋检查，约好时间，并保存信息、报告和承诺的日期。新出现的损坏单独拍照，与[入住清单](/zh-CN/renting/renting-moving-in-inventory)对照。[报修和报告霉菌](#guide-evidence-duties)\n\n## 房东迟迟不处理怎么办？\n书面催办。危险严重或长期未解决时，联系地方议会负责私人出租住房或环境卫生的部门。提供地址、时间线、照片、联系方式和房东的回复。议会会判断是否检查以及是否采取执法措施。等待期间继续交租；自行找人维修或追讨费用前，先向住房咨询机构求助。[议会评估危险](#guide-evidence-hazards) · [GOV.UK 维修指南](#guide-evidence-duties)\n\n**可以要求按社会住房的时限处理吗？** 英格兰私人租赁已经有维修和安全义务。引用社会住房的 Awaab’s Law 时限前，先查适用于私人租赁的现行官方规定；私人租赁具体时限的征询文件是提案。[私人租赁征询](#guide-evidence-proposal)\n",
+  "content": "# 英格兰私人租房：维修、渗潮和霉菌\n\n最后更新: 2026-11-21\n\n## 哪些问题由房东处理？\n本文适用英格兰私人租户。房屋结构和外部、管道和排水、暖气和热水、固定燃气和电气设施通常由房东维修。租户要及时报修，合理爱护房屋，并记录自己或访客造成的损坏。漏水、电气故障或其他危险如威胁人身安全，应先到安全地点，并联系相应的紧急服务。[维修责任](#guide-evidence-duties)\n\n对大多数私人租赁，英国《1985 年房东与租户法》第 9A 条和第 11 条规定住房适居义务与维修责任。严重潮湿可能使住房不适合居住。 [适居与维修义务](#guide-evidence-fitness)\n\n## 用书面方式报修\n1. 通过租约指明的途径联系房东或物业代理。先打过电话也要补一份书面记录。写清房间、首次发现的日期、问题如何发展以及紧急程度。\n2. 保存带日期的照片和简要记录。遇到渗潮或发霉，记录是否漏水、墙面发冷、排风扇损坏、无法供暖，以及清理后是否复发。原因可能需要现场检查。说明是否影响健康或某个房间的使用。\n3. 请对方告知检查日期和维修计划。配合合理入屋检查，约好时间，并保存信息、报告和承诺的日期。新出现的损坏单独拍照，与[入住清单](/zh-CN/renting/renting-moving-in-inventory)对照。[报修和报告霉菌](#guide-evidence-duties)\n\n## 房东迟迟不处理怎么办？\n书面催办。危险严重或长期未解决时，联系地方议会负责私人出租住房或环境卫生的部门。提供地址、时间线、照片、联系方式和房东的回复。议会会判断是否检查以及是否采取执法措施。等待期间继续交租；自行找人维修或追讨费用前，先向住房咨询机构求助。[议会评估危险](#guide-evidence-hazards) · [GOV.UK 维修指南](#guide-evidence-duties)\n\n**可以要求按社会住房的时限处理吗？** 英格兰私人租赁已经有维修和安全义务。引用社会住房的 Awaab’s Law 时限前，先查适用于私人租赁的现行官方规定；截至本次核对，政府仍在就私人出租住房的实施时限征询意见，拟议期限尚未生效。[私人租赁征询](#guide-evidence-proposal)\n",
   "status": "DRAFT",
   "publishedAt": null,
-  "updatedAt": "2026-11-21T00:00:00Z",
+  "updatedAt": "2026-11-21T19:41:12Z",
   "sources": [
     {
       "key": "duties",
@@ -28,6 +28,13 @@
       "title": "Extending Awaab’s Law to private rented tenancies and to licences",
       "url": "https://www.gov.uk/government/consultations/extending-awaabs-law-to-private-rented-tenancies-and-to-licences/extending-awaabs-law-to-private-rented-tenancies-and-to-licences",
       "accessedAt": "2026-11-21T00:00:00Z"
+    },
+    {
+      "key": "fitness",
+      "organisation": "GOV.UK",
+      "title": "Homes (Fitness for Human Habitation) Act 2018: guide for landlords",
+      "url": "https://www.gov.uk/government/publications/homes-fitness-for-human-habitation-act-2018/guide-for-landlords-homes-fitness-for-human-habitation-act-2018",
+      "accessedAt": "2026-11-21T19:41:12Z"
     }
   ],
   "evidence": [
@@ -39,7 +46,7 @@
           "sourceKey": "duties",
           "locator": "What your landlord must do",
           "excerpt": null,
-          "note": "Landlord repairs, reporting mould and paying rent while waiting."
+          "note": "向房东报告维修和霉菌问题，等候维修期间继续付租金。"
         }
       ]
     },
@@ -51,7 +58,7 @@
           "sourceKey": "hazards",
           "locator": "Making a complaint to the council",
           "excerpt": null,
-          "note": "Council assessment and supporting information."
+          "note": "议会可评估住房危害，并会参考租户提供的资料。"
         }
       ]
     },
@@ -63,7 +70,19 @@
           "sourceKey": "proposal",
           "locator": "Scope of consultation",
           "excerpt": null,
-          "note": "Proposed private rented requirements are distinct from social-sector deadlines."
+          "note": "私人出租住房的征询提案与社会住房的法定时限属于不同规则。"
+        }
+      ]
+    },
+    {
+      "key": "fitness",
+      "statement": "对大多数私人租赁，英国《1985 年房东与租户法》第 9A 条和第 11 条规定住房适居义务与维修责任。严重潮湿可能使住房不适合居住。",
+      "supports": [
+        {
+          "sourceKey": "fitness",
+          "locator": "Fitness for human habitation and section 10",
+          "excerpt": null,
+          "note": "对大多数私人租赁，英国《1985 年房东与租户法》第 9A 条和第 11 条规定住房适居义务与维修责任。严重潮湿可能使住房不适合居住。"
         }
       ]
     }

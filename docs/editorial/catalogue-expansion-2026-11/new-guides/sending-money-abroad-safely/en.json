@@ -3,10 +3,10 @@
   "category": "money",
   "title": "Sending money abroad from the UK: compare costs and pay safely",
   "summary": "Check the total cost, provider and recipient details before paying. Know what to do if money goes missing.",
-  "content": "# Sending money abroad from the UK: compare costs and pay safely\n\nLast updated: 2026-11-21\n\n## Compare quotes on the same basis\nUse the same amount, destination, receiving currency and method. Compare what leaves your account and what the recipient actually gets. Check the exchange rate, any mark-up, transfer fee and possible intermediary or receiving-bank charges. Ask whether the arrival amount and rate are fixed or estimated, and when the quote expires. A transfer advertised with no fee can still cost more through its exchange rate. [FCA pricing guidance](#guide-evidence-pricing)\n\n## Check the provider and the recipient\nLook up the legal entity in the FCA register and verify its permissions. Use official contact details rather than a link sent to you. Bank deposits and funds held by non-bank payment providers have different protections. Check what applies to the actual service before transferring. [FCA provider checks](#guide-evidence-provider) · [Opening a UK account](/en/money/open-uk-bank-account-new-arrival)\n\nConfirm the payee’s name, account or IBAN, bank identifier if needed, destination and currency. Confirm new or changed details directly with the recipient using a number you already know. Ask about transfer limits, arrival time and how to cancel or trace the payment. Save the quote, receipt and reference number. [MoneyHelper transfer guidance](#guide-evidence-payment)\n\n## If a payment is wrong, late or suspicious\nContact the provider promptly using its official channel. Ask whether the payment can be traced, stopped or recalled. If you suspect a scam, save messages and report it to the bank or payment firm immediately. Reimbursement protections vary by payment type and an international transfer may have different rules from a UK domestic transfer. Do not count on a refund. [FCA fraudulent payments](#guide-evidence-fraud)\n\nIf a dispute remains, complain to the firm first. Keep all promised dates, fees and rates. If eligible, ask the Financial Ombudsman Service about referral after the firm’s final response or if it has missed its response deadline. [Ombudsman complaints guide](#guide-evidence-complaints)\n",
+  "content": "# Sending money abroad from the UK: compare costs and pay safely\n\nLast updated: 2026-11-21\n\n## Compare quotes on the same basis\nUse the same amount, destination, receiving currency and method. Compare what leaves your account and what the recipient actually gets. Check the exchange rate, any mark-up, transfer fee and possible intermediary or receiving-bank charges. Ask whether the arrival amount and rate are fixed or estimated, and when the quote expires. A transfer advertised with no fee can still cost more through its exchange rate. [FCA pricing guidance](#guide-evidence-pricing)\n\n## Check the provider and the recipient\nLook up the legal entity in the FCA register and verify its permissions. Use official contact details rather than a link sent to you. Bank deposits and funds held by non-bank payment providers have different protections. Check what applies to the actual service before transferring. [FCA provider checks](#guide-evidence-provider) · [Opening a UK account](/en/money/open-uk-bank-account-new-arrival)\n\nConfirm the payee’s name, account or IBAN, bank identifier if needed, destination and currency. Confirm new or changed details directly with the recipient using a number you already know. Ask about transfer limits, arrival time and how to cancel or trace the payment. Save the quote, receipt and reference number. [MoneyHelper transfer guidance](#guide-evidence-payment)\n\n## If a payment is wrong, late or suspicious\nContact the provider promptly using its official channel. Ask whether the payment can be traced, stopped or recalled. If you suspect a scam, save messages and report it to the bank or payment firm immediately. The UK’s mandatory bank-transfer scam reimbursement rules cover qualifying domestic payments made through Faster Payments or CHAPS. A payment sent abroad is outside that scheme. Ask your provider which protections or recovery options apply to the specific payment. [FCA fraudulent payments](#guide-evidence-fraud)\n\nIf a dispute remains, complain to the firm first. Keep all promised dates, fees and rates. If eligible, ask the Financial Ombudsman Service about referral after the firm’s final response or if it has missed its response deadline. [Ombudsman complaints guide](#guide-evidence-complaints)\n",
   "status": "DRAFT",
   "publishedAt": null,
-  "updatedAt": "2026-11-21T00:00:00Z",
+  "updatedAt": "2026-11-21T19:41:12Z",
   "sources": [
     {
       "key": "pricing",
@@ -42,6 +42,13 @@
       "title": "Sending money abroad",
       "url": "https://www.financial-ombudsman.org.uk/consumers/complaints-can-help/banking-and-payments/sending-money-abroad",
       "accessedAt": "2026-11-21T00:00:00Z"
+    },
+    {
+      "key": "psr-app",
+      "organisation": "Payment Systems Regulator",
+      "title": "APP scams reimbursement requirement: consolidated policy statement",
+      "url": "https://www.psr.org.uk/publications/policy-statements/ps255-app-scams-reimbursement-requirement/",
+      "accessedAt": "2026-11-21T19:41:12Z"
     }
   ],
   "evidence": [
@@ -83,13 +90,19 @@
     },
     {
       "key": "fraud",
-      "statement": "Contact the provider promptly; reimbursement protections depend on payment type.",
+      "statement": "The UK’s mandatory bank-transfer scam reimbursement rules cover qualifying domestic payments made through Faster Payments or CHAPS. A payment sent abroad is outside that scheme. Ask your provider which protections or recovery options apply to the specific payment.",
       "supports": [
         {
           "sourceKey": "fraud",
           "locator": "Reporting and payment type",
           "excerpt": null,
-          "note": "Contact the provider promptly; reimbursement protections depend on payment type."
+          "note": "The UK’s mandatory bank-transfer scam reimbursement rules cover qualifying domestic payments made through Faster Payments or CHAPS. A payment sent abroad is outside that scheme. Ask your provider which protections or recovery options apply to the specific payment."
+        },
+        {
+          "sourceKey": "psr-app",
+          "locator": "PS25/5, table 2, policy 1",
+          "excerpt": null,
+          "note": "The UK’s mandatory bank-transfer scam reimbursement rules cover qualifying domestic payments made through Faster Payments or CHAPS. A payment sent abroad is outside that scheme. Ask your provider which protections or recovery options apply to the specific payment."
         }
       ]
     },
