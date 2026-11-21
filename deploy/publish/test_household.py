@@ -237,7 +237,7 @@ class HouseholdPublicationTests(unittest.TestCase):
         self.assertEqual(set(statements), {"ReadImmutableEditorialInputs", "StoreAndReadEditorialAuditReceipts"})
         for action in ("import", "publish"):
             doc = (root / f"ssm-editorial-{action}.yml").read_text()
-            self.assertIn("allowedValues: [education, household]", doc)
+            self.assertIn("allowedValues: [education, household" + (", manifest]" if action == "publish" else "]"), doc)
             self.assertIn("default: education", doc)
             self.assertIn(f'ci_release.py {action}-household "$SSM_packageSha256"', doc)
             self.assertIn('test "$SSM_release" = education', doc)

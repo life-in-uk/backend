@@ -244,15 +244,19 @@ def inspect_batch_detail(detail, slug, guides, batch_id, *, statuses, reviewed, 
             "sourceContentHash": batch["sourceContentHash"], "locales": locales}
 
 
-def import_drafts(session, package, *, identity=EDUCATION_IDENTITY):
-    targets = latest_target_batches(session, package)
+def import_drafts(session, package, *, identity=EDUCATION_IDENTITY, targets=None):
+    if targets is None:
+        targets = latest_target_batches(session, package)
     # Reconcile every existing target before creating or modifying any Guide.
     staged = {slug: inspect_batch(session, slug, package[slug], row["batchId"], identity=identity)
               for slug, row in targets.items()}
     for slug, guides in package.items():
         if slug not in staged:
+            key = identity.release + ":" + slug
+            if len(key) > 200:
+                key = "release:" + sha256(key.encode()).hexdigest()
             batch = session.request("POST", EDITORIAL_PATH + "/batches", {
-                "idempotencyKey": identity.release + ":" + slug, "policyVersion": identity.policy,
+                "idempotencyKey": key, "policyVersion": identity.policy,
                 "sourceVersion": identity.release, "validFrom": identity.valid_from, "validUntil": None,
                 "source": guides["zh-CN"][0],
             })

@@ -8,7 +8,7 @@ parameters:
     type: String
     default: education
     interpolationType: ENV_VAR
-    allowedValues: [education, household]
+    allowedValues: [education, household, manifest]
   packageSha256:
     type: String
     interpolationType: ENV_VAR
@@ -17,14 +17,21 @@ parameters:
     type: String
     interpolationType: ENV_VAR
     allowedPattern: "^[A-Za-z0-9._~+/=-]{1,1000}[A-Za-z0-9._~+/=-]{0,24}$"
+  manifestSha256:
+    type: String
+    default: ""
+    interpolationType: ENV_VAR
+    allowedPattern: "^([0-9a-f]{64})?$"
   receiptSha256:
     type: String
+    default: ""
     interpolationType: ENV_VAR
-    allowedPattern: "^[0-9a-f]{64}$"
+    allowedPattern: "^([0-9a-f]{64})?$"
   verifiedOn:
     type: String
+    default: ""
     interpolationType: ENV_VAR
-    allowedPattern: "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+    allowedPattern: "^([0-9]{4}-[0-9]{2}-[0-9]{2})?$"
 mainSteps:
   - action: aws:runShellScript
     name: publishGuides
@@ -35,6 +42,15 @@ mainSteps:
           set -eu
           umask 077
           export AWS_DEFAULT_REGION=eu-west-2
+          if [ "$SSM_release" = manifest ]; then
+            test -n "${SSM_manifestSha256:-}"
+            test -z "${SSM_receiptSha256:-}${SSM_verifiedOn:-}"
+            exec /usr/bin/flock -n /run/lock/lifeinuk-release.lock /usr/bin/python3 -E -s -B \
+              /opt/lifeinuk/editorial-ci/ci_release.py release-manifest "$SSM_packageSha256" "$SSM_packageVersion" --manifest-sha256 "$SSM_manifestSha256"
+          fi
+          test -z "${SSM_manifestSha256:-}"
+          test -n "${SSM_receiptSha256:-}"
+          test -n "${SSM_verifiedOn:-}"
           if [ "$SSM_release" = household ]; then
             exec /usr/bin/flock -n /run/lock/lifeinuk-release.lock /usr/bin/python3 -E -s -B \
               /opt/lifeinuk/editorial-ci/ci_release.py publish-household "$SSM_packageSha256" "$SSM_packageVersion" "$SSM_receiptSha256" "$SSM_verifiedOn"
