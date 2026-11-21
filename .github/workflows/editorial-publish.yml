@@ -4,10 +4,10 @@ on:
   workflow_dispatch:
     inputs:
       release:
-        description: Reviewed batch to publish
+        description: Use manifest for new releases; other choices resume legacy releases
         type: choice
-        options: [education, household]
-        default: education
+        options: [manifest, education, household]
+        default: manifest
       package_sha256:
         description: SHA-256 of the approved package ZIP
         type: string
@@ -16,14 +16,15 @@ on:
         description: Private S3 package object version ID
         type: string
         required: true
+      manifest_sha256:
+        description: SHA-256 of EDITORIAL-MANIFEST.json (manifest releases)
+        type: string
       receipt_sha256:
-        description: SHA-256 of the verified private import receipt
+        description: SHA-256 of the verified private import receipt (legacy only)
         type: string
-        required: true
       verified_on:
-        description: Date of local content review (YYYY-MM-DD)
+        description: Date of local content review (legacy only, YYYY-MM-DD)
         type: string
-        required: true
 
 permissions:
   contents: read
@@ -42,5 +43,6 @@ jobs:
       release: ${{ inputs.release }}
       package_sha256: ${{ inputs.package_sha256 }}
       package_version: ${{ inputs.package_version }}
+      manifest_sha256: ${{ inputs.manifest_sha256 }}
       receipt_sha256: ${{ inputs.receipt_sha256 }}
       verified_on: ${{ inputs.verified_on }}

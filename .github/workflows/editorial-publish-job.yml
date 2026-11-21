@@ -12,12 +12,12 @@ on:
       package_version:
         type: string
         required: true
+      manifest_sha256:
+        type: string
       receipt_sha256:
         type: string
-        required: true
       verified_on:
         type: string
-        required: true
 
 permissions:
   contents: read
@@ -36,14 +36,20 @@ jobs:
           RELEASE: ${{ inputs.release }}
           PACKAGE_SHA256: ${{ inputs.package_sha256 }}
           PACKAGE_VERSION: ${{ inputs.package_version }}
+          MANIFEST_SHA256: ${{ inputs.manifest_sha256 }}
           RECEIPT_SHA256: ${{ inputs.receipt_sha256 }}
           VERIFIED_ON: ${{ inputs.verified_on }}
         run: |
           case "$RELEASE" in
+            manifest)
+              [ -z "$RECEIPT_SHA256$VERIFIED_ON" ] || exit 1
+              python3 -B deploy/ci/check-editorial-inputs.py release-manifest "$PACKAGE_SHA256" "$PACKAGE_VERSION" "$MANIFEST_SHA256"
+              exit ;;
             education) action=publish ;;
             household) action=publish-household ;;
             *) exit 1 ;;
           esac
+          [ -z "$MANIFEST_SHA256" ] || exit 1
           python3 -B deploy/ci/check-editorial-inputs.py "$action" "$PACKAGE_SHA256" "$PACKAGE_VERSION" "$RECEIPT_SHA256" "$VERIFIED_ON"
   publish:
     name: Publish reviewed guides
@@ -70,10 +76,14 @@ jobs:
           RELEASE: ${{ inputs.release }}
           PACKAGE_SHA256: ${{ inputs.package_sha256 }}
           PACKAGE_VERSION: ${{ inputs.package_version }}
+          MANIFEST_SHA256: ${{ inputs.manifest_sha256 }}
           RECEIPT_SHA256: ${{ inputs.receipt_sha256 }}
           VERIFIED_ON: ${{ inputs.verified_on }}
         run: |
           case "$RELEASE" in
+            manifest)
+              deploy/ci/ssm-release.sh publish release=manifest packageSha256="$PACKAGE_SHA256" packageVersion="$PACKAGE_VERSION" manifestSha256="$MANIFEST_SHA256"
+              exit ;;
             education) args=() ;;
             household) args=(release=household) ;;
             *) exit 1 ;;

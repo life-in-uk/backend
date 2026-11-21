@@ -12,13 +12,18 @@ if (os.environ.get("ENABLED") != "true" or os.environ.get("GITHUB_REF") != "refs
         or os.environ.get("GITHUB_EVENT_NAME") != "workflow_dispatch"):
     raise SystemExit("Editorial dispatch requires the enabled, protected main workflow.")
 publishing = action in {"publish", "publish-household"}
-if action not in {"import", "import-household", "publish", "publish-household"} or len(values) != (4 if publishing else 2):
+manifest_release = action == "release-manifest"
+expected_count = 4 if publishing else (3 if manifest_release else 2)
+if (action not in {"import", "import-household", "publish", "publish-household", "release-manifest"}
+        or len(values) != expected_count):
     raise SystemExit("Incorrect number of editorial inputs.")
 package_hash, package_version = values[:2]
 if (not re.fullmatch(r"[0-9a-f]{64}", package_hash)
         or not re.fullmatch(r"[A-Za-z0-9._~+/=-]{1,1024}", package_version)
         or package_version == "null"):
     raise SystemExit("A package SHA-256 and immutable S3 version are required.")
+if manifest_release and not re.fullmatch(r"[0-9a-f]{64}", values[2]):
+    raise SystemExit("An approved editorial manifest SHA-256 is required.")
 if publishing:
     receipt_hash, verified_on = values[2:]
     if not re.fullmatch(r"[0-9a-f]{64}", receipt_hash):
@@ -31,10 +36,17 @@ if publishing:
         raise SystemExit("A valid, non-future local review date (YYYY-MM-DD) is required.")
 
 with Path(os.environ["GITHUB_STEP_SUMMARY"]).open("a") as summary:
-    heading = {"import-household": "Household Services & Insurance private draft import",
-               "publish-household": "Household Services & Insurance publication"}.get(action, f"Education {action}")
+    heading = {
+        "import-household": "Household Services & Insurance private draft import",
+        "publish-household": "Household Services & Insurance publication",
+        "release-manifest": "Publish the reviewed Guide archive",
+    }.get(action, f"Education {action}")
     print(f"## {heading}\n\nPackage SHA-256: `{package_hash}`", file=summary)
     print(f"\nPackage S3 version ID: `{package_version}`", file=summary)
+    if manifest_release:
+        print(f"\nReviewed editorial manifest SHA-256: `{values[2]}`", file=summary)
+        print("\nApprove only after matching all three inputs to the local dry-run report. "
+              "This approval authorizes private import and publication.", file=summary)
     if publishing:
         print(f"\nPrivate import receipt SHA-256: `{receipt_hash}`", file=summary)
         print(f"\nLocal review date: `{verified_on}`", file=summary)
