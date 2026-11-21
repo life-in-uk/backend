@@ -1,0 +1,109 @@
+{
+  "slug": "uk-mobile-plans-sim-only-payg",
+  "category": "household-services",
+  "title": "英國手機方案：預付卡、SIM-only 與手機合約",
+  "summary": "比較英國手機方案、查詢訊號與實際費用，並了解如何用 PAC 保留門號。",
+  "content": "# 英國手機方案：預付卡、SIM-only 與手機合約\n\n最後更新: 2026-11-21\n\n## 先確認是否需要新手機\nPAYG（預付式）通常先付款或儲值，再按用量扣款或購買方案。查看流量包何時到期、自動續訂，以及長期未使用是否會失去門號。SIM-only 只提供通訊服務，有逐月續訂及綁約方案。搭配手機的方案也包含裝置，裝置分期與通訊服務可能是兩份合約，帳單和到期日可能不同。\n\n剛到英國，先問業者需要哪些身分證明、住址及付款資料。月繳方案或手機分期可能需要查信用紀錄。手上已有相容且未鎖網的手機，可先比較預付方案和月繳 SIM-only；如果打算用 eSIM，也要先確認相容性。延伸閱讀：[開立英國銀行帳戶](/zh-TW/money/open-uk-bank-account-new-arrival)與[英國信用紀錄](/zh-TW/money/uk-credit-history-and-credit-score)。\n\n## 比較訊號及整個合約期的花費\n查住家、工作地點和通勤沿線的室內外覆蓋。手機品牌可能使用其他業者的網路；確認實際使用哪個網路，以及方案是否有 5G 或 Wi-Fi 通話。覆蓋圖是估算。[Ofcom 訊號圖](#guide-evidence-coverage)\n\n把首付款、月租、手機分期及明列的調漲加總。索取合約摘要，確認最短期限、提前解約費、超量費和裝置未清餘額。自 2025 年 1 月 17 日起簽訂的新合約，如有預訂調漲，業者須於銷售時以英鎊和便士說明金額及生效日期。[Ofcom 費用規則](#guide-evidence-price)\n\n按目的地及實際方案查漫遊。歐洲也可能另外收費；注意每日費用、用量上限與公平使用條款。邊界附近也可能誤連境外網路。[Ofcom 漫遊說明](#guide-evidence-roaming)\n\n網路或電話申辦通常有 14 天猶豫期，已使用的服務可能要付費。實體店簽約通常沒有相同權利。另查手機退貨及分期合約。[英格蘭終止服務指南](#guide-evidence-cancel)\n\n## 轉換業者或終止服務\n- 想保留門號，傳簡訊 **PAC** 至 **65075**。想換新門號並由新業者終止舊服務，傳 **STAC** 至 **75075**。\n- 只想查合約或解約資訊，傳 **INFO** 至 **85075**。同一帳戶有多個門號時，請登入線上帳戶或聯絡業者。\n- 30 天內把代碼交給新業者。收到後應在一個工作天內安排轉移。打電話、傳簡訊確認；若要保留門號，轉移前保持舊門號啟用。\n- 核對最後帳單和另簽的裝置分期。轉網不會免除餘額或提前解約費。若只想停用門號，直接向業者詢問終止流程。[Ofcom 轉換流程](#guide-evidence-switch)\n\n## 申辦前的清單\n寫下常用地點、每月流量、總價、合約期限、漫遊條款、解約費，以及是否需要保留門號。保存合約摘要。\n",
+  "status": "DRAFT",
+  "publishedAt": null,
+  "updatedAt": "2026-11-21T00:00:00Z",
+  "sources": [
+    {
+      "key": "cancel",
+      "organisation": "Citizens Advice",
+      "title": "Cancelling a phone, TV, internet or mobile contract",
+      "url": "https://www.citizensadvice.org.uk/consumer/phone-internet-downloads-or-tv/cancelling-a-phone-tv-internet-or-mobile-contract/",
+      "accessedAt": "2026-11-21T00:00:00Z"
+    },
+    {
+      "key": "switch",
+      "organisation": "Ofcom",
+      "title": "Switching mobile phone provider",
+      "url": "https://www.ofcom.org.uk/phones-and-broadband/switching-provider/switching-mobile-phone-provider",
+      "accessedAt": "2026-11-21T00:00:00Z"
+    },
+    {
+      "key": "coverage",
+      "organisation": "Ofcom",
+      "title": "Map Your Mobile",
+      "url": "https://www.ofcom.org.uk/mobile-coverage-checker",
+      "accessedAt": "2026-11-21T00:00:00Z"
+    },
+    {
+      "key": "price",
+      "organisation": "Ofcom",
+      "title": "Protecting consumers from uncertain and volatile inflation",
+      "url": "https://www.ofcom.org.uk/phones-and-broadband/bills-and-charges/protecting-consumers-from-uncertain-and-volatile-inflation",
+      "accessedAt": "2026-11-21T00:00:00Z"
+    },
+    {
+      "key": "roaming",
+      "organisation": "Ofcom",
+      "title": "Using your mobile abroad",
+      "url": "https://www.ofcom.org.uk/phones-and-broadband/saving-money/using-your-mobile-abroad",
+      "accessedAt": "2026-11-21T00:00:00Z"
+    }
+  ],
+  "evidence": [
+    {
+      "key": "cancel",
+      "statement": "遠距簽約通常可在猶豫期內取消，已使用的服務可能收費。",
+      "supports": [
+        {
+          "sourceKey": "cancel",
+          "locator": "If you signed up less than 14 days ago",
+          "excerpt": null,
+          "note": "Distance sales cooling-off and service charges."
+        }
+      ]
+    },
+    {
+      "key": "switch",
+      "statement": "轉網可用 PAC、STAC 和 INFO 簡訊服務。同一帳戶有多個門號時另有流程。",
+      "supports": [
+        {
+          "sourceKey": "switch",
+          "locator": "Text to Switch",
+          "excerpt": null,
+          "note": "PAC, STAC, INFO, charges and multi-line switches."
+        }
+      ]
+    },
+    {
+      "key": "coverage",
+      "statement": "用郵遞區號查常用地點的預估訊號。",
+      "supports": [
+        {
+          "sourceKey": "coverage",
+          "locator": "Coverage by postcode",
+          "excerpt": null,
+          "note": "Compare predicted service where you use your phone."
+        }
+      ]
+    },
+    {
+      "key": "price",
+      "statement": "新合約訂明的漲價須在銷售時以英鎊和便士說明。",
+      "supports": [
+        {
+          "sourceKey": "price",
+          "locator": "Rules from 17 January 2025",
+          "excerpt": null,
+          "note": "Contractual price rises must be set out in pounds and pence on sale under the new rules."
+        }
+      ]
+    },
+    {
+      "key": "roaming",
+      "statement": "出發前確認漫遊費和用量限制，並留意邊境誤連。",
+      "supports": [
+        {
+          "sourceKey": "roaming",
+          "locator": "Charges and limits",
+          "excerpt": null,
+          "note": "Check allowance, fair use and border roaming."
+        }
+      ]
+    }
+  ]
+}

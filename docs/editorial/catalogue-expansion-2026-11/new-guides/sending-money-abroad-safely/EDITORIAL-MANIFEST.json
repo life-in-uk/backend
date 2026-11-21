@@ -1,0 +1,41 @@
+{
+  "slug": "sending-money-abroad-safely",
+  "category": "money",
+  "status": "DRAFT",
+  "sourceLocale": "zh-CN",
+  "sourcesVerifiedOn": "2026-11-21",
+  "editorialStatus": "Editorial review required. Urdu and Hindi fluent-language review outstanding.",
+  "canonicalization": "guide-content-v1",
+  "variants": [
+    {
+      "locale": "en",
+      "path": "en.json",
+      "sha256": "fb960139296d6c29e07730d99aaae20854d0a02df8a197678a2343e59067c241",
+      "contentSha256": "284e8eaa55074faecdb0781f4dc9dca3e59b5f0b9b8159cec2938edc83294479"
+    },
+    {
+      "locale": "zh-CN",
+      "path": "zh-CN.json",
+      "sha256": "b3d938e2d984dcd598b30be817fc807982faf2719a1ae35085bcff4d9eea9c1e",
+      "contentSha256": "04377c6ec295e8aadf03c0d0b2685c951b86c94d6b74275e233b77f53f797b59"
+    },
+    {
+      "locale": "zh-TW",
+      "path": "zh-TW.json",
+      "sha256": "18cd973f20f5874ad7c4f4250c2aeddd67d2aa21805a945d6518bc099187b666",
+      "contentSha256": "6145301380b7f9f67d965ba6504951c409c3efa4a59eff591aa9c984ed98de8d"
+    },
+    {
+      "locale": "ur",
+      "path": "ur.json",
+      "sha256": "0bf95a1712735d725e8576c5b16521388c4fea8cc5e68d3d6565ad70a56a23cd",
+      "contentSha256": "f6539be81e3a430a9b8e90aa44ff35e3a0b5815d6b3fab9ca52b0811577c9388"
+    },
+    {
+      "locale": "hi",
+      "path": "hi.json",
+      "sha256": "a2772c5f5645f4c1fadf6aec6a53bf3192f5bd704f364d0f475fa400dbee4798",
+      "contentSha256": "ec499e286777edeb0682c88cda82d198f575f54993197029cc68b1f733100f0f"
+    }
+  ]
+}

@@ -1,0 +1,109 @@
+{
+  "slug": "renting-moving-home-utilities-checklist",
+  "category": "renting",
+  "title": "英格蘭租屋搬家清單：能源、水費、寬頻與市政稅",
+  "summary": "在搬家前、搬家當天及之後，處理能源、水費、寬頻、市政稅和最後帳單。",
+  "content": "# 英格蘭租屋搬家清單：能源、水費、寬頻與市政稅\n\n最後更新: 2026-11-21\n\n## 搬家前\n這份清單適用於英格蘭租屋者。搬往英國其他地區前，請查當地的水務、能源和市政稅制度。北愛爾蘭使用住宅差餉。[北愛爾蘭差餉機構](#guide-evidence-rates)\n\n- 記下舊租約到期、新租約開始及兩處交還或領取鑰匙的日期。實際搬家日可能跟計費日期不同。參閱[搬出及取回押金](/zh-TW/renting/renting-moving-out-deposit)。\n- 確認兩處租金各包含哪些帳單。能源和水費若由你負擔，將日期及轉寄地址告知原業者，並確認通知時間與最後讀數提交方法。[能源搬遷](#guide-evidence-energy) · [水務搬遷](#guide-evidence-water)\n- 用新住家的完整地址查寬頻。先問能否移機、會不會重新綁約、有無設定或解約費，以及是否要退還路由器。若更換業者，確認誰會終止舊服務、新服務何時開通，必要時安排技師到場。[Ofcom 搬家說明](#guide-evidence-broadband)\n- 向相關地方議會申報新舊地址、日期及住戶情況。查看[市政稅責任及減免](/zh-TW/renting/renting-council-tax)。[官方市政稅說明](#guide-evidence-council)\n\n## 搬家當天\n- 如果裝有電表、瓦斯表或水表，且可安全接近，分別為兩處拍照。記下日期、讀數和表號。智慧電表若可查看，也記下讀數。依地址分開保存。\n- 向原業者提交最後讀數。若新住家帳單由你支付，先向目前供應該地址的能源業者登記起始日期和讀數，再考慮是否換方案。另行聯絡新住家的水務公司。[能源搬遷](#guide-evidence-energy) · [水務搬遷](#guide-evidence-water)\n- 保留退租照片和還鑰匙證明。把新住家原有的損壞記入[入住點交清單](/zh-TW/renting/renting-moving-in-inventory)。\n\n## 搬家後\n核對最後帳單、市政稅調整、帳戶餘額或退款。日期或讀數若有誤，以書面提出並附上有日期的證據。保留收據和設備退還追蹤單號。通知銀行、雇主、保險業者與有關機關更改地址。款項結清前保留舊帳戶編號。\n\n開戶細節請看[電力和瓦斯](/zh-TW/renting/renting-energy)、[水費](/zh-TW/renting/renting-water)及[寬頻](/zh-TW/renting/renting-broadband)。\n\n**兩處租期重疊怎麼辦？** 分別提供實際居住與租約日期，向每個機構確認計費期間。通知其中一家，其他帳戶不會自動結清。\n",
+  "status": "DRAFT",
+  "publishedAt": null,
+  "updatedAt": "2026-11-21T00:00:00Z",
+  "sources": [
+    {
+      "key": "energy",
+      "organisation": "Citizens Advice",
+      "title": "Moving home – dealing with your energy supply",
+      "url": "https://www.citizensadvice.org.uk/consumer/energy/energy-supply/moving-home-your-energy-supply/moving-home-dealing-with-your-energy-supply/",
+      "accessedAt": "2026-11-21T00:00:00Z"
+    },
+    {
+      "key": "water",
+      "organisation": "Citizens Advice",
+      "title": "Moving home and water bills",
+      "url": "https://www.citizensadvice.org.uk/consumer/water/paying-your-water-bill/moving-home-and-water-bills/",
+      "accessedAt": "2026-11-21T00:00:00Z"
+    },
+    {
+      "key": "broadband",
+      "organisation": "Ofcom",
+      "title": "Moving home: tips for keeping connected",
+      "url": "https://www.ofcom.org.uk/phones-and-broadband/coverage-and-speeds/moving-home-tips-for-keeping-connected",
+      "accessedAt": "2026-11-21T00:00:00Z"
+    },
+    {
+      "key": "council",
+      "organisation": "GOV.UK",
+      "title": "Paying the right level of Council Tax",
+      "url": "https://www.gov.uk/government/publications/paying-the-right-level-of-council-tax-a-plain-english-guide-to-council-tax/paying-the-right-level-of-council-tax-a-plain-english-guide-to-council-tax",
+      "accessedAt": "2026-11-21T00:00:00Z"
+    },
+    {
+      "key": "rates",
+      "organisation": "nidirect",
+      "title": "Occupying and leaving a property",
+      "url": "https://www.nidirect.gov.uk/articles/occupying-and-leaving-property",
+      "accessedAt": "2026-11-21T00:00:00Z"
+    }
+  ],
+  "evidence": [
+    {
+      "key": "energy",
+      "statement": "搬家時提交起訖讀數及轉寄地址，並聯絡新址目前的業者。",
+      "supports": [
+        {
+          "sourceKey": "energy",
+          "locator": "Before and after you move",
+          "excerpt": null,
+          "note": "Opening and closing readings, forwarding address and incumbent supplier."
+        }
+      ]
+    },
+    {
+      "key": "water",
+      "statement": "搬家時通知水務公司，如有水表則記錄讀數。",
+      "supports": [
+        {
+          "sourceKey": "water",
+          "locator": "When you have moved",
+          "excerpt": null,
+          "note": "Contact water companies and read metered supplies."
+        }
+      ]
+    },
+    {
+      "key": "broadband",
+      "statement": "確認新址可用的服務、安裝及合約費用。",
+      "supports": [
+        {
+          "sourceKey": "broadband",
+          "locator": "Contact your provider",
+          "excerpt": null,
+          "note": "Check availability, installation and contract charges."
+        }
+      ]
+    },
+    {
+      "key": "council",
+      "statement": "搬家時通報地方議會，確認納稅責任及起訖日。",
+      "supports": [
+        {
+          "sourceKey": "council",
+          "locator": "Moving and liability",
+          "excerpt": null,
+          "note": "Notify the council and check who pays and when."
+        }
+      ]
+    },
+    {
+      "key": "rates",
+      "statement": "北愛爾蘭的住宅差餉由土地及物業服務局管理。",
+      "supports": [
+        {
+          "sourceKey": "rates",
+          "locator": "Changes in ownership or occupancy",
+          "excerpt": null,
+          "note": "Northern Ireland domestic rates are administered by Land & Property Services."
+        }
+      ]
+    }
+  ]
+}

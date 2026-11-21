@@ -1,0 +1,41 @@
+{
+  "slug": "renting-repairs-damp-mould-england",
+  "category": "renting",
+  "status": "DRAFT",
+  "sourceLocale": "zh-CN",
+  "sourcesVerifiedOn": "2026-11-21",
+  "editorialStatus": "Editorial review required. Urdu and Hindi fluent-language review outstanding.",
+  "canonicalization": "guide-content-v1",
+  "variants": [
+    {
+      "locale": "en",
+      "path": "en.json",
+      "sha256": "d44c92b05483652b7f259c256fa71b3760542ad369994ab846039709c3ca647b",
+      "contentSha256": "56bf2e504a3c3734e6e4229452f55e152a62a0d6715f754e3237cdd11618ce78"
+    },
+    {
+      "locale": "zh-CN",
+      "path": "zh-CN.json",
+      "sha256": "00f422581cd3b697f207cb33744fa606330e9d79efb9c24ccdc40a9e82167e34",
+      "contentSha256": "a015e5ddad22faf3ce58cf831ce16f4bdaaaaefbd77397d5d63dcc6066b29a41"
+    },
+    {
+      "locale": "zh-TW",
+      "path": "zh-TW.json",
+      "sha256": "d9cef5fb14b03d5ee71730882a7014e6f1cbbd46ea12902f453e41347941f90b",
+      "contentSha256": "580ddc835164edfe5c9637f07c3e65e4d5fd7f8426b08362627d8beedddc35ff"
+    },
+    {
+      "locale": "ur",
+      "path": "ur.json",
+      "sha256": "c25c3ef195e912c88c84980fc997386f65ae30c252d57a7a0c5717e074c85757",
+      "contentSha256": "58291e88c69a50e5febd2957d8a77f8714168f28ec76d40952acb896796e68b2"
+    },
+    {
+      "locale": "hi",
+      "path": "hi.json",
+      "sha256": "44490a4431e5c6803f4665ab46b32184be83497b469d1748c7f1789cef61c567",
+      "contentSha256": "09bc8bcf6dbb773e5fa27da3ef74cc9877df6f71cac6290191d9f8ba9d6ab986"
+    }
+  ]
+}

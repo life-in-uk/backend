@@ -1,0 +1,41 @@
+{
+  "slug": "uk-mobile-plans-sim-only-payg",
+  "category": "household-services",
+  "status": "DRAFT",
+  "sourceLocale": "zh-CN",
+  "sourcesVerifiedOn": "2026-11-21",
+  "editorialStatus": "Editorial review required. Urdu and Hindi fluent-language review outstanding.",
+  "canonicalization": "guide-content-v1",
+  "variants": [
+    {
+      "locale": "en",
+      "path": "en.json",
+      "sha256": "daae5487819a0953656afebd48da6b9e625d949b0a79c294061d4d24fb73ebda",
+      "contentSha256": "9b8f7dc5b91c4217e46c72271593accae5f29d6ad2dfd5cadf0ee52a427f815b"
+    },
+    {
+      "locale": "zh-CN",
+      "path": "zh-CN.json",
+      "sha256": "f2824becde8796b9aa147f6b91ce15880bfe633d396e85b93aec7154e8899ae5",
+      "contentSha256": "487def77613bded745c95e2bfcde314c620b9a2c4546fda0eb2c26f20507547c"
+    },
+    {
+      "locale": "zh-TW",
+      "path": "zh-TW.json",
+      "sha256": "0d07d0605b31495c8c2e6a0a4cca9e9a7579c7c8f1884eaa953e0bd95801a476",
+      "contentSha256": "0c35fbbcffa9d2f06e526036a970cc9a3f9a0374e3ebef00d1a4ccab96033664"
+    },
+    {
+      "locale": "ur",
+      "path": "ur.json",
+      "sha256": "b75509712dc03dbf10b6f7c162939491805427380cc45c5563e8f28425e65241",
+      "contentSha256": "f1eb086a77412af6e0ee4064277d37c63a59b185b962b921b091b2f91d29e4fd"
+    },
+    {
+      "locale": "hi",
+      "path": "hi.json",
+      "sha256": "2019132dd3f2a5ba9961a362a768c638ec6f38a3dfeebff0bd70e530059e7da8",
+      "contentSha256": "2d6e9471551c129ee46caf4b8498a6d77e129912251bb165e3937ef64632319d"
+    }
+  ]
+}

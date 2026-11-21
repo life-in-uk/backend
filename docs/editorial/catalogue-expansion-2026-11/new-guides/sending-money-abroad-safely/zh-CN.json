@@ -1,0 +1,109 @@
+{
+  "slug": "sending-money-abroad-safely",
+  "category": "money",
+  "title": "从英国向海外汇款：比费用与防诈骗",
+  "summary": "汇款前核对总价、服务机构和收款资料，到账异常时知道找谁处理。",
+  "content": "# 从英国向海外汇款：比费用与防诈骗\n\n最后更新: 2026-11-21\n\n## 按相同条件比价\n用同一汇款额、目的地、收款币种和到账方式。比较自己总共付多少、对方实际能收到多少。查汇率、汇率加价、手续费，以及中间行或收款行可能扣取的费用。确认汇率和到账金额是锁定还是估算，报价何时失效。「免手续费」也可能通过汇率收取成本。[FCA 定价说明](#guide-evidence-pricing)\n\n## 核对机构和收款资料\n在 FCA 登记册查提供服务的实际公司及其许可。从官方渠道找联系方式，避免使用别人发来的链接。银行存款和非银行支付机构持有的资金适用不同的保护；汇款前问清本项服务适用哪一种。[FCA 机构核对](#guide-evidence-provider) · [开英国账户](/zh-CN/money/open-uk-bank-account-new-arrival)\n\n核对姓名、账号或 IBAN、所需银行识别码、目的地和币种。首次收到或遇到收款资料变更，用自己已知的电话直接核实。问清金额上限、到账时间及如何撤销或追踪。保存报价、收据和交易编号。[MoneyHelper 转账指南](#guide-evidence-payment)\n\n## 汇错、迟到或怀疑被骗怎么办？\n尽快用官方渠道联系服务商，询问能否追踪、停止或申请退回。怀疑诈骗时，保存对话并立即告诉银行或支付机构。赔付保护取决于付款方式，跨境汇款和英国国内转账的规则可能不同，无法保证退款。[FCA 欺诈支付说明](#guide-evidence-fraud)\n\n问题未解决，先向机构投诉。保留承诺的日期、费用和汇率。收到最终答复或机构超时未答复后，如符合条件，可向金融申诉专员服务机构了解转介投诉。[金融申诉指南](#guide-evidence-complaints)\n",
+  "status": "DRAFT",
+  "publishedAt": null,
+  "updatedAt": "2026-11-21T00:00:00Z",
+  "sources": [
+    {
+      "key": "pricing",
+      "organisation": "FCA",
+      "title": "Consumer Duty: International payment pricing transparency",
+      "url": "https://www.fca.org.uk/publications/good-and-poor-practice/consumer-duty-international-payment-pricing-transparency-good-poor-practice",
+      "accessedAt": "2026-11-21T00:00:00Z"
+    },
+    {
+      "key": "provider",
+      "organisation": "FCA",
+      "title": "Using payment service providers",
+      "url": "https://www.fca.org.uk/consumers/using-payment-service-providers",
+      "accessedAt": "2026-11-21T00:00:00Z"
+    },
+    {
+      "key": "payment",
+      "organisation": "MoneyHelper",
+      "title": "How to make a bank transfer",
+      "url": "https://www.moneyhelper.org.uk/en/everyday-money/banking/making-phone-or-online-transfers.html",
+      "accessedAt": "2026-11-21T00:00:00Z"
+    },
+    {
+      "key": "fraud",
+      "organisation": "FCA",
+      "title": "Fraudulent payments",
+      "url": "https://www.fca.org.uk/consumers/fraudulent-payments",
+      "accessedAt": "2026-11-21T00:00:00Z"
+    },
+    {
+      "key": "complaints",
+      "organisation": "Financial Ombudsman Service",
+      "title": "Sending money abroad",
+      "url": "https://www.financial-ombudsman.org.uk/consumers/complaints-can-help/banking-and-payments/sending-money-abroad",
+      "accessedAt": "2026-11-21T00:00:00Z"
+    }
+  ],
+  "evidence": [
+    {
+      "key": "pricing",
+      "statement": "比较全部费用、汇率加价和实际到账金额。",
+      "supports": [
+        {
+          "sourceKey": "pricing",
+          "locator": "Total fees and exchange rate",
+          "excerpt": null,
+          "note": "Compare all charges, any mark-up and the amount received."
+        }
+      ]
+    },
+    {
+      "key": "provider",
+      "statement": "确认机构许可和资金适用的保护。",
+      "supports": [
+        {
+          "sourceKey": "provider",
+          "locator": "Who provides the service",
+          "excerpt": null,
+          "note": "Check permissions and the protections for funds."
+        }
+      ]
+    },
+    {
+      "key": "payment",
+      "statement": "跨境转账可能需要 IBAN、SWIFT/BIC 和其他收款资料。",
+      "supports": [
+        {
+          "sourceKey": "payment",
+          "locator": "International payments",
+          "excerpt": null,
+          "note": "Some transfers require IBAN or SWIFT/BIC and other recipient details."
+        }
+      ]
+    },
+    {
+      "key": "fraud",
+      "statement": "尽快联系机构；赔付保护取决于付款方式。",
+      "supports": [
+        {
+          "sourceKey": "fraud",
+          "locator": "Reporting and payment type",
+          "excerpt": null,
+          "note": "Contact the provider promptly; reimbursement protections depend on payment type."
+        }
+      ]
+    },
+    {
+      "key": "complaints",
+      "statement": "先向机构投诉并保留交易凭证。",
+      "supports": [
+        {
+          "sourceKey": "complaints",
+          "locator": "How to complain",
+          "excerpt": null,
+          "note": "Complain to the firm first and retain transaction evidence."
+        }
+      ]
+    }
+  ]
+}
