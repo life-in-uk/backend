@@ -1,0 +1,41 @@
+{
+  "slug": "renting-deposits-fees",
+  "category": "renting",
+  "status": "DRAFT",
+  "sourceLocale": "zh-CN",
+  "sourcesVerifiedOn": "2026-11-21",
+  "editorialStatus": "DRAFT. Independent AI editorial and locale recheck complete; owner publication approval pending. See follow-up review.",
+  "canonicalization": "guide-content-v1",
+  "variants": [
+    {
+      "locale": "en",
+      "path": "en.json",
+      "sha256": "829bdf443a335b27099d281e33ffe1868ed8de3b4b89488e56aa785864f0fa93",
+      "contentSha256": "0ad060655a39c9e0afeb9ba680e27526c05524ff99bd88e03d86417b1bef255f"
+    },
+    {
+      "locale": "zh-CN",
+      "path": "zh-CN.json",
+      "sha256": "d8d8f01bce4043c4f005878648867b2881046d2cb77f33c843fa506db7bdfe90",
+      "contentSha256": "6a9ab56c7335699ae97b63a84149ab4f08f2d77ae3c0007d6bdd660bc6e2277c"
+    },
+    {
+      "locale": "zh-TW",
+      "path": "zh-TW.json",
+      "sha256": "16f43e0276730fcae12f58ce3d59be4d2ea26f1cf838cd4ab6090df2b83eebf7",
+      "contentSha256": "4caf362876ee3180eeebb021b19d5e812e5552327320728dc37fbba66580ed24"
+    },
+    {
+      "locale": "ur",
+      "path": "ur.json",
+      "sha256": "94213d84bc07fcce2785686fbd93f5c7aacfd39bafc2a9307c6ecd2fc6ef8b6f",
+      "contentSha256": "18c6988ed67f0e9fa21f05cc87316562af9b30bd1213705f92cb25082c1f4be9"
+    },
+    {
+      "locale": "hi",
+      "path": "hi.json",
+      "sha256": "048fdac54c90e9f7380185cfa8993f9f3bc2040e93a17052fdb3b1384abce0d3",
+      "contentSha256": "bdf7ad91a8a335c17b7476849344f945814a4e20791d7e73c3dc3cad439e5b60"
+    }
+  ]
+}

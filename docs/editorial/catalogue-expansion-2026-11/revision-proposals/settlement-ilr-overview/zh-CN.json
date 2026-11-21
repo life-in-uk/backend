@@ -1,0 +1,554 @@
+{
+  "slug": "settlement-ilr-overview",
+  "category": "settlement",
+  "title": "英国永居（ILR）入门：它是什么、和入籍有什么不同、你可能走哪条路线",
+  "summary": "永居（ILR）是什么、能做什么、和英国国籍有什么不同；主要永居路线和年限一览（Skilled Worker、配偶、长期居住、Ancestry、Global Talent、BN(O)、难民等），共同条件，以及尚未生效的积分式定居改革。",
+  "content": "# 英国永居（ILR）入门：它是什么、和入籍有什么不同、你可能走哪条路线\n\n最后更新: 2026-11-21\n\n> **原概览于 2026 年 11 月 15 日核对；离境与「积分式定居」部分于 11 月 21 日复核。** 对应章节依据各自核对时的移民规则和官方资料。移民规则经常修改，**哪一版规则适用于你的申请，取决于规则本身的生效日期和过渡条款**，申请前请再到 GOV.UK 核对一次。\n>\n> 这篇是一般信息，**不是法律意见，也没有经过律师审核**。满足这里提到的某一项要求，不代表申请一定获批。情况复杂（例如以前被拒签、有逾期居留或犯罪记录、离境时间很长、身份中断过）时，请咨询在 Immigration Advice Authority（IAA）注册的移民顾问或律师。\n\n永居（Indefinite Leave to Remain，简称 ILR，也叫“定居” settlement）是英国的一种**移民身份**：拿到以后，你在英国居留**不再有时间限制**。很多人把“住满几年”当成永居的唯一条件，但实际上**每条签证路线都有自己的永居规则**，年限、收入、英语、离境天数的算法都可能不同。[查看官方依据](#guide-evidence-route-specific)\n\n这篇先讲清楚永居是什么、和入籍有什么不同，再列出主要路线，帮你找到该看的那一篇。\n\n## 一、这篇适用于谁\n\n- 持英国签证、在规划永居的人；\n- 不确定自己的签证能不能、什么时候能转永居的人；\n- 想弄清楚永居和英国国籍区别的人。\n\n欧盟、欧洲经济区和瑞士公民及其家属的 EU Settlement Scheme（“settled status”）是另一套制度，下面第五节会简单说明。\n\n## 二、永居能做什么\n\n- **居留不再有时间限制**，不用再续签；[查看官方依据](#guide-evidence-rights-no-limit)\n- **可以自由工作和学习**：任何行业、职位，也可以自雇，只要遵守该行业本身的法律规定；[查看官方依据](#guide-evidence-rights-work-study)\n- 符合条件的，可以申请福利；一般可以免费使用 NHS 医疗服务；[查看官方依据](#guide-evidence-rights-benefits-nhs)\n- 你在定居期间**在英国出生的孩子，一般出生时就是英国公民**；[查看官方依据](#guide-evidence-rights-children)\n- 永居是申请入籍的常见前提，但入籍要另外申请（见第三节）。[查看官方依据](#guide-evidence-rights-citizenship)\n\n## 三、永居和入籍（英国国籍）有什么不同\n\n| | 永居（ILR） | 英国公民 |\n|---|---|---|\n| 性质 | 移民身份 | 国籍 |\n| 连续离开英国、海峡群岛及马恩岛 | 连续离开**超过 2 年**一般会失效（EUSS 的 settled status 一般是超过 5 年，以瑞士公民或其家属身份取得 Appendix EU 居留许可的人适用超过 4 年的界线） | 不适用永居的失效规则 |\n| 可能被取消 | 被递解出境、以欺骗取得等情况下可能被撤销 | 国籍的剥夺另有法律规定，不在本文范围 |\n| 申请费（2026 年 10 月 8 日收费表） | £3,226 | 入籍 £1,709，另加入籍仪式 £130 |\n\n[查看官方依据](#guide-evidence-ilr-vs-citizenship) [查看官方依据](#guide-evidence-fees)\n\n**拿到永居不等于自动成为英国公民。** 入籍有自己的居住年限、离境天数、品行、英语和 Life in the UK 考试要求，详见《拿到永居以后怎么申请入籍》。\n\n## 四、永居不是“住满几年自动给”\n\n- **要自己提出申请**，并满足适用于你这份申请的规则；\n- **不同路线的时间不一定能合并计算**。例如 Skilled Worker 路线要求的 5 年里，以家属身份在英国的时间不算；[查看官方依据](#guide-evidence-sw-qualifying)\n- 学生签证、毕业生签证本身不能直接转永居，这些时间目前只能计入 10 年长期居住路线。[查看官方依据](#guide-evidence-long-residence)\n\n## 五、主要路线一览\n\n下表只是索引，**每条路线还有其他条件**，请看对应的指南或规则原文。\n\n| 路线 | 现行规则的一般年限 | 规则 |\n|---|---|---|\n| Skilled Worker（技术工人） | 5 年 | Appendix Skilled Worker |\n| 配偶或伴侣（5 年路线） | 以伴侣签证连续住满 60 个月 | Appendix FM |\n| 配偶或伴侣（10 年路线） | 10 年 | Appendix Settlement Family Life |\n| 长期居住 | 合法、连续居住 10 年 | Appendix Long Residence |\n| UK Ancestry（英国祖籍） | 5 年 | Appendix UK Ancestry |\n| Global Talent | 3 年或 5 年 | Appendix Global Talent |\n| Innovator Founder | 3 年 | Appendix Innovator Founder |\n| 香港 BN(O) | 5 年 | Appendix Hong Kong BN(O) |\n| 难民或人道保护 | 5 年（2026 年 3 月 2 日以后提出的庇护申请情况不同） | Appendix Settlement Protection |\n| 私人生活 | 视情况为 5 年或 10 年 | Appendix Private Life |\n| EU Settlement Scheme | 一般连续居住 5 年 | Appendix EU |\n\n[查看官方依据](#guide-evidence-table-sw) [查看官方依据](#guide-evidence-table-partner) [查看官方依据](#guide-evidence-long-residence) [查看官方依据](#guide-evidence-table-other-work) [查看官方依据](#guide-evidence-table-bno) [查看官方依据](#guide-evidence-table-protection) [查看官方依据](#guide-evidence-table-private-life) [查看官方依据](#guide-evidence-table-euss)\n\n各路线详见：《Skilled Worker 永居（ILR）：现行 5 年规则和已公布的改革》、《配偶和伴侣申请永居：5 年路线和 10 年路线》、《10 年长期居住（Long Residence）申请永居》和《其他永居路线：UK Ancestry、Global Talent、Innovator Founder、BN(O)、EUSS、难民和私人生活》。\n\n## 离境失效规则适用于谁\n\n请核对你取得居留许可的法律依据。法定期限计算连续在英国、海峡群岛及马恩岛以外的时间。第 13A 至 13C 条对特定海外派驻或陪同派驻人员的时间设有例外，包括某些武装部队、王室公务和英国文化教育协会正式编制派驻。是否适用取决于获批许可及个人情况。 [法定失效规则](#guide-evidence-lapse-order) · [英国内政部：身份与离境](#guide-evidence-euss-lapse-official)\n\nPre-settled status 是有限期居留。许可自动失效、可能被取消，以及转为 settled status 需要的合资格居住期，是三个不同的问题。申请前查 Appendix EU，确认离境时间怎样计算。 [Appendix EU 合资格居住](#guide-evidence-euss-application)\n\n## 六、几乎所有路线都会看的共同条件\n\n1. **申请当天人在英国**，按要求用网上表格申请、交费、录生物信息；[查看官方依据](#guide-evidence-common-validity)\n2. **适合性**（Part Suitability）：例如犯罪记录、欺骗、欠 NHS 或 Home Office 的债务等，都可能导致拒签；申请时一般**不能处于逾期居留或移民保释状态**；[查看官方依据](#guide-evidence-common-suitability)\n3. **连续居住**：Skilled Worker、长期居住、UK Ancestry 等许多路线要求计算期内**任何 12 个月离境不超过 180 天**；配偶的 5 年路线另有规定。详见《连续居住和离境天数：申请永居时怎么算》；[查看官方依据](#guide-evidence-common-cr)\n4. **英语和 Life in the UK 考试**：大多数路线要求英语听说达到 B1，**2027 年 3 月 26 日起申请的，多数路线提高到 B2**；但香港 BN(O) 路线的现行规则仍写的是 B1。详见《永居的英语要求和 Life in the UK 考试》。[查看官方依据](#guide-evidence-common-english)\n\n## 七、规则正在改：积分式定居（Earned Settlement）\n\n政府 2026 年 11 月 2 日公布了“积分式定居”改革，计划把一般年限从 5 年改为 10 年。**截至 2026 年 11 月 21 日，政府已公布总体政策框架，具体移民规则和生效安排仍待落实**；上表仍是现行规则。改革内容和不确定之处见《积分式定居（Earned Settlement）改革追踪：现行规则和改革方案对照》。[查看官方依据](#guide-evidence-es-not-in-force)\n\n## 八、常见误解\n\n- **“永居就是英国国籍。”** 不是。永居是移民身份，长期离开可能失效；入籍要另外申请。[查看官方依据](#guide-evidence-ilr-vs-citizenship)\n- **“任何签证住满 5 年都可以转永居。”** 不是。年限和条件按路线不同，学生签证、毕业生签证本身不通向永居。[查看官方依据](#guide-evidence-long-residence)\n- **“EUSS 的 settled status 和普通永居完全一样。”** 两者都是无限期居留，但规则不同，例如 EUSS 的 settled status 一般连续离开超过 5 年失效，以瑞士公民或其家属身份取得 Appendix EU 居留许可的人适用超过 4 年的界线，普通永居一般是超过 2 年。[查看官方依据](#guide-evidence-ilr-vs-citizenship)\n- **“改革已经开始了。”** 总体框架截至 2026 年 11 月 21 日还未生效。[查看官方依据](#guide-evidence-es-not-in-force)\n\n## 九、行动清单\n\n- 确认自己现在持有的签证属于哪条路线，最近一次签证是什么；\n- 按路线算清可以申请的日期和离境天数；\n- 尽早准备英语证明和 Life in the UK 考试，留意 2027 年 3 月 26 日的 B2 变化；\n- 预算申请费 £3,226（每位申请人）；\n- 关注积分式定居的正式规则。\n\n## 相关指南\n\n- 《申请永居的流程：什么时候申请、费用、等待期间和被拒以后》\n- 《申请永居要准备哪些材料》\n- 《孩子和家属怎么申请永居》\n- 《拿到永居以后：权利、eVisa 身份证明、出境和永居失效》\n- 《拿到永居以后怎么申请入籍》\n\n---\n\n本文是一般信息，没有经过律师审核；规则如有变化，以 GOV.UK 和移民规则为准。\n\n",
+  "sources": [
+    {
+      "key": "govuk-ilr",
+      "organisation": "UK Visas and Immigration（GOV.UK）",
+      "title": "Check if you can get indefinite leave to remain（GOV.UK 页面）",
+      "url": "https://www.gov.uk/indefinite-leave-to-remain",
+      "accessedAt": "2026-11-15T09:15:00Z"
+    },
+    {
+      "key": "govuk-rights",
+      "organisation": "Home Office（GOV.UK）",
+      "title": "Indefinite leave to remain in the UK: your rights and status（GOV.UK 指引，2026 年 6 月 8 日更新）",
+      "url": "https://www.gov.uk/guidance/indefinite-leave-to-remain-in-the-uk-your-rights-and-status",
+      "accessedAt": "2026-11-15T09:15:00Z"
+    },
+    {
+      "key": "rules-rr",
+      "organisation": "UK Visas and Immigration（GOV.UK）",
+      "title": "Immigration Rules Appendix Returning Resident（2025 年 11 月 11 日版，含 HC 1333 修改）",
+      "url": "https://www.gov.uk/guidance/immigration-rules/immigration-rules-appendix-returning-resident",
+      "accessedAt": "2026-11-15T09:15:00Z"
+    },
+    {
+      "key": "fees-2026-10",
+      "organisation": "Home Office（GOV.UK）",
+      "title": "Home Office immigration and nationality fees, 8 October 2026",
+      "url": "https://www.gov.uk/government/publications/visa-regulations-revised-table/home-office-immigration-and-nationality-fees-8-october-2026",
+      "accessedAt": "2026-11-15T09:15:00Z"
+    },
+    {
+      "key": "rules-sw",
+      "organisation": "UK Visas and Immigration（GOV.UK）",
+      "title": "Immigration Rules Appendix Skilled Worker（2026 年 10 月 8 日版，含 HC 584 修改）",
+      "url": "https://www.gov.uk/guidance/immigration-rules/immigration-rules-appendix-skilled-worker",
+      "accessedAt": "2026-11-15T09:15:00Z"
+    },
+    {
+      "key": "rules-lr",
+      "organisation": "UK Visas and Immigration（GOV.UK）",
+      "title": "Immigration Rules Appendix Long Residence（2026 年 10 月 8 日版，含 HC 584 修改）",
+      "url": "https://www.gov.uk/guidance/immigration-rules/immigration-rules-appendix-long-residence",
+      "accessedAt": "2026-11-15T09:15:00Z"
+    },
+    {
+      "key": "cw-long-residence",
+      "organisation": "Home Office（GOV.UK）",
+      "title": "Long residence（审核人员指引第 26.0 版，2026 年 10 月 8 日发布）",
+      "url": "https://www.gov.uk/government/publications/long-residence",
+      "accessedAt": "2026-11-15T09:15:00Z"
+    },
+    {
+      "key": "rules-fm",
+      "organisation": "UK Visas and Immigration（GOV.UK）",
+      "title": "Immigration Rules Appendix FM: family members（2026 年 10 月 8 日版，含 HC 584 修改）",
+      "url": "https://www.gov.uk/guidance/immigration-rules/immigration-rules-appendix-fm-family-members",
+      "accessedAt": "2026-11-15T09:15:00Z"
+    },
+    {
+      "key": "rules-sfl",
+      "organisation": "UK Visas and Immigration（GOV.UK）",
+      "title": "Immigration Rules Appendix Settlement Family Life（2026 年 8 月 3 日版，含 HC 259 修改）",
+      "url": "https://www.gov.uk/guidance/immigration-rules/immigration-rules-appendix-settlement-family-life",
+      "accessedAt": "2026-11-15T09:15:00Z"
+    },
+    {
+      "key": "rules-ancestry",
+      "organisation": "UK Visas and Immigration（GOV.UK）",
+      "title": "Immigration Rules Appendix UK Ancestry（2026 年 8 月 3 日版，含 HC 259 修改）",
+      "url": "https://www.gov.uk/guidance/immigration-rules/immigration-rules-appendix-uk-ancestry",
+      "accessedAt": "2026-11-15T09:15:00Z"
+    },
+    {
+      "key": "rules-gt",
+      "organisation": "UK Visas and Immigration（GOV.UK）",
+      "title": "Immigration Rules Appendix Global Talent（2026 年 8 月 3 日版，含 HC 259 修改）",
+      "url": "https://www.gov.uk/guidance/immigration-rules/immigration-rules-appendix-global-talent",
+      "accessedAt": "2026-11-15T09:15:00Z"
+    },
+    {
+      "key": "rules-innovator",
+      "organisation": "UK Visas and Immigration（GOV.UK）",
+      "title": "Immigration Rules Appendix Innovator Founder（2026 年 8 月 3 日版，含 HC 259 修改）",
+      "url": "https://www.gov.uk/guidance/immigration-rules/immigration-rules-appendix-innovator-founder",
+      "accessedAt": "2026-11-15T09:15:00Z"
+    },
+    {
+      "key": "rules-bno",
+      "organisation": "UK Visas and Immigration（GOV.UK）",
+      "title": "Immigration Rules Appendix Hong Kong British National (Overseas)（2026 年 10 月 8 日版，含 HC 584 修改）",
+      "url": "https://www.gov.uk/guidance/immigration-rules/immigration-rules-appendix-hong-kong-british-national-overseas",
+      "accessedAt": "2026-11-15T09:15:00Z"
+    },
+    {
+      "key": "rules-protection",
+      "organisation": "UK Visas and Immigration（GOV.UK）",
+      "title": "Immigration Rules Appendix Settlement Protection（2026 年 4 月 8 日版，含 HC 1691 修改）",
+      "url": "https://www.gov.uk/guidance/immigration-rules/immigration-rules-appendix-settlement-protection",
+      "accessedAt": "2026-11-15T09:15:00Z"
+    },
+    {
+      "key": "hc-1691",
+      "organisation": "Home Office（GOV.UK）",
+      "title": "Statement of changes to the Immigration Rules: HC 1691, 5 March 2026（含解释备忘录）",
+      "url": "https://www.gov.uk/government/publications/statement-of-changes-to-the-immigration-rules-hc-1619-5-march-2026",
+      "accessedAt": "2026-11-15T09:15:00Z"
+    },
+    {
+      "key": "rules-private-life",
+      "organisation": "UK Visas and Immigration（GOV.UK）",
+      "title": "Immigration Rules Appendix Private Life（2026 年 10 月 8 日版，含 HC 584 修改）",
+      "url": "https://www.gov.uk/guidance/immigration-rules/immigration-rules-appendix-private-life",
+      "accessedAt": "2026-11-15T09:15:00Z"
+    },
+    {
+      "key": "govuk-euss",
+      "organisation": "UK Visas and Immigration（GOV.UK）",
+      "title": "Apply to the EU Settlement Scheme (settled and pre-settled status)（GOV.UK 页面）",
+      "url": "https://www.gov.uk/settled-status-eu-citizens-families",
+      "accessedAt": "2026-11-15T09:15:00Z"
+    },
+    {
+      "key": "rules-cr",
+      "organisation": "UK Visas and Immigration（GOV.UK）",
+      "title": "Immigration Rules Appendix Continuous Residence（2025 年 11 月 11 日版，含 HC 1333 修改）",
+      "url": "https://www.gov.uk/guidance/immigration-rules/immigration-rules-appendix-continuous-residence",
+      "accessedAt": "2026-11-15T09:15:00Z"
+    },
+    {
+      "key": "es-response",
+      "organisation": "Home Office（GOV.UK）",
+      "title": "A Fairer Pathway to Settlement: Government response to the consultation（CP 1707，2026 年 11 月 12 日发布）",
+      "url": "https://www.gov.uk/government/consultations/earned-settlement",
+      "accessedAt": "2026-11-15T09:15:00Z"
+    },
+    {
+      "key": "soc-collection",
+      "organisation": "Home Office（GOV.UK）",
+      "title": "Immigration Rules: statement of changes（文件合集，2026 年 9 月 3 日更新，最新一份为 HC 584）",
+      "url": "https://www.gov.uk/government/collections/immigration-rules-statement-of-changes",
+      "accessedAt": "2026-11-15T09:15:00Z"
+    },
+    {
+      "key": "euss-lapse-official",
+      "organisation": "Home Office",
+      "title": "Apply to the EU Settlement Scheme: what you’ll get",
+      "url": "https://www.gov.uk/settled-status-eu-citizens-families/what-settled-and-presettled-status-means",
+      "accessedAt": "2026-11-21T00:00:00Z"
+    },
+    {
+      "key": "earned-response-nov21",
+      "organisation": "Home Office",
+      "title": "A Fairer Pathway to Settlement: Government response",
+      "url": "https://www.gov.uk/government/consultations/earned-settlement/outcome/a-fairer-pathway-to-settlement-government-response-to-the-consultation",
+      "accessedAt": "2026-11-21T19:41:12Z"
+    },
+    {
+      "key": "lapse-order",
+      "organisation": "legislation.gov.uk",
+      "title": "Immigration (Leave to Enter and Remain) Order 2000",
+      "url": "https://www.legislation.gov.uk/uksi/2000/1161/2026-07-06?view=extent",
+      "accessedAt": "2026-11-21T19:41:12Z"
+    },
+    {
+      "key": "euss-application",
+      "organisation": "Home Office",
+      "title": "Immigration Rules Appendix EU",
+      "url": "https://www.gov.uk/guidance/immigration-rules/immigration-rules-appendix-eu",
+      "accessedAt": "2026-11-21T19:41:12Z"
+    }
+  ],
+  "evidence": [
+    {
+      "key": "route-specific",
+      "statement": "GOV.UK 说明：永居（也叫定居）可以通过多种方式申请，取决于申请人的情况；工作签证一般要住满 5 年，部分路线为 2 年或 3 年，并可能有工资或资金要求。",
+      "supports": [
+        {
+          "sourceKey": "govuk-ilr",
+          "locator": "Main page text",
+          "excerpt": "There are different ways to apply for indefinite leave to remain based on your circumstances.",
+          "note": "2026 年 11 月 15 日核对：所注位置的规定或说明与本条陈述一致。"
+        }
+      ]
+    },
+    {
+      "key": "rights-no-limit",
+      "statement": "持有永居的人在英国居留不再有时间限制；住所在英国的，视为在英国定居。",
+      "supports": [
+        {
+          "sourceKey": "govuk-rights",
+          "locator": "If you have indefinite leave to remain or enter (ILR or ILE)",
+          "excerpt": "If you have ILR or ILE there is no longer any time limit on your ability to stay in the UK.",
+          "note": "2026 年 11 月 15 日核对：所注位置的规定或说明与本条陈述一致。"
+        }
+      ]
+    },
+    {
+      "key": "rights-work-study",
+      "statement": "持永居可以在英国从事任何行业、职业或工作，包括自雇，但须遵守相关行业法规；也可以自由学习。",
+      "supports": [
+        {
+          "sourceKey": "govuk-rights",
+          "locator": "Working in the UK; Studying in the UK",
+          "excerpt": "You are free to work in the UK in any business, profession or employment, including self-employment.",
+          "note": "2026 年 11 月 15 日核对：所注位置的规定或说明与本条陈述一致。"
+        }
+      ]
+    },
+    {
+      "key": "rights-benefits-nhs",
+      "statement": "永居让人可以在符合资格时申请福利；定居人士一般可以免费使用医疗服务。",
+      "supports": [
+        {
+          "sourceKey": "govuk-ilr",
+          "locator": "Main page text",
+          "excerpt": "apply for benefits if you’re eligible",
+          "note": "2026 年 11 月 15 日核对：所注位置的规定或说明与本条陈述一致。"
+        },
+        {
+          "sourceKey": "govuk-rights",
+          "locator": "Access to healthcare",
+          "excerpt": "Generally, healthcare is available free to a person who is settled in the UK.",
+          "note": "2026 年 11 月 15 日核对：所注位置的规定或说明与本条陈述一致。"
+        }
+      ]
+    },
+    {
+      "key": "rights-children",
+      "statement": "定居期间在英国出生的孩子，一般出生时自动成为英国公民。",
+      "supports": [
+        {
+          "sourceKey": "govuk-rights",
+          "locator": "Children born in the UK while you are settled",
+          "excerpt": "If you have a child in the UK while you are settled here they will normally be a British citizen automatically at birth.",
+          "note": "2026 年 11 月 15 日核对：所注位置的规定或说明与本条陈述一致。"
+        }
+      ]
+    },
+    {
+      "key": "rights-citizenship",
+      "statement": "可以用永居申请英国国籍；一般须在取得永居后在英国住满至少 12 个月，并满足其他要求。",
+      "supports": [
+        {
+          "sourceKey": "govuk-rights",
+          "locator": "Becoming a British citizen",
+          "excerpt": "To apply for citizenship, you must usually have been living in the UK for at least 12 months after being granted indefinite leave.",
+          "note": "2026 年 11 月 15 日核对：所注位置的规定或说明与本条陈述一致。"
+        }
+      ]
+    },
+    {
+      "key": "ilr-vs-citizenship",
+      "statement": "永居在连续离开英国、爱尔兰和皇家属地超过规定期间后失效（一般为 2 年，EUSS settled status 为 5 年，瑞士公民为 4 年）；被递解出境时失效，并可在以欺骗取得等情况下被撤销。",
+      "supports": [
+        {
+          "sourceKey": "govuk-rights",
+          "locator": "Travelling outside the UK; Can my indefinite leave to enter or remain be taken away?",
+          "excerpt": "If you are deported from the UK your indefinite leave will be invalidated.",
+          "note": "2026 年 11 月 15 日核对：所注位置的规定或说明与本条陈述一致。"
+        },
+        {
+          "sourceKey": "rules-rr",
+          "locator": "Introduction",
+          "excerpt": "of more than 2 years under the Immigration (Leave to Enter and Remain) Order 2000",
+          "note": "GOV.UK 权利页面写的是“2 年或以上”，规则引言和审核指引写的是“超过 2 年”；本文采用规则的表述，并提醒读者不要接近这个期限。"
+        }
+      ]
+    },
+    {
+      "key": "fees",
+      "statement": "2026 年 10 月 8 日收费表：在英国境内申请永居（主申请人和家属）每人 £3,226；入籍 £1,709，另加入籍仪式费 £130。",
+      "supports": [
+        {
+          "sourceKey": "fees-2026-10",
+          "locator": "Section 9: Other applications made in the UK; Section 10: Nationality; footnotes",
+          "excerpt": "The citizenship ceremony fee of £130 will be added to the application fee.",
+          "note": "2026 年 11 月 15 日核对：所注位置的规定或说明与本条陈述一致。"
+        }
+      ]
+    },
+    {
+      "key": "sw-qualifying",
+      "statement": "Skilled Worker 定居要求在英国连续 5 年持有 Skilled Worker 或规定路线的签证，以家属身份的时间不计入。",
+      "supports": [
+        {
+          "sourceKey": "rules-sw",
+          "locator": "SW 21.1–SW 21.2",
+          "excerpt": null,
+          "note": "2026 年 11 月 15 日核对：所注位置的规定或说明与本条陈述一致。"
+        }
+      ]
+    },
+    {
+      "key": "long-residence",
+      "statement": "长期居住路线要求合法在英 10 年，期间持有除访客、短期英语学生、季节工、乌克兰计划以外的签证等；学生和毕业生签证的时间可以计入。",
+      "supports": [
+        {
+          "sourceKey": "rules-lr",
+          "locator": "LR 11.1",
+          "excerpt": null,
+          "note": "2026 年 11 月 15 日核对：所注位置的规定或说明与本条陈述一致。"
+        },
+        {
+          "sourceKey": "cw-long-residence",
+          "locator": "Treatment of time spent in the UK, as a visitor, short-term student, seasonal worker or under the Ukraine Scheme",
+          "excerpt": "Any time spent in the UK with permission under any other student route (such as Appendix Student or Tier 4) does count in the qualifying period",
+          "note": "2026 年 11 月 15 日核对：所注位置的规定或说明与本条陈述一致。"
+        }
+      ]
+    },
+    {
+      "key": "table-sw",
+      "statement": "Skilled Worker 定居的合格期为 5 年。",
+      "supports": [
+        {
+          "sourceKey": "rules-sw",
+          "locator": "SW 21.1",
+          "excerpt": "The applicant must have spent a continuous period of 5 years in the UK.",
+          "note": "2026 年 11 月 15 日核对：所注位置的规定或说明与本条陈述一致。"
+        }
+      ]
+    },
+    {
+      "key": "table-partner",
+      "statement": "伴侣 5 年路线要求以伴侣入境签证或居留连续居住至少 60 个月；10 年路线要求以规定许可连续居住 10 年。",
+      "supports": [
+        {
+          "sourceKey": "rules-fm",
+          "locator": "E-ILRP.1.3",
+          "excerpt": null,
+          "note": "2026 年 11 月 15 日核对：所注位置的规定或说明与本条陈述一致。"
+        },
+        {
+          "sourceKey": "rules-sfl",
+          "locator": "SETF 3.1",
+          "excerpt": null,
+          "note": "2026 年 11 月 15 日核对：所注位置的规定或说明与本条陈述一致。"
+        }
+      ]
+    },
+    {
+      "key": "table-other-work",
+      "statement": "UK Ancestry 定居须以该路线在英 5 年；Global Talent 视背书类型为 3 年或 5 年；Innovator Founder 为 3 年。",
+      "supports": [
+        {
+          "sourceKey": "rules-ancestry",
+          "locator": "UKA 13.1",
+          "excerpt": null,
+          "note": "2026 年 11 月 15 日核对：所注位置的规定或说明与本条陈述一致。"
+        },
+        {
+          "sourceKey": "rules-gt",
+          "locator": "GT 11.1–GT 11.2",
+          "excerpt": null,
+          "note": "2026 年 11 月 15 日核对：所注位置的规定或说明与本条陈述一致。"
+        },
+        {
+          "sourceKey": "rules-innovator",
+          "locator": "INNF 18.1",
+          "excerpt": null,
+          "note": "2026 年 11 月 15 日核对：所注位置的规定或说明与本条陈述一致。"
+        }
+      ]
+    },
+    {
+      "key": "table-bno",
+      "statement": "BN(O) 定居须最近一次许可为 BN(O) 路线，并以可通向定居的路线连续在英 5 年（申请时未满 18 岁的除外）。",
+      "supports": [
+        {
+          "sourceKey": "rules-bno",
+          "locator": "HK 62.1",
+          "excerpt": null,
+          "note": "2026 年 11 月 15 日核对：所注位置的规定或说明与本条陈述一致。"
+        }
+      ]
+    },
+    {
+      "key": "table-protection",
+      "statement": "难民或人道保护定居须以难民身份或人道保护连续在英至少 5 年；对 2026 年 3 月 2 日或之后提出的庇护申请，保护许可期限改为 30 个月，解释备忘录写明 2026 年 3 月 1 日前提出申请并获 5 年许可的人仍可在 5 年后申请定居。",
+      "supports": [
+        {
+          "sourceKey": "rules-protection",
+          "locator": "STP 3.1",
+          "excerpt": null,
+          "note": "2026 年 11 月 15 日核对：所注位置的规定或说明与本条陈述一致。"
+        },
+        {
+          "sourceKey": "hc-1691",
+          "locator": "Explanatory memorandum, paras 5.5–5.9",
+          "excerpt": "Adults and accompanied and unaccompanied children granted 5 years leave as a result of an asylum claim or further submissions made by 1 March 2026 will remain eligible to apply for settlement after 5 years under Appendix Settlement Protection.",
+          "note": "2026 年 11 月 15 日核对：所注位置的规定或说明与本条陈述一致。"
+        }
+      ]
+    },
+    {
+      "key": "table-private-life",
+      "statement": "私人生活路线定居：以儿童或年轻成人身份获批的一般为 5 年；18 岁以上的一般为 10 年，规则另有例外；英国出生的孩子须连续居住至少 7 年。",
+      "supports": [
+        {
+          "sourceKey": "rules-private-life",
+          "locator": "PL 13.2; PL 14.1–PL 14.2A",
+          "excerpt": null,
+          "note": "2026 年 11 月 15 日核对：所注位置的规定或说明与本条陈述一致。"
+        }
+      ]
+    },
+    {
+      "key": "table-euss",
+      "statement": "EU Settlement Scheme 一般在连续居住 5 年后可获 settled status，申请免费。",
+      "supports": [
+        {
+          "sourceKey": "govuk-euss",
+          "locator": "Main page text",
+          "excerpt": "You’ll usually be eligible for settled status once you’ve lived in the UK for 5 years in a row. It’s free to apply.",
+          "note": "2026 年 11 月 15 日核对：所注位置的规定或说明与本条陈述一致。"
+        }
+      ]
+    },
+    {
+      "key": "common-validity",
+      "statement": "各定居路线的有效性要求通常包括：网上用指定表格申请、交费、按要求提供生物信息、提供证明身份和国籍的护照或旅行证件，申请时身在英国。",
+      "supports": [
+        {
+          "sourceKey": "rules-lr",
+          "locator": "LR 9.1–LR 9.3",
+          "excerpt": null,
+          "note": "2026 年 11 月 15 日核对：所注位置的规定或说明与本条陈述一致。"
+        },
+        {
+          "sourceKey": "rules-sw",
+          "locator": "SW 19.1–SW 19.2",
+          "excerpt": null,
+          "note": "2026 年 11 月 15 日核对：所注位置的规定或说明与本条陈述一致。"
+        }
+      ]
+    },
+    {
+      "key": "common-suitability",
+      "statement": "定居申请人不得触发 Part Suitability 的拒签理由，且不得违反移民法或处于移民保释（规则列明的逾期例外除外）。",
+      "supports": [
+        {
+          "sourceKey": "rules-lr",
+          "locator": "LR 10.1–LR 10.2",
+          "excerpt": null,
+          "note": "2026 年 11 月 15 日核对：所注位置的规定或说明与本条陈述一致。"
+        },
+        {
+          "sourceKey": "rules-sfl",
+          "locator": "SETF 2.1–SETF 2.7",
+          "excerpt": null,
+          "note": "2026 年 11 月 15 日核对：所注位置的规定或说明与本条陈述一致。"
+        }
+      ]
+    },
+    {
+      "key": "common-cr",
+      "statement": "Appendix Continuous Residence 适用于 Skilled Worker、UK Ancestry、Global Talent、Innovator Founder、BN(O)、长期居住、Settlement Family Life 等路线；要求任何 12 个月内离境不超过 180 天（规定例外除外）。Appendix FM 的 5 年伴侣路线不在该附录的适用范围内。",
+      "supports": [
+        {
+          "sourceKey": "rules-cr",
+          "locator": "Scope statement; CR 3.1",
+          "excerpt": null,
+          "note": "2026 年 11 月 15 日核对：所注位置的规定或说明与本条陈述一致。"
+        }
+      ]
+    },
+    {
+      "key": "common-english",
+      "statement": "多数路线的定居英语要求在 2027 年 3 月 26 日或之后申请时提高到 B2；变更清单不包括 BN(O) 路线，BN(O) 定居规则仍要求 B1。",
+      "supports": [
+        {
+          "sourceKey": "hc-1691",
+          "locator": "Explanatory memorandum, paras 5.60–5.62",
+          "excerpt": null,
+          "note": "2026 年 11 月 15 日核对：所注位置的规定或说明与本条陈述一致。"
+        },
+        {
+          "sourceKey": "rules-bno",
+          "locator": "HK 60.1",
+          "excerpt": "Unless an exemption applies, the applicant must show English language ability on the Common European Framework of Reference for Languages in speaking and listening to at least level B1.",
+          "note": "2026 年 11 月 15 日核对：所注位置的规定或说明与本条陈述一致。"
+        }
+      ]
+    },
+    {
+      "key": "es-not-in-force",
+      "statement": "截至 2026 年 11 月 21 日，政府已公布总体政策框架，具体移民规则和生效安排仍待落实.",
+      "supports": [
+        {
+          "sourceKey": "es-response",
+          "locator": "Introduction: This response",
+          "excerpt": "Before implementation, the government will publish further guidance setting out additional technical and operational detail",
+          "note": "2026 年 11 月 15 日核对：所注位置的规定或说明与本条陈述一致。"
+        },
+        {
+          "sourceKey": "soc-collection",
+          "locator": "List of documents",
+          "excerpt": null,
+          "note": "2026 年 11 月 15 日核对：合集中最新的一份为 HC 584（2026 年 9 月 3 日），之后没有新的移民规则修改声明。"
+        },
+        {
+          "sourceKey": "earned-response-nov21",
+          "locator": "This response and chapter 8",
+          "excerpt": null,
+          "note": "截至 2026 年 11 月 21 日，政府已公布总体政策框架，具体移民规则和生效安排仍待落实"
+        }
+      ]
+    },
+    {
+      "key": "euss-lapse-official",
+      "statement": "查连续离境年限，瑞士公民及其家属适用不同规则。",
+      "supports": [
+        {
+          "sourceKey": "euss-lapse-official",
+          "locator": "If you want to spend time outside the UK",
+          "excerpt": null,
+          "note": "For settled status, check the consecutive absence period and the special Swiss rule."
+        }
+      ]
+    },
+    {
+      "key": "lapse-order",
+      "statement": "请核对你取得居留许可的法律依据。法定期限计算连续在英国、海峡群岛及马恩岛以外的时间。第 13A 至 13C 条对特定海外派驻或陪同派驻人员的时间设有例外，包括某些武装部队、王室公务和英国文化教育协会正式编制派驻。是否适用取决于获批许可及个人情况。",
+      "supports": [
+        {
+          "sourceKey": "lapse-order",
+          "locator": "Articles 13(4), 13A, 13B and 13C",
+          "excerpt": null,
+          "note": "请核对你取得居留许可的法律依据。法定期限计算连续在英国、海峡群岛及马恩岛以外的时间。第 13A 至 13C 条对特定海外派驻或陪同派驻人员的时间设有例外，包括某些武装部队、王室公务和英国文化教育协会正式编制派驻。是否适用取决于获批许可及个人情况。"
+        }
+      ]
+    },
+    {
+      "key": "euss-application",
+      "statement": "Pre-settled status 是有限期居留。许可自动失效、可能被取消，以及转为 settled status 需要的合资格居住期，是三个不同的问题。申请前查 Appendix EU，确认离境时间怎样计算。",
+      "supports": [
+        {
+          "sourceKey": "euss-application",
+          "locator": "Annex 1: continuous qualifying period",
+          "excerpt": null,
+          "note": "Pre-settled status 是有限期居留。许可自动失效、可能被取消，以及转为 settled status 需要的合资格居住期，是三个不同的问题。申请前查 Appendix EU，确认离境时间怎样计算。"
+        }
+      ]
+    }
+  ],
+  "status": "DRAFT",
+  "publishedAt": null,
+  "updatedAt": "2026-11-21T19:41:12Z"
+}

@@ -1,0 +1,41 @@
+{
+  "slug": "settlement-ilr-overview",
+  "category": "settlement",
+  "status": "DRAFT",
+  "sourceLocale": "zh-CN",
+  "sourcesVerifiedOn": "2026-11-21",
+  "editorialStatus": "DRAFT. Independent AI editorial and locale recheck complete; owner publication approval pending. See follow-up review.",
+  "canonicalization": "guide-content-v1",
+  "variants": [
+    {
+      "locale": "en",
+      "path": "en.json",
+      "sha256": "2fc67e48744ff209e5864ba18d9834293873888f48a639a9a6c93f83724d0b74",
+      "contentSha256": "487db6b77a921cfae55aed44ef82d7ca173cfa0a459177ca1da652270d4710e8"
+    },
+    {
+      "locale": "zh-CN",
+      "path": "zh-CN.json",
+      "sha256": "db62ed5f81f70f8bcd80288af8cc6d2e78fa84714e694a6d2b604793b739d715",
+      "contentSha256": "437f992e991f8fdd4e07c031aa1c054b4bf8c78de7f1cd59b1a28b885f57b45f"
+    },
+    {
+      "locale": "zh-TW",
+      "path": "zh-TW.json",
+      "sha256": "7703b17080682c668054076165324b5f844ae33b29b410b65114a83a739ff8b0",
+      "contentSha256": "587261cb4f28d559a87ea903ae8c413142bca56fa351311f8b610f00ae4d8aa1"
+    },
+    {
+      "locale": "ur",
+      "path": "ur.json",
+      "sha256": "1f9f1e07bf6fbbdeac10a30712c4f520e9f114e5367d6e9134db8dad318a34c0",
+      "contentSha256": "ef3afd7cc5287d04409dfb686a12af98914dcf5859bb28529bf2b4371b8d3946"
+    },
+    {
+      "locale": "hi",
+      "path": "hi.json",
+      "sha256": "35e6e2cc8c91ccc26b4eb5ca2177b51c4ff2c847950fcce7b753e9fc167e715d",
+      "contentSha256": "554649a0923b9f2c6d843d4e438e43efd3d5f6aa6c9d809c182afb14fe230686"
+    }
+  ]
+}
