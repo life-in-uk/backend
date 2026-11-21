@@ -6,6 +6,8 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import tools.jackson.databind.json.JsonMapper;
 import tools.jackson.databind.node.ArrayNode;
 import tools.jackson.databind.node.ObjectNode;
@@ -51,6 +53,34 @@ class GuideQualityGateTest {
         assertThat(text).contains("synthetic-evidence-guide", "00000000-0000-0000-0000-0000000000aa",
                 GuideContentDigestTest.SYNTHETIC_EVIDENCE_DIGEST, "Checklist standard-v1", "NOT checked by this tool",
                 "official-a", "example-application", "RESULT: NO BLOCKING FAILURES (human checklist still required)");
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "最后更新：2026 年 10 月 5 日",
+            "最后更新及来源核验：2026 年 10 月 5 日。",
+            "最後更新：2026 年 10 月 5 日。",
+            "**Last updated:** 5 October 2026.",
+            "آخری تازہ کاری: 5 اکتوبر 2026۔",
+            "अंतिम अपडेट: ५ अक्टूबर २०२६।",
+            "Last updated: 2026-10-05"
+    })
+    void acceptsADatedLastUpdatedLineInEveryGuideLocale(String dateLine) throws Exception {
+        var report = check(draft(root -> root.put("content", root.get("content").stringValue() + "\n" + dateLine)));
+        assertThat(codes(report, WARNING)).doesNotContain("LAST_UPDATED_MISSING");
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "See when this was last updated: 5 October 2026.",
+            "Last updated: 2026",
+            "最後更新：未確認",
+            "أكتوبر 2026",
+            "अंतिम अपडेट:"
+    })
+    void keepsTheWarningForAnUndatedOrInlineMention(String line) throws Exception {
+        var report = check(draft(root -> root.put("content", root.get("content").stringValue() + "\n" + line)));
+        assertThat(codes(report, WARNING)).contains("LAST_UPDATED_MISSING");
     }
 
     @Test

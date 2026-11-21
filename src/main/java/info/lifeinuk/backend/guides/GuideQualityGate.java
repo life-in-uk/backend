@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Pattern;
 import org.springframework.stereotype.Component;
 
 /**
@@ -54,6 +55,13 @@ class GuideQualityGate {
             FAMILY_VISA_CATEGORY, WORK_VISA_CATEGORY, SETTLEMENT_CATEGORY, UNIVERSITY_CATEGORY);
     static final List<String> EDITORIAL_MARKERS = List.of("[EDITORIAL", "[EVIDENCE:", "TODO", "待核对");
     static final String LAST_UPDATED_MARKER = "最后更新";
+    private static final Pattern LAST_UPDATED_LINE = Pattern.compile(
+            "^\\h*(?:\\*\\*)?(?:" + LAST_UPDATED_MARKER + "(?:及来源核验)?|最後更新|Last updated|آخری تازہ کاری|अंतिम अपडेट)"
+                    + "\\h*[:：](?:\\*\\*)?\\h*(?:"
+                    + "\\p{Nd}{4}\\h*年\\h*\\p{Nd}{1,2}\\h*月\\h*\\p{Nd}{1,2}\\h*日"
+                    + "|\\p{Nd}{4}-\\p{Nd}{2}-\\p{Nd}{2}"
+                    + "|\\p{Nd}{1,2}\\h+[\\p{L}\\p{M}]+\\h+\\p{Nd}{4})(?=$|[\\h*.。۔।])",
+            Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);
     private static final String EVIDENCE_LINK = "(#guide-evidence-";
 
     private final GuideRevisionService revisions;
@@ -121,9 +129,9 @@ class GuideQualityGate {
             }
         }
 
-        if (!definition.content().contains(LAST_UPDATED_MARKER)) {
+        if (!LAST_UPDATED_LINE.matcher(definition.content()).find()) {
             findings.add(new Finding(Severity.WARNING, "LAST_UPDATED_MISSING",
-                    "Content has no \"" + LAST_UPDATED_MARKER + "\" (last updated) line"));
+                    "Content has no labelled last-updated date line"));
         }
         return new Report(revision, definition, checklist, publicState, List.copyOf(findings));
     }
