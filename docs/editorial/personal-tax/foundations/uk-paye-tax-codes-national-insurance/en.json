@@ -1,0 +1,199 @@
+{
+  "slug": "uk-paye-tax-codes-national-insurance",
+  "category": "money",
+  "title": "UK payslips in 2026/27: PAYE, tax codes and National Insurance",
+  "summary": "Check the tax and National Insurance on your payslip, work through a £3,000 monthly salary and fix a suspect tax code.",
+  "content": "# UK payslips in 2026/27: PAYE, tax codes and National Insurance\n\nLast updated: 2026-11-21\n\n## Start with gross pay, then check the deductions\nFor employees in the UK, this Guide uses **6 April 2026 to 5 April 2027**. Pay As You Earn (PAYE) is how HMRC collects Income Tax through your employer. Employee Class 1 National Insurance (NI) is a separate deduction. Gross pay is before deductions. Taxable pay can differ from gross pay. Wages and bonuses generally count, and some benefits are taxable. The standard Personal Allowance is **£12,570**. It normally reduces by £1 for every £2 of adjusted net income above **£100,000**. Income Tax applies in bands to taxable income after allowances. [HMRC allowances and bands](#guide-evidence-tax-bands)\n\nEngland and Northern Ireland use the main employment tax bands. Wales sets its own rates and, for 2026/27, the resulting employment rates match England and Northern Ireland. Scotland uses its own bands for employment income. The taxpayer regime generally follows where you live, so do not choose it from your employer’s address. **S** and **C** at the start of an eligible code indicate Scottish and Welsh Income Tax respectively. A code is an instruction to payroll. Two jobs may have different codes. [Rates by nation](#guide-evidence-pay-period) · [Tax code letters](#guide-evidence-codes)\n\n## Worked example: £3,000 a month\nOne job throughout 2026/27, equal pay every month, standard allowance, NI category A, and no benefits, pension deductions, student loan or other income. Annual gross is **£36,000** and taxable pay is **£23,430**. In England, Wales and Northern Ireland this is in the 20% band and annual Income Tax is **£4,686.00**. In Scotland apply 19% to £3,967, 20% to the next £12,989 and 21% to the remaining £6,474. That gives **£4,711.07**. [Income Tax bands](#guide-evidence-tax-bands)\n\nIn this example employee NI is **(£3,000 − £1,048) × 8% = £156.16 a month** in all four nations. Above £4,189 per month the excess is normally charged at 2% in category A. NI is worked out by pay period for typical employees. Subtracting one twelfth of the annual Income Tax and one month of NI gives an illustrative **£2,453.34** outside Scotland and **£2,451.25** in Scotland. The actual payslip can differ because PAYE uses your code and payroll rules. [Monthly NI and PAYE thresholds](#guide-evidence-pay-period)\n\n## If the payslip looks wrong\n1. For a new job, give the employer your P45 or complete the starter checklist if you do not have it. Keep payslips and, for a job you still hold at year-end, your P60. An emergency code ending W1, M1 or X can tax the current period on its own. Check it again after HMRC gets the right details. [Emergency codes](#guide-evidence-emergency)\n2. If gross pay, a payroll deduction or your NI category looks wrong, ask payroll. For the tax code, open HMRC’s current-year Income Tax service, sign in, select the employment and check estimated pay, benefits and whether a previous job is still shown. Update inaccurate information or contact HMRC. Check the next payslip. If the year has ended, use HMRC’s refund checker or follow any calculation it sends. [Current-year service](#guide-evidence-check-pay) · [Refund route](#guide-evidence-refund)\n3. Check eligible expenses you paid for yourself, such as qualifying uniform care or an approved professional subscription. Ordinary commuting and costs reimbursed in full do not qualify. Claim using HMRC’s employee expenses service, or through your return if you file one. A deduction normally reduces taxable income. For example, a qualifying £60 deduction wholly within a 20% band in 2026/27 saves £12 of Income Tax. [Expenses rules](#guide-evidence-expenses)\n\nIf employment is your only income and the correct tax is taken through PAYE, you will often have nothing extra to file. Follow any HMRC notice and check other income separately. Seek help if you worked abroad, had several jobs with unresolved codes or received a tax demand you cannot reconcile. See [Self Assessment](/en/money/uk-self-assessment-register-file-pay) and [applying for an NI number](/en/money/national-insurance-number-newcomers).\n",
+  "status": "DRAFT",
+  "publishedAt": null,
+  "updatedAt": "2026-11-21T00:00:00Z",
+  "sources": [
+    {
+      "key": "tax-bands",
+      "organisation": "HMRC",
+      "title": "Income Tax rates and allowances for current and previous tax years",
+      "url": "https://www.gov.uk/government/publications/rates-and-allowances-income-tax/income-tax-rates-and-allowances-current-and-past",
+      "accessedAt": "2026-11-21T00:00:00Z"
+    },
+    {
+      "key": "scottish-budget",
+      "organisation": "Scottish Government",
+      "title": "Scottish Budget 2026 to 2027: tax policy",
+      "url": "https://www.gov.scot/publications/scottish-budget-2026-2027/pages/4/",
+      "accessedAt": "2026-11-21T00:00:00Z"
+    },
+    {
+      "key": "welsh-budget",
+      "organisation": "Welsh Government",
+      "title": "Final Budget Report 2026 to 2027",
+      "url": "https://www.gov.wales/sites/default/files/publications/2026-01/final-budget-2026-2027-report.pdf",
+      "accessedAt": "2026-11-21T00:00:00Z"
+    },
+    {
+      "key": "pay-period",
+      "organisation": "HMRC",
+      "title": "Rates and thresholds for employers 2026 to 2027",
+      "url": "https://www.gov.uk/guidance/rates-and-thresholds-for-employers-2026-to-2027",
+      "accessedAt": "2026-11-21T00:00:00Z"
+    },
+    {
+      "key": "codes",
+      "organisation": "HMRC",
+      "title": "Tax codes: what your tax code means",
+      "url": "https://www.gov.uk/tax-codes/what-your-tax-code-means",
+      "accessedAt": "2026-11-21T00:00:00Z"
+    },
+    {
+      "key": "welsh-status",
+      "organisation": "HMRC",
+      "title": "Income Tax in Wales",
+      "url": "https://www.gov.uk/welsh-income-tax",
+      "accessedAt": "2026-11-21T00:00:00Z"
+    },
+    {
+      "key": "emergency",
+      "organisation": "HMRC",
+      "title": "Tax codes: emergency tax codes",
+      "url": "https://www.gov.uk/tax-codes/emergency-tax-codes",
+      "accessedAt": "2026-11-21T00:00:00Z"
+    },
+    {
+      "key": "pay-records",
+      "organisation": "HMRC",
+      "title": "Keeping your pay and tax records: employees",
+      "url": "https://www.gov.uk/keeping-your-pay-tax-records/employees-and-limited-company-directors",
+      "accessedAt": "2026-11-21T00:00:00Z"
+    },
+    {
+      "key": "check-pay",
+      "organisation": "HMRC",
+      "title": "Check your Income Tax for the current year",
+      "url": "https://www.gov.uk/check-income-tax-current-year",
+      "accessedAt": "2026-11-21T00:00:00Z"
+    },
+    {
+      "key": "expenses",
+      "organisation": "HMRC",
+      "title": "Claim tax relief for your job expenses",
+      "url": "https://www.gov.uk/tax-relief-for-employees/overview",
+      "accessedAt": "2026-11-21T00:00:00Z"
+    },
+    {
+      "key": "refund",
+      "organisation": "HMRC",
+      "title": "Check how to claim a tax refund",
+      "url": "https://www.gov.uk/claim-tax-refund",
+      "accessedAt": "2026-11-21T00:00:00Z"
+    }
+  ],
+  "evidence": [
+    {
+      "key": "tax-bands",
+      "statement": "The 2026/27 standard Personal Allowance is £12,570. Tax on earnings uses the applicable bands.",
+      "supports": [
+        {
+          "sourceKey": "tax-bands",
+          "locator": "Personal allowances, UK and Scottish tables for 2026 to 2027",
+          "excerpt": null,
+          "note": "The 2026/27 standard Personal Allowance is £12,570. Tax on earnings uses the applicable bands."
+        },
+        {
+          "sourceKey": "scottish-budget",
+          "locator": "Scottish Income Tax bands",
+          "excerpt": null,
+          "note": "The 2026/27 standard Personal Allowance is £12,570. Tax on earnings uses the applicable bands."
+        },
+        {
+          "sourceKey": "welsh-budget",
+          "locator": "Welsh Rates of Income Tax",
+          "excerpt": null,
+          "note": "The 2026/27 standard Personal Allowance is £12,570. Tax on earnings uses the applicable bands."
+        }
+      ]
+    },
+    {
+      "key": "pay-period",
+      "statement": "For category A monthly pay in 2026/27, employee NI uses the £1,048 and £4,189 thresholds and the 8% and 2% rates.",
+      "supports": [
+        {
+          "sourceKey": "pay-period",
+          "locator": "Employee Class 1 thresholds and rates",
+          "excerpt": null,
+          "note": "For category A monthly pay in 2026/27, employee NI uses the £1,048 and £4,189 thresholds and the 8% and 2% rates."
+        }
+      ]
+    },
+    {
+      "key": "codes",
+      "statement": "Tax code prefixes S and C identify the Scottish and Welsh PAYE regimes. Codes can differ between jobs.",
+      "supports": [
+        {
+          "sourceKey": "codes",
+          "locator": "Letters in your tax code",
+          "excerpt": null,
+          "note": "Tax code prefixes S and C identify the Scottish and Welsh PAYE regimes. Codes can differ between jobs."
+        },
+        {
+          "sourceKey": "welsh-status",
+          "locator": "When you pay Welsh Income Tax",
+          "excerpt": null,
+          "note": "Tax code prefixes S and C identify the Scottish and Welsh PAYE regimes. Codes can differ between jobs."
+        }
+      ]
+    },
+    {
+      "key": "emergency",
+      "statement": "W1, M1 and X indicate an emergency code that generally calculates tax for the current pay period alone.",
+      "supports": [
+        {
+          "sourceKey": "emergency",
+          "locator": "When an emergency code is used",
+          "excerpt": null,
+          "note": "W1, M1 and X indicate an emergency code that generally calculates tax for the current pay period alone."
+        },
+        {
+          "sourceKey": "pay-records",
+          "locator": "Income from employment",
+          "excerpt": null,
+          "note": "W1, M1 and X indicate an emergency code that generally calculates tax for the current pay period alone."
+        }
+      ]
+    },
+    {
+      "key": "check-pay",
+      "statement": "Check employment, estimated income and tax code in HMRC’s current-year tax service.",
+      "supports": [
+        {
+          "sourceKey": "check-pay",
+          "locator": "Check your tax code and tell HMRC about changes",
+          "excerpt": null,
+          "note": "Check employment, estimated income and tax code in HMRC’s current-year tax service."
+        }
+      ]
+    },
+    {
+      "key": "expenses",
+      "statement": "Qualifying unreimbursed job expenses may give Income Tax relief. Return filers claim through their return.",
+      "supports": [
+        {
+          "sourceKey": "expenses",
+          "locator": "When you can claim and how to get relief",
+          "excerpt": null,
+          "note": "Qualifying unreimbursed job expenses may give Income Tax relief. Return filers claim through their return."
+        }
+      ]
+    },
+    {
+      "key": "refund",
+      "statement": "The correct refund route depends on the reason and whether the year has ended.",
+      "supports": [
+        {
+          "sourceKey": "refund",
+          "locator": "Choose a refund route",
+          "excerpt": null,
+          "note": "The correct refund route depends on the reason and whether the year has ended."
+        }
+      ]
+    }
+  ]
+}

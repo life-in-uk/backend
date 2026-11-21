@@ -1,0 +1,41 @@
+{
+  "slug": "uk-paye-tax-codes-national-insurance",
+  "category": "money",
+  "status": "DRAFT",
+  "sourceLocale": "zh-CN",
+  "sourcesVerifiedOn": "2026-11-21",
+  "editorialStatus": "DRAFT · Editor and fluent-language review pending. No Production approval.",
+  "canonicalization": "guide-content-v1",
+  "variants": [
+    {
+      "locale": "en",
+      "path": "en.json",
+      "sha256": "33742fbb62f3f07a25de254a60475a7aaacc19bb376d6ec6c6bef05b1c783dfd",
+      "contentSha256": "a13e2ad2a8be1a3dcdf4b3c28d2e9d7c8a482c1ecd9154a10befae6a23b76fa3"
+    },
+    {
+      "locale": "zh-CN",
+      "path": "zh-CN.json",
+      "sha256": "4432d5f5ae1c4de3e8282920d8bf31637c4aba6ee885f2ca2b539bb094a4188f",
+      "contentSha256": "b3c28f08e44c4fdf34069e84ed100045a32745ee07f4518c090108ee961c3550"
+    },
+    {
+      "locale": "zh-TW",
+      "path": "zh-TW.json",
+      "sha256": "c896674a286a6de5a147bef62caeb095997c64b71136a028335ce9045abfc41b",
+      "contentSha256": "7529feeb95db8173602360273a78aaf78f32b6843f96afabae7356423b7f233b"
+    },
+    {
+      "locale": "ur",
+      "path": "ur.json",
+      "sha256": "f6cd2d8eeb9f23abd1f1cfd45dbc9e33394b518d0d89947449d35c1fbed434d8",
+      "contentSha256": "1ffadb148df1e04888ad427c80fbb3bac659b053371a956e4c7babdf03a7846e"
+    },
+    {
+      "locale": "hi",
+      "path": "hi.json",
+      "sha256": "f943c64546de8129986a1d6db25c80bf34b6d9225ec85f2282afc1ec08e79676",
+      "contentSha256": "4b356e5b9fda823b8b01424a87973b3481e8c4a0ef0a8db43ee50c1951c4c36a"
+    }
+  ]
+}
