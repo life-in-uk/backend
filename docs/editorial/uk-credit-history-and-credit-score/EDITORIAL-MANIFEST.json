@@ -4,38 +4,38 @@
   "status": "DRAFT",
   "sourceLocale": "zh-CN",
   "sourcesVerifiedOn": "2026-11-21",
-  "editorialStatus": "pending-independent-review",
+  "editorialStatus": "source-and-language-reviewed-awaiting-owner-approval",
   "canonicalization": "guide-content-v1",
   "variants": [
     {
       "locale": "zh-CN",
       "path": "drafts/zh-CN.json",
-      "sha256": "f98d56bb79e1a724b14e21478fc1a94eaa4d13f3134400388479cc5dec4e9255",
-      "contentSha256": "c2d128235db379f97b874bf5e89d3e1548c9619396788526208a41092e1b90d7"
+      "sha256": "7fb206e908a7a003ec545ea5d9bd29a7eab2c04a9e892b2e3f0867dfed73bd80",
+      "contentSha256": "9a193c46a18843e41435d592771cc6fe4d4876564c0f245da3c2650ea70485b3"
     },
     {
       "locale": "zh-TW",
       "path": "drafts/zh-TW.json",
-      "sha256": "b3a76d18df5d90f0c70e1fd1630db953ff0c61c4d464f97e7b3889a634678c1b",
-      "contentSha256": "9d4cc583aa1c06130c7a0f83518c00b0473eccf40ec4db67223a7fe952d4d692"
+      "sha256": "c268e22411d49b60891a1b6a6e5e1aa9db9acf3180b45b3870ae20bb887ed516",
+      "contentSha256": "948b5898d1f66f3c6f2b3e250ef254e4c2b9aab32e01eb8dff77db24294ad0f1"
     },
     {
       "locale": "en",
       "path": "drafts/en.json",
-      "sha256": "6971797bde3468d608f1a56a5a13bc903478ecdc29ec63e34c3ff8f8a945d544",
-      "contentSha256": "122e8670c5851e6d7025ecb7d1c6095f258b4a4d455234a388192ae58c502df7"
+      "sha256": "3c51a1ddb6c41c9fe95396b7fdbdede998c5a8da22b8bbe3f40b1453b825ef4c",
+      "contentSha256": "e1b716eee915ab46591bc4e12c5a9c4616650cddf95607a3e9b39b9a20a1e56d"
     },
     {
       "locale": "ur",
       "path": "drafts/ur.json",
-      "sha256": "55f7933093aa0a49c7638672c5330444150135252891eb5e545ca199875dc9fe",
-      "contentSha256": "68f5046ba2c82877f0d5404a4bad314e2f6a5a438ea52d605906c854643af329"
+      "sha256": "7a16e2cdda9751aec28ddc48db401f881eaef684507e641828c9a9d9aa98082a",
+      "contentSha256": "17922073496988815d54b106f38067e054bcc423fe727d2d7ac2eb43738a6311"
     },
     {
       "locale": "hi",
       "path": "drafts/hi.json",
-      "sha256": "54519a0adbd3b465ed855d59b6ab3989b8a73954a22fda1238180b46a732a9fe",
-      "contentSha256": "94732405e0d12e8d1a2b5ea86f80e34fe1b7ea36f77dcf05ef5234a40bb3d246"
+      "sha256": "71ca7824af5b311b80183af0ed647cca6889acb4d30d14f205f3191cce69da5d",
+      "contentSha256": "e1b9802b1e06dcc6315784fe9e7825eb4da20146f0e2b9a90de02a659c6594f4"
     }
   ]
 }

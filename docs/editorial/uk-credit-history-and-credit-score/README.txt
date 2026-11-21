@@ -1,5 +1,5 @@
 UK credit history and credit scores for newcomers
-Editorial handoff · 21 November 2026 · DRAFT for review
+Editorial handoff · 21 November 2026 · DRAFT awaiting owner approval
 
 Guide slug and review scope
 
@@ -30,14 +30,19 @@ Duplicate check
   docs/seo/content-gap-backlog.md, a new Money Guide candidate. Searches of
   backend and frontend files, accessible saved Guide drafts and exports,
   branches and pull requests found no existing dedicated Guide.
-- The owner-only Production editorial inventory was not accessible through
-  the public endpoint. Check the protected editorial inventory for this
-  slug and any equivalent private draft before creating a Production batch.
+- A protected Production inventory check on 21 November used a read-only
+  transaction and returned metadata only. It found no exact slug in 68
+  Guide records, 75 source revisions, 74 content batches or 370 locale
+  revisions. The only related title or metadata match was the existing
+  renting-guarantors Guide in Renting. The two existing Money slugs were
+  the bank account and National Insurance number Guides. Repeat the
+  duplicate check if import is deferred and other editorial work intervenes.
 
 Source and language review
 
-- 20 sources were checked against the publisher's current material. Each
-  variant uses the same eight evidence keys and canonical source metadata.
+- The final editorial pass checked all 20 sources against the publishers'
+  current material on 21 November 2026. Each variant uses the same eight
+  evidence keys and canonical source metadata.
 - ICO identifies the three main consumer agencies. MoneyHelper also lists
   Crediva. All four statutory report routes are linked in the body. Some
   publishers reject direct command-line requests. Their published pages were
@@ -53,27 +58,31 @@ Source and language review
 - For a future factual revision, distinguish late-payment visibility from the
   default date and court judgment date. Keep the England and Wales CCJ example
   separate from Scottish decrees and Northern Ireland procedures.
-- English and the four translations have been checked for section, source,
-  factual and terminology parity at draft stage. Independent editorial review
-  and fluent local-language review are pending, especially Urdu and Hindi.
-  Review mixed-direction text, acronyms and links in Urdu in the existing
-  preview. Keep stable source keys and English source locators across locales.
+- The final language pass checked all five variants for meaning, terminology
+  and consistency. It clarified that the statutory report and consumer score
+  are separate, tightened the electoral and judgment timing wording, and
+  smoothed Urdu and Hindi phrasing. This was a separate pass by the drafting
+  assistant. No external human or native-speaker sign-off is recorded.
+  A local fixture confirmed Urdu RTL and the linked English agency names.
 - Report any factual or translation correction before locking the source
   revision. Recompute the hashes after any edit.
 
 Technical checks and publication boundary
 
 - The existing Java GuideImportReader parsed all five DRAFT files. It checked
-  evidence references and computed the canonical digests. An in-memory
-  standard-v1 quality check had zero blocking findings. The four translations
-  carry localized dated source lines. The source quality check recognizes the
-  Simplified Chinese last-updated marker and flags its absence if run on
-  translations.
+  evidence references and computed the canonical digests. The standard-v1
+  quality check passed all five with no warnings or blocking findings. The
+  date warning now recognizes dated labels in all five locales.
 - GuideImportReaderTest, GuideEvidenceValidationTest, GuideContentDigestTest
-  and GuideQualityGateTest passed locally (136 tests).
+  and GuideQualityGateTest passed locally (148 tests).
+- The existing Money & Finance hub listed all five published test fixtures
+  under Money; all article routes had the expected canonical URL and hreflang.
+  The draft was absent from the mocked published list. No frontend code change
+  is required. Run the normal frontend release build after approved publication
+  to generate the five public detail pages.
 - The files live under docs/editorial. The manifest is a review inventory.
   The package is outside the Education and Household release allowlists.
-- After independent source and language review, use the existing owner
+- After owner approval of the reviewed package, use the existing owner
   editorial process for a private Money batch. Lock the reviewed zh-CN source,
   verify its revision and hash, attach all four reviewed locale variants to
   that exact source revision, and check their server revision IDs and hashes.
