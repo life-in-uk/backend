@@ -4,38 +4,38 @@
   "status": "DRAFT",
   "sourceLocale": "zh-CN",
   "sourcesVerifiedOn": "2026-11-21",
-  "editorialStatus": "Editorial review required. Urdu and Hindi fluent-language review outstanding.",
+  "editorialStatus": "DRAFT. Independent AI editorial and locale recheck complete; owner publication approval pending. See follow-up review.",
   "canonicalization": "guide-content-v1",
   "variants": [
     {
       "locale": "en",
       "path": "en.json",
-      "sha256": "ecf115ba2ada187af0bfaba9d8a6a8325f240090c65e1b7cf70613bddb95053a",
-      "contentSha256": "959bf3bfea498f72c2847ddaebb59d7796267a5db484a72772da6ba99c6e4b57"
+      "sha256": "422f9b88c42eda6dacf7787948b472a4950f62884be406171b8536a8e30de24a",
+      "contentSha256": "e112aee5a21fd73ee94ce1f519585dc169c7ea9cf09c7b0d36e8788c4e7f56fa"
     },
     {
       "locale": "zh-CN",
       "path": "zh-CN.json",
-      "sha256": "5de94316e07dd4b74f2128f2442c4c4a7f59f41cd1dd40bc869a9e28ce4ff5d1",
-      "contentSha256": "4073c3f5574ac637dbdf3f3481d25b3f1f115d5a9cf250c512b3216417d29997"
+      "sha256": "38b4b1758df181f8472090a814193b0c17869c5c36c6af2a76317524024504b1",
+      "contentSha256": "53965ac4645e3768d1e85b4c1b2facb6c4d46d622ec155aa6538cbea87b2d6ab"
     },
     {
       "locale": "zh-TW",
       "path": "zh-TW.json",
-      "sha256": "637d9b06a56f9ccfb6638c275e3568ab9e2d5ae8df5525b25c9289be7f050d71",
-      "contentSha256": "b8392be1f9c75ba84fd559f9392d8cbff6728f69da8a3922ff7f96af32c3868c"
+      "sha256": "54aa92bc4bd33331f6304dbd8580b4d48249c8416d55bca45dd3a79d1af9dd5f",
+      "contentSha256": "39b9fb7addf88ac8fb3b687a0d75972e9de166077c790561e6f378330a1e3249"
     },
     {
       "locale": "ur",
       "path": "ur.json",
-      "sha256": "ce4dab4ff30003a21361794eb7de51472e29754f7fdebb5b8aa280b25aa95b80",
-      "contentSha256": "1f795d6ee8e51d9ee7c3d788b329561f89735cb238272b92c1976ed7c4af7cfa"
+      "sha256": "74a7b1d0659dd11819cfdc9124d5986c795e786919aeac83efe5a64dd9e595ed",
+      "contentSha256": "5a879cd1da04ff9cfbf2aea831615a882190b847a8ef9164c22c5b124451b951"
     },
     {
       "locale": "hi",
       "path": "hi.json",
-      "sha256": "8d4aa5039d9cda612e3f5bee3cabe858defc0e65e0c87b5d4382df07518398bd",
-      "contentSha256": "185e93b1d74e3803b61843c7d3f8445f67c112537ec34021b1004c9acf6a7ed4"
+      "sha256": "10dc2c22c71121df171f15af388ec9e9b15af2b5520e1969a58de19bf767af9c",
+      "contentSha256": "0b1f6a0d039cc14a6b404db9ab500b4e78971f25ed67b2511b1966f55563d5d2"
     }
   ]
 }
