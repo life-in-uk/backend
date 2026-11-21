@@ -1,0 +1,738 @@
+{
+  "slug": "open-uk-bank-account-new-arrival",
+  "category": "money",
+  "title": "Just arrived in the UK: how do you open your first bank account?",
+  "summary": "For Chinese passport holders who have just arrived in the UK, whether as students or to work, join family or settle: what to prepare before opening your first UK bank account, what to do without the usual UK proof of address, what to do if the first bank says no, and how to check FSCS deposit protection.",
+  "content": "# Just arrived in the UK: how do you open your first bank account?\n\nLast updated: 2026-11-21\n\n> This guide is for people who **hold a Chinese passport and have just arrived in the UK**: international students, and people coming to work, joining family or planning to settle long term.\n> The specific bank practices mentioned are what we saw on each bank's website **as at 7 October 2026**. They are examples only, not recommendations, and do not represent all banks. Banks change their rules, so check the bank's website at the time you apply.\n\nWhen you have just landed, rent needs paying, wages need to come in, and tuition and phone bills need to go out, so the first thing that often holds people up is opening a bank account. Search online and some people say you need proof of address, some say a passport is enough, and some say students must have a bank letter from their university. The advice differs because **requirements can vary between banks, between account types, and between applying online and in a branch**. This guide goes through it in order: what to prepare first, what to do if you have \"no UK proof of address\", which route students and people coming to work, joining family or settling should take, and what to do if the first bank won't open an account.\n\n## 1. First, separate two things: what the law requires and what banks require\n\n**The law**: UK anti-money laundering regulations require banks, when they start a business relationship, to **identify customers and verify their identity**, based on the bank's own risk assessment, and what they do can differ from case to case. [See the official source](#guide-evidence-mlr-identity-verification) The regulations allow identity to be verified using reliable, independent sources, including suitable electronic identity verification, such as uploading a photo of a document and taking a selfie or video to compare. [See the official source](#guide-evidence-mlr-electronic-identification)\n\n**The banks**: the regulations do not set one standard \"document list for opening an account\" for all banks. Which documents to use, whether proof of address is needed, which documents can be uploaded online and which must be taken to a branch, is decided by each bank under its own risk processes. [See the official source](#guide-evidence-mlr-risk-based-cdd) So:\n\n- \"This bank wants proof of address from me\" is a requirement of that bank (that account, that application route);\n- it **does not mean** \"UK law says everyone opening an account must provide the same kind of proof of address\".\n\nIn practice, **most banks ask for, or may ask for, proof of address**; what differs is which documents they accept and through which route. [See the official source](#guide-evidence-providers-ask-for-address) So don't expect that \"if the law doesn't say so, the bank can't ask\"; instead, find out what **the bank and account you are applying for** accepts now.\n\n\n## 2. Check what you have now\n\nBefore you start, list what you have. Below are documents many new arrivals **may have**, but \"you have it\" does not mean \"the bank accepts it\"; we explain how to check later:\n\n- a Chinese passport (in date);\n- proof of your UK immigration status, such as your eVisa. The UK government says eVisas have replaced physical immigration documents; [See the official source](#guide-evidence-evisa-replaced-physical-documents) you can generate a share code in your UKVI account so others can check your status; a share code lasts 90 days, and you can generate a new one when it expires; [See the official source](#guide-evidence-evisa-share-code-90-days)\n- your address in the UK (halls, a rented home, or a temporary address);\n- students: your university offer or enrolment details, and any letter the university may provide;\n- people coming to work: your employment contract and employer details;\n- a mobile number that can receive texts, and an email address.\n\nSome banks' document lists still mention a BRP (biometric residence permit). If you only have an eVisa and no BRP, don't assume you can't open an account; first check what that bank says now, and ask the bank directly if needed. [See the official source](#guide-evidence-brp-still-listed-by-some-providers)\n\n## 3. Choosing an account: check \"can I apply\" before rewards\n\nMany people look first at which bank offers cash or rewards. When you have just arrived, what matters more is **eligibility**: age, whether you must \"live in the UK / be a UK resident\", whether you need a UK mobile number, and whether you must have lived in the UK for a certain time.\n\nTwo examples (from bank websites as at 7 October 2026):\n\n- Student accounts may not suit people who have just arrived. For Barclays' **Student Additions Account**, Lloyds' **Student Current Account** and NatWest's **Student account**, the eligibility conditions on their websites include having lived in the UK for about three years (the Barclays page uses both \"more than three years\" and \"at least three years\"). These are conditions of **those student accounts themselves**, not a sign that these banks don't accept new international students: their pages all point people who don't qualify to their other accounts. [See the official source](#guide-evidence-student-accounts-three-year-residence)\n- Barclays' **Barclays Bank Account** says applicants must be UK residents, have a UK mobile number and provide proof of identity; people without a UK mobile number can apply online instead (not in the app). If you want to use an eVisa, you need to book a branch appointment. [See the official source](#guide-evidence-barclays-bank-account-requirements)\n\nAlso, some accounts involve a credit check when you open them, and some banks also run regular identity, fraud and credit checks after the account is opened; but this differs between banks and accounts. [See the official source](#guide-evidence-credit-checks-vary) If you have just arrived and have no UK credit history yet, look out for conditions like \"subject to a credit check\" on the account page before applying.\n\n## 4. Apply online or in a branch?\n\nAt the same bank, **the documents accepted in the app or online may differ from those accepted in a branch**. Some examples (as at 7 October 2026):\n\n- Lloyds says **non-UK passports can only be used to prove identity in the mobile app**; [See the official source](#guide-evidence-lloyds-non-uk-passport-app-only)\n- Barclays says that to use an eVisa you need to **book a branch appointment**; [See the official source](#guide-evidence-barclays-bank-account-requirements)\n- NatWest says non-UK / non-EU passports must be **supported by a valid visa or an eVisa share code**. [See the official source](#guide-evidence-natwest-passport-with-visa-or-share-code)\n\nSo if the online process gets stuck at \"upload proof of address\" or \"identity check failed\", it does not necessarily mean you can't open an account: first check whether that bank's branch route accepts other documents you have.\n\n**Opening an account in an app still means identity checks.** For example, Monzo's process involves taking a photo of your ID and a selfie video, and says it **might** ask you to verify that you live at the address you gave. [See the official source](#guide-evidence-monzo-onboarding-may-ask-address) \"Opening an account in an app\" does not mean you won't need proof, or that it will necessarily be easier than a traditional bank.\n\n## 5. Just arrived and don't have the usual proof of address yet\n\nThis is where new arrivals most often get stuck: the proof of address commonly listed by banks, such as gas, electricity or water bills, Council Tax bills, UK bank statements or a UK driving licence, is often something new arrivals don't have at all. In that case, go in this order:\n\n1. **Check what documents the bank and account you are applying for accept now.** Banks differ a lot, and \"general lists\" online are unreliable.\n2. **Look at the online and branch lists separately.** Some documents can only be used in a branch.\n3. **Look for \"alternative documents\" that this bank explicitly lists.** For example (as at 7 October 2026):\n   - HSBC's document guidance lists a letter from a university confirming your acceptance onto a qualifying course (for both online and branch), and for branches it also lists a letter from a \"known employer\" confirming your address and that you work for them; [See the official source](#guide-evidence-hsbc-university-and-employer-letters)\n   - NatWest suggests that people new to the UK can first get an HMRC letter notifying their National Insurance number or tax code, or have a bank where they already have an account send statements to their new UK address (NatWest says this bank does not need to be a UK bank). [See the official source](#guide-evidence-natwest-new-to-uk-alternatives) We **have not found** any official statement confirming whether Chinese banks can do this, or whether NatWest would accept it in a particular case, so ask before you apply.\n4. **If this bank's standard accounts don't work out, consider whether to ask about a Basic Bank Account**; see section 9.\n5. **If you are refused, don't assume every bank will refuse you in the same way.** Each bank's risk processes and document lists are different; another bank, another account or another route may give a different result.\n\n\nAbout Chinese documents: when a bank's list says \"overseas / non-UK\" documents, that **does not necessarily mean** it accepts statements from Chinese banks, documents with a Chinese address, or a Chinese mobile number. We have not found any official bank statement confirming that these Chinese documents are accepted, so don't assume you can use them.\n\n## 6. If you are an international student who has just arrived\n\n**What you may have**: a Chinese passport, an eVisa, your university offer or enrolment details, a halls or rented address, and possibly a letter from your university.\n\n**Things to note**:\n\n- Student accounts may not suit you if you have just landed. The three **student accounts** mentioned above from Barclays, Lloyds and NatWest all required, as at 7 October 2026, about three years' residence in the UK. If you don't meet the residence requirement for these student accounts, you can go on to check the eligibility conditions for that bank's other accounts, or compare accounts at other banks; if you qualify, you can also look into a Basic Bank Account (see section 9). [See the official source](#guide-evidence-student-accounts-three-year-residence)\n- A university letter is useful, but not \"essential\". As at 7 October 2026, HSBC's document guidance lists a university letter confirming acceptance; [See the official source](#guide-evidence-hsbc-university-and-employer-letters) when describing its Basic Current Account for students new to the UK, Santander mentions a \"university banking letter\" as an example of proof of identity and address. [See the official source](#guide-evidence-santander-basic-for-new-uk-students) But **no official rule says international students must provide a university bank letter to open an account**; whether it helps, and at which step, depends on the bank.\n- Some examples (as at 7 October 2026):\n  - Lloyds says that if you are 18 or over, **already living in the UK** and have a valid passport, you can apply for its Classic Account. [See the official source](#guide-evidence-lloyds-classic-for-international-students)\n  - Santander says its Basic Current Account is for people aged 16 or over who live in the UK and don't have a UK bank account yet (or have been refused other accounts), and mentions being able to provide a share code / visa. [See the official source](#guide-evidence-santander-basic-for-new-uk-students)\n- Ask your university first: many universities' international student offices explain which letters they can provide and in what format. Once you have a letter, still check it against the list of the bank you are applying to.\n\n## 7. If you are coming to work, joining family or planning to settle\n\n**What you may have**: a Chinese passport, an eVisa, an employment contract or employer details, a tenancy agreement or temporary address; after a few weeks, you may also receive letters from government departments such as HMRC.\n\n**Things to note**:\n\n- **Not every bank accepts employer letters or tenancy agreements.** As at 7 October 2026:\n  - HSBC accepts, in branch, a letter from a \"known employer\" confirming your address and that you work for them; [See the official source](#guide-evidence-hsbc-university-and-employer-letters)\n  - what counts as an acceptable tenancy agreement varies a lot: some banks only accept tenancies from a council or housing association, some also accept ones issued by reputable letting agents or solicitors, and some only accept them in a branch, not online. Tenancy agreements signed directly with a private landlord were **not seen** to be clearly accepted in most lists. [See the official source](#guide-evidence-tenancy-agreement-varies)\n- **HMRC letters may help, but you have to wait.** The UK government says people who live in the UK, have the right to work and are working, looking for work or have a job offer can apply for a National Insurance number; some people's number already shows in their eVisa; an application can take **up to 4 weeks**. [See the official source](#guide-evidence-ni-number-eligibility-and-timing) Once you have the HMRC letter, some banks (such as NatWest, mentioned above) list it as one of the documents new arrivals can use. [See the official source](#guide-evidence-natwest-new-to-uk-alternatives)\n- If you are joining family or planning to settle and don't have work documents yet, follow mainly the process in section 5: check the list, look at each route, find the alternative documents this bank lists, and look at a basic account if needed.\n\n## 8. What to do if the first bank won't open an account\n\n1. **Ask why.** Did the identity check fail, was the address document not accepted, or do you not meet the account's eligibility conditions (such as the residence requirement for student accounts)?\n2. **Try another route.** If online doesn't work, see whether a branch can accept other documents you have; some banks say you can talk to them in a branch if you don't have a listed proof of identity or a permanent UK address (for example, as at 7 October 2026, Santander's Basic Current Account page says this). [See the official source](#guide-evidence-santander-branch-help-without-listed-documents)\n3. **Try another account.** At the same bank, if you don't qualify for a standard account, look at its basic account.\n4. **Try another bank.** Requirements differ between banks; one refusal does not mean others will refuse.\n5. **The basic account route** (next section).\n\n**About visas.** UK law prohibits banks from opening current accounts for people who are in the UK, need permission to stay but don't have it, and whom the government considers should not have an account opened. [See the official source](#guide-evidence-immigration-act-s40-disqualified-person) People with valid permission to stay are not in this group, but that **does not mean you will definitely get an account**: banks still verify your identity, and may ask for proof of your immigration status (such as an eVisa share code).\n\n## 9. What a Basic Bank Account is, and when it is worth asking about\n\nA basic account is a simple sterling account: you can pay money in, take cash out, use a debit card, set up direct debits and make transfers; standard transactions are free, and there is **no overdraft**. [See the official source](#guide-evidence-basic-account-features)\n\nUK regulations require certain banks designated by the government to offer basic accounts to **eligible people**; not every bank has this duty. [See the official source](#guide-evidence-basic-account-designated-institutions) Broadly, the conditions are: being legally resident in the UK, and not already having another UK bank account with basic features, **or** not being eligible for any of that bank's other accounts. [See the official source](#guide-evidence-basic-account-eligibility)\n\nSo it is **not \"for everyone\"**: being legally resident in the UK, or having just arrived, does not guarantee you can open one; if you already have a UK account, you will usually not meet the first condition under the rules. Banks still carry out identity checks, and if opening the account would be unlawful (for example, if the identity checks required by anti-money laundering rules cannot be completed), the bank **must refuse**. [See the official source](#guide-evidence-basic-account-refusal-grounds) If you are refused, the bank should generally tell you the reason in writing and explain how to complain, including to the Financial Ombudsman Service. [See the official source](#guide-evidence-basic-account-refusal-reasons-complaints)\n\n**When it is worth asking**: when you can't open a standard account because of eligibility, credit history or documents, and you don't yet have any other bank account in the UK. For example, as at 7 October 2026, Santander says its basic account is usually for people who don't have a UK bank account or can't get one of its other accounts, including people new to the UK. [See the official source](#guide-evidence-santander-basic-for-new-uk-students) Check that bank's conditions before applying, and don't assume you definitely qualify.\n\n## 10. Once your money is in: how to check you have FSCS protection\n\nIf a UK-authorised bank, building society or credit union fails, the UK's Financial Services Compensation Scheme (FSCS) generally pays compensation of up to **£120,000 per eligible depositor, per authorised institution**. This applies to institutions that fail **after 30 November 2025**. [See the official source](#guide-evidence-fscs-120k-limit)\n\nTwo points to note:\n\n- **Different brands that share one banking licence count as one bank.** If you have money with several brands in the same group that share a licence, it is all counted towards one £120,000 limit, not one per brand. [See the official source](#guide-evidence-fscs-shared-licence)\n- **Money held with e-money institutions and payment institutions is not covered by FSCS deposit protection.** [See the official source](#guide-evidence-fscs-emoney-not-covered)\n\nHow to check: use the protection checker on the FSCS website, or look up on the FCA's Financial Services Register whether the firm is authorised and who it shares a licence with. [See the official source](#guide-evidence-fscs-how-to-check) For example, on the Bank of England (PRA) list as at 1 September 2026, Monzo Bank Limited and Starling Bank Limited are both listed as UK-registered banks permitted to accept deposits; the list itself says the Financial Services Register takes precedence. [See the official source](#guide-evidence-pra-list-monzo-starling)\n\n## 11. Final checks before you apply\n\n- [ ] Which **bank and which account** am I applying for? Do I meet its stated eligibility conditions (living in the UK, age, length of residence, mobile number)?\n- [ ] Which identity documents and which address documents does this bank accept **now**? Am I looking at the online list or the branch list?\n- [ ] Is my passport valid? If needed, do I know how to generate an eVisa share code?\n- [ ] If I don't have the usual proof of address, does this bank list alternative documents I can use?\n- [ ] If it doesn't work, is my next step another route, another account, another bank, or asking about a basic account?\n- [ ] Is my money held with a UK-authorised bank or building society? Does it share a licence with other brands?\n- [ ] **Don't let anyone else use your account, and don't receive or transfer money for strangers.** The UK government explains that criminal gangs use other people's accounts to move criminal money (known as a \"money mule\"), and money laundering can carry a sentence of up to 14 years in prison; some banks also warn that fraudsters specifically target students who are new to the UK. [See the official source](#guide-evidence-money-mule-warning)\n\n## If an app offers a payment account\nCheck who legally provides the account in the terms, then use the Financial Services Register to identify their permissions. A familiar brand or sort code alone does not tell you whether you hold a bank deposit or e-money.\n\nIf an electronic money institution or authorised payment institution fails, the FCA explains that safeguarding may involve a separate account, insurance or a guarantee. Getting your money back can take longer and administration costs can reduce what you receive. Small payment institutions need not safeguard funds. Ask what protects this particular balance before relying on the account. [FCA comparison and register](#guide-evidence-safeguarding-fca)\n\n## Official sources\n\nAll of the sources below were accessed on 7 October 2026.\n\n- legislation.gov.uk — *The Money Laundering, Terrorist Financing and Transfer of Funds (Information on the Payer) Regulations 2017, regulation 28* — https://www.legislation.gov.uk/uksi/2017/692/regulation/28\n- Financial Conduct Authority (FCA) — *FCG 3.2 Themes (Financial Crime Guide)* — https://handbook.fca.org.uk/handbook/fcg3/fcg3s2\n- legislation.gov.uk — *The Payment Accounts Regulations 2015, regulation 19* — https://www.legislation.gov.uk/uksi/2015/2038/regulation/19\n- legislation.gov.uk — *The Payment Accounts Regulations 2015, regulation 20* — https://www.legislation.gov.uk/uksi/2015/2038/regulation/20\n- legislation.gov.uk — *The Payment Accounts Regulations 2015, regulation 22* — https://www.legislation.gov.uk/uksi/2015/2038/regulation/22\n- legislation.gov.uk — *The Payment Accounts Regulations 2015, regulation 23* — https://www.legislation.gov.uk/uksi/2015/2038/regulation/23\n- legislation.gov.uk — *The Payment Accounts Regulations 2015, regulation 25* — https://www.legislation.gov.uk/uksi/2015/2038/regulation/25\n- legislation.gov.uk — *Immigration Act 2014, section 40* — https://www.legislation.gov.uk/ukpga/2014/22/section/40\n- HM Treasury (GOV.UK) — *Basic bank accounts: July 2023 to June 2024* — https://www.gov.uk/government/publications/basic-bank-accounts-july-2023-to-june-2024/basic-bank-accounts-july-2023-to-june-2024\n- GOV.UK — *eVisas: access and use your online immigration status — What an eVisa is* — https://www.gov.uk/evisa/what-an-evisa-is\n- GOV.UK — *eVisas: access and use your online immigration status — View your eVisa and get a share code to prove your immigration status* — https://www.gov.uk/evisa/view-evisa-get-share-code-prove-immigration-status\n- GOV.UK — *Apply for a National Insurance number* — https://www.gov.uk/apply-national-insurance-number\n- Home Office (GOV.UK) — *Money laundering-linked financial exploitation: guidance for frontline professionals* — https://www.gov.uk/government/publications/money-mule-action-plan/money-laundering-linked-financial-exploitation-guidance-for-frontline-professionals-accessible\n- Financial Services Compensation Scheme (FSCS) — *Banks, building societies and credit unions* — https://www.fscs.org.uk/what-we-cover/banks-building-societies-credit-unions/\n- Financial Services Compensation Scheme (FSCS) — *Bank & savings protection checker* — https://www.fscs.org.uk/check/check-your-money-is-protected/\n- Bank of England (PRA) — *PRA confirms FSCS deposit limit to be increased to £120,000 from 1 December* — https://www.bankofengland.co.uk/news/2025/november/pra-confirms-fscs-deposit-limit-to-be-increased-to-120000-from-1-december\n- Bank of England (PRA) — *List of PRA-regulated Banks - September 2026 (as at 1 September 2026)* — https://www.bankofengland.co.uk/-/media/boe/files/prudential-regulation/authorisations/which-firms-does-the-pra-regulate/2026/banks-list-2609.csv\n\nThe following bank website pages are used only as examples in the text and are not recommendations:\n\n- Barclays — *Student Additions Account* — https://www.barclays.co.uk/current-accounts/student-account/\n- Barclays — *Barclays Bank Account* — https://www.barclays.co.uk/current-accounts/bank-account/\n- Barclays — *What ID documents do I need to take to a branch?* — https://www.barclays.co.uk/help/accounts/opening/what-id/\n- Lloyds Bank — *Student bank accounts* — https://www.lloydsbank.com/current-accounts/all-accounts/student-account.html\n- Lloyds Bank — *New to the United Kingdom* — https://www.lloydsbank.com/current-accounts/help-and-guidance/new-to-uk.html\n- Lloyds Bank — *International Student* — https://www.lloydsbank.com/current-accounts/international-student.html\n- Lloyds Bank — *Proving your identity* — https://www.lloydsbank.com/help-guidance/legal-information/privacy/proof-of-identity.html\n- NatWest — *Student Bank Account* — https://www.natwest.com/current-accounts/student_account.html\n- NatWest — *What you need to open a bank account* — https://www.natwest.com/current-accounts/what-do-you-need-to-open-a-current-account.html\n- HSBC UK — *Documents you need for an ID check* — https://www.hsbc.co.uk/help/banking-made-easy/help-us-identify-you/\n- HSBC UK — *Bank Account* — https://www.hsbc.co.uk/current-accounts/products/bank-account/\n- Santander UK — *Basic Current Account* — https://www.santander.co.uk/personal/current-accounts/basic-current-account\n- Santander UK — *Bank account for international students* — https://www.santander.co.uk/personal/current-accounts/santander-edge-student-current-account/international-student\n- Nationwide Building Society — *Proving your identity* — https://www.nationwide.co.uk/help/your-details/proving-your-identity\n- Monzo — *How to open a Monzo Personal Account* — https://monzo.com/help/opening-an-account/how-to-open-a-Monzo-Personal-Account\n- Starling Bank — *Personal Account General Terms* — https://www.starlingbank.com/docs/legal/terms/starling-personal-account-general-terms-may-2026.pdf\n\nLast updated: 7 October 2026\n",
+  "sources": [
+    {
+      "key": "mlr-2017-reg-28",
+      "organisation": "legislation.gov.uk",
+      "title": "The Money Laundering, Terrorist Financing and Transfer of Funds (Information on the Payer) Regulations 2017, regulation 28",
+      "url": "https://www.legislation.gov.uk/uksi/2017/692/regulation/28",
+      "accessedAt": "2026-10-07T12:11:35Z"
+    },
+    {
+      "key": "fca-fcg-3-2",
+      "organisation": "Financial Conduct Authority（FCA）",
+      "title": "FCG 3.2 Themes（Financial Crime Guide）",
+      "url": "https://handbook.fca.org.uk/handbook/fcg3/fcg3s2",
+      "accessedAt": "2026-10-07T09:39:12Z"
+    },
+    {
+      "key": "par-2015-reg-19",
+      "organisation": "legislation.gov.uk",
+      "title": "The Payment Accounts Regulations 2015, regulation 19",
+      "url": "https://www.legislation.gov.uk/uksi/2015/2038/regulation/19",
+      "accessedAt": "2026-10-07T09:38:12Z"
+    },
+    {
+      "key": "par-2015-reg-20",
+      "organisation": "legislation.gov.uk",
+      "title": "The Payment Accounts Regulations 2015, regulation 20",
+      "url": "https://www.legislation.gov.uk/uksi/2015/2038/regulation/20",
+      "accessedAt": "2026-10-07T09:38:12Z"
+    },
+    {
+      "key": "par-2015-reg-22",
+      "organisation": "legislation.gov.uk",
+      "title": "The Payment Accounts Regulations 2015, regulation 22",
+      "url": "https://www.legislation.gov.uk/uksi/2015/2038/regulation/22",
+      "accessedAt": "2026-10-07T12:10:48Z"
+    },
+    {
+      "key": "par-2015-reg-23",
+      "organisation": "legislation.gov.uk",
+      "title": "The Payment Accounts Regulations 2015, regulation 23",
+      "url": "https://www.legislation.gov.uk/uksi/2015/2038/regulation/23",
+      "accessedAt": "2026-10-07T12:10:49Z"
+    },
+    {
+      "key": "par-2015-reg-25",
+      "organisation": "legislation.gov.uk",
+      "title": "The Payment Accounts Regulations 2015, regulation 25",
+      "url": "https://www.legislation.gov.uk/uksi/2015/2038/regulation/25",
+      "accessedAt": "2026-10-07T12:10:49Z"
+    },
+    {
+      "key": "immigration-act-2014-s40",
+      "organisation": "legislation.gov.uk",
+      "title": "Immigration Act 2014, section 40",
+      "url": "https://www.legislation.gov.uk/ukpga/2014/22/section/40",
+      "accessedAt": "2026-10-07T12:11:36Z"
+    },
+    {
+      "key": "hmt-basic-bank-accounts-2024",
+      "organisation": "HM Treasury（GOV.UK）",
+      "title": "Basic bank accounts: July 2023 to June 2024",
+      "url": "https://www.gov.uk/government/publications/basic-bank-accounts-july-2023-to-june-2024/basic-bank-accounts-july-2023-to-june-2024",
+      "accessedAt": "2026-10-07T12:11:04Z"
+    },
+    {
+      "key": "govuk-evisa-what",
+      "organisation": "GOV.UK",
+      "title": "eVisas: access and use your online immigration status — What an eVisa is",
+      "url": "https://www.gov.uk/evisa/what-an-evisa-is",
+      "accessedAt": "2026-10-07T09:38:00Z"
+    },
+    {
+      "key": "govuk-evisa-share-code",
+      "organisation": "GOV.UK",
+      "title": "eVisas: access and use your online immigration status — View your eVisa and get a share code to prove your immigration status",
+      "url": "https://www.gov.uk/evisa/view-evisa-get-share-code-prove-immigration-status",
+      "accessedAt": "2026-10-07T09:38:00Z"
+    },
+    {
+      "key": "govuk-apply-ni-number",
+      "organisation": "GOV.UK",
+      "title": "Apply for a National Insurance number",
+      "url": "https://www.gov.uk/apply-national-insurance-number",
+      "accessedAt": "2026-10-07T09:43:52Z"
+    },
+    {
+      "key": "home-office-money-mule-guidance",
+      "organisation": "Home Office（GOV.UK）",
+      "title": "Money laundering-linked financial exploitation: guidance for frontline professionals",
+      "url": "https://www.gov.uk/government/publications/money-mule-action-plan/money-laundering-linked-financial-exploitation-guidance-for-frontline-professionals-accessible",
+      "accessedAt": "2026-10-07T09:39:34Z"
+    },
+    {
+      "key": "fscs-banks",
+      "organisation": "Financial Services Compensation Scheme（FSCS）",
+      "title": "Banks, building societies and credit unions",
+      "url": "https://www.fscs.org.uk/what-we-cover/banks-building-societies-credit-unions/",
+      "accessedAt": "2026-10-07T12:12:29Z"
+    },
+    {
+      "key": "fscs-protection-checker",
+      "organisation": "Financial Services Compensation Scheme（FSCS）",
+      "title": "Bank & savings protection checker",
+      "url": "https://www.fscs.org.uk/check/check-your-money-is-protected/",
+      "accessedAt": "2026-10-07T09:39:19Z"
+    },
+    {
+      "key": "boe-pra-fscs-120k",
+      "organisation": "Bank of England（PRA）",
+      "title": "PRA confirms FSCS deposit limit to be increased to £120,000 from 1 December",
+      "url": "https://www.bankofengland.co.uk/news/2025/november/pra-confirms-fscs-deposit-limit-to-be-increased-to-120000-from-1-december",
+      "accessedAt": "2026-10-07T12:12:46Z"
+    },
+    {
+      "key": "boe-pra-banks-list-2026-09",
+      "organisation": "Bank of England（PRA）",
+      "title": "List of PRA-regulated Banks - September 2026（as at 1 September 2026）",
+      "url": "https://www.bankofengland.co.uk/-/media/boe/files/prudential-regulation/authorisations/which-firms-does-the-pra-regulate/2026/banks-list-2609.csv",
+      "accessedAt": "2026-10-07T12:14:10Z"
+    },
+    {
+      "key": "barclays-student-account",
+      "organisation": "Barclays",
+      "title": "Student Additions Account",
+      "url": "https://www.barclays.co.uk/current-accounts/student-account/",
+      "accessedAt": "2026-10-07T12:12:54Z"
+    },
+    {
+      "key": "barclays-bank-account",
+      "organisation": "Barclays",
+      "title": "Barclays Bank Account",
+      "url": "https://www.barclays.co.uk/current-accounts/bank-account/",
+      "accessedAt": "2026-10-07T12:12:55Z"
+    },
+    {
+      "key": "barclays-branch-id",
+      "organisation": "Barclays",
+      "title": "What ID documents do I need to take to a branch?",
+      "url": "https://www.barclays.co.uk/help/accounts/opening/what-id/",
+      "accessedAt": "2026-10-07T09:40:20Z"
+    },
+    {
+      "key": "lloyds-student-account",
+      "organisation": "Lloyds Bank",
+      "title": "Student bank accounts",
+      "url": "https://www.lloydsbank.com/current-accounts/all-accounts/student-account.html",
+      "accessedAt": "2026-10-07T12:12:54Z"
+    },
+    {
+      "key": "lloyds-new-to-uk",
+      "organisation": "Lloyds Bank",
+      "title": "New to the United Kingdom",
+      "url": "https://www.lloydsbank.com/current-accounts/help-and-guidance/new-to-uk.html",
+      "accessedAt": "2026-10-07T09:40:25Z"
+    },
+    {
+      "key": "lloyds-international-student",
+      "organisation": "Lloyds Bank",
+      "title": "International Student",
+      "url": "https://www.lloydsbank.com/current-accounts/international-student.html",
+      "accessedAt": "2026-10-07T09:40:25Z"
+    },
+    {
+      "key": "lloyds-proving-identity",
+      "organisation": "Lloyds Bank",
+      "title": "Proving your identity",
+      "url": "https://www.lloydsbank.com/help-guidance/legal-information/privacy/proof-of-identity.html",
+      "accessedAt": "2026-10-07T09:40:25Z"
+    },
+    {
+      "key": "natwest-student-account",
+      "organisation": "NatWest",
+      "title": "Student Bank Account",
+      "url": "https://www.natwest.com/current-accounts/student_account.html",
+      "accessedAt": "2026-10-07T12:12:55Z"
+    },
+    {
+      "key": "natwest-what-you-need",
+      "organisation": "NatWest",
+      "title": "What you need to open a bank account",
+      "url": "https://www.natwest.com/current-accounts/what-do-you-need-to-open-a-current-account.html",
+      "accessedAt": "2026-10-07T09:40:26Z"
+    },
+    {
+      "key": "hsbc-id-documents",
+      "organisation": "HSBC UK",
+      "title": "Documents you need for an ID check",
+      "url": "https://www.hsbc.co.uk/help/banking-made-easy/help-us-identify-you/",
+      "accessedAt": "2026-10-07T09:40:23Z"
+    },
+    {
+      "key": "hsbc-bank-account",
+      "organisation": "HSBC UK",
+      "title": "Bank Account",
+      "url": "https://www.hsbc.co.uk/current-accounts/products/bank-account/",
+      "accessedAt": "2026-10-07T12:13:53Z"
+    },
+    {
+      "key": "santander-basic-account",
+      "organisation": "Santander UK",
+      "title": "Basic Current Account",
+      "url": "https://www.santander.co.uk/personal/current-accounts/basic-current-account",
+      "accessedAt": "2026-10-07T12:23:36Z"
+    },
+    {
+      "key": "santander-international-students",
+      "organisation": "Santander UK",
+      "title": "Bank account for international students",
+      "url": "https://www.santander.co.uk/personal/current-accounts/santander-edge-student-current-account/international-student",
+      "accessedAt": "2026-10-07T12:23:31Z"
+    },
+    {
+      "key": "nationwide-proving-identity",
+      "organisation": "Nationwide Building Society",
+      "title": "Proving your identity",
+      "url": "https://www.nationwide.co.uk/help/your-details/proving-your-identity",
+      "accessedAt": "2026-10-07T09:40:28Z"
+    },
+    {
+      "key": "monzo-how-to-open",
+      "organisation": "Monzo",
+      "title": "How to open a Monzo Personal Account",
+      "url": "https://monzo.com/help/opening-an-account/how-to-open-a-Monzo-Personal-Account",
+      "accessedAt": "2026-10-07T09:40:27Z"
+    },
+    {
+      "key": "starling-general-terms",
+      "organisation": "Starling Bank",
+      "title": "Personal Account General Terms",
+      "url": "https://www.starlingbank.com/docs/legal/terms/starling-personal-account-general-terms-may-2026.pdf",
+      "accessedAt": "2026-10-07T12:14:50Z"
+    },
+    {
+      "key": "safeguarding-fca",
+      "organisation": "FCA",
+      "title": "Using payment service providers",
+      "url": "https://www.fca.org.uk/consumers/using-payment-service-providers",
+      "accessedAt": "2026-11-21T00:00:00Z"
+    }
+  ],
+  "evidence": [
+    {
+      "key": "mlr-identity-verification",
+      "statement": "UK anti-money laundering regulations require banks to identify customers and verify their identity, with the approach based on the bank's own risk assessment and able to differ from case to case.",
+      "supports": [
+        {
+          "sourceKey": "mlr-2017-reg-28",
+          "locator": "regulation 28(2), (12)",
+          "excerpt": null,
+          "note": "\"identify the customer\"; \"verify the customer's identity\"; measures must reflect the risk assessment and \"may differ from case to case\"."
+        }
+      ]
+    },
+    {
+      "key": "mlr-electronic-identification",
+      "statement": "The regulations allow identity to be verified from reliable, independent sources, and suitable electronic identification processes can count as such a source.",
+      "supports": [
+        {
+          "sourceKey": "mlr-2017-reg-28",
+          "locator": "regulation 28(18), (19)",
+          "excerpt": null,
+          "note": "\"obtained from a reliable source which is independent\"; this can be through an \"electronic identification process\", provided it is secure and gives sufficient assurance."
+        },
+        {
+          "sourceKey": "fca-fcg-3-2",
+          "locator": "FCG 3.2.4（Customer due diligence）",
+          "excerpt": null,
+          "note": "\"an electronic identification process may be regarded as a reliable source for the purposes of CDD verification\". Selfie and video matching are examples of banks' actual processes."
+        }
+      ]
+    },
+    {
+      "key": "mlr-risk-based-cdd",
+      "statement": "The regulations do not set a single list of account-opening documents for all banks; each bank decides which documents it needs under its own risk processes.",
+      "supports": [
+        {
+          "sourceKey": "mlr-2017-reg-28",
+          "locator": "regulation 28(12), (18)",
+          "excerpt": null,
+          "note": "The regulation requires identity verification and risk-based measures (\"may differ from case to case\"), and only says verification must be based on \"documents or information\" from a reliable, independent source; it does not list specific documents or proof of address. Industry guidance (JMLSG) was not reviewed, so the wording is limited to \"the regulations have no single list\"."
+        }
+      ]
+    },
+    {
+      "key": "providers-ask-for-address",
+      "statement": "Most banks ask for or may ask for proof of address, and which documents are accepted, and through which route, differs between banks.",
+      "supports": [
+        {
+          "sourceKey": "barclays-branch-id",
+          "locator": "Proof of address",
+          "excerpt": null,
+          "note": "Opening in branch needs \"two valid, original documents – one to prove your identity and one to verify your address\"."
+        },
+        {
+          "sourceKey": "natwest-what-you-need",
+          "locator": "How can you prove your identity online?",
+          "excerpt": null,
+          "note": "\"We might also need to see a proof of address\"."
+        },
+        {
+          "sourceKey": "monzo-how-to-open",
+          "locator": "Step 4: Tell us about you",
+          "excerpt": null,
+          "note": "\"We might ask you to verify that you live at the address you chose\". Most of the 8 banks covered by the research list proof of address, with wording of varying strength."
+        }
+      ]
+    },
+    {
+      "key": "evisa-replaced-physical-documents",
+      "statement": "eVisas have replaced physical immigration documents.",
+      "supports": [
+        {
+          "sourceKey": "govuk-evisa-what",
+          "locator": "What an eVisa is",
+          "excerpt": null,
+          "note": "\"eVisas have replaced physical immigration documents.\""
+        }
+      ]
+    },
+    {
+      "key": "evisa-share-code-90-days",
+      "statement": "You can generate a share code so others can check your immigration status; a share code lasts 90 days and a new one can be generated at any time.",
+      "supports": [
+        {
+          "sourceKey": "govuk-evisa-share-code",
+          "locator": "View your eVisa and get a share code to prove your immigration status",
+          "excerpt": null,
+          "note": "\"A share code lasts for 90 days\"; \"get a new share code whenever you need one\"."
+        }
+      ]
+    },
+    {
+      "key": "brp-still-listed-by-some-providers",
+      "statement": "As at 7 October 2026, some banks' document lists still included the BRP.",
+      "supports": [
+        {
+          "sourceKey": "nationwide-proving-identity",
+          "locator": "Proof of name（表格）",
+          "excerpt": null,
+          "note": "\"UK Home Office Biometric Residence Permit\" is listed among documents proving your name (branch only). This is only an example of \"some banks still list the BRP\" and does not represent other banks' practice."
+        }
+      ]
+    },
+    {
+      "key": "student-accounts-three-year-residence",
+      "statement": "As at 7 October 2026, the eligibility conditions for the Barclays Student Additions Account, Lloyds Student Current Account and NatWest student account required about three years' residence in the UK; these banks point people who don't qualify to other accounts.",
+      "supports": [
+        {
+          "sourceKey": "barclays-student-account",
+          "locator": "How to apply；FAQ",
+          "excerpt": null,
+          "note": "\"You can only apply for a student account if you've lived in the UK for more than three years\"; the FAQ also says \"You must have been living in the UK for at least 3 years to open a student account\" (both wordings appear); \"If you haven't, you can apply for a Barclays Bank Account in the app\"."
+        },
+        {
+          "sourceKey": "lloyds-student-account",
+          "locator": "Who can apply?；Are you an international student?",
+          "excerpt": null,
+          "note": "\"have been a UK resident for at least 3 years\"; \"But you could apply for another account with us\"."
+        },
+        {
+          "sourceKey": "natwest-student-account",
+          "locator": "You can apply if；Can an international student get a bank account in the UK?",
+          "excerpt": null,
+          "note": "\"have been living in the UK for at least 3 years\"; \"We have plenty of other current account options\"."
+        }
+      ]
+    },
+    {
+      "key": "barclays-bank-account-requirements",
+      "statement": "As at 7 October 2026, the Barclays Bank Account required UK residence, a UK mobile number and proof of identity; without a UK mobile number you could apply online; using an eVisa required a branch appointment.",
+      "supports": [
+        {
+          "sourceKey": "barclays-bank-account",
+          "locator": "To open a Barclays Bank Account；FAQ",
+          "excerpt": null,
+          "note": "\"Be a UK resident\"; \"Have a UK mobile number\"; \"If you don't have a UK mobile number, you can apply online instead\"; \"If you are looking to use an eVisa then an appointment will need to be made in Branch\". The phrase \"three years of address history\" on the same page was not used in the public text (its meaning is unresolved)."
+        }
+      ]
+    },
+    {
+      "key": "credit-checks-vary",
+      "statement": "Some accounts involve a credit check at opening, and some banks also run regular identity, fraud and credit checks after opening; this differs between banks and accounts.",
+      "supports": [
+        {
+          "sourceKey": "barclays-student-account",
+          "locator": "FAQ：I've just moved to the country",
+          "excerpt": null,
+          "note": "Barclays Bank Account is \"subject to a successful credit check\"."
+        },
+        {
+          "sourceKey": "hsbc-bank-account",
+          "locator": "Who can apply?",
+          "excerpt": null,
+          "note": "\"Are happy for us to do a credit check against your name (if you're applying for a joint account and live in the UK)\", showing that not every case is checked."
+        },
+        {
+          "sourceKey": "starling-general-terms",
+          "locator": "Personal Account General Terms（2026 年 5 月版）",
+          "excerpt": null,
+          "note": "\"we carry out certain identity fraud and credit checks regularly\" (to provide and maintain the account). The PDF text extraction has a few missing characters, but this sentence is complete."
+        }
+      ]
+    },
+    {
+      "key": "lloyds-non-uk-passport-app-only",
+      "statement": "As at 7 October 2026, Lloyds stated that non-UK passports can only be used to prove identity in the mobile app.",
+      "supports": [
+        {
+          "sourceKey": "lloyds-new-to-uk",
+          "locator": "1. Account opening essentials：Identification we accept",
+          "excerpt": null,
+          "note": "\"Non-UK passport (mobile banking app only).\""
+        }
+      ]
+    },
+    {
+      "key": "natwest-passport-with-visa-or-share-code",
+      "statement": "As at 7 October 2026, NatWest stated that non-UK / non-EU passports must be supported by a valid visa or an eVisa share code.",
+      "supports": [
+        {
+          "sourceKey": "natwest-what-you-need",
+          "locator": "Non-UK/EU：Proof of ID",
+          "excerpt": null,
+          "note": "\"Your passport must be supported by a valid Visa or an eVisa Share Code.\""
+        }
+      ]
+    },
+    {
+      "key": "monzo-onboarding-may-ask-address",
+      "statement": "Opening a Monzo account involves taking a photo of your ID and a selfie video, and you may be asked to prove you live at the address you gave.",
+      "supports": [
+        {
+          "sourceKey": "monzo-how-to-open",
+          "locator": "Step 4；Step 5",
+          "excerpt": null,
+          "note": "\"We might ask you to verify that you live at the address you chose\"; \"take a picture of your ID and then take a selfie video\". This does not mean it is easier than other banks."
+        }
+      ]
+    },
+    {
+      "key": "hsbc-university-and-employer-letters",
+      "statement": "As at 7 October 2026, HSBC's document guidance listed a university letter confirming acceptance onto a qualifying course (online and in branch), and in branch a letter from a known employer confirming address and employment.",
+      "supports": [
+        {
+          "sourceKey": "hsbc-id-documents",
+          "locator": "Proof of address documents you can upload online；Proof of address documents you can bring into a branch",
+          "excerpt": null,
+          "note": "\"Letter from a UK Border Agency accredited college or university, confirming your acceptance onto a qualifying course\" (online upload list; the branch list has similar wording); branch: \"Letter from employer, confirming your address and that you currently work for them (it must be a known employer)\". HSBC's text uses the name of an organisation that no longer exists."
+        }
+      ]
+    },
+    {
+      "key": "natwest-new-to-uk-alternatives",
+      "statement": "As at 7 October 2026, NatWest suggested people new to the UK could use an HMRC letter notifying their National Insurance number or tax code, or statements from an existing bank (not necessarily a UK bank) sent to their new UK address.",
+      "supports": [
+        {
+          "sourceKey": "natwest-what-you-need",
+          "locator": "Are you new to the UK?：Working in the UK；International student",
+          "excerpt": null,
+          "note": "\"HMRC notification of National Insurance number\"; \"HMRC notification of tax coding\"; \"Bank statement from an existing bank which is now addressed to your new UK address (this does not need to be from a UK bank)\". Whether Chinese banks can send statements this way, and whether a particular case would be accepted, has not been verified."
+        }
+      ]
+    },
+    {
+      "key": "santander-basic-for-new-uk-students",
+      "statement": "As at 7 October 2026, Santander stated its Basic Current Account is for people aged 16+ who live in the UK and don't have a UK bank account or were refused other accounts, and suits people new to the UK; for international students it mentions a share code / visa and a university banking letter.",
+      "supports": [
+        {
+          "sourceKey": "santander-international-students",
+          "locator": "Can I apply for a Basic account ? Yes if",
+          "excerpt": null,
+          "note": "\"Our Basic Current Account might be suitable if you are a student new to the UK\"; \"you can provide your share code/visa\"; \"such as your university banking letter\"."
+        },
+        {
+          "sourceKey": "santander-basic-account",
+          "locator": "Basic Current Account（开头）；Can I apply for a Basic account ? Yes if",
+          "excerpt": null,
+          "note": "\"This account is usually for people who don't have a UK bank account or can't get one of our other current accounts\"; \"if you're new to the UK\"; \"You're 16+ and live in the UK\". The document list (PDF) could not be read, so it is not listed."
+        }
+      ]
+    },
+    {
+      "key": "lloyds-classic-for-international-students",
+      "statement": "As at 7 October 2026, Lloyds stated that people aged 18 or over who already live in the UK and have a valid passport can apply for its Classic Account.",
+      "supports": [
+        {
+          "sourceKey": "lloyds-international-student",
+          "locator": "Welcome to student life in the UK",
+          "excerpt": null,
+          "note": "\"If you're aged 18 or over, living in the UK and have a valid passport, you can apply for a Lloyds Classic Account\"."
+        }
+      ]
+    },
+    {
+      "key": "tenancy-agreement-varies",
+      "statement": "Whether a tenancy agreement is accepted varies by bank, with limits on who issued it and which route is used; tenancy agreements signed directly with a private landlord were not seen to be clearly accepted in most lists.",
+      "supports": [
+        {
+          "sourceKey": "barclays-branch-id",
+          "locator": "And one proof of UK address document",
+          "excerpt": null,
+          "note": "\"Tenancy agreement from last 12 months from local council or housing association\"."
+        },
+        {
+          "sourceKey": "lloyds-proving-identity",
+          "locator": "Accepted documents（表格）",
+          "excerpt": null,
+          "note": "\"Tenancy agreement issued by a solicitor, housing association, local council or reputable letting agency\"; the \"Accepted online\" column for this row is marked No."
+        },
+        {
+          "sourceKey": "hsbc-id-documents",
+          "locator": "Proof of address documents you can bring into a branch",
+          "excerpt": null,
+          "note": "\"Tenancy agreement (must be from a local council or reputable lending agency)\". \"Not seen in most lists\" summarises the lists covered by the research."
+        }
+      ]
+    },
+    {
+      "key": "ni-number-eligibility-and-timing",
+      "statement": "People who live in the UK, have the right to work and are working, looking for work or have a job offer can apply for a National Insurance number; some people's number already shows in their eVisa; it can take up to 4 weeks.",
+      "supports": [
+        {
+          "sourceKey": "govuk-apply-ni-number",
+          "locator": "Who can apply；If you have a biometric residence permit (BRP) or eVisa；If you've already applied",
+          "excerpt": null,
+          "note": "\"have the right to work in the UK\"; \"are working, looking for work or have an offer to start work\"; \"you might have a National Insurance number already\"; \"It can take up to 4 weeks to get your National Insurance number.\""
+        }
+      ]
+    },
+    {
+      "key": "santander-branch-help-without-listed-documents",
+      "statement": "As at 7 October 2026, Santander stated that people without a listed proof of identity or a permanent UK address can talk to them in a branch.",
+      "supports": [
+        {
+          "sourceKey": "santander-basic-account",
+          "locator": "Facing homelessness or housing difficulties / 文件说明",
+          "excerpt": null,
+          "note": "\"If you don't have a listed proof of ID or permanent UK address, we may still be able to help. Please come and talk to us in branch\"."
+        }
+      ]
+    },
+    {
+      "key": "immigration-act-s40-disqualified-person",
+      "statement": "The law prohibits banks from opening current accounts for people in the UK who need permission to stay but don't have it and whom the government considers should not have an account opened.",
+      "supports": [
+        {
+          "sourceKey": "immigration-act-2014-s40",
+          "locator": "section 40(1)–(3)",
+          "excerpt": null,
+          "note": "\"must not open a current account for a person (P) who is within subsection (2)\"; \"requires leave to enter or remain in the United Kingdom but does not have it\"; \"for whom the Secretary of State considers that a current account should not be opened\". Current operational processes were not verified and are not described."
+        }
+      ]
+    },
+    {
+      "key": "basic-account-features",
+      "statement": "A basic account is a sterling account for paying in, taking out cash, using a debit card, setting up direct debits and making transfers; standard sterling transactions are free and there is no overdraft.",
+      "supports": [
+        {
+          "sourceKey": "par-2015-reg-19",
+          "locator": "regulation 19(1)",
+          "excerpt": null,
+          "note": "Includes \"direct debits\", \"payment transactions through a payment card\" and \"credit transfers\"."
+        },
+        {
+          "sourceKey": "par-2015-reg-20",
+          "locator": "regulation 20(1)",
+          "excerpt": null,
+          "note": "\"must not charge any fee\" (for the relevant sterling services)."
+        },
+        {
+          "sourceKey": "hmt-basic-bank-accounts-2024",
+          "locator": "Introduction",
+          "excerpt": null,
+          "note": "\"must be fee-free for standard operations (when provided in sterling) and not have an overdraft facility\"."
+        }
+      ]
+    },
+    {
+      "key": "basic-account-designated-institutions",
+      "statement": "UK regulations require certain banks designated by the government to offer basic accounts to eligible people; not every bank has this duty.",
+      "supports": [
+        {
+          "sourceKey": "par-2015-reg-22",
+          "locator": "regulation 22(1)",
+          "excerpt": null,
+          "note": "\"A designated credit institution must offer a payment account with basic features\" (to people meeting the reg 23 conditions)."
+        },
+        {
+          "sourceKey": "hmt-basic-bank-accounts-2024",
+          "locator": "Introduction",
+          "excerpt": null,
+          "note": "\"HM Treasury has designated the nine largest personal current account (PCA) providers\" (the list is in the report, with data to June 2024, published November 2025; the public text does not list them)."
+        }
+      ]
+    },
+    {
+      "key": "basic-account-eligibility",
+      "statement": "Broadly: being legally resident in the UK, and not having another UK bank account with basic features, or not being eligible for any of that bank's other accounts.",
+      "supports": [
+        {
+          "sourceKey": "par-2015-reg-23",
+          "locator": "regulation 23(1)",
+          "excerpt": null,
+          "note": "\"legally resident\"; \"not hold a payment account with any United Kingdom credit institution\"; \"be ineligible for all payment accounts offered by B that are not payment accounts with basic features\". \"Legally resident\" is not fully defined in the regulation."
+        }
+      ]
+    },
+    {
+      "key": "basic-account-refusal-grounds",
+      "statement": "Banks still carry out identity checks; a bank must refuse if opening the account would be unlawful.",
+      "supports": [
+        {
+          "sourceKey": "par-2015-reg-25",
+          "locator": "regulation 25(1)",
+          "excerpt": null,
+          "note": "\"must refuse to open a payment account with basic features for a consumer where it would be unlawful for it to do so, including\" breaches of anti-money laundering rules and similar. \"Being unable to complete identity checks\" is an example based on this."
+        }
+      ]
+    },
+    {
+      "key": "basic-account-refusal-reasons-complaints",
+      "statement": "If refused, the bank should generally explain the reason in writing and tell you how to complain, including to the Financial Ombudsman Service (FOS).",
+      "supports": [
+        {
+          "sourceKey": "par-2015-reg-25",
+          "locator": "regulation 25(3)–(5)（2026 年 4 月 28 日起的版本）",
+          "excerpt": null,
+          "note": "\"inform the consumer in writing and free of charge of the reason for the refusal if it may lawfully do so\"; it must tell them of \"the right to make a complaint to the Financial Ombudsman Service\"."
+        }
+      ]
+    },
+    {
+      "key": "fscs-120k-limit",
+      "statement": "If a UK-authorised bank, building society or credit union fails, the FSCS generally pays up to £120,000 per eligible depositor per authorised institution, for institutions failing after 30 November 2025.",
+      "supports": [
+        {
+          "sourceKey": "fscs-banks",
+          "locator": "If the firm failed after 30 November 2025",
+          "excerpt": null,
+          "note": "\"up to £120,000 per eligible person, per bank, building society or credit union\"; \"On 1 December 2025 the deposit limit rose to £120,000.\""
+        },
+        {
+          "sourceKey": "boe-pra-fscs-120k",
+          "locator": "News release（2025 年 11 月 18 日）",
+          "excerpt": null,
+          "note": "\"will protect up to £120,000 of a depositor\" (the new limit confirmed by the PRA)."
+        }
+      ]
+    },
+    {
+      "key": "fscs-shared-licence",
+      "statement": "Different brands sharing one banking licence count as the same bank.",
+      "supports": [
+        {
+          "sourceKey": "fscs-banks",
+          "locator": "Shared banking licences",
+          "excerpt": null,
+          "note": "\"share a banking licence) we have to treat them as one bank\"."
+        }
+      ]
+    },
+    {
+      "key": "fscs-emoney-not-covered",
+      "statement": "Money held with e-money institutions and payment institutions is not covered by FSCS deposit protection.",
+      "supports": [
+        {
+          "sourceKey": "fscs-protection-checker",
+          "locator": "Can't find your firm?",
+          "excerpt": null,
+          "note": "\"FSCS can't protect e-money or payment services firms.\""
+        }
+      ]
+    },
+    {
+      "key": "fscs-how-to-check",
+      "statement": "You can use the FSCS protection checker, or the FCA Financial Services Register, to check whether a firm is authorised and whether it shares a licence.",
+      "supports": [
+        {
+          "sourceKey": "fscs-banks",
+          "locator": "Banks, building societies and credit unions（开头）；Shared banking licences",
+          "excerpt": null,
+          "note": "\"you can check this on the Financial Services Register\"; \"bank & savings protection checker\"; the register shows \"which banks share a licence\"."
+        }
+      ]
+    },
+    {
+      "key": "pra-list-monzo-starling",
+      "statement": "On the PRA list as at 1 September 2026, Monzo Bank Limited and Starling Bank Limited are listed as UK-registered banks permitted to accept deposits; the list says the Financial Services Register takes precedence.",
+      "supports": [
+        {
+          "sourceKey": "boe-pra-banks-list-2026-09",
+          "locator": "Banks incorporated in the UK authorised to accept deposits",
+          "excerpt": null,
+          "note": "\"MONZO BANK LIMITED\",\"730427\"; \"Starling Bank Limited\",\"730166\"; \"it does not supersede the Financial Service Register\". These are examples only, not recommendations."
+        }
+      ]
+    },
+    {
+      "key": "money-mule-warning",
+      "statement": "Criminal gangs use other people's accounts to move criminal money (money mules), and money laundering can carry up to 14 years in prison; some banks also warn that fraudsters target students new to the UK.",
+      "supports": [
+        {
+          "sourceKey": "home-office-money-mule-guidance",
+          "locator": "What is ‘money muling’?；What is money laundering?",
+          "excerpt": null,
+          "note": "\"Money mules can also give control of their account to criminals\"; \"up to 14 years in prison\"."
+        },
+        {
+          "sourceKey": "santander-international-students",
+          "locator": "Stay safe from scams",
+          "excerpt": null,
+          "note": "\"Some criminals target students who are new to the country.\""
+        }
+      ]
+    },
+    {
+      "key": "safeguarding-fca",
+      "statement": "Check the legal entity and distinguish statutory FSCS deposit protection from safeguarding.",
+      "supports": [
+        {
+          "sourceKey": "safeguarding-fca",
+          "locator": "Identifying providers and protections",
+          "excerpt": null,
+          "note": "Check the legal entity and distinguish statutory FSCS deposit protection from safeguarding."
+        }
+      ]
+    }
+  ],
+  "status": "DRAFT",
+  "publishedAt": null,
+  "updatedAt": "2026-11-21T00:00:00Z"
+}

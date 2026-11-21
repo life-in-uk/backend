@@ -1,0 +1,503 @@
+{
+  "slug": "settlement-ilr-overview",
+  "category": "settlement",
+  "title": "ब्रिटेन में स्थायी निवास (ILR) का परिचय: यह क्या है, नागरिकता से कैसे अलग है, और आपका संभावित रास्ता कौन-सा है",
+  "summary": "Indefinite Leave to Remain (ILR) क्या है, इससे क्या कर सकते हैं और यह ब्रिटिश नागरिकता से कैसे अलग है; स्थायी निवास के मुख्य रास्तों और उनकी अवधि का सार (स्किल्ड वर्कर, जीवनसाथी, दीर्घ निवास, Ancestry, Global Talent, BN(O), शरणार्थी आदि); साझा शर्तें; और Earned Settlement सुधार, जो अभी लागू नहीं हुआ है।",
+  "content": "# ब्रिटेन में स्थायी निवास (ILR) का परिचय: यह क्या है, नागरिकता से कैसे अलग है, और आपका संभावित रास्ता कौन-सा है\n\nअंतिम अपडेट: 2026-11-21\n\n> **जाँच की तारीख़: 15 नवंबर 2026।** यह गाइड उस दिन लागू यूके इमिग्रेशन नियमों, होम ऑफ़िस मार्गदर्शन और GOV.UK पेजों के आधार पर लिखी गई है। इमिग्रेशन नियम अक्सर बदलते हैं, और **आपके आवेदन पर नियमों का कौन-सा संस्करण लागू होगा, यह नियमों की अपनी लागू होने की तारीख़ों और संक्रमणकालीन प्रावधानों पर निर्भर करता है**, इसलिए आवेदन से पहले GOV.UK पर फिर से जाँच लें।\n>\n> यह सामान्य जानकारी है, **क़ानूनी सलाह नहीं, और किसी वकील ने इसकी समीक्षा नहीं की है**। यहाँ बताई गई किसी एक शर्त को पूरा करने का मतलब यह नहीं कि आवेदन ज़रूर मंज़ूर होगा। अगर आपका मामला जटिल है (जैसे पहले आवेदन अस्वीकार हुआ हो, तय अवधि से अधिक रुके हों या आपराधिक रिकॉर्ड हो, लंबे समय तक ब्रिटेन से बाहर रहे हों, या इमिग्रेशन स्थिति में अंतराल आया हो), तो Immigration Advice Authority (IAA) में पंजीकृत इमिग्रेशन सलाहकार या वकील से सलाह लें।\n\nस्थायी निवास (Indefinite Leave to Remain या ILR, जिसे \"settlement\" भी कहते हैं) ब्रिटेन में एक **इमिग्रेशन स्थिति** है: यह मिलने के बाद ब्रिटेन में आपके रहने पर **कोई समय-सीमा नहीं रहती**। बहुत से लोग मानते हैं कि \"कुछ साल यहाँ रह लेना\" ही एकमात्र शर्त है, लेकिन असल में **हर वीज़ा रास्ते के स्थायी निवास के अपने नियम हैं**, और अवधि, आय, अंग्रेज़ी और ब्रिटेन से बाहर बिताए दिनों की गिनती सब अलग हो सकते हैं। [आधिकारिक आधार देखें](#guide-evidence-route-specific)\n\nयह गाइड पहले बताती है कि ILR क्या है और नागरिकता से कैसे अलग है, फिर मुख्य रास्तों की सूची देती है ताकि आप अपने लिए सही गाइड ढूँढ सकें।\n\n## 1. यह गाइड किसके लिए है\n\n- जिनके पास ब्रिटिश वीज़ा है और जो स्थायी निवास की योजना बना रहे हैं;\n- जिन्हें यकीन नहीं कि उनका वीज़ा ILR तक ले जा सकता है या कब;\n- जो ILR और ब्रिटिश राष्ट्रीयता का अंतर समझना चाहते हैं।\n\nEU, EEA और स्विस नागरिकों और उनके परिवार के लिए EU Settlement Scheme (\"settled status\") एक अलग व्यवस्था है; नीचे खंड 5 में इसका संक्षिप्त उल्लेख है।\n\n## 2. ILR से आप क्या कर सकते हैं\n\n- **रहने पर कोई समय-सीमा नहीं**, इसलिए वीज़ा बढ़वाने की ज़रूरत नहीं रहती; [आधिकारिक आधार देखें](#guide-evidence-rights-no-limit)\n- **स्वतंत्र रूप से काम और पढ़ाई**: किसी भी व्यवसाय, पेशे या नौकरी में, स्व-रोज़गार सहित, बशर्ते उस काम पर लागू नियमों का पालन करें; [आधिकारिक आधार देखें](#guide-evidence-rights-work-study)\n- पात्र होने पर सरकारी लाभ (benefits) के लिए आवेदन कर सकते हैं, और NHS का इलाज आम तौर पर मुफ़्त होता है; [आधिकारिक आधार देखें](#guide-evidence-rights-benefits-nhs)\n- **स्थायी निवास के दौरान ब्रिटेन में जन्मे बच्चे आम तौर पर जन्म से ही ब्रिटिश नागरिक होते हैं**; [आधिकारिक आधार देखें](#guide-evidence-rights-children)\n- ILR आम तौर पर नागरिकता की ओर पहला कदम है, लेकिन नागरिकता के लिए अलग आवेदन करना होता है (खंड 3 देखें)। [आधिकारिक आधार देखें](#guide-evidence-rights-citizenship)\n\n## 3. ILR और ब्रिटिश नागरिकता में अंतर\n\n| | ILR | ब्रिटिश नागरिक |\n|---|---|---|\n| स्वरूप | इमिग्रेशन स्थिति | राष्ट्रीयता |\n| ब्रिटेन से लंबी अनुपस्थिति | लगातार **2 वर्ष से अधिक** बाहर रहने पर ILR आम तौर पर समाप्त हो जाता है (EUSS का settled status: आम तौर पर 5 वर्ष से अधिक, स्विस नागरिकों और उनके परिवार के लिए 4 वर्ष से अधिक) | ILR के समाप्त होने के नियम लागू नहीं होते |\n| क्या इसे वापस लिया जा सकता है? | निर्वासन या धोखे से प्राप्त करने जैसी स्थितियों में ILR समाप्त या रद्द हो सकता है | राष्ट्रीयता से वंचित करना अलग क़ानून के तहत है और इस गाइड के दायरे से बाहर है |\n| आवेदन शुल्क (8 अक्टूबर 2026 की शुल्क तालिका) | £3,226 | नागरिकता (naturalisation) £1,709, साथ में नागरिकता समारोह शुल्क £130 |\n\n[आधिकारिक आधार देखें](#guide-evidence-ilr-vs-citizenship) [आधिकारिक आधार देखें](#guide-evidence-fees)\n\n**ILR मिलने से आप अपने-आप ब्रिटिश नागरिक नहीं बन जाते।** नागरिकता की अपनी निवास अवधि, अनुपस्थिति की सीमाएँ, अच्छे चरित्र, अंग्रेज़ी और Life in the UK टेस्ट की शर्तें हैं; देखें \"ILR के बाद ब्रिटिश नागरिकता के लिए आवेदन कैसे करें\"।\n\n## 4. ILR कुछ साल बीतने पर अपने-आप नहीं मिलता\n\n- **आपको स्वयं आवेदन करना होता है**, और आपके आवेदन पर लागू नियम पूरे करने होते हैं;\n- **अलग-अलग रास्तों पर बिताया समय हमेशा जोड़ा नहीं जा सकता।** उदाहरण के लिए, स्किल्ड वर्कर रास्ते के लिए ज़रूरी 5 वर्षों में आश्रित (dependant) के रूप में बिताया समय नहीं गिना जाता; [आधिकारिक आधार देखें](#guide-evidence-sw-qualifying)\n- स्टूडेंट और ग्रेजुएट वीज़ा अपने-आप में स्थायी निवास तक नहीं ले जाते; फ़िलहाल यह समय केवल 10-वर्षीय दीर्घ निवास रास्ते में गिना जा सकता है। [आधिकारिक आधार देखें](#guide-evidence-long-residence)\n\n## 5. मुख्य रास्ते एक नज़र में\n\nयह तालिका केवल एक सूची है। **हर रास्ते की और भी शर्तें हैं**, इसलिए संबंधित गाइड या स्वयं नियम पढ़ें।\n\n| रास्ता | मौजूदा नियमों के तहत सामान्य अवधि | नियम |\n|---|---|---|\n| Skilled Worker (स्किल्ड वर्कर) | 5 वर्ष | Appendix Skilled Worker |\n| जीवनसाथी या पार्टनर (5-वर्षीय रास्ता) | पार्टनर की अनुमति के साथ 60 महीने लगातार निवास | Appendix FM |\n| जीवनसाथी या पार्टनर (10-वर्षीय रास्ता) | 10 वर्ष | Appendix Settlement Family Life |\n| दीर्घ निवास | 10 वर्ष वैध और लगातार निवास | Appendix Long Residence |\n| UK Ancestry | 5 वर्ष | Appendix UK Ancestry |\n| Global Talent | 3 या 5 वर्ष | Appendix Global Talent |\n| Innovator Founder | 3 वर्ष | Appendix Innovator Founder |\n| हांगकांग BN(O) | 5 वर्ष | Appendix Hong Kong BN(O) |\n| शरणार्थी और मानवीय संरक्षण | 5 वर्ष (2 मार्च 2026 या उसके बाद किए गए शरण दावों के लिए स्थिति अलग है) | Appendix Settlement Protection |\n| निजी जीवन (Private life) | परिस्थिति के अनुसार 5 या 10 वर्ष | Appendix Private Life |\n| EU Settlement Scheme | आम तौर पर 5 वर्ष लगातार निवास | Appendix EU |\n\n[आधिकारिक आधार देखें](#guide-evidence-table-sw) [आधिकारिक आधार देखें](#guide-evidence-table-partner) [आधिकारिक आधार देखें](#guide-evidence-long-residence) [आधिकारिक आधार देखें](#guide-evidence-table-other-work) [आधिकारिक आधार देखें](#guide-evidence-table-bno) [आधिकारिक आधार देखें](#guide-evidence-table-protection) [आधिकारिक आधार देखें](#guide-evidence-table-private-life) [आधिकारिक आधार देखें](#guide-evidence-table-euss)\n\nहर रास्ते का विवरण देखें: \"स्किल्ड वर्कर स्थायी निवास (ILR): मौजूदा 5-वर्षीय नियम और घोषित सुधार\", \"जीवनसाथी और पार्टनर के लिए स्थायी निवास: 5-वर्षीय और 10-वर्षीय रास्ते\", \"10-वर्षीय दीर्घ निवास (Long Residence) के आधार पर स्थायी निवास\" और \"स्थायी निवास के अन्य रास्ते: UK Ancestry, Global Talent, Innovator Founder, BN(O), EUSS, शरणार्थी और निजी जीवन\"।\n\n## 6. लगभग हर रास्ते पर लागू शर्तें\n\n1. **आवेदन के दिन आप ब्रिटेन में हों**, सही ऑनलाइन फ़ॉर्म का उपयोग करें, शुल्क दें और ज़रूरत हो तो बायोमेट्रिक्स दें; [आधिकारिक आधार देखें](#guide-evidence-common-validity)\n2. **उपयुक्तता** (Part Suitability): जैसे आपराधिक रिकॉर्ड, धोखा, या NHS या Home Office का बकाया कर्ज़ अस्वीकृति का कारण बन सकते हैं; आवेदन के समय आप आम तौर पर **तय अवधि से अधिक रुके हुए (overstayer) या इमिग्रेशन ज़मानत (immigration bail) पर नहीं होने चाहिए**; [आधिकारिक आधार देखें](#guide-evidence-common-suitability)\n3. **लगातार निवास**: स्किल्ड वर्कर, दीर्घ निवास और UK Ancestry सहित कई रास्तों में शर्त है कि योग्यता अवधि के दौरान **किसी भी 12 महीनों में 180 दिन से अधिक ब्रिटेन से बाहर न रहे हों**; 5-वर्षीय पार्टनर रास्ते के नियम अलग हैं। देखें \"लगातार निवास और ब्रिटेन से बाहर बिताए दिन: स्थायी निवास के लिए गिनती कैसे होती है\"; [आधिकारिक आधार देखें](#guide-evidence-common-cr)\n4. **अंग्रेज़ी और Life in the UK टेस्ट**: ज़्यादातर रास्तों में बोलने और सुनने में B1 ज़रूरी है, और **26 मार्च 2027 या उसके बाद के आवेदनों के लिए ज़्यादातर रास्तों में यह B2 हो जाएगा**; लेकिन हांगकांग BN(O) रास्ते के मौजूदा नियमों में अब भी B1 लिखा है। देखें \"स्थायी निवास के लिए अंग्रेज़ी की शर्त और Life in the UK टेस्ट\"। [आधिकारिक आधार देखें](#guide-evidence-common-english)\n\n## 7. नियम बदल रहे हैं: Earned Settlement\n\nसरकार ने 2 नवंबर 2026 को \"Earned Settlement\" सुधार की घोषणा की, जिसके तहत सामान्य अवधि 5 से बढ़ाकर 10 वर्ष की जाएगी। **15 नवंबर 2026 तक ये बदलाव इमिग्रेशन नियमों में शामिल नहीं हुए हैं और लागू होने की कोई तारीख़ घोषित नहीं हुई है**; ऊपर की तालिका अब भी मौजूदा नियम दिखाती है। सुधार में क्या कहा गया है और क्या अभी अनिश्चित है, इसके लिए देखें \"Earned Settlement सुधार ट्रैकर: मौजूदा नियम बनाम प्रस्ताव\"। [आधिकारिक आधार देखें](#guide-evidence-es-not-in-force)\n\n## 8. आम ग़लतफ़हमियाँ\n\n- **\"ILR और ब्रिटिश राष्ट्रीयता एक ही चीज़ हैं।\"** नहीं। ILR एक इमिग्रेशन स्थिति है जो लंबी अनुपस्थिति से समाप्त हो सकती है; नागरिकता के लिए अलग आवेदन करना होता है। [आधिकारिक आधार देखें](#guide-evidence-ilr-vs-citizenship)\n- **\"कोई भी वीज़ा 5 साल बाद ILR तक ले जाता है।\"** नहीं। अवधि और शर्तें रास्ते पर निर्भर करती हैं, और स्टूडेंट और ग्रेजुएट वीज़ा अपने-आप में स्थायी निवास तक नहीं ले जाते। [आधिकारिक आधार देखें](#guide-evidence-long-residence)\n- **\"EUSS का settled status बिल्कुल सामान्य ILR जैसा है।\"** दोनों अनिश्चितकालीन अनुमति देते हैं, लेकिन नियम अलग हैं: जैसे EUSS का settled status आम तौर पर 5 वर्ष से अधिक लगातार अनुपस्थिति पर समाप्त होता है, जबकि स्विस नागरिकों और उनके परिवार के लिए सीमा 4 वर्ष से अधिक है, जबकि सामान्य ILR 2 वर्ष से अधिक पर। [आधिकारिक आधार देखें](#guide-evidence-ilr-vs-citizenship)\n- **\"सुधार शुरू हो चुका है।\"** 15 नवंबर 2026 तक नहीं। [आधिकारिक आधार देखें](#guide-evidence-es-not-in-force)\n\n## 9. करने योग्य काम\n\n- पता करें कि आपका मौजूदा वीज़ा किस रास्ते का है, और आपकी पिछली मंज़ूरी किस चीज़ की थी;\n- अपने रास्ते के अनुसार आवेदन की तारीख़ और ब्रिटेन से बाहर बिताए दिनों का हिसाब लगाएँ;\n- अंग्रेज़ी का प्रमाण और Life in the UK टेस्ट जल्दी तैयार करें, और 26 मार्च 2027 के B2 बदलाव का ध्यान रखें;\n- आवेदन शुल्क £3,226 (प्रति आवेदक) का बजट रखें;\n- Earned Settlement के औपचारिक नियम प्रकाशित होने पर उन पर नज़र रखें।\n\n## संबंधित गाइड\n\n- \"स्थायी निवास का आवेदन: कब आवेदन करें, फ़ीस, प्रतीक्षा का समय और अस्वीकृति के बाद\"\n- \"स्थायी निवास के आवेदन के लिए कौन-से दस्तावेज़ तैयार करें\"\n- \"बच्चे और आश्रित स्थायी निवास के लिए कैसे आवेदन करें\"\n- \"ILR मिलने के बाद: अधिकार, eVisa से स्थिति का प्रमाण, यात्रा और स्थायी निवास का समाप्त होना\"\n- \"ILR के बाद ब्रिटिश नागरिकता के लिए आवेदन कैसे करें\"\n\n---\n\nअंतिम अपडेट: 15 नवंबर 2026। यह सामान्य जानकारी है और किसी वकील ने इसकी समीक्षा नहीं की है; नियम बदलने पर GOV.UK और इमिग्रेशन नियम मान्य होंगे।\n\n## EU Settlement Scheme का अपना स्टेटस देखें\nEUSS के तहत settled status मिलने के बाद लगातार अनुपस्थिति की गणना यूके, चैनल आइलैंड्स और आइल ऑफ़ मैन से बाहर के समय पर होती है। नियम लागू करने से पहले देखें कि आपको settled status, pre-settled status या किसी दूसरे रास्ते से अनिश्चितकालीन अनुमति मिली है। आवेदन की पात्रता के लिए निवास की गणना अलग से जाँचें। [होम ऑफ़िस की जानकारी](#guide-evidence-euss-lapse-official)",
+  "sources": [
+    {
+      "key": "govuk-ilr",
+      "organisation": "UK Visas and Immigration（GOV.UK）",
+      "title": "Check if you can get indefinite leave to remain（GOV.UK 页面）",
+      "url": "https://www.gov.uk/indefinite-leave-to-remain",
+      "accessedAt": "2026-11-15T09:15:00Z"
+    },
+    {
+      "key": "govuk-rights",
+      "organisation": "Home Office（GOV.UK）",
+      "title": "Indefinite leave to remain in the UK: your rights and status（GOV.UK 指引，2026 年 6 月 8 日更新）",
+      "url": "https://www.gov.uk/guidance/indefinite-leave-to-remain-in-the-uk-your-rights-and-status",
+      "accessedAt": "2026-11-15T09:15:00Z"
+    },
+    {
+      "key": "rules-rr",
+      "organisation": "UK Visas and Immigration（GOV.UK）",
+      "title": "Immigration Rules Appendix Returning Resident（2025 年 11 月 11 日版，含 HC 1333 修改）",
+      "url": "https://www.gov.uk/guidance/immigration-rules/immigration-rules-appendix-returning-resident",
+      "accessedAt": "2026-11-15T09:15:00Z"
+    },
+    {
+      "key": "fees-2026-10",
+      "organisation": "Home Office（GOV.UK）",
+      "title": "Home Office immigration and nationality fees, 8 October 2026",
+      "url": "https://www.gov.uk/government/publications/visa-regulations-revised-table/home-office-immigration-and-nationality-fees-8-october-2026",
+      "accessedAt": "2026-11-15T09:15:00Z"
+    },
+    {
+      "key": "rules-sw",
+      "organisation": "UK Visas and Immigration（GOV.UK）",
+      "title": "Immigration Rules Appendix Skilled Worker（2026 年 10 月 8 日版，含 HC 584 修改）",
+      "url": "https://www.gov.uk/guidance/immigration-rules/immigration-rules-appendix-skilled-worker",
+      "accessedAt": "2026-11-15T09:15:00Z"
+    },
+    {
+      "key": "rules-lr",
+      "organisation": "UK Visas and Immigration（GOV.UK）",
+      "title": "Immigration Rules Appendix Long Residence（2026 年 10 月 8 日版，含 HC 584 修改）",
+      "url": "https://www.gov.uk/guidance/immigration-rules/immigration-rules-appendix-long-residence",
+      "accessedAt": "2026-11-15T09:15:00Z"
+    },
+    {
+      "key": "cw-long-residence",
+      "organisation": "Home Office（GOV.UK）",
+      "title": "Long residence（审核人员指引第 26.0 版，2026 年 10 月 8 日发布）",
+      "url": "https://www.gov.uk/government/publications/long-residence",
+      "accessedAt": "2026-11-15T09:15:00Z"
+    },
+    {
+      "key": "rules-fm",
+      "organisation": "UK Visas and Immigration（GOV.UK）",
+      "title": "Immigration Rules Appendix FM: family members（2026 年 10 月 8 日版，含 HC 584 修改）",
+      "url": "https://www.gov.uk/guidance/immigration-rules/immigration-rules-appendix-fm-family-members",
+      "accessedAt": "2026-11-15T09:15:00Z"
+    },
+    {
+      "key": "rules-sfl",
+      "organisation": "UK Visas and Immigration（GOV.UK）",
+      "title": "Immigration Rules Appendix Settlement Family Life（2026 年 8 月 3 日版，含 HC 259 修改）",
+      "url": "https://www.gov.uk/guidance/immigration-rules/immigration-rules-appendix-settlement-family-life",
+      "accessedAt": "2026-11-15T09:15:00Z"
+    },
+    {
+      "key": "rules-ancestry",
+      "organisation": "UK Visas and Immigration（GOV.UK）",
+      "title": "Immigration Rules Appendix UK Ancestry（2026 年 8 月 3 日版，含 HC 259 修改）",
+      "url": "https://www.gov.uk/guidance/immigration-rules/immigration-rules-appendix-uk-ancestry",
+      "accessedAt": "2026-11-15T09:15:00Z"
+    },
+    {
+      "key": "rules-gt",
+      "organisation": "UK Visas and Immigration（GOV.UK）",
+      "title": "Immigration Rules Appendix Global Talent（2026 年 8 月 3 日版，含 HC 259 修改）",
+      "url": "https://www.gov.uk/guidance/immigration-rules/immigration-rules-appendix-global-talent",
+      "accessedAt": "2026-11-15T09:15:00Z"
+    },
+    {
+      "key": "rules-innovator",
+      "organisation": "UK Visas and Immigration（GOV.UK）",
+      "title": "Immigration Rules Appendix Innovator Founder（2026 年 8 月 3 日版，含 HC 259 修改）",
+      "url": "https://www.gov.uk/guidance/immigration-rules/immigration-rules-appendix-innovator-founder",
+      "accessedAt": "2026-11-15T09:15:00Z"
+    },
+    {
+      "key": "rules-bno",
+      "organisation": "UK Visas and Immigration（GOV.UK）",
+      "title": "Immigration Rules Appendix Hong Kong British National (Overseas)（2026 年 10 月 8 日版，含 HC 584 修改）",
+      "url": "https://www.gov.uk/guidance/immigration-rules/immigration-rules-appendix-hong-kong-british-national-overseas",
+      "accessedAt": "2026-11-15T09:15:00Z"
+    },
+    {
+      "key": "rules-protection",
+      "organisation": "UK Visas and Immigration（GOV.UK）",
+      "title": "Immigration Rules Appendix Settlement Protection（2026 年 4 月 8 日版，含 HC 1691 修改）",
+      "url": "https://www.gov.uk/guidance/immigration-rules/immigration-rules-appendix-settlement-protection",
+      "accessedAt": "2026-11-15T09:15:00Z"
+    },
+    {
+      "key": "hc-1691",
+      "organisation": "Home Office（GOV.UK）",
+      "title": "Statement of changes to the Immigration Rules: HC 1691, 5 March 2026（含解释备忘录）",
+      "url": "https://www.gov.uk/government/publications/statement-of-changes-to-the-immigration-rules-hc-1619-5-march-2026",
+      "accessedAt": "2026-11-15T09:15:00Z"
+    },
+    {
+      "key": "rules-private-life",
+      "organisation": "UK Visas and Immigration（GOV.UK）",
+      "title": "Immigration Rules Appendix Private Life（2026 年 10 月 8 日版，含 HC 584 修改）",
+      "url": "https://www.gov.uk/guidance/immigration-rules/immigration-rules-appendix-private-life",
+      "accessedAt": "2026-11-15T09:15:00Z"
+    },
+    {
+      "key": "govuk-euss",
+      "organisation": "UK Visas and Immigration（GOV.UK）",
+      "title": "Apply to the EU Settlement Scheme (settled and pre-settled status)（GOV.UK 页面）",
+      "url": "https://www.gov.uk/settled-status-eu-citizens-families",
+      "accessedAt": "2026-11-15T09:15:00Z"
+    },
+    {
+      "key": "rules-cr",
+      "organisation": "UK Visas and Immigration（GOV.UK）",
+      "title": "Immigration Rules Appendix Continuous Residence（2025 年 11 月 11 日版，含 HC 1333 修改）",
+      "url": "https://www.gov.uk/guidance/immigration-rules/immigration-rules-appendix-continuous-residence",
+      "accessedAt": "2026-11-15T09:15:00Z"
+    },
+    {
+      "key": "es-response",
+      "organisation": "Home Office（GOV.UK）",
+      "title": "A Fairer Pathway to Settlement: Government response to the consultation（CP 1707，2026 年 11 月 12 日发布）",
+      "url": "https://www.gov.uk/government/consultations/earned-settlement",
+      "accessedAt": "2026-11-15T09:15:00Z"
+    },
+    {
+      "key": "soc-collection",
+      "organisation": "Home Office（GOV.UK）",
+      "title": "Immigration Rules: statement of changes（文件合集，2026 年 9 月 3 日更新，最新一份为 HC 584）",
+      "url": "https://www.gov.uk/government/collections/immigration-rules-statement-of-changes",
+      "accessedAt": "2026-11-15T09:15:00Z"
+    },
+    {
+      "key": "euss-lapse-official",
+      "organisation": "Home Office",
+      "title": "Apply to the EU Settlement Scheme: what you’ll get",
+      "url": "https://www.gov.uk/settled-status-eu-citizens-families/what-settled-and-presettled-status-means",
+      "accessedAt": "2026-11-21T00:00:00Z"
+    }
+  ],
+  "evidence": [
+    {
+      "key": "route-specific",
+      "statement": "GOV.UK बताता है कि स्थायी निवास (settlement) के लिए आवेदन के अलग-अलग तरीके हैं जो व्यक्ति की परिस्थिति पर निर्भर हैं; वर्क वीज़ा में आम तौर पर 5 वर्ष चाहिए, कुछ रास्तों में 2 या 3 वर्ष, और वेतन या वित्तीय शर्तें भी हो सकती हैं।",
+      "supports": [
+        {
+          "sourceKey": "govuk-ilr",
+          "locator": "Main page text",
+          "excerpt": "There are different ways to apply for indefinite leave to remain based on your circumstances.",
+          "note": "15 नवंबर 2026 को जाँचा गया: उद्धृत स्थान पर दिया गया प्रावधान या स्पष्टीकरण इस कथन से मेल खाता है।"
+        }
+      ]
+    },
+    {
+      "key": "rights-no-limit",
+      "statement": "ILR वाले व्यक्ति के ब्रिटेन में रहने पर कोई समय-सीमा नहीं रहती; अगर उसका घर ब्रिटेन में है तो उसे ब्रिटेन में बसा हुआ (settled) माना जाता है।",
+      "supports": [
+        {
+          "sourceKey": "govuk-rights",
+          "locator": "If you have indefinite leave to remain or enter (ILR or ILE)",
+          "excerpt": "If you have ILR or ILE there is no longer any time limit on your ability to stay in the UK.",
+          "note": "15 नवंबर 2026 को जाँचा गया: उद्धृत स्थान पर दिया गया प्रावधान या स्पष्टीकरण इस कथन से मेल खाता है।"
+        }
+      ]
+    },
+    {
+      "key": "rights-work-study",
+      "statement": "ILR वाला व्यक्ति संबंधित नियमों के पालन के साथ ब्रिटेन में किसी भी व्यवसाय, पेशे या नौकरी में काम कर सकता है, स्व-रोज़गार सहित, और स्वतंत्र रूप से पढ़ाई कर सकता है।",
+      "supports": [
+        {
+          "sourceKey": "govuk-rights",
+          "locator": "Working in the UK; Studying in the UK",
+          "excerpt": "You are free to work in the UK in any business, profession or employment, including self-employment.",
+          "note": "15 नवंबर 2026 को जाँचा गया: उद्धृत स्थान पर दिया गया प्रावधान या स्पष्टीकरण इस कथन से मेल खाता है।"
+        }
+      ]
+    },
+    {
+      "key": "rights-benefits-nhs",
+      "statement": "ILR के साथ पात्र होने पर लाभों के लिए आवेदन किया जा सकता है; ब्रिटेन में बसे व्यक्ति के लिए इलाज आम तौर पर मुफ़्त होता है।",
+      "supports": [
+        {
+          "sourceKey": "govuk-ilr",
+          "locator": "Main page text",
+          "excerpt": "apply for benefits if you’re eligible",
+          "note": "15 नवंबर 2026 को जाँचा गया: उद्धृत स्थान पर दिया गया प्रावधान या स्पष्टीकरण इस कथन से मेल खाता है।"
+        },
+        {
+          "sourceKey": "govuk-rights",
+          "locator": "Access to healthcare",
+          "excerpt": "Generally, healthcare is available free to a person who is settled in the UK.",
+          "note": "15 नवंबर 2026 को जाँचा गया: उद्धृत स्थान पर दिया गया प्रावधान या स्पष्टीकरण इस कथन से मेल खाता है।"
+        }
+      ]
+    },
+    {
+      "key": "rights-children",
+      "statement": "माता-पिता में से किसी के बसे होने के दौरान ब्रिटेन में जन्मा बच्चा आम तौर पर जन्म से ही अपने-आप ब्रिटिश नागरिक होता है।",
+      "supports": [
+        {
+          "sourceKey": "govuk-rights",
+          "locator": "Children born in the UK while you are settled",
+          "excerpt": "If you have a child in the UK while you are settled here they will normally be a British citizen automatically at birth.",
+          "note": "15 नवंबर 2026 को जाँचा गया: उद्धृत स्थान पर दिया गया प्रावधान या स्पष्टीकरण इस कथन से मेल खाता है।"
+        }
+      ]
+    },
+    {
+      "key": "rights-citizenship",
+      "statement": "ILR के आधार पर ब्रिटिश नागरिकता के लिए आवेदन किया जा सकता है; आम तौर पर ILR मिलने के बाद कम से कम 12 महीने ब्रिटेन में रहना और अन्य शर्तें पूरी करना ज़रूरी है।",
+      "supports": [
+        {
+          "sourceKey": "govuk-rights",
+          "locator": "Becoming a British citizen",
+          "excerpt": "To apply for citizenship, you must usually have been living in the UK for at least 12 months after being granted indefinite leave.",
+          "note": "15 नवंबर 2026 को जाँचा गया: उद्धृत स्थान पर दिया गया प्रावधान या स्पष्टीकरण इस कथन से मेल खाता है।"
+        }
+      ]
+    },
+    {
+      "key": "ilr-vs-citizenship",
+      "statement": "ब्रिटेन, आयरलैंड और क्राउन डिपेंडेंसी से तय अवधि से अधिक लगातार अनुपस्थिति पर ILR समाप्त हो जाता है (आम तौर पर 2 वर्ष; EUSS settled status के लिए 5 वर्ष; स्विस नागरिकों के लिए 4 वर्ष); निर्वासन पर यह समाप्त हो जाता है और धोखे से प्राप्त करने जैसी स्थितियों में रद्द किया जा सकता है।",
+      "supports": [
+        {
+          "sourceKey": "govuk-rights",
+          "locator": "Travelling outside the UK; Can my indefinite leave to enter or remain be taken away?",
+          "excerpt": "If you are deported from the UK your indefinite leave will be invalidated.",
+          "note": "15 नवंबर 2026 को जाँचा गया: उद्धृत स्थान पर दिया गया प्रावधान या स्पष्टीकरण इस कथन से मेल खाता है।"
+        },
+        {
+          "sourceKey": "rules-rr",
+          "locator": "Introduction",
+          "excerpt": "of more than 2 years under the Immigration (Leave to Enter and Remain) Order 2000",
+          "note": "GOV.UK के अधिकार वाले पेज पर \"2 वर्ष या अधिक\" लिखा है, जबकि नियमों की भूमिका और केसवर्कर मार्गदर्शन में \"2 वर्ष से अधिक\" लिखा है; यह गाइड नियमों की शब्दावली अपनाती है और पाठकों को याद दिलाती है कि इस सीमा के पास न जाएँ।"
+        }
+      ]
+    },
+    {
+      "key": "fees",
+      "statement": "8 अक्टूबर 2026 की शुल्क तालिका: ब्रिटेन में ILR आवेदन का शुल्क प्रति व्यक्ति £3,226 (मुख्य आवेदक और आश्रित); नागरिकता £1,709 और नागरिकता समारोह शुल्क £130।",
+      "supports": [
+        {
+          "sourceKey": "fees-2026-10",
+          "locator": "Section 9: Other applications made in the UK; Section 10: Nationality; footnotes",
+          "excerpt": "The citizenship ceremony fee of £130 will be added to the application fee.",
+          "note": "15 नवंबर 2026 को जाँचा गया: उद्धृत स्थान पर दिया गया प्रावधान या स्पष्टीकरण इस कथन से मेल खाता है।"
+        }
+      ]
+    },
+    {
+      "key": "sw-qualifying",
+      "statement": "स्किल्ड वर्कर स्थायी निवास के लिए ब्रिटेन में स्किल्ड वर्कर या निर्दिष्ट रास्तों की अनुमति के साथ लगातार 5 वर्ष चाहिए; आश्रित के रूप में बिताया समय नहीं गिना जाता।",
+      "supports": [
+        {
+          "sourceKey": "rules-sw",
+          "locator": "SW 21.1–SW 21.2",
+          "excerpt": null,
+          "note": "15 नवंबर 2026 को जाँचा गया: उद्धृत स्थान पर दिया गया प्रावधान या स्पष्टीकरण इस कथन से मेल खाता है।"
+        }
+      ]
+    },
+    {
+      "key": "long-residence",
+      "statement": "दीर्घ निवास रास्ते में ब्रिटेन में 10 वर्ष वैध निवास चाहिए, जिसके दौरान विज़िटर, अल्पकालिक अंग्रेज़ी छात्र, सीज़नल वर्कर या यूक्रेन योजना के अलावा किसी अनुमति के साथ या अन्य योग्य स्थितियों में रहे हों; स्टूडेंट और ग्रेजुएट के रूप में बिताया समय गिना जा सकता है।",
+      "supports": [
+        {
+          "sourceKey": "rules-lr",
+          "locator": "LR 11.1",
+          "excerpt": null,
+          "note": "15 नवंबर 2026 को जाँचा गया: उद्धृत स्थान पर दिया गया प्रावधान या स्पष्टीकरण इस कथन से मेल खाता है।"
+        },
+        {
+          "sourceKey": "cw-long-residence",
+          "locator": "Treatment of time spent in the UK, as a visitor, short-term student, seasonal worker or under the Ukraine Scheme",
+          "excerpt": "Any time spent in the UK with permission under any other student route (such as Appendix Student or Tier 4) does count in the qualifying period",
+          "note": "15 नवंबर 2026 को जाँचा गया: उद्धृत स्थान पर दिया गया प्रावधान या स्पष्टीकरण इस कथन से मेल खाता है।"
+        }
+      ]
+    },
+    {
+      "key": "table-sw",
+      "statement": "स्किल्ड वर्कर स्थायी निवास की योग्यता अवधि 5 वर्ष है।",
+      "supports": [
+        {
+          "sourceKey": "rules-sw",
+          "locator": "SW 21.1",
+          "excerpt": "The applicant must have spent a continuous period of 5 years in the UK.",
+          "note": "15 नवंबर 2026 को जाँचा गया: उद्धृत स्थान पर दिया गया प्रावधान या स्पष्टीकरण इस कथन से मेल खाता है।"
+        }
+      ]
+    },
+    {
+      "key": "table-partner",
+      "statement": "5-वर्षीय पार्टनर रास्ते में पार्टनर एंट्री क्लीयरेंस या रहने की अनुमति के साथ कम से कम 60 महीने लगातार निवास चाहिए; 10-वर्षीय रास्ते में निर्दिष्ट अनुमति के साथ 10 वर्ष लगातार निवास चाहिए।",
+      "supports": [
+        {
+          "sourceKey": "rules-fm",
+          "locator": "E-ILRP.1.3",
+          "excerpt": null,
+          "note": "15 नवंबर 2026 को जाँचा गया: उद्धृत स्थान पर दिया गया प्रावधान या स्पष्टीकरण इस कथन से मेल खाता है।"
+        },
+        {
+          "sourceKey": "rules-sfl",
+          "locator": "SETF 3.1",
+          "excerpt": null,
+          "note": "15 नवंबर 2026 को जाँचा गया: उद्धृत स्थान पर दिया गया प्रावधान या स्पष्टीकरण इस कथन से मेल खाता है।"
+        }
+      ]
+    },
+    {
+      "key": "table-other-work",
+      "statement": "UK Ancestry स्थायी निवास के लिए उस रास्ते पर 5 वर्ष चाहिए; Global Talent में समर्थन (endorsement) के प्रकार के अनुसार 3 या 5 वर्ष; Innovator Founder में 3 वर्ष।",
+      "supports": [
+        {
+          "sourceKey": "rules-ancestry",
+          "locator": "UKA 13.1",
+          "excerpt": null,
+          "note": "15 नवंबर 2026 को जाँचा गया: उद्धृत स्थान पर दिया गया प्रावधान या स्पष्टीकरण इस कथन से मेल खाता है।"
+        },
+        {
+          "sourceKey": "rules-gt",
+          "locator": "GT 11.1–GT 11.2",
+          "excerpt": null,
+          "note": "15 नवंबर 2026 को जाँचा गया: उद्धृत स्थान पर दिया गया प्रावधान या स्पष्टीकरण इस कथन से मेल खाता है।"
+        },
+        {
+          "sourceKey": "rules-innovator",
+          "locator": "INNF 18.1",
+          "excerpt": null,
+          "note": "15 नवंबर 2026 को जाँचा गया: उद्धृत स्थान पर दिया गया प्रावधान या स्पष्टीकरण इस कथन से मेल खाता है।"
+        }
+      ]
+    },
+    {
+      "key": "table-bno",
+      "statement": "BN(O) स्थायी निवास के लिए सबसे हाल की अनुमति BN(O) रास्ते की होनी चाहिए और ऐसे रास्ते पर 5 वर्ष लगातार निवास चाहिए जो स्थायी निवास तक ले जा सकता है (18 वर्ष से कम आयु के आवेदकों को छोड़कर)।",
+      "supports": [
+        {
+          "sourceKey": "rules-bno",
+          "locator": "HK 62.1",
+          "excerpt": null,
+          "note": "15 नवंबर 2026 को जाँचा गया: उद्धृत स्थान पर दिया गया प्रावधान या स्पष्टीकरण इस कथन से मेल खाता है।"
+        }
+      ]
+    },
+    {
+      "key": "table-protection",
+      "statement": "संरक्षण रास्ते पर स्थायी निवास के लिए शरणार्थी स्थिति या मानवीय संरक्षण के साथ ब्रिटेन में कम से कम 5 वर्ष लगातार निवास चाहिए; 2 मार्च 2026 या उसके बाद किए गए शरण दावों पर संरक्षण अनुमति 30 महीनों के लिए दी जाती है, और व्याख्यात्मक ज्ञापन के अनुसार जिन्होंने 1 मार्च 2026 से पहले दावा किया और 5 वर्ष की अनुमति मिली, वे 5 वर्ष बाद स्थायी निवास के लिए पात्र रहेंगे।",
+      "supports": [
+        {
+          "sourceKey": "rules-protection",
+          "locator": "STP 3.1",
+          "excerpt": null,
+          "note": "15 नवंबर 2026 को जाँचा गया: उद्धृत स्थान पर दिया गया प्रावधान या स्पष्टीकरण इस कथन से मेल खाता है।"
+        },
+        {
+          "sourceKey": "hc-1691",
+          "locator": "Explanatory memorandum, paras 5.5–5.9",
+          "excerpt": "Adults and accompanied and unaccompanied children granted 5 years leave as a result of an asylum claim or further submissions made by 1 March 2026 will remain eligible to apply for settlement after 5 years under Appendix Settlement Protection.",
+          "note": "15 नवंबर 2026 को जाँचा गया: उद्धृत स्थान पर दिया गया प्रावधान या स्पष्टीकरण इस कथन से मेल खाता है।"
+        }
+      ]
+    },
+    {
+      "key": "table-private-life",
+      "statement": "निजी जीवन के आधार पर स्थायी निवास: बच्चे या युवा वयस्क के रूप में मंज़ूरी पाने वालों के लिए आम तौर पर 5 वर्ष; 18 वर्ष या अधिक आयु वालों के लिए आम तौर पर 10 वर्ष, नियमों में अपवादों के साथ; ब्रिटेन में जन्मे बच्चे को कम से कम 7 वर्ष लगातार यहाँ रहना ज़रूरी है।",
+      "supports": [
+        {
+          "sourceKey": "rules-private-life",
+          "locator": "PL 13.2; PL 14.1–PL 14.2A",
+          "excerpt": null,
+          "note": "15 नवंबर 2026 को जाँचा गया: उद्धृत स्थान पर दिया गया प्रावधान या स्पष्टीकरण इस कथन से मेल खाता है।"
+        }
+      ]
+    },
+    {
+      "key": "table-euss",
+      "statement": "EU Settlement Scheme के तहत आम तौर पर 5 वर्ष लगातार निवास के बाद settled status की पात्रता होती है, और आवेदन मुफ़्त है।",
+      "supports": [
+        {
+          "sourceKey": "govuk-euss",
+          "locator": "Main page text",
+          "excerpt": "You’ll usually be eligible for settled status once you’ve lived in the UK for 5 years in a row. It’s free to apply.",
+          "note": "15 नवंबर 2026 को जाँचा गया: उद्धृत स्थान पर दिया गया प्रावधान या स्पष्टीकरण इस कथन से मेल खाता है।"
+        }
+      ]
+    },
+    {
+      "key": "common-validity",
+      "statement": "स्थायी निवास रास्तों की वैधता (validity) शर्तों में आम तौर पर शामिल है: निर्दिष्ट फ़ॉर्म पर ऑनलाइन आवेदन, शुल्क भुगतान, ज़रूरत होने पर बायोमेट्रिक्स, पहचान और राष्ट्रीयता साबित करने वाला पासपोर्ट या यात्रा दस्तावेज़, और आवेदन के दिन ब्रिटेन में मौजूदगी।",
+      "supports": [
+        {
+          "sourceKey": "rules-lr",
+          "locator": "LR 9.1–LR 9.3",
+          "excerpt": null,
+          "note": "15 नवंबर 2026 को जाँचा गया: उद्धृत स्थान पर दिया गया प्रावधान या स्पष्टीकरण इस कथन से मेल खाता है।"
+        },
+        {
+          "sourceKey": "rules-sw",
+          "locator": "SW 19.1–SW 19.2",
+          "excerpt": null,
+          "note": "15 नवंबर 2026 को जाँचा गया: उद्धृत स्थान पर दिया गया प्रावधान या स्पष्टीकरण इस कथन से मेल खाता है।"
+        }
+      ]
+    },
+    {
+      "key": "common-suitability",
+      "statement": "स्थायी निवास के आवेदक पर Part Suitability के तहत अस्वीकृति का कोई आधार लागू नहीं होना चाहिए, और वह इमिग्रेशन क़ानूनों के उल्लंघन में या इमिग्रेशन ज़मानत पर नहीं होना चाहिए (सिवाय इसके कि overstayers के अपवाद लागू हों)।",
+      "supports": [
+        {
+          "sourceKey": "rules-lr",
+          "locator": "LR 10.1–LR 10.2",
+          "excerpt": null,
+          "note": "15 नवंबर 2026 को जाँचा गया: उद्धृत स्थान पर दिया गया प्रावधान या स्पष्टीकरण इस कथन से मेल खाता है।"
+        },
+        {
+          "sourceKey": "rules-sfl",
+          "locator": "SETF 2.1–SETF 2.7",
+          "excerpt": null,
+          "note": "15 नवंबर 2026 को जाँचा गया: उद्धृत स्थान पर दिया गया प्रावधान या स्पष्टीकरण इस कथन से मेल खाता है।"
+        }
+      ]
+    },
+    {
+      "key": "common-cr",
+      "statement": "Appendix Continuous Residence स्किल्ड वर्कर, UK Ancestry, Global Talent, Innovator Founder, BN(O), Long Residence और Settlement Family Life सहित रास्तों पर लागू होता है; इसके अनुसार किसी भी 12 महीनों में 180 दिन से अधिक ब्रिटेन से बाहर नहीं रहना चाहिए (निर्दिष्ट अपवादों के साथ)। Appendix FM का 5-वर्षीय पार्टनर रास्ता इस Appendix के दायरे में नहीं है।",
+      "supports": [
+        {
+          "sourceKey": "rules-cr",
+          "locator": "Scope statement; CR 3.1",
+          "excerpt": null,
+          "note": "15 नवंबर 2026 को जाँचा गया: उद्धृत स्थान पर दिया गया प्रावधान या स्पष्टीकरण इस कथन से मेल खाता है।"
+        }
+      ]
+    },
+    {
+      "key": "common-english",
+      "statement": "ज़्यादातर रास्तों में 26 मार्च 2027 या उसके बाद के आवेदनों के लिए स्थायी निवास की अंग्रेज़ी शर्त B2 हो जाएगी; बदलावों की सूची में BN(O) रास्ता शामिल नहीं है, जिसके नियमों में अब भी B1 ज़रूरी है।",
+      "supports": [
+        {
+          "sourceKey": "hc-1691",
+          "locator": "Explanatory memorandum, paras 5.60–5.62",
+          "excerpt": null,
+          "note": "15 नवंबर 2026 को जाँचा गया: उद्धृत स्थान पर दिया गया प्रावधान या स्पष्टीकरण इस कथन से मेल खाता है।"
+        },
+        {
+          "sourceKey": "rules-bno",
+          "locator": "HK 60.1",
+          "excerpt": "Unless an exemption applies, the applicant must show English language ability on the Common European Framework of Reference for Languages in speaking and listening to at least level B1.",
+          "note": "15 नवंबर 2026 को जाँचा गया: उद्धृत स्थान पर दिया गया प्रावधान या स्पष्टीकरण इस कथन से मेल खाता है।"
+        }
+      ]
+    },
+    {
+      "key": "es-not-in-force",
+      "statement": "सरकार के जवाब में कहा गया है कि लागू करने से पहले और तकनीकी तथा परिचालन मार्गदर्शन प्रकाशित किया जाएगा; जाँच के दिन सबसे हाल का Statement of Changes, HC 584 (3 सितंबर 2026) था, और रास्तों के नियमों में मौजूदा अवधियाँ ही दर्ज हैं।",
+      "supports": [
+        {
+          "sourceKey": "es-response",
+          "locator": "Introduction: This response",
+          "excerpt": "Before implementation, the government will publish further guidance setting out additional technical and operational detail",
+          "note": "15 नवंबर 2026 को जाँचा गया: उद्धृत स्थान पर दिया गया प्रावधान या स्पष्टीकरण इस कथन से मेल खाता है।"
+        },
+        {
+          "sourceKey": "soc-collection",
+          "locator": "List of documents",
+          "excerpt": null,
+          "note": "15 नवंबर 2026 को जाँचा गया: संग्रह में सबसे हाल का दस्तावेज़ HC 584 (3 सितंबर 2026) है; उसके बाद इमिग्रेशन नियमों में बदलाव का कोई नया विवरण प्रकाशित नहीं हुआ है।"
+        }
+      ]
+    },
+    {
+      "key": "euss-lapse-official",
+      "statement": "लगातार अनुपस्थिति की अवधि और स्विस नागरिकों व उनके परिवार का अलग नियम देखें।",
+      "supports": [
+        {
+          "sourceKey": "euss-lapse-official",
+          "locator": "If you want to spend time outside the UK",
+          "excerpt": null,
+          "note": "For settled status, check the consecutive absence period and the special Swiss rule."
+        }
+      ]
+    }
+  ],
+  "status": "DRAFT",
+  "publishedAt": null,
+  "updatedAt": "2026-11-21T00:00:00Z"
+}

@@ -1,0 +1,41 @@
+{
+  "slug": "renting-council-tax",
+  "category": "renting",
+  "status": "DRAFT",
+  "sourceLocale": "zh-CN",
+  "sourcesVerifiedOn": "2026-11-21",
+  "editorialStatus": "Editorial review required. Urdu and Hindi fluent-language review outstanding.",
+  "canonicalization": "guide-content-v1",
+  "variants": [
+    {
+      "locale": "en",
+      "path": "en.json",
+      "sha256": "8cc59a6bca9b019964b5179a13dc94ba679c11224d076e1d4525cd10dcc3d243",
+      "contentSha256": "c59abd58783816f6128d1abdc49e42eb44a5d8e324ebd75c5e4636bd4056c5ea"
+    },
+    {
+      "locale": "zh-CN",
+      "path": "zh-CN.json",
+      "sha256": "df51347a7d142ab0b5afcd7cbdecfeaeaed293f31a559d3e2adbea3a82844c93",
+      "contentSha256": "bc6ca22fff881b49f7d2910ab5726021a9f9a18781b39fac66764eed6e9444ef"
+    },
+    {
+      "locale": "zh-TW",
+      "path": "zh-TW.json",
+      "sha256": "e76a355ba43cc50ad13758dd32b58e67e8beda52b06f79cefeb7ffe06b81e1ae",
+      "contentSha256": "444722d9c584251821b5b1bca9a79e4ab71c38342cf76ecf52c0a3b71d99872f"
+    },
+    {
+      "locale": "ur",
+      "path": "ur.json",
+      "sha256": "23be1fdcc002de20d08d9f428e883a4fbbff981b0934c9153e67aac961fc9e73",
+      "contentSha256": "64b3a646eb07e891e87e149ebe3d863181cb5462873b7560ce2884236de154f0"
+    },
+    {
+      "locale": "hi",
+      "path": "hi.json",
+      "sha256": "7b7fe8a60f014a3d28f42bc8f7dd20893491e0b229011842df83bd11ff643032",
+      "contentSha256": "6938d72ca2a637e5d9230f5575bdf6c367c0711b714ebe0d57b5614186273b82"
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "slug": "settlement-ilr-overview",
+  "category": "settlement",
+  "status": "DRAFT",
+  "sourceLocale": "zh-CN",
+  "sourcesVerifiedOn": "2026-11-21",
+  "editorialStatus": "Editorial review required. Urdu and Hindi fluent-language review outstanding.",
+  "canonicalization": "guide-content-v1",
+  "variants": [
+    {
+      "locale": "en",
+      "path": "en.json",
+      "sha256": "a3175c934f3e0003a13d1cb92b3b3adf3711dbeaabec8c3ac09bdc76f1fd7a63",
+      "contentSha256": "3fbeadc96e65181d39a1ed3012c112b0ca299130147d6d66076170fd76e113c6"
+    },
+    {
+      "locale": "zh-CN",
+      "path": "zh-CN.json",
+      "sha256": "f81d44db4a4b5ae5d83c1c04d10d7c91f9055e1d20f05f41c0d4ff5897a8fa07",
+      "contentSha256": "464e8d2aab769751dbeb37b270ae5150561189892d1d0a2de13034597d181dbe"
+    },
+    {
+      "locale": "zh-TW",
+      "path": "zh-TW.json",
+      "sha256": "fa4c1db99d1040ae0568c3ba77ea23ee462b9fbd47abbb790e59a1c45456eba0",
+      "contentSha256": "e219ecf89c3a62fa7d8b49a669ad01a7ad8f7396f7ddb029c7e6e3e2f86b5ea6"
+    },
+    {
+      "locale": "ur",
+      "path": "ur.json",
+      "sha256": "90c97760dfffb5504b1e50544cb8c0590a706f31713e4e4a214abaec77ba87e8",
+      "contentSha256": "8b85174fa749c9cf52a333a5eeb27416d21ad7bf9990db671fa6de522a5902ff"
+    },
+    {
+      "locale": "hi",
+      "path": "hi.json",
+      "sha256": "6a0f44a7f41af92990bcf0d5c4e61f2ffc4b1e96c13c0e4badbcd8d565410cd5",
+      "contentSha256": "43d501923eff221ad9610f1faba94c653ffbae25eb393d341910ae4cc97dc09b"
+    }
+  ]
+}

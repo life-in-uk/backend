@@ -1,0 +1,41 @@
+{
+  "slug": "open-uk-bank-account-new-arrival",
+  "category": "money",
+  "status": "DRAFT",
+  "sourceLocale": "zh-CN",
+  "sourcesVerifiedOn": "2026-11-21",
+  "editorialStatus": "Editorial review required. Urdu and Hindi fluent-language review outstanding.",
+  "canonicalization": "guide-content-v1",
+  "variants": [
+    {
+      "locale": "en",
+      "path": "en.json",
+      "sha256": "ecf115ba2ada187af0bfaba9d8a6a8325f240090c65e1b7cf70613bddb95053a",
+      "contentSha256": "959bf3bfea498f72c2847ddaebb59d7796267a5db484a72772da6ba99c6e4b57"
+    },
+    {
+      "locale": "zh-CN",
+      "path": "zh-CN.json",
+      "sha256": "5de94316e07dd4b74f2128f2442c4c4a7f59f41cd1dd40bc869a9e28ce4ff5d1",
+      "contentSha256": "4073c3f5574ac637dbdf3f3481d25b3f1f115d5a9cf250c512b3216417d29997"
+    },
+    {
+      "locale": "zh-TW",
+      "path": "zh-TW.json",
+      "sha256": "637d9b06a56f9ccfb6638c275e3568ab9e2d5ae8df5525b25c9289be7f050d71",
+      "contentSha256": "b8392be1f9c75ba84fd559f9392d8cbff6728f69da8a3922ff7f96af32c3868c"
+    },
+    {
+      "locale": "ur",
+      "path": "ur.json",
+      "sha256": "ce4dab4ff30003a21361794eb7de51472e29754f7fdebb5b8aa280b25aa95b80",
+      "contentSha256": "1f795d6ee8e51d9ee7c3d788b329561f89735cb238272b92c1976ed7c4af7cfa"
+    },
+    {
+      "locale": "hi",
+      "path": "hi.json",
+      "sha256": "8d4aa5039d9cda612e3f5bee3cabe858defc0e65e0c87b5d4382df07518398bd",
+      "contentSha256": "185e93b1d74e3803b61843c7d3f8445f67c112537ec34021b1004c9acf6a7ed4"
+    }
+  ]
+}
