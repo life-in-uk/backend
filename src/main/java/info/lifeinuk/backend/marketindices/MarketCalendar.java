@@ -20,7 +20,7 @@ final class MarketCalendar {
     enum State { OPEN, CLOSED, UNKNOWN }
 
     /**
-     * {@code openedAt}: the current session's open, only when OPEN. {@code lastClose}: the most recent scheduled
+     * {@code openedAt}: the current session's open, only when OPEN (null for a continuous market). {@code lastClose}: the most recent scheduled
      * session close at or before now, only when CLOSED.
      */
     record Session(State state, Instant openedAt, Instant lastClose) {
@@ -57,18 +57,33 @@ final class MarketCalendar {
                         LocalDate.of(2026, 4, 3), LocalDate.of(2026, 5, 25), LocalDate.of(2026, 6, 19),
                         LocalDate.of(2026, 7, 3), LocalDate.of(2026, 9, 7), LocalDate.of(2026, 11, 26),
                         LocalDate.of(2026, 12, 25)),
-                Map.of(LocalDate.of(2026, 11, 27), LocalTime.of(13, 0), LocalDate.of(2026, 12, 24), LocalTime.of(13, 0)));
+                Map.of(LocalDate.of(2026, 11, 27), LocalTime.of(13, 0), LocalDate.of(2026, 12, 24), LocalTime.of(13, 0))),
+        // Crypto pairs: no exchange session, weekend or holiday. Always OPEN; no calendar coverage is needed.
+        CRYPTO_24_7(ZoneId.of("UTC"));
 
         final ZoneId zone;
         final LocalTime open;
         final LocalTime close;
         final LocalDate coveredFrom;
         final LocalDate coveredThrough;
+        final boolean continuous;
         private final Set<LocalDate> closed;
         private final Map<LocalDate, LocalTime> earlyClose;
 
+        Exchange(ZoneId zone) {
+            this.zone = zone;
+            this.open = null;
+            this.close = null;
+            this.coveredFrom = null;
+            this.coveredThrough = null;
+            this.closed = Set.of();
+            this.earlyClose = Map.of();
+            this.continuous = true;
+        }
+
         Exchange(ZoneId zone, LocalTime open, LocalTime close, LocalDate coveredFrom, LocalDate coveredThrough,
                 Set<LocalDate> closed, Map<LocalDate, LocalTime> earlyClose) {
+            this.continuous = false;
             this.zone = zone;
             this.open = open;
             this.close = close;
@@ -78,7 +93,9 @@ final class MarketCalendar {
             this.earlyClose = earlyClose;
         }
 
-        boolean covers(LocalDate date) { return !date.isBefore(coveredFrom) && !date.isAfter(coveredThrough); }
+        boolean covers(LocalDate date) {
+            return continuous || (!date.isBefore(coveredFrom) && !date.isAfter(coveredThrough));
+        }
 
         private boolean tradingDay(LocalDate date) {
             var day = date.getDayOfWeek();
@@ -90,6 +107,8 @@ final class MarketCalendar {
         private Instant closeOf(LocalDate date) { return at(date, earlyClose.getOrDefault(date, close)); }
 
         Session session(Instant now) {
+            // A continuous market has no session start: openedAt is null and only the age decides freshness.
+            if (continuous) return new Session(State.OPEN, null, null);
             LocalDate today = now.atZone(zone).toLocalDate();
             if (!covers(today)) return Session.UNKNOWN_SESSION;
             if (tradingDay(today)) {

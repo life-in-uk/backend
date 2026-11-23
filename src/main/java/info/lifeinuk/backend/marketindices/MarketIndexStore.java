@@ -15,7 +15,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 /**
- * SQL for V17. Observations are insert-only. Statements carry their own {@link #TIMEOUT} (a JDBC query timeout), as
+ * SQL for V17 and V18 (the crypto 24-hour reference). Observations are insert-only. Statements carry their own {@link #TIMEOUT} (a JDBC query timeout), as
  * the weather budget does, so a slow database cannot hold a request or retention thread indefinitely. Query plans at
  * representative volume are recorded in docs/market-indices.md.
  */
@@ -34,7 +34,7 @@ class MarketIndexStore {
 
     record StoredObservation(MarketIndexSymbol symbol, String source, Instant observedAt,
             MarketIndexSymbol.TimeSource timeSource, BigDecimal value, BigDecimal previousClose,
-            Instant collectedAt, Instant receivedAt) { }
+            Instant collectedAt, Instant receivedAt, BigDecimal reference24h, Instant reference24hAt) { }
 
     record StoredHeartbeat(String source, MarketIndexPayloads.CollectorStatus status, Instant sentAt,
             Instant lastAttemptAt, Instant lastSuccessfulCollectionAt, Instant receivedAt) { }
@@ -56,9 +56,11 @@ class MarketIndexStore {
     /** True if inserted; false if (symbol, source, observedAt) already exists. */
     boolean insertObservation(UUID batchId, String source, MarketIndexPayloads.Observation o) {
         return jdbc.update("""
-                INSERT INTO market_index_observation (symbol, source, observed_at, observed_at_source, value, previous_close, batch_id)
-                VALUES (?, ?, ?, ?, ?, ?, ?) ON CONFLICT ON CONSTRAINT market_index_observation_natural DO NOTHING""",
-                o.symbol().name(), source, ts(o.observedAt()), o.timeSource().name(), o.value(), o.previousClose(), batchId) == 1;
+                INSERT INTO market_index_observation (symbol, source, observed_at, observed_at_source, value, previous_close, batch_id,
+                    reference_24h, reference_24h_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT ON CONSTRAINT market_index_observation_natural DO NOTHING""",
+                o.symbol().name(), source, ts(o.observedAt()), o.timeSource().name(), o.value(), o.previousClose(), batchId,
+                o.reference24h(), ts(o.reference24hAt())) == 1;
     }
 
     Optional<StoredObservation> observation(MarketIndexSymbol symbol, String source, Instant observedAt) {
@@ -82,13 +84,14 @@ class MarketIndexStore {
     }
 
     private static final String SELECT = """
-            SELECT o.symbol, o.source, o.observed_at, o.observed_at_source, o.value, o.previous_close, b.collected_at, o.received_at
+            SELECT o.symbol, o.source, o.observed_at, o.observed_at_source, o.value, o.previous_close, b.collected_at, o.received_at,
+                o.reference_24h, o.reference_24h_at
             FROM market_index_observation o JOIN market_index_ingest_batch b ON b.batch_id = o.batch_id""";
 
     private static StoredObservation observation(ResultSet rs, int row) throws SQLException {
         return new StoredObservation(MarketIndexSymbol.valueOf(rs.getString(1)), rs.getString(2), instant(rs, 3),
                 MarketIndexSymbol.TimeSource.valueOf(rs.getString(4)), rs.getBigDecimal(5), rs.getBigDecimal(6),
-                instant(rs, 7), instant(rs, 8));
+                instant(rs, 7), instant(rs, 8), rs.getBigDecimal(9), instant(rs, 10));
     }
 
     /**

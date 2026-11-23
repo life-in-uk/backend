@@ -27,7 +27,7 @@ class SourcePersistenceTest {
 
     @Test
     void flywayCreatesAcceptedSchemaAndHibernateValidatesIt() {
-        assertThat(jdbc.queryForObject("SELECT count(*) FROM flyway_schema_history WHERE success", Integer.class)).isEqualTo(17);
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM flyway_schema_history WHERE success", Integer.class)).isEqualTo(18);
         assertThat(jdbc.queryForList("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' ORDER BY table_name",
                 String.class)).containsExactly("evidence_artifact", "flyway_schema_history", "guide", "guide_content_batch", "guide_evidence", "guide_evidence_support",
                         "guide_locale_current", "guide_locale_revision", "guide_publication", "guide_revision", "guide_revision_body_redaction", "guide_source",

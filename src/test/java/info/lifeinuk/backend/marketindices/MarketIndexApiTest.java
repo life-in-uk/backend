@@ -329,7 +329,7 @@ class MarketIndexApiTest {
         assertThat(ingest(batch(UUID.randomUUID(), "provider-x", collected, obs("DJI", "44012.30", observed, "COLLECTOR"))).statusCode()).isEqualTo(200);
         var latest = latest();
         assertThat(latest.get("attribution").stringValue()).isEqualTo("Test attribution");
-        assertThat(latest.get("indices")).hasSize(4);
+        assertThat(latest.get("indices")).hasSize(6);
         var dji = index(latest, "DJI");
         var provenance = dji.get("provenance");
         assertThat(Instant.parse(provenance.get("observedAt").stringValue())).isEqualTo(observed);
@@ -526,5 +526,96 @@ class MarketIndexApiTest {
                 VALUES ('UKX', 'provider-x', now() - interval '802 days', 'PROVIDER', 1, ?), ('UKX', 'provider-x', now() - interval '801 days', 'PROVIDER', 1, ?)""", id, id);
         assertThat(ingest(batch(UUID.randomUUID(), "provider-x", now(), obs("UKX", "8000.00", now().minusSeconds(10), "PROVIDER"))).statusCode()).isEqualTo(200);
         assertThat(count("market_index_observation")).isEqualTo(3);
+    }
+
+    // ---------------------------------------------------------------- crypto (V18)
+
+    static String crypto(String symbol, String value, Instant observedAt, String reference) {
+        return "{\"symbol\":\"" + symbol + "\",\"value\":\"" + value + "\",\"observedAt\":\"" + observedAt
+                + "\",\"observedAtSource\":\"PROVIDER\"" + (reference == null ? ""
+                : ",\"reference24h\":\"" + reference + "\",\"reference24hAt\":\"" + observedAt.minus(Duration.ofHours(24)) + "\"") + "}";
+    }
+
+    @Test
+    void sixInstrumentsInOneBatchAndTheCryptoRollingChange() throws Exception {
+        Instant at = now().truncatedTo(ChronoUnit.MINUTES).minusSeconds(60);
+        var body = batch(UUID.randomUUID(), "provider-x", now(),
+                obs("UKX", "101.00", at, "PROVIDER"), obs("SPX", "102.00", at, "PROVIDER"), obs("IXIC", "103.00", at, "PROVIDER"),
+                obs("DJI", "104.00", at, "PROVIDER"), crypto("BTCUSD", "57885.27", at, "61784.82"), crypto("ETHUSD", "1640.18", at, null));
+        var response = ingest(body);
+        assertThat(response.statusCode()).isEqualTo(200);
+        assertThat(count("market_index_observation")).isEqualTo(6);
+        assertThat(jdbc.queryForObject("SELECT observation_count FROM market_index_ingest_batch", Integer.class)).isEqualTo(6);
+
+        var latest = latest();
+        assertThat(latest.get("indices")).extracting(n -> n.get("symbol").stringValue())
+                .containsExactly("UKX", "SPX", "IXIC", "DJI", "BTCUSD", "ETHUSD");
+        var btc = index(latest, "BTCUSD");
+        assertThat(btc.get("name").stringValue()).isEqualTo("Bitcoin");
+        assertThat(btc.get("assetClass").stringValue()).isEqualTo("CRYPTO");
+        assertThat(btc.get("currency").stringValue()).isEqualTo("USD");
+        assertThat(btc.get("changeBasis").stringValue()).isEqualTo("ROLLING_24H");
+        assertThat(btc.get("value").stringValue()).isEqualTo("57885.2700");
+        assertThat(btc.get("reference24h").stringValue()).isEqualTo("61784.8200");
+        assertThat(Instant.parse(btc.get("reference24hAt").stringValue())).isEqualTo(at.minus(Duration.ofHours(24)));
+        assertThat(btc.get("previousClose").isNull()).isTrue();
+        assertThat(btc.get("change").stringValue()).isEqualTo("-3899.55");
+        assertThat(btc.get("changePercent").stringValue()).isEqualTo("-6.31");
+        assertThat(btc.get("market").get("exchange").stringValue()).isEqualTo("CRYPTO_24_7");
+        assertThat(btc.get("market").get("session").stringValue()).isEqualTo("OPEN");
+        assertThat(btc.get("freshness").get("status").stringValue()).isEqualTo("FRESH");
+        // No verified window: the price only, never a change.
+        var eth = index(latest, "ETHUSD");
+        assertThat(eth.get("value").stringValue()).isEqualTo("1640.1800");
+        assertThat(eth.get("change").isNull()).isTrue();
+        assertThat(eth.get("changePercent").isNull()).isTrue();
+        assertThat(eth.get("reference24h").isNull()).isTrue();
+        // The indices keep their previous-close semantics.
+        var ukx = index(latest, "UKX");
+        assertThat(ukx.get("assetClass").stringValue()).isEqualTo("INDEX");
+        assertThat(ukx.get("currency").isNull()).isTrue();
+        assertThat(ukx.get("changeBasis").stringValue()).isEqualTo("PREVIOUS_CLOSE");
+        assertThat(ukx.get("previousClose").stringValue()).isEqualTo("100.0000");
+        assertThat(ukx.get("changePercent").stringValue()).isEqualTo("1.00");
+        assertThat(ukx.get("market").get("exchange").stringValue()).isEqualTo("LSE");
+
+        // An identical retry is a replay; a different reference for the same instant is a conflict.
+        assertThat(json.readTree(ingest(body).body()).get("replay").booleanValue()).isTrue();
+        var conflict = ingest(batch(UUID.randomUUID(), "provider-x", now(), crypto("BTCUSD", "57885.27", at, "61784.83")));
+        assertThat(conflict.statusCode()).isEqualTo(409);
+        assertThat(code(conflict)).isEqualTo("OBSERVATION_CONFLICT");
+        var same = ingest(batch(UUID.randomUUID(), "provider-x", now(), crypto("BTCUSD", "57885.27", at, "61784.82")));
+        assertThat(json.readTree(same.body()).get("observations").get(0).get("result").stringValue()).isEqualTo("DUPLICATE");
+    }
+
+    @Test
+    void cryptoIngestionDoesNotDependOnTheStockIndices() throws Exception {
+        Instant at = now().truncatedTo(ChronoUnit.MINUTES).minusSeconds(60);
+        assertThat(ingest(batch(UUID.randomUUID(), "provider-x", now(), crypto("BTCUSD", "57885.27", at, null))).statusCode()).isEqualTo(200);
+        var latest = latest();
+        assertThat(index(latest, "BTCUSD").get("value").stringValue()).isEqualTo("57885.2700");
+        assertThat(index(latest, "UKX").get("value").isNull()).isTrue();
+        assertThat(index(latest, "UKX").get("freshness").get("status").stringValue()).isEqualTo("UNAVAILABLE");
+    }
+
+    @Test
+    void theDatabaseRefusesAWrongWindowOrMixedSemantics() throws Exception {
+        Instant at = now().truncatedTo(ChronoUnit.MINUTES).minusSeconds(60);
+        assertThat(ingest(batch(UUID.randomUUID(), "provider-x", now(), crypto("ETHUSD", "1640.18", at, null))).statusCode()).isEqualTo(200);
+        UUID batchId = jdbc.queryForObject("SELECT batch_id FROM market_index_ingest_batch", UUID.class);
+        String insert = "INSERT INTO market_index_observation (symbol, source, observed_at, observed_at_source, value, previous_close, "
+                + "batch_id, reference_24h, reference_24h_at) VALUES (?, 'provider-x', ?, 'PROVIDER', 1, ?, ?, ?, ?)";
+        java.sql.Timestamp t = java.sql.Timestamp.from(at.minusSeconds(600));
+        for (Object[] row : new Object[][] {
+                {"BTCUSD", null, new java.math.BigDecimal("2"), java.sql.Timestamp.from(at.minusSeconds(600).minus(Duration.ofHours(23)))},
+                {"BTCUSD", new java.math.BigDecimal("2"), null, null},
+                {"BTCUSD", null, new java.math.BigDecimal("2"), null},
+                {"UKX", null, new java.math.BigDecimal("2"), java.sql.Timestamp.from(at.minusSeconds(600).minus(Duration.ofHours(24)))},
+                {"XRPUSD", null, null, null}}) {
+            assertThat(catchThrowable(() -> jdbc.update(insert, row[0], t, row[1], batchId, row[2], row[3])))
+                    .as(java.util.Arrays.toString(row)).isInstanceOf(org.springframework.dao.DataIntegrityViolationException.class);
+        }
+        jdbc.update(insert, "BTCUSD", t, null, batchId, new java.math.BigDecimal("2"),
+                java.sql.Timestamp.from(at.minusSeconds(600).minus(Duration.ofHours(24))));
     }
 }

@@ -52,8 +52,19 @@ final class MarketIndexPayloads {
         }
     }
 
+    /**
+     * {@code previousClose}: stock indices only. {@code reference24h}/{@code reference24hAt}: crypto only, together,
+     * with reference24hAt exactly 24 hours before observedAt; absent when the collector had no verified window.
+     */
     record Observation(MarketIndexSymbol symbol, BigDecimal value, BigDecimal previousClose, Instant observedAt,
-            MarketIndexSymbol.TimeSource timeSource) { }
+            MarketIndexSymbol.TimeSource timeSource, BigDecimal reference24h, Instant reference24hAt) {
+        Observation(MarketIndexSymbol symbol, BigDecimal value, BigDecimal previousClose, Instant observedAt,
+                MarketIndexSymbol.TimeSource timeSource) {
+            this(symbol, value, previousClose, observedAt, timeSource, null, null);
+        }
+    }
+
+    static final java.time.Duration ROLLING_WINDOW = java.time.Duration.ofHours(24);
 
     record Batch(UUID batchId, String source, Instant collectedAt, List<Observation> observations, String requestSha256) { }
 
@@ -83,16 +94,17 @@ final class MarketIndexPayloads {
         Instant collectedAt = timestamp(root, "collectedAt", invalid);
         JsonNode list = root.get("observations");
         if (list == null || !list.isArray() || list.isEmpty() || list.size() > MarketIndexSymbol.values().length) {
-            throw bad(invalid, "observations must be an array of 1 to 4 items.");
+            throw bad(invalid, "observations must be an array of 1 to " + MarketIndexSymbol.values().length + " items.");
         }
         var observations = new ArrayList<Observation>();
         var seen = EnumSet.noneOf(MarketIndexSymbol.class);
         for (int i = 0; i < list.size(); i++) {
             String at = "observations[" + i + "]";
             JsonNode item = list.get(i);
-            fields(item, at + ".", Set.of("symbol", "value", "observedAt", "observedAtSource"), Set.of("previousClose"), invalid);
+            fields(item, at + ".", Set.of("symbol", "value", "observedAt", "observedAtSource"),
+                    Set.of("previousClose", "reference24h", "reference24hAt"), invalid);
             var symbol = MarketIndexSymbol.parse(text(item, "symbol", at + ".", invalid))
-                    .orElseThrow(() -> bad(invalid, at + ".symbol must be one of UKX, SPX, IXIC, DJI."));
+                    .orElseThrow(() -> bad(invalid, at + ".symbol must be one of " + MarketIndexSymbol.NAMES + "."));
             if (!seen.add(symbol)) throw bad(invalid, at + ".symbol is repeated.");
             BigDecimal value = decimal(item, "value", at + ".", invalid);
             BigDecimal previousClose = item.has("previousClose") && !item.get("previousClose").isNull()
@@ -100,7 +112,24 @@ final class MarketIndexPayloads {
             Instant observedAt = timestamp(item, "observedAt", at + ".", invalid);
             var timeSource = MarketIndexSymbol.TimeSource.parse(text(item, "observedAtSource", at + ".", invalid))
                     .orElseThrow(() -> bad(invalid, at + ".observedAtSource must be EXCHANGE, PROVIDER or COLLECTOR."));
-            observations.add(new Observation(symbol, value, previousClose, observedAt, timeSource));
+            boolean hasReference = present(item, "reference24h");
+            boolean hasReferenceAt = present(item, "reference24hAt");
+            BigDecimal reference24h = null;
+            Instant reference24hAt = null;
+            if (symbol.crypto()) {
+                if (previousClose != null) throw bad(invalid, at + ".previousClose is not used for " + symbol + "; send reference24h.");
+                if (hasReference != hasReferenceAt) throw bad(invalid, at + ".reference24h and reference24hAt must be sent together.");
+                if (hasReference) {
+                    reference24h = decimal(item, "reference24h", at + ".", invalid);
+                    reference24hAt = timestamp(item, "reference24hAt", at + ".", invalid);
+                    if (!reference24hAt.equals(observedAt.minus(ROLLING_WINDOW))) {
+                        throw bad(invalid, at + ".reference24hAt must be exactly 24 hours before observedAt.");
+                    }
+                }
+            } else if (hasReference || hasReferenceAt) {
+                throw bad(invalid, at + ".reference24h is only used for BTCUSD and ETHUSD.");
+            }
+            observations.add(new Observation(symbol, value, previousClose, observedAt, timeSource, reference24h, reference24hAt));
         }
         observations.sort(Comparator.comparing(Observation::symbol));
         for (var o : observations) {
@@ -139,14 +168,23 @@ final class MarketIndexPayloads {
         }
     }
 
-    /** Hash of the normalised content: key order, whitespace and equivalent spellings of one value do not matter. */
+    /**
+     * Hash of the normalised content: key order, whitespace and equivalent spellings of one value do not matter. A
+     * stock index line is unchanged from V17 (stored hashes of earlier batches still match a replay); a crypto line
+     * adds its 24-hour reference.
+     */
     static String canonicalHash(UUID batchId, String source, Instant collectedAt, List<Observation> sorted) {
         var text = new StringBuilder("market-index-batch-v1\n").append(batchId).append('\n').append(source).append('\n')
                 .append(collectedAt).append('\n');
         for (var o : sorted) {
             text.append(o.symbol()).append('|').append(o.value().toPlainString()).append('|')
                     .append(o.previousClose() == null ? "-" : o.previousClose().toPlainString()).append('|')
-                    .append(o.observedAt()).append('|').append(o.timeSource()).append('\n');
+                    .append(o.observedAt()).append('|').append(o.timeSource());
+            if (o.symbol().crypto()) {
+                text.append('|').append(o.reference24h() == null ? "-" : o.reference24h().toPlainString())
+                        .append('|').append(o.reference24hAt() == null ? "-" : o.reference24hAt().toString());
+            }
+            text.append('\n');
         }
         try {
             return HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(text.toString().getBytes(StandardCharsets.UTF_8)));
@@ -247,6 +285,8 @@ final class MarketIndexPayloads {
         if (value == null || !value.isString() || value.stringValue().length() > 64) throw bad(code, path + name + " must be a string.");
         return value.stringValue();
     }
+
+    private static boolean present(JsonNode node, String name) { return node.has(name) && !node.get(name).isNull(); }
 
     private static String optionalText(JsonNode node, String name, String code) {
         return node.has(name) && !node.get(name).isNull() ? text(node, name, code) : null;

@@ -7,15 +7,17 @@ behaviour that is applied only with owner approval (see "Phase 2: collector rout
 market-data display licence first.
 
 The external Stock Index Collector runs on the owner's PC (WSL2, Python, SQLite, systemd, 120 s interval). After
-each collection it pushes one batch of up to four observations to the backend. The backend stores them in
+each collection it pushes one batch of up to six observations to the backend. The backend stores them in
 PostgreSQL and serves the latest values read-only.
 
-| Symbol | Index | Exchange calendar |
-| --- | --- | --- |
-| `UKX` | FTSE 100 | LSE, Europe/London |
-| `SPX` | S&P 500 | NYSE, America/New_York |
-| `IXIC` | Nasdaq Composite | Nasdaq, America/New_York |
-| `DJI` | Dow Jones Industrial Average | NYSE, America/New_York |
+| Symbol | Instrument | Market calendar | Change basis |
+| --- | --- | --- | --- |
+| `UKX` | FTSE 100 | LSE, Europe/London | Previous close |
+| `SPX` | S&P 500 | NYSE, America/New_York | Previous close |
+| `IXIC` | Nasdaq Composite | Nasdaq, America/New_York | Previous close |
+| `DJI` | Dow Jones Industrial Average | NYSE, America/New_York | Previous close |
+| `BTCUSD` | Bitcoin, USD | `CRYPTO_24_7`: always open | Rolling 24 hours (V18, see "Crypto") |
+| `ETHUSD` | Ethereum, USD | `CRYPTO_24_7`: always open | Rolling 24 hours (V18, see "Crypto") |
 
 ## Timestamp provenance
 
@@ -159,8 +161,11 @@ and duplicate fields are rejected.
 - `source`: `^[a-z0-9][a-z0-9._-]{0,39}$`, which must be in `MARKET_INDICES_ACCEPTED_SOURCES`.
 - `value` and `previousClose` (optional): decimal **strings** matching `^[0-9]{1,8}(\.[0-9]{1,4})?$` and > 0.
   NaN, Infinity, exponents and JSON numbers are rejected.
+- `previousClose` is for the stock indices only. `BTCUSD` and `ETHUSD` instead take the optional pair
+  `reference24h` (decimal string, > 0) and `reference24hAt`, which must be **exactly** `observedAt` minus 24 hours.
+  Both or neither; anything else is `400 MARKET_BATCH_INVALID`.
 - Timestamps: ISO 8601 with `Z` or an explicit offset, at most microsecond precision.
-- 1–4 observations, each symbol at most once.
+- 1–6 observations, each symbol at most once.
 
 Response `200` (also returned for an identical retry, with `"replay": true` and results `ALREADY_ACCEPTED`):
 
@@ -244,8 +249,15 @@ Public, no parameters, `Cache-Control: no-store`. Until `MARKET_INDICES_PUBLIC_E
 }
 ```
 
-All four symbols are always present, in the fixed order. A symbol without data has `null` values and status
-`UNAVAILABLE`. Only `MARKET_INDICES_PUBLIC_SOURCES` are read; startup fails if `mock` is listed there. History is
+Every instrument also has `assetClass` (`INDEX` or `CRYPTO`), `currency` (`null` for index points, `USD` for
+crypto), `changeBasis` (`PREVIOUS_CLOSE` or `ROLLING_24H`), and for crypto `reference24h` and `reference24hAt`. A
+crypto `change`/`changePercent` is against `reference24h`, and both are `null` when the collector had no verified
+24-hour window: `null` means "no 24-hour change available", never "unchanged". Crypto `previousClose` is always
+`null`, and its `market` is `{"exchange": "CRYPTO_24_7", "timeZone": "UTC", "session": "OPEN",
+"calendarCoveredThrough": null}`.
+
+All six symbols are always present, in the fixed order (`UKX`, `SPX`, `IXIC`, `DJI`, `BTCUSD`, `ETHUSD`; the
+array keeps its name `indices`). A symbol without data has `null` values and status `UNAVAILABLE`. Only `MARKET_INDICES_PUBLIC_SOURCES` are read; startup fails if `mock` is listed there. History is
 not public.
 
 ## Authentication
@@ -303,6 +315,60 @@ For a source whose newest row is a year old, with statistics not yet updated, it
 the `observed_at` index. It filtered 1,839,600 rows of other sources and took 159 ms, and the cost grows with the
 whole table. The scalar `max()` form is always resolved on the natural-key index, so its cost is bounded by that
 symbol and source's own rows.
+
+## Crypto: BTC/USD and ETH/USD (V18)
+
+Owner decision 2026-11-21: Sina Finance crypto minute bars, through the same collector, outbox, batch, endpoint,
+tables and public read as the indices (one collector, one outbox, one upload pipeline, six instruments). The owner
+accepted the licensing and redistribution risk of that source; Sina has not granted permission.
+
+- **Market semantics.** Crypto trades continuously: `MarketCalendar.Exchange.CRYPTO_24_7` is always `OPEN` with
+  no session start, so freshness is the observation's age alone (FRESH within `fresh-within`, then DELAYED, STALE
+  after `stale-after`; a `COLLECTOR` time is never FRESH). No exchange session, weekend or holiday rule applies.
+  The stock indices keep their calendars unchanged.
+- **Change.** A rolling 24-hour change: the price at `observedAt` against `reference24h`, the price exactly 24
+  hours earlier. The collector derives both from continuous Sina minute bars and sends the reference only when every
+  minute of the window is present (Stock Index Collector `sina_crypto.py`). The backend stores what it receives and
+  enforces, in the payload parser and a V18 `CHECK`, that `reference24hAt = observedAt - 24 hours`, that crypto rows
+  never carry `previous_close` and index rows never carry a reference.
+- **Idempotency.** A crypto line in the canonical request hash adds its reference. Index lines hash exactly as
+  under V17, so replays of earlier stored batches still match.
+- **Retention: unchanged (decision).** The same `retention` (P730D) and `max-backfill` (P30D) apply. Crypto adds
+  one row per symbol per 2-minute cycle (about 1,440 rows a day, 1.05 M over two years for one source), well
+  within the measured volume above (4.2 M rows: latest-value lookup 0.066 ms, retention 6 ms per 1,000 rows) and
+  within retention's 20,000 rows per hourly run. The latest-value query is per symbol and source, so crypto rows
+  never slow an index lookup. A separate retention would add configuration for no measured need.
+- **Caching: unchanged (decision).** `GET /api/market-indices/latest` stays `Cache-Control: no-store`, and
+  CloudFront forwards it uncached: freshness and `ageSeconds` are computed per request, and a crypto value changes
+  every cycle. The collector already limits upstream load (two small requests per cycle once its window is warm).
+
+## Release: V17 to V18
+
+V18 widens two `CHECK`s (symbols; up to 6 observations per batch), adds two nullable columns and one `CHECK`. Existing
+rows are unchanged and all satisfy the new constraints. Release with `approve_migrations=18`. The previous image
+(V17 code) is compatible with a V18 database: it reads only its four symbols by name, ignores the new columns and
+validates the newer schema under Flyway's default `ignoreMigrationPatterns` (`*:future`). Rollback is therefore an
+image rollback only. Crypto rows then stay stored but unused.
+
+Rehearsed on 2026-11-23 against a disposable PostgreSQL 16 cluster with both jars, public read enabled:
+
+| Step | Image | Result |
+| --- | --- | --- |
+| 1 | Previous (`main` 18a2fcd) on an empty database | Migrated V1–V17; health UP; Guides 200; `latest` 200. A UKX row was then added |
+| 2 | This branch on the V17 database | "Migrating schema to version 18"; applied in 6 ms; health UP. A BTCUSD row with its 24-hour reference was then added |
+| 3 | Previous image again on the V18 database (rollback) | "Schema is up to date"; health UP; Guides 200; `latest` lists exactly the four indices (UKX value unchanged), the crypto row ignored |
+| 4 | This branch again | `latest` lists six; BTCUSD `ROLLING_24H`, `changePercent` -6.31, FRESH; ETHUSD `UNAVAILABLE` |
+
+Enablement order (each step is safe on its own and has its own approval):
+
+1. **Frontend first.** A V18 backend always lists six instruments; the homepage before the crypto change accepts
+   exactly four and would fall back to its placeholders, hiding the indices too. The new homepage accepts four or
+   six (crypto rows then show as unavailable).
+2. **Backend** with `approve_migrations=18`. The current collector keeps sending four-index batches, which V18
+   accepts unchanged; BTCUSD and ETHUSD are listed as `UNAVAILABLE`.
+3. **Collector** upgrade (SQLite schema 3 to 4, automatic), then `crypto_enabled: true` and a restart. Never before
+   step 2: a V17 backend rejects a batch containing crypto as `MARKET_BATCH_INVALID`, discarding that cycle's
+   indices as well. The first cycle sends prices without a 24-hour change; the next completes the window.
 
 ## Release: V16 to V17 and previous-image compatibility
 

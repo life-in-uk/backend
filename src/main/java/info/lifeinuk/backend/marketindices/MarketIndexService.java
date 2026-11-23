@@ -106,8 +106,13 @@ class MarketIndexService {
 
     private static boolean same(MarketIndexStore.StoredObservation stored, MarketIndexPayloads.Observation o) {
         return stored.timeSource() == o.timeSource() && stored.value().compareTo(o.value()) == 0
-                && (stored.previousClose() == null ? o.previousClose() == null
-                        : o.previousClose() != null && stored.previousClose().compareTo(o.previousClose()) == 0);
+                && sameDecimal(stored.previousClose(), o.previousClose())
+                && sameDecimal(stored.reference24h(), o.reference24h())
+                && Objects.equals(stored.reference24hAt(), o.reference24hAt());
+    }
+
+    private static boolean sameDecimal(BigDecimal stored, BigDecimal sent) {
+        return stored == null ? sent == null : sent != null && stored.compareTo(sent) == 0;
     }
 
     // ---------------------------------------------------------------- heartbeat
@@ -131,8 +136,14 @@ class MarketIndexService {
 
     record Freshness(String status, Long ageSeconds, String basis, long freshWithinSeconds, long staleAfterSeconds) { }
 
+    /**
+     * One instrument. Stock indices: points, change against {@code previousClose} (changeBasis PREVIOUS_CLOSE). Crypto:
+     * USD price, change against {@code reference24h}, the price exactly 24 hours before observedAt (changeBasis
+     * ROLLING_24H); change and changePercent are null when no verified 24-hour reference exists.
+     */
     record Index(String symbol, String name, String value, String previousClose, String change, String changePercent,
-            String source, String collectorStatus, Provenance provenance, Market market, Freshness freshness) { }
+            String source, String collectorStatus, Provenance provenance, Market market, Freshness freshness,
+            String assetClass, String currency, String changeBasis, String reference24h, Instant reference24hAt) { }
 
     record SourceStatus(String source, String status) { }
 
@@ -177,6 +188,9 @@ class MarketIndexService {
             var session = symbol.exchange.session(now);
             var market = new Market(symbol.exchange.name(), symbol.exchange.zone.getId(), session.state().name(),
                     symbol.exchange.coveredThrough);
+            String assetClass = symbol.crypto() ? "CRYPTO" : "INDEX";
+            String currency = symbol.crypto() ? "USD" : null;
+            String changeBasis = symbol.crypto() ? "ROLLING_24H" : "PREVIOUS_CLOSE";
             // Newest per public source, never later than now; then the newest of those.
             MarketIndexStore.StoredObservation row = null;
             for (String source : sources) {
@@ -189,21 +203,24 @@ class MarketIndexService {
                     properties.freshWithin().toSeconds(), properties.staleAfter().toSeconds());
             if (row == null) {
                 indices.add(new Index(symbol.name(), symbol.displayName, null, null, null, null, null, null,
-                        new Provenance(null, null, null, null), market, fresh));
+                        new Provenance(null, null, null, null), market, fresh, assetClass, currency, changeBasis, null, null));
                 continue;
             }
+            BigDecimal basis = symbol.crypto() ? row.reference24h() : row.previousClose();
             String change = null;
             String percent = null;
-            if (row.previousClose() != null) {
-                BigDecimal difference = row.value().subtract(row.previousClose());
+            if (basis != null) {
+                BigDecimal difference = row.value().subtract(basis);
                 change = difference.setScale(2, RoundingMode.HALF_EVEN).toPlainString();
                 percent = difference.multiply(BigDecimal.valueOf(100))
-                        .divide(row.previousClose(), 2, RoundingMode.HALF_EVEN).toPlainString();
+                        .divide(basis, 2, RoundingMode.HALF_EVEN).toPlainString();
             }
             indices.add(new Index(symbol.name(), symbol.displayName, row.value().toPlainString(),
                     row.previousClose() == null ? null : row.previousClose().toPlainString(), change, percent, row.source(),
                     states.get(row.source()).name(),
-                    new Provenance(row.observedAt(), row.timeSource().name(), row.collectedAt(), row.receivedAt()), market, fresh));
+                    new Provenance(row.observedAt(), row.timeSource().name(), row.collectedAt(), row.receivedAt()), market, fresh,
+                    assetClass, currency, changeBasis,
+                    row.reference24h() == null ? null : row.reference24h().toPlainString(), row.reference24hAt()));
         }
         return new Latest(now, collector, List.copyOf(indices), properties.attribution());
     }
