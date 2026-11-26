@@ -1,0 +1,41 @@
+{
+  "slug": "uk-options-after-graduation",
+  "category": "work-visa",
+  "status": "DRAFT",
+  "sourceLocale": "zh-CN",
+  "sourcesVerifiedOn": "2026-11-26",
+  "editorialStatus": "Owner and independent immigration and fluent-language review pending.",
+  "canonicalization": "guide-content-v1",
+  "variants": [
+    {
+      "locale": "zh-CN",
+      "path": "zh-CN.json",
+      "sha256": "40b53b15786e78fe0fa0bb0e375314066c1543bbb810b5f36716922c47823c14",
+      "contentSha256": "eb5cb37421fc5e261c4606a6c952ec6ebd1d6dfde776c2995556cd0a82f6f22c"
+    },
+    {
+      "locale": "zh-TW",
+      "path": "zh-TW.json",
+      "sha256": "177a915ddae2d24c8650fa0fa091c95b8d80deb5217ec16c72ed1bd32a586562",
+      "contentSha256": "5789e4e39dcca0ac4cbdb029e29d90375100df964a736df32218930a844a92ad"
+    },
+    {
+      "locale": "en",
+      "path": "en.json",
+      "sha256": "e701fba4eeda6e298ec57d075de571433e7feeb3cc41d17651b455ba6df4192b",
+      "contentSha256": "66811f70b199e4916e64c4a8e8987ea41d5b30f1f7153a48b3904fe270072ed0"
+    },
+    {
+      "locale": "ur",
+      "path": "ur.json",
+      "sha256": "fed77cb15857e5f264dc204eff394283e4c9cd532df44969de0b7c0f04d02183",
+      "contentSha256": "91479504c715ca2e1c0b502ac594a6e77118780c17d6e52b968197ca6c70b6ba"
+    },
+    {
+      "locale": "hi",
+      "path": "hi.json",
+      "sha256": "5f07666c6732c5613049aca30e4ff8379271deec215f56272f64e84e0d936745",
+      "contentSha256": "8f45f87ad797a4741de37fa1b197d15a69badb7872ffce1ec9416920c792ce55"
+    }
+  ]
+}
