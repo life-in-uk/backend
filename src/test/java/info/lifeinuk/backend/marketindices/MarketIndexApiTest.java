@@ -588,6 +588,123 @@ class MarketIndexApiTest {
         assertThat(json.readTree(same.body()).get("observations").get(0).get("result").stringValue()).isEqualTo("DUPLICATE");
     }
 
+    static String instrument(String symbol, String status, int failures, String code, Instant lastAttempt, Instant lastSuccess) {
+        return "{\"symbol\":\"" + symbol + "\",\"status\":\"" + status + "\",\"lastAttemptAt\":\"" + lastAttempt
+                + "\",\"consecutiveFailures\":" + failures
+                + (lastSuccess == null ? "" : ",\"lastSuccessfulCollectionAt\":\"" + lastSuccess + "\"")
+                + (code == null ? "" : ",\"failureCode\":\"" + code + "\"") + "}";
+    }
+
+    static String withInstruments(String heartbeat, String... entries) {
+        return heartbeat.substring(0, heartbeat.length() - 1) + ",\"instruments\":[" + String.join(",", entries) + "]}";
+    }
+
+    JsonNode instrumentStatus(JsonNode latest, String symbol) {
+        for (JsonNode i : latest.get("collector").get("instruments")) if (i.get("symbol").stringValue().equals(symbol)) return i;
+        throw new AssertionError(symbol);
+    }
+
+    @Test
+    void cryptoHealthIsTrackedPerPairWithoutChangingTheIndexStatus() throws Exception {
+        Instant at = now().truncatedTo(ChronoUnit.MINUTES).minusSeconds(60);
+        assertThat(ingest(batch(UUID.randomUUID(), "provider-x", now(), obs("UKX", "101.00", at, "PROVIDER"),
+                crypto("BTCUSD", "57885.27", at, null), crypto("ETHUSD", "1640.18", at, null))).statusCode()).isEqualTo(200);
+
+        // A four-index heartbeat (crypto off, or a collector before crypto): the indices are HEALTHY as always, and the
+        // pairs' own health is UNKNOWN, never borrowed from the indices.
+        Instant t0 = now();
+        assertThat(beat(heartbeat("provider-x", "OK", null, t0)).statusCode()).isEqualTo(200);
+        var latest = latest();
+        assertThat(sourceStatus(latest, "provider-x")).isEqualTo("HEALTHY");
+        assertThat(index(latest, "UKX").get("collectorStatus").stringValue()).isEqualTo("HEALTHY");
+        assertThat(index(latest, "BTCUSD").get("collectorStatus").stringValue()).isEqualTo("UNKNOWN");
+        assertThat(instrumentStatus(latest, "BTCUSD").get("status").stringValue()).isEqualTo("UNKNOWN");
+
+        // BTC/USD failing (third attempt in a row); ETH/USD and the indices fine.
+        Instant t1 = t0.plusMillis(5);
+        Instant btcSuccess = t1.minusSeconds(361);
+        assertThat(beat(withInstruments(heartbeat("provider-x", "OK", null, t1),
+                instrument("BTCUSD", "FAILED", 3, "UPSTREAM_TIMEOUT", t1.minusSeconds(1), btcSuccess),
+                instrument("ETHUSD", "OK", 0, null, t1.minusSeconds(1), t1.minusSeconds(1)))).statusCode()).isEqualTo(200);
+        latest = latest();
+        assertThat(sourceStatus(latest, "provider-x")).isEqualTo("HEALTHY");
+        assertThat(index(latest, "UKX").get("collectorStatus").stringValue()).isEqualTo("HEALTHY");
+        assertThat(index(latest, "BTCUSD").get("collectorStatus").stringValue()).isEqualTo("PROVIDER_FAILED");
+        assertThat(index(latest, "ETHUSD").get("collectorStatus").stringValue()).isEqualTo("HEALTHY");
+        var btc = instrumentStatus(latest, "BTCUSD");
+        assertThat(btc.get("source").stringValue()).isEqualTo("provider-x");
+        assertThat(btc.get("consecutiveFailures").intValue()).isEqualTo(3);
+        assertThat(btc.get("failureCode").stringValue()).isEqualTo("UPSTREAM_TIMEOUT");
+        assertThat(Instant.parse(btc.get("lastSuccessfulCollectionAt").stringValue())).isEqualTo(btcSuccess);
+        assertThat(btc.get("freshness").stringValue()).isEqualTo("FRESH");
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM market_index_instrument_health", Integer.class)).isEqualTo(2);
+
+        // An older report never overwrites the newer per-pair health either.
+        var older = beat(withInstruments(heartbeat("provider-x", "OK", null, t0.minusSeconds(30)),
+                instrument("BTCUSD", "OK", 0, null, t0.minusSeconds(31), t0.minusSeconds(31))));
+        assertThat(json.readTree(older.body()).get("applied").booleanValue()).isFalse();
+        assertThat(instrumentStatus(latest(), "BTCUSD").get("status").stringValue()).isEqualTo("PROVIDER_FAILED");
+
+        // Recovery: the next success resets the streak.
+        Instant t2 = t1.plusMillis(5);
+        assertThat(beat(withInstruments(heartbeat("provider-x", "OK", null, t2),
+                instrument("BTCUSD", "OK", 0, null, t2.minusSeconds(1), t2.minusSeconds(1)),
+                instrument("ETHUSD", "OK", 0, null, t2.minusSeconds(1), t2.minusSeconds(1)))).statusCode()).isEqualTo(200);
+        btc = instrumentStatus(latest(), "BTCUSD");
+        assertThat(btc.get("status").stringValue()).isEqualTo("HEALTHY");
+        assertThat(btc.get("consecutiveFailures").intValue()).isZero();
+        assertThat(btc.get("failureCode").isNull()).isTrue();
+
+        // Never collected: NO_SUCCESSFUL_COLLECTION. The index failure leaves ETH/USD healthy.
+        Instant t3 = t2.plusMillis(5);
+        assertThat(beat(withInstruments(heartbeat("provider-x", "PROVIDER_FAILED", "UPSTREAM_UNAVAILABLE", t3),
+                instrument("ETHUSD", "OK", 0, null, t3.minusSeconds(1), t3.minusSeconds(1)))).statusCode()).isEqualTo(200);
+        latest = latest();
+        assertThat(index(latest, "UKX").get("collectorStatus").stringValue()).isEqualTo("PROVIDER_FAILED");
+        assertThat(instrumentStatus(latest, "ETHUSD").get("status").stringValue()).isEqualTo("HEALTHY");
+        // BTC/USD is no longer reported in that heartbeat: its health is unknown, not carried over.
+        assertThat(instrumentStatus(latest, "BTCUSD").get("status").stringValue()).isEqualTo("UNKNOWN");
+
+        // A pair whose last attempt is older than the heartbeat timeout: stalled. A silent collector: disconnected.
+        Instant t4 = t3.plusMillis(5);
+        assertThat(beat(withInstruments(heartbeat("provider-x", "OK", null, t4),
+                instrument("BTCUSD", "FAILED", 1, "X", t4.minusSeconds(1), null),
+                instrument("ETHUSD", "OK", 0, null, t4.minusSeconds(400), t4.minusSeconds(400)))).statusCode()).isEqualTo(200);
+        latest = latest();
+        assertThat(instrumentStatus(latest, "BTCUSD").get("status").stringValue()).isEqualTo("NO_SUCCESSFUL_COLLECTION");
+        assertThat(instrumentStatus(latest, "ETHUSD").get("status").stringValue()).isEqualTo("COLLECTION_STALLED");
+        // Rows left by an older heartbeat (an image without per-pair health applied a newer one) are not current.
+        jdbc.update("UPDATE market_index_collector_heartbeat SET sent_at = sent_at + interval '1 second'");
+        latest = latest();
+        assertThat(instrumentStatus(latest, "ETHUSD").get("status").stringValue()).isEqualTo("UNKNOWN");
+        assertThat(instrumentStatus(latest, "ETHUSD").get("consecutiveFailures").isNull()).isTrue();
+        assertThat(index(latest, "ETHUSD").get("collectorStatus").stringValue()).isEqualTo("UNKNOWN");
+        jdbc.update("UPDATE market_index_collector_heartbeat SET received_at = now() - interval '7 minutes'");
+        latest = latest();
+        assertThat(instrumentStatus(latest, "BTCUSD").get("status").stringValue()).isEqualTo("DISCONNECTED");
+        assertThat(instrumentStatus(latest, "ETHUSD").get("status").stringValue()).isEqualTo("DISCONNECTED");
+    }
+
+    @Test
+    void cryptoMonitoringReportsStaleAndUnavailableData() throws Exception {
+        Instant old = now().truncatedTo(ChronoUnit.MINUTES).minus(Duration.ofHours(2));
+        assertThat(ingest(batch(UUID.randomUUID(), "provider-x", now(), crypto("BTCUSD", "57885.27", old, null))).statusCode())
+                .isEqualTo(200);
+        Instant t = now();
+        assertThat(beat(withInstruments(heartbeat("provider-x", "OK", null, t),
+                instrument("BTCUSD", "FAILED", 60, "UPSTREAM_TIMEOUT", t.minusSeconds(1), old.plusSeconds(30)))).statusCode())
+                .isEqualTo(200);
+        var latest = latest();
+        var btc = instrumentStatus(latest, "BTCUSD");
+        assertThat(btc.get("status").stringValue()).isEqualTo("PROVIDER_FAILED");
+        assertThat(btc.get("freshness").stringValue()).isEqualTo("STALE");
+        assertThat(index(latest, "BTCUSD").get("freshness").get("status").stringValue()).isEqualTo("STALE");
+        var eth = instrumentStatus(latest, "ETHUSD");
+        assertThat(eth.get("status").stringValue()).isEqualTo("UNKNOWN");
+        assertThat(eth.get("freshness").stringValue()).isEqualTo("UNAVAILABLE");
+        assertThat(eth.get("consecutiveFailures").isNull()).isTrue();
+    }
+
     @Test
     void cryptoIngestionDoesNotDependOnTheStockIndices() throws Exception {
         Instant at = now().truncatedTo(ChronoUnit.MINUTES).minusSeconds(60);

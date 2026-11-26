@@ -219,6 +219,26 @@ Same header and limits.
 `PROVIDER_FAILED`. `OK` requires `lastSuccessfulCollectionAt` at or after `lastAttemptAt`. `PROVIDER_FAILED`
 requires `lastSuccessfulCollectionAt` to be absent or earlier than `lastAttemptAt`.
 
+Optional (V18) `instruments`: the collector's per-pair crypto health, sent only when the collector has crypto on.
+The top-level fields above keep describing the four stock indices only, exactly as before; a heartbeat without
+`instruments` is the four-index heartbeat every version accepts.
+
+```json
+"instruments": [
+  { "symbol": "BTCUSD", "status": "FAILED", "lastAttemptAt": "2026-11-20T14:32:05Z",
+    "lastSuccessfulCollectionAt": "2026-11-20T14:24:05Z", "consecutiveFailures": 4, "failureCode": "UPSTREAM_TIMEOUT" },
+  { "symbol": "ETHUSD", "status": "OK", "lastAttemptAt": "2026-11-20T14:32:05Z",
+    "lastSuccessfulCollectionAt": "2026-11-20T14:32:05Z", "consecutiveFailures": 0 }
+]
+```
+
+Only `BTCUSD` and `ETHUSD`, each at most once. `OK` means the pair's last attempt succeeded: `consecutiveFailures`
+0, no `failureCode`, `lastSuccessfulCollectionAt` at or after `lastAttemptAt`. `FAILED` means it did not:
+`consecutiveFailures` at least 1, a `failureCode`, and `lastSuccessfulCollectionAt` absent (never collected) or
+earlier than `lastAttemptAt`. Times may not be later than `sentAt`. When the report is applied (newest `sentAt`), the
+source's rows in `market_index_instrument_health` are replaced by the list; a heartbeat without it removes them. The
+backend logs a warning when a pair reports its first failure in a row, then every 30th (about hourly).
+
 The response is `200 {"status":"ACCEPTED","applied":true}`. Errors:
 
 - 400 `HEARTBEAT_INVALID`.
@@ -255,6 +275,29 @@ crypto `change`/`changePercent` is against `reference24h`, and both are `null` w
 24-hour window: `null` means "no 24-hour change available", never "unchanged". Crypto `previousClose` is always
 `null`, and its `market` is `{"exchange": "CRYPTO_24_7", "timeZone": "UTC", "session": "OPEN",
 "calendarCoveredThrough": null}`.
+
+`collector.instruments` (V18) monitors BTC/USD and ETH/USD independently of the indices and of each other. It
+never changes `collector.status`, `collector.sources` or an index's `collectorStatus`, which keep their stock-index
+meaning:
+
+```json
+"instruments": [
+  { "symbol": "BTCUSD", "source": "sina", "status": "PROVIDER_FAILED", "consecutiveFailures": 4,
+    "failureCode": "UPSTREAM_TIMEOUT", "lastAttemptAt": "2026-11-20T14:32:05Z",
+    "lastSuccessfulCollectionAt": "2026-11-20T14:24:05Z", "freshness": "DELAYED" },
+  { "symbol": "ETHUSD", "source": "sina", "status": "HEALTHY", "consecutiveFailures": 0, "failureCode": null,
+    "lastAttemptAt": "2026-11-20T14:32:05Z", "lastSuccessfulCollectionAt": "2026-11-20T14:32:05Z", "freshness": "FRESH" }
+]
+```
+
+`status` is the pair's own collector state, and also its `collectorStatus` in `indices`: `DISCONNECTED` or
+`UNKNOWN` when the source is (the PC or collector is down); `UNKNOWN` when the source's newest heartbeat has no
+health for the pair (crypto off, or a collector before this change); `NO_SUCCESSFUL_COLLECTION` (never collected);
+`PROVIDER_FAILED` (last attempt failed; `consecutiveFailures` and `failureCode` say how long and why);
+`COLLECTION_STALLED` (the pair's last attempt is older than `heartbeat-timeout` relative to the heartbeat's
+`sentAt`); otherwise `HEALTHY`. A success resets `consecutiveFailures` to 0 (recovery). `freshness` is the pair's
+value freshness: `STALE` when its newest value is older than `stale-after`, `UNAVAILABLE` when there is none. The
+source is that of the newest value, else the first public source reporting the pair.
 
 All six symbols are always present, in the fixed order (`UKX`, `SPX`, `IXIC`, `DJI`, `BTCUSD`, `ETHUSD`; the
 array keeps its name `indices`). A symbol without data has `null` values and status `UNAVAILABLE`. Only `MARKET_INDICES_PUBLIC_SOURCES` are read; startup fails if `mock` is listed there. History is
@@ -344,8 +387,9 @@ accepted the licensing and redistribution risk of that source; Sina has not gran
 
 ## Release: V17 to V18
 
-V18 widens two `CHECK`s (symbols; up to 6 observations per batch), adds two nullable columns and one `CHECK`. Existing
-rows are unchanged and all satisfy the new constraints. Release with `approve_migrations=18`. The previous image
+V18 widens two `CHECK`s (symbols; up to 6 observations per batch), adds two nullable columns and one `CHECK`, and
+creates `market_index_instrument_health` (per-pair crypto health, a new table). Existing rows are unchanged and all
+satisfy the new constraints. Release with `approve_migrations=18`. The previous image
 (V17 code) is compatible with a V18 database: it reads only its four symbols by name, ignores the new columns and
 validates the newer schema under Flyway's default `ignoreMigrationPatterns` (`*:future`). Rollback is therefore an
 image rollback only. Crypto rows then stay stored but unused.
@@ -359,6 +403,17 @@ Rehearsed on 2026-11-23 against a disposable PostgreSQL 16 cluster with both jar
 | 3 | Previous image again on the V18 database (rollback) | "Schema is up to date"; health UP; Guides 200; `latest` lists exactly the four indices (UKX value unchanged), the crypto row ignored |
 | 4 | This branch again | `latest` lists six; BTCUSD `ROLLING_24H`, `changePercent` -6.31, FRESH; ETHUSD `UNAVAILABLE` |
 
+Repeated on 2026-11-26 with per-pair crypto health (`market_index_instrument_health`), fresh PostgreSQL 16 cluster:
+
+| Step | Image | Result |
+| --- | --- | --- |
+| 1 | Previous (`main` 18a2fcd) on an empty database | V1–V17; health UP; Guides 200 |
+| 2 | Previous on V17, traffic | Four-index batch 200 STORED; four-index heartbeat 200; six-instrument batch 400 `MARKET_BATCH_INVALID`; heartbeat with `instruments` 400 `HEARTBEAT_INVALID` (why the collector goes last) |
+| 3 | This branch on the V17 database | V18 applied in 14 ms; four-index batch and heartbeat 200; six-instrument batch 200 (6 STORED); heartbeat with `instruments` 200; `latest`: indices HEALTHY, BTCUSD `PROVIDER_FAILED` (3 failures), ETHUSD HEALTHY, `collector.status` HEALTHY |
+| 4 | Previous image on the V18 database (rollback) | "Schema is up to date" (only the expected Flyway "newer than the latest available migration" warning); health UP; Guides 200; four-index batch and heartbeat 200; crypto batch and `instruments` heartbeat 400; `latest` lists exactly the four indices; health rows untouched |
+| 5 | This branch again (roll-forward) | Before any new heartbeat both pairs `UNKNOWN` (the rows predate the source's newest heartbeat, so they are not shown as current); after one heartbeat with `instruments`, BTCUSD `PROVIDER_FAILED`, ETHUSD HEALTHY |
+| 6 | This branch with the real collector (mock provider, crypto on, HTTP) | Four cycles, BTC/USD failing in cycles 2–3: every batch and heartbeat 200; heartbeat row `OK` throughout; BTCUSD rows `OK:0`, `FAILED:1`, `FAILED:2`, `OK:0`; ETHUSD `OK:0` throughout; one backend warning at the first failure |
+
 Enablement order (each step is safe on its own and has its own approval):
 
 1. **Frontend first.** A V18 backend always lists six instruments; the homepage before the crypto change accepts
@@ -368,7 +423,14 @@ Enablement order (each step is safe on its own and has its own approval):
    accepts unchanged; BTCUSD and ETHUSD are listed as `UNAVAILABLE`.
 3. **Collector** upgrade (SQLite schema 3 to 4, automatic), then `crypto_enabled: true` and a restart. Never before
    step 2: a V17 backend rejects a batch containing crypto as `MARKET_BATCH_INVALID`, discarding that cycle's
-   indices as well. The first cycle sends prices without a 24-hour change; the next completes the window.
+   indices as well. The first cycle sends prices without a 24-hour change; the next completes the window. With
+   crypto on, heartbeats also carry `instruments`, which only V18 accepts.
+
+Rollback after step 3 runs in reverse: set `crypto_enabled: false` on the collector and restart it first (its
+batches and heartbeats are then exactly the four-index ones a V17 image accepts; its SQLite schema 4 stays), then
+roll back the backend image. Rolling back the backend image while crypto is on would make the previous image reject
+every batch (`MARKET_BATCH_INVALID`, indices included) and every heartbeat (`HEARTBEAT_INVALID`) until crypto is
+switched off; pending batches stay in the collector outbox, but batches already rejected are not retried.
 
 ## Release: V16 to V17 and previous-image compatibility
 

@@ -70,9 +70,27 @@ final class MarketIndexPayloads {
 
     enum CollectorStatus { OK, PROVIDER_FAILED }
 
+    /**
+     * A heartbeat. The top-level fields describe the four stock indices exactly as before crypto existed;
+     * {@code instruments} is the optional per-pair crypto health (empty when not reported, as from a collector with
+     * crypto off or one that predates it).
+     */
     record Heartbeat(String source, CollectorStatus status, String providerFailureCode, Instant sentAt,
             Instant lastAttemptAt, Instant lastSuccessfulCollectionAt, int pendingBatches,
-            Instant oldestPendingCollectedAt) { }
+            Instant oldestPendingCollectedAt, List<InstrumentHealth> instruments) {
+        Heartbeat(String source, CollectorStatus status, String providerFailureCode, Instant sentAt,
+                Instant lastAttemptAt, Instant lastSuccessfulCollectionAt, int pendingBatches,
+                Instant oldestPendingCollectedAt) {
+            this(source, status, providerFailureCode, sentAt, lastAttemptAt, lastSuccessfulCollectionAt, pendingBatches,
+                    oldestPendingCollectedAt, List.of());
+        }
+    }
+
+    enum InstrumentStatus { OK, FAILED }
+
+    /** One crypto pair's own collection health, reported by the collector independently of the indices. */
+    record InstrumentHealth(MarketIndexSymbol symbol, InstrumentStatus status, Instant lastAttemptAt,
+            Instant lastSuccessfulCollectionAt, int consecutiveFailures, String failureCode) { }
 
     // ---------------------------------------------------------------- observations
 
@@ -199,7 +217,7 @@ final class MarketIndexPayloads {
         final String invalid = "HEARTBEAT_INVALID";
         JsonNode root = parse(body, invalid);
         fields(root, "", Set.of("schemaVersion", "source", "sentAt", "collectorStatus", "lastAttemptAt", "pendingBatches"),
-                Set.of("providerFailureCode", "lastSuccessfulCollectionAt", "oldestPendingCollectedAt"), invalid);
+                Set.of("providerFailureCode", "lastSuccessfulCollectionAt", "oldestPendingCollectedAt", "instruments"), invalid);
         schemaVersion(root, invalid);
         String source = source(root, invalid);
         Instant sentAt = timestamp(root, "sentAt", invalid);
@@ -241,7 +259,72 @@ final class MarketIndexPayloads {
                 throw unprocessable("HEARTBEAT_TIME_INVALID", entry[0] + " is later than sentAt.");
             }
         }
-        return new Heartbeat(source, status, failure, sentAt, lastAttemptAt, lastSuccess, pending.intValue(), oldestPending);
+        var instruments = instruments(root.get("instruments"), sentAt, properties, invalid);
+        return new Heartbeat(source, status, failure, sentAt, lastAttemptAt, lastSuccess, pending.intValue(), oldestPending,
+                instruments);
+    }
+
+    /**
+     * The optional per-pair crypto health: each crypto symbol at most once. OK means the pair's last attempt succeeded
+     * (no failures in a row, no failure code, last success at or after the last attempt); FAILED means it did not.
+     */
+    private static List<InstrumentHealth> instruments(JsonNode list, Instant sentAt, MarketIndexProperties properties,
+            String invalid) {
+        if (list == null || list.isNull()) return List.of();
+        if (!list.isArray() || list.size() > MarketIndexSymbol.values().length) {
+            throw bad(invalid, "instruments must be an array of at most " + MarketIndexSymbol.values().length + " entries.");
+        }
+        var result = new ArrayList<InstrumentHealth>();
+        var seen = EnumSet.noneOf(MarketIndexSymbol.class);
+        for (int i = 0; i < list.size(); i++) {
+            String path = "instruments[" + i + "].";
+            JsonNode entry = list.get(i);
+            fields(entry, path, Set.of("symbol", "status", "lastAttemptAt", "consecutiveFailures"),
+                    Set.of("lastSuccessfulCollectionAt", "failureCode"), invalid);
+            MarketIndexSymbol symbol;
+            try {
+                symbol = MarketIndexSymbol.valueOf(text(entry, "symbol", path, invalid));
+            } catch (IllegalArgumentException unknown) {
+                throw bad(invalid, path + "symbol is not a supported symbol.");
+            }
+            if (!symbol.crypto()) throw bad(invalid, path + "symbol must be a crypto pair; index health is the top-level status.");
+            if (!seen.add(symbol)) throw bad(invalid, path + "symbol is repeated.");
+            InstrumentStatus status;
+            try {
+                status = InstrumentStatus.valueOf(text(entry, "status", path, invalid));
+            } catch (IllegalArgumentException unknown) {
+                throw bad(invalid, path + "status must be OK or FAILED.");
+            }
+            Instant lastAttemptAt = timestamp(entry, "lastAttemptAt", path, invalid);
+            Instant lastSuccess = present(entry, "lastSuccessfulCollectionAt")
+                    ? timestamp(entry, "lastSuccessfulCollectionAt", path, invalid) : null;
+            JsonNode failures = entry.get("consecutiveFailures");
+            if (!failures.isIntegralNumber() || !failures.canConvertToInt() || failures.intValue() < 0
+                    || failures.intValue() > 1_000_000) {
+                throw bad(invalid, path + "consecutiveFailures must be an integer from 0 to 1000000.");
+            }
+            String failureCode = present(entry, "failureCode") ? text(entry, "failureCode", path, invalid) : null;
+            if (failureCode != null && !FAILURE_CODE.matcher(failureCode).matches()) {
+                throw bad(invalid, path + "failureCode must be an upper-case code of at most 40 characters.");
+            }
+            boolean ok = status == InstrumentStatus.OK;
+            if (ok != (failures.intValue() == 0) || ok != (failureCode == null)) {
+                throw bad(invalid, path + "status OK means no consecutive failures and no failureCode; FAILED needs both.");
+            }
+            if (ok && (lastSuccess == null || lastSuccess.isBefore(lastAttemptAt))) {
+                throw bad(invalid, path + "status OK requires lastSuccessfulCollectionAt at or after lastAttemptAt.");
+            }
+            if (!ok && lastSuccess != null && !lastSuccess.isBefore(lastAttemptAt)) {
+                throw bad(invalid, path + "status FAILED requires the last attempt to be later than the last success.");
+            }
+            for (var time : new Object[][] {{"lastAttemptAt", lastAttemptAt}, {"lastSuccessfulCollectionAt", lastSuccess}}) {
+                if (time[1] != null && ((Instant) time[1]).isAfter(sentAt.plus(properties.futureSkew()))) {
+                    throw unprocessable("HEARTBEAT_TIME_INVALID", path + time[0] + " is later than sentAt.");
+                }
+            }
+            result.add(new InstrumentHealth(symbol, status, lastAttemptAt, lastSuccess, failures.intValue(), failureCode));
+        }
+        return List.copyOf(result);
     }
 
     // ---------------------------------------------------------------- helpers

@@ -24,3 +24,22 @@ ALTER TABLE market_index_observation ADD CONSTRAINT market_index_observation_ref
     AND (symbol IN ('BTCUSD', 'ETHUSD') OR reference_24h IS NULL)
     AND (symbol NOT IN ('BTCUSD', 'ETHUSD') OR previous_close IS NULL)
 );
+
+-- Per-pair crypto collection health, reported in the collector heartbeat's optional "instruments" list and kept
+-- separately from the source's (stock-index) heartbeat row, whose meaning is unchanged. One row per source and pair,
+-- replaced with the source's newest applied heartbeat; a heartbeat without the list (crypto off) removes the rows.
+-- A new table only: the previous image never reads it.
+CREATE TABLE market_index_instrument_health (
+    source                         text NOT NULL REFERENCES market_index_collector_heartbeat (source) ON DELETE CASCADE,
+    symbol                         text NOT NULL CHECK (symbol IN ('BTCUSD', 'ETHUSD')),
+    status                         text NOT NULL CHECK (status IN ('OK', 'FAILED')),
+    failure_code                   text CHECK (failure_code ~ '^[A-Z][A-Z0-9_]{0,39}$'),
+    consecutive_failures           integer NOT NULL CHECK (consecutive_failures BETWEEN 0 AND 1000000),
+    last_attempt_at                timestamptz NOT NULL,
+    last_successful_collection_at  timestamptz,
+    sent_at                        timestamptz NOT NULL,
+    PRIMARY KEY (source, symbol),
+    CHECK ((status = 'OK') = (consecutive_failures = 0) AND (status = 'OK') = (failure_code IS NULL)),
+    CHECK (status = 'FAILED' OR (last_successful_collection_at IS NOT NULL AND last_successful_collection_at >= last_attempt_at)),
+    CHECK (status = 'OK' OR last_successful_collection_at IS NULL OR last_successful_collection_at < last_attempt_at)
+);

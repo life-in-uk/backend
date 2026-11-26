@@ -118,6 +118,37 @@ class MarketIndexStore {
                 ts(h.lastSuccessfulCollectionAt()), h.pendingBatches(), ts(h.oldestPendingCollectedAt()), ts(h.sentAt())));
     }
 
+    record StoredInstrumentHealth(String source, MarketIndexSymbol symbol, MarketIndexPayloads.InstrumentStatus status,
+            String failureCode, int consecutiveFailures, Instant lastAttemptAt, Instant lastSuccessfulCollectionAt,
+            Instant sentAt) { }
+
+    /**
+     * Replaces one source's per-pair crypto health with an applied heartbeat's list (call only when
+     * {@link #upsertHeartbeat} applied the report, in the same transaction): an empty list removes the rows, so a
+     * collector with crypto switched off leaves no outdated health behind.
+     */
+    void replaceInstrumentHealth(MarketIndexPayloads.Heartbeat h) {
+        jdbc.update("DELETE FROM market_index_instrument_health WHERE source = ?", h.source());
+        for (var i : h.instruments()) {
+            jdbc.update("""
+                    INSERT INTO market_index_instrument_health (source, symbol, status, failure_code, consecutive_failures,
+                        last_attempt_at, last_successful_collection_at, sent_at)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)""",
+                    h.source(), i.symbol().name(), i.status().name(), i.failureCode(), i.consecutiveFailures(),
+                    ts(i.lastAttemptAt()), ts(i.lastSuccessfulCollectionAt()), ts(h.sentAt()));
+        }
+    }
+
+    List<StoredInstrumentHealth> instrumentHealth(String source) {
+        return jdbc.query("""
+                SELECT source, symbol, status, failure_code, consecutive_failures, last_attempt_at,
+                    last_successful_collection_at, sent_at
+                FROM market_index_instrument_health WHERE source = ? ORDER BY symbol""",
+                (rs, n) -> new StoredInstrumentHealth(rs.getString(1), MarketIndexSymbol.valueOf(rs.getString(2)),
+                        MarketIndexPayloads.InstrumentStatus.valueOf(rs.getString(3)), rs.getString(4), rs.getInt(5),
+                        instant(rs, 6), instant(rs, 7), instant(rs, 8)), source);
+    }
+
     Optional<StoredHeartbeat> heartbeat(String source) {
         return jdbc.query("""
                 SELECT source, collector_status, sent_at, last_attempt_at, last_successful_collection_at, received_at

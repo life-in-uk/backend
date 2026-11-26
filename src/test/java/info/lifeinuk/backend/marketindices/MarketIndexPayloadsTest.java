@@ -178,6 +178,61 @@ class MarketIndexPayloadsTest {
                 .isEqualTo("HEARTBEAT_INVALID");
     }
 
+    static String withInstruments(String heartbeat, String... entries) {
+        return heartbeat.substring(0, heartbeat.length() - 1) + ",\"instruments\":[" + String.join(",", entries) + "]}";
+    }
+
+    static String instrument(String symbol, String status, int failures, String code, String lastSuccess) {
+        return "{\"symbol\":\"" + symbol + "\",\"status\":\"" + status + "\",\"lastAttemptAt\":\"2026-11-20T14:31:00Z\","
+                + "\"consecutiveFailures\":" + failures
+                + (lastSuccess == null ? "" : ",\"lastSuccessfulCollectionAt\":\"" + lastSuccess + "\"")
+                + (code == null ? "" : ",\"failureCode\":\"" + code + "\"") + "}";
+    }
+
+    @Test
+    void heartbeatInstrumentHealthIsOptionalAndPerCryptoPair() {
+        String base = heartbeat("OK", null, "2026-11-20T14:32:00Z");
+        // The four-index heartbeat (every collector before crypto, or with crypto off) is unchanged.
+        assertThat(MarketIndexPayloads.heartbeat(base.getBytes(StandardCharsets.UTF_8), NOW, PROPS).instruments()).isEmpty();
+
+        var parsed = MarketIndexPayloads.heartbeat(withInstruments(base,
+                instrument("BTCUSD", "FAILED", 3, "UPSTREAM_TIMEOUT", "2026-11-20T14:25:00Z"),
+                instrument("ETHUSD", "OK", 0, null, "2026-11-20T14:31:00Z")).getBytes(StandardCharsets.UTF_8), NOW, PROPS);
+        // The top-level status still describes the indices: OK while BTC/USD fails.
+        assertThat(parsed.status()).isEqualTo(MarketIndexPayloads.CollectorStatus.OK);
+        assertThat(parsed.instruments()).extracting(MarketIndexPayloads.InstrumentHealth::symbol)
+                .containsExactly(MarketIndexSymbol.BTCUSD, MarketIndexSymbol.ETHUSD);
+        var btc = parsed.instruments().get(0);
+        assertThat(btc.status()).isEqualTo(MarketIndexPayloads.InstrumentStatus.FAILED);
+        assertThat(btc.consecutiveFailures()).isEqualTo(3);
+        assertThat(btc.failureCode()).isEqualTo("UPSTREAM_TIMEOUT");
+        // Never succeeded: FAILED without a last success.
+        assertThat(MarketIndexPayloads.heartbeat(withInstruments(base, instrument("BTCUSD", "FAILED", 1, "X", null))
+                .getBytes(StandardCharsets.UTF_8), NOW, PROPS).instruments().get(0).lastSuccessfulCollectionAt()).isNull();
+
+        for (String bad : new String[] {
+                instrument("UKX", "OK", 0, null, "2026-11-20T14:31:00Z"),                // indices are the top-level status
+                instrument("DOGEUSD", "OK", 0, null, "2026-11-20T14:31:00Z"),
+                instrument("BTCUSD", "DOWN", 1, "X", null),
+                instrument("BTCUSD", "OK", 1, null, "2026-11-20T14:31:00Z"),            // OK with failures
+                instrument("BTCUSD", "OK", 0, "X", "2026-11-20T14:31:00Z"),             // OK with a failure code
+                instrument("BTCUSD", "OK", 0, null, null),                              // OK without a success
+                instrument("BTCUSD", "OK", 0, null, "2026-11-20T14:30:00Z"),            // OK with an older success
+                instrument("BTCUSD", "FAILED", 0, "X", null),                           // FAILED without failures
+                instrument("BTCUSD", "FAILED", 2, null, null),                          // FAILED without a code
+                instrument("BTCUSD", "FAILED", 2, "X", "2026-11-20T14:31:00Z"),         // FAILED but succeeded last
+                instrument("BTCUSD", "FAILED", 2, "lower", null),
+                instrument("BTCUSD", "FAILED", -1, "X", null),
+                instrument("BTCUSD", "OK", 0, null, "2026-11-20T14:31:00Z").replace("}", ",\"extra\":1}"),
+                instrument("BTCUSD", "OK", 0, null, "2026-11-20T14:31:00Z") + "," + instrument("BTCUSD", "OK", 0, null, "2026-11-20T14:31:00Z"),
+                "\"BTCUSD\"" }) {
+            assertThat(rejectHeartbeat(withInstruments(base, bad)).code).as(bad).isEqualTo("HEARTBEAT_INVALID");
+        }
+        assertThat(rejectHeartbeat(base.substring(0, base.length() - 1) + ",\"instruments\":{}}").code).isEqualTo("HEARTBEAT_INVALID");
+        String future = instrument("ETHUSD", "OK", 0, null, "2026-11-20T14:31:00Z").replace("14:31:00Z", "14:59:00Z");
+        assertThat(rejectHeartbeat(withInstruments(base, future)).code).isEqualTo("HEARTBEAT_TIME_INVALID");
+    }
+
     static String crypto(String symbol, String value, String observedAt, String extra) {
         return "{\"symbol\":\"" + symbol + "\",\"value\":\"" + value + "\",\"observedAt\":\"" + observedAt
                 + "\",\"observedAtSource\":\"PROVIDER\"" + extra + "}";

@@ -121,9 +121,21 @@ class MarketIndexService {
 
     HeartbeatAck heartbeat(MarketIndexPayloads.Heartbeat heartbeat, MarketIndexIngestSecurity.Key key) {
         MarketIndexPayloads.requireAuthorized(heartbeat.source(), key.sources(), properties);
-        boolean applied = Boolean.TRUE.equals(tx.execute(status -> store.upsertHeartbeat(heartbeat, key.id())));
+        boolean applied = Boolean.TRUE.equals(tx.execute(status -> {
+            boolean newest = store.upsertHeartbeat(heartbeat, key.id());
+            if (newest) store.replaceInstrumentHealth(heartbeat);
+            return newest;
+        }));
         if (heartbeat.status() == MarketIndexPayloads.CollectorStatus.PROVIDER_FAILED) {
             log.warn("Market index collector source={} reports provider failure {}", heartbeat.source(), heartbeat.providerFailureCode());
+        }
+        for (var instrument : heartbeat.instruments()) {
+            // When a pair starts failing, then about hourly (every 30th failed 120 s cycle) while it keeps failing.
+            int failures = instrument.consecutiveFailures();
+            if (failures == 1 || (failures > 0 && failures % 30 == 0)) {
+                log.warn("Market collector source={} symbol={} failing: {} consecutive failures, last {}", heartbeat.source(),
+                        instrument.symbol(), failures, instrument.failureCode());
+            }
         }
         return new HeartbeatAck("ACCEPTED", applied);
     }
@@ -147,7 +159,20 @@ class MarketIndexService {
 
     record SourceStatus(String source, String status) { }
 
-    record Collector(String status, String basis, long heartbeatTimeoutSeconds, List<SourceStatus> sources) { }
+    /**
+     * One crypto pair's collection health, independent of the indices and of the other pair: {@code status} is a
+     * {@link CollectorState} for that pair alone; {@code freshness} is its value's freshness status (STALE or
+     * UNAVAILABLE when its data is old or missing).
+     */
+    record InstrumentStatus(String symbol, String source, String status, Integer consecutiveFailures, String failureCode,
+            Instant lastAttemptAt, Instant lastSuccessfulCollectionAt, String freshness) { }
+
+    /**
+     * {@code status}, {@code sources} and each index's {@code collectorStatus} describe the stock indices exactly as
+     * before crypto (from the heartbeat's top-level fields); {@code instruments} adds BTC/USD and ETH/USD.
+     */
+    record Collector(String status, String basis, long heartbeatTimeoutSeconds, List<SourceStatus> sources,
+            List<InstrumentStatus> instruments) { }
 
     record Latest(Instant generatedAt, Collector collector, List<Index> indices, String attribution) { }
 
@@ -173,17 +198,43 @@ class MarketIndexService {
         return CollectorState.HEALTHY;
     }
 
+    /**
+     * One crypto pair's state from its own health in the source's heartbeat. A collector that is silent or unknown
+     * stays so for every instrument; a heartbeat without the pair's health (crypto off, or an older collector) is
+     * UNKNOWN for that pair; otherwise the same checks as the source state, applied to the pair's own times.
+     */
+    static CollectorState instrumentState(CollectorState sourceState, MarketIndexStore.StoredHeartbeat heartbeat,
+            MarketIndexStore.StoredInstrumentHealth health, Duration timeout) {
+        if (sourceState == CollectorState.DISCONNECTED || sourceState == CollectorState.UNKNOWN) return sourceState;
+        if (health == null) return CollectorState.UNKNOWN;
+        // Rows from an older heartbeat (one applied by an image that does not maintain them, e.g. after a rollback and
+        // roll-forward) describe the past, not the present.
+        if (health.sentAt().isBefore(heartbeat.sentAt())) return CollectorState.UNKNOWN;
+        if (health.lastSuccessfulCollectionAt() == null) return CollectorState.NO_SUCCESSFUL_COLLECTION;
+        if (health.status() != MarketIndexPayloads.InstrumentStatus.OK) return CollectorState.PROVIDER_FAILED;
+        if (Duration.between(health.lastAttemptAt(), heartbeat.sentAt()).compareTo(timeout) > 0) {
+            return CollectorState.COLLECTION_STALLED;
+        }
+        return CollectorState.HEALTHY;
+    }
+
     Latest latest() {
         Instant now = now();
         var sources = properties.publicSources();
         var states = new java.util.LinkedHashMap<String, CollectorState>();
+        var heartbeats = new java.util.HashMap<String, MarketIndexStore.StoredHeartbeat>();
+        var health = new java.util.HashMap<String, java.util.Map<MarketIndexSymbol, MarketIndexStore.StoredInstrumentHealth>>();
         for (String source : sources) {
-            states.put(source, state(store.heartbeat(source).orElse(null), now, properties.heartbeatTimeout()));
+            var heartbeat = store.heartbeat(source).orElse(null);
+            heartbeats.put(source, heartbeat);
+            states.put(source, state(heartbeat, now, properties.heartbeatTimeout()));
+            var bySymbol = new java.util.EnumMap<MarketIndexSymbol, MarketIndexStore.StoredInstrumentHealth>(MarketIndexSymbol.class);
+            if (heartbeat != null) store.instrumentHealth(source).forEach(h -> bySymbol.put(h.symbol(), h));
+            health.put(source, bySymbol);
         }
         var aggregate = states.values().stream().max(Enum::compareTo).orElse(CollectorState.UNKNOWN);
-        var collector = new Collector(aggregate.name(), "heartbeatReceivedAt", properties.heartbeatTimeout().toSeconds(),
-                states.entrySet().stream().map(e -> new SourceStatus(e.getKey(), e.getValue().name())).toList());
         var indices = new ArrayList<Index>();
+        var instruments = new ArrayList<InstrumentStatus>();
         for (var symbol : MarketIndexSymbol.values()) {
             var session = symbol.exchange.session(now);
             var market = new Market(symbol.exchange.name(), symbol.exchange.zone.getId(), session.state().name(),
@@ -201,6 +252,7 @@ class MarketIndexService {
                     row == null ? null : row.timeSource(), session, now, properties);
             var fresh = new Freshness(freshness.status().name(), freshness.ageSeconds(), "observedAt",
                     properties.freshWithin().toSeconds(), properties.staleAfter().toSeconds());
+            if (symbol.crypto()) instruments.add(instrumentStatus(symbol, row, sources, states, heartbeats, health, fresh));
             if (row == null) {
                 indices.add(new Index(symbol.name(), symbol.displayName, null, null, null, null, null, null,
                         new Provenance(null, null, null, null), market, fresh, assetClass, currency, changeBasis, null, null));
@@ -217,11 +269,41 @@ class MarketIndexService {
             }
             indices.add(new Index(symbol.name(), symbol.displayName, row.value().toPlainString(),
                     row.previousClose() == null ? null : row.previousClose().toPlainString(), change, percent, row.source(),
-                    states.get(row.source()).name(),
+                    symbol.crypto()
+                            ? instrumentState(states.get(row.source()), heartbeats.get(row.source()),
+                                    health.get(row.source()).get(symbol), properties.heartbeatTimeout()).name()
+                            : states.get(row.source()).name(),
                     new Provenance(row.observedAt(), row.timeSource().name(), row.collectedAt(), row.receivedAt()), market, fresh,
                     assetClass, currency, changeBasis,
                     row.reference24h() == null ? null : row.reference24h().toPlainString(), row.reference24hAt()));
         }
+        var collector = new Collector(aggregate.name(), "heartbeatReceivedAt", properties.heartbeatTimeout().toSeconds(),
+                states.entrySet().stream().map(e -> new SourceStatus(e.getKey(), e.getValue().name())).toList(),
+                List.copyOf(instruments));
         return new Latest(now, collector, List.copyOf(indices), properties.attribution());
+    }
+
+    /**
+     * A pair's monitoring entry: from the source of its newest value, or (no value yet) the first public source that
+     * reports the pair's health, else the first public source.
+     */
+    private InstrumentStatus instrumentStatus(MarketIndexSymbol symbol, MarketIndexStore.StoredObservation row,
+            List<String> sources, java.util.Map<String, CollectorState> states,
+            java.util.Map<String, MarketIndexStore.StoredHeartbeat> heartbeats,
+            java.util.Map<String, java.util.Map<MarketIndexSymbol, MarketIndexStore.StoredInstrumentHealth>> health,
+            Freshness freshness) {
+        String source = row != null ? row.source()
+                : sources.stream().filter(s -> health.get(s).containsKey(symbol)).findFirst()
+                        .orElse(sources.isEmpty() ? null : sources.get(0));
+        if (source == null) {
+            return new InstrumentStatus(symbol.name(), null, CollectorState.UNKNOWN.name(), null, null, null, null,
+                    freshness.status());
+        }
+        var h = health.get(source).get(symbol);
+        if (h != null && heartbeats.get(source) != null && h.sentAt().isBefore(heartbeats.get(source).sentAt())) h = null;
+        var state = instrumentState(states.get(source), heartbeats.get(source), h, properties.heartbeatTimeout());
+        return new InstrumentStatus(symbol.name(), source, state.name(), h == null ? null : h.consecutiveFailures(),
+                h == null ? null : h.failureCode(), h == null ? null : h.lastAttemptAt(),
+                h == null ? null : h.lastSuccessfulCollectionAt(), freshness.status());
     }
 }
