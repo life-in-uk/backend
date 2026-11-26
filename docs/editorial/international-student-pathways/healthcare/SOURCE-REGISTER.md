@@ -1,0 +1,25 @@
+# Primary source register
+
+Verified on 26 November 2026. The Immigration Rules and Appendix Skilled Occupations are the operative texts. Public pages and sponsor guidance explain them. The 2025 statement is historical evidence of the care entry change. The earned-settlement response describes reform policy; check current Rules and any relevant commencement provisions before release.
+
+| Reference | Source | Locator and scope |
+|---|---|---|
+| health | [Health and Care Worker visa](https://www.gov.uk/health-care-worker-visa) — Home Office | Overview and eligibility. UK visa overview. |
+| health-job | [Health and Care Worker visa: Your job](https://www.gov.uk/health-care-worker-visa/your-job) — Home Office | Eligible occupations, salary and employer. Current visa-specific eligibility. |
+| health-fees | [Health and Care Worker visa: How much it costs](https://www.gov.uk/health-care-worker-visa/how-much-it-costs) — Home Office | Application fees, healthcare surcharge and savings. Fees can change. |
+| health-family | [Health and Care Worker visa: Your partner and children](https://www.gov.uk/health-care-worker-visa/your-partner-and-children) — Home Office | Role restrictions and family conditions. Public guidance read alongside operative rules. |
+| skilled-rules | [Immigration Rules Appendix Skilled Worker](https://www.gov.uk/guidance/immigration-rules/immigration-rules-appendix-skilled-worker) — Home Office | SW 1.5A, SW 6.1B–6.1C, salary options, SW 19–24, SW 29.1A and SW 32A.2. Operative Rules and criteria. |
+| occupation | [Immigration Rules Appendix Skilled Occupations](https://www.gov.uk/guidance/immigration-rules/immigration-rules-appendix-skilled-occupations) — Home Office | Occupation tables, pay scales and restrictions for 6135–6136. Operative occupational tables. |
+| sponsoring | [Workers and Temporary Workers: sponsor a skilled worker](https://www.gov.uk/government/publications/sponsor-a-skilled-worker/workers-and-temporary-workers-sponsor-a-skilled-worker-accessible) — Home Office | SK4 care restrictions, SK6 salaries and CoS fees. Current sponsor guidance. |
+| register | [Register of licensed sponsors: workers](https://www.gov.uk/government/publications/register-of-licensed-sponsors-workers) — Home Office | Worker route and sponsor legal name. A licence is not a vacancy. |
+| nhs-jobs | [NHS Jobs](https://www.nhsbsa.nhs.uk/nhs-jobs) — NHS Business Services Authority | Official recruitment service. Look up the named advert. |
+| gmc | [Full registration for international medical graduates](https://www.gmc-uk.org/registration-and-licensing/join-our-registers/registration-applications/application-guides/full-registration-for-international-medical-graduates) — General Medical Council | Full registration with a licence to practise. Professional registration. |
+| nmc | [Trained outside the UK: how-to guide](https://www.nmc.org.uk/registration/joining-the-register/register-nurse-midwife/trained-outside-uk/how-to-guide/) — Nursing and Midwifery Council | Evidence and assessment for registration. Professional registration. |
+| hcpc | [International applications](https://www.hcpc-uk.org/registration/getting-on-the-register/international-applications/) — Health and Care Professions Council | International route and evidence requirements. Professional registration and regulated professions. |
+| cqc | [Find a health or social care service](https://www.cqc.org.uk/care-services) — Care Quality Commission | Check providers and regulated services in England. England regulator directory. |
+| scam | [Report visa and immigration scams](https://www.gov.uk/report-suspicious-emails-websites-phishing/report-visa-and-immigration-scams) — Home Office | Bogus job offers and reporting. Official reporting. |
+| agency-fees | [Agency workers: Fees](https://www.gov.uk/agency-workers-your-rights/fees) — Department for Business and Trade | Work-finding fees and optional services. Current guidance. |
+| advice | [Find an immigration adviser](https://www.gov.uk/find-an-immigration-adviser) — Immigration Advice Authority | Regulated advice. Official adviser lookup. |
+| care-reform | [Statement of changes HC 997: explanatory memorandum](https://www.gov.uk/government/publications/statement-of-changes-to-the-immigration-rules-hc-997-1-july-2025/explanatory-memorandum-to-the-statement-of-changes-to-the-immigration-rules-hc-997-1-july-2025-accessible) — Home Office | Care worker entry clearance and transitional provisions. Historical explanation; use operative Rules. |
+| switch | [Health and Care Worker visa: Switch to this visa](https://www.gov.uk/health-care-worker-visa/switch-to-this-visa) — Home Office | Student switching and in-country application restrictions. Current practical guidance. |
+| settlement | [Earned settlement: government response](https://www.gov.uk/government/consultations/earned-settlement/outcome/a-fairer-pathway-to-settlement-government-response-to-the-consultation) — Home Office | Announced reform and implementation status. Policy background; consult operative rules. |

@@ -1,0 +1,41 @@
+{
+  "slug": "health-and-care-worker-visa",
+  "category": "work-visa",
+  "status": "DRAFT",
+  "sourceLocale": "zh-CN",
+  "sourcesVerifiedOn": "2026-11-26",
+  "editorialStatus": "Owner and independent immigration and fluent-language review pending.",
+  "canonicalization": "guide-content-v1",
+  "variants": [
+    {
+      "locale": "zh-CN",
+      "path": "zh-CN.json",
+      "sha256": "5923fc47f1d8ef7d29a54109a4a0fb39a00edc4c1f0ffeacce8bc64e3c54ed9c",
+      "contentSha256": "58236ebdf36c868526c31a9c63c31e1068082d24b58e46c40e4226c971c0f1d9"
+    },
+    {
+      "locale": "zh-TW",
+      "path": "zh-TW.json",
+      "sha256": "db55068d97c9deb9c09e1c7ab2c9eefdf224df7f33a7d3ce2a7257b308607c8e",
+      "contentSha256": "7572b764d217b667c7238823470682d42b894dab3bbbabace1c16a18e81991d6"
+    },
+    {
+      "locale": "en",
+      "path": "en.json",
+      "sha256": "58ced04ea1fa450af75225574a1091baa19a64e1df5e4dadb29219b11db0a020",
+      "contentSha256": "77ae2700dde3058dbc26a0ace6e09365bc89ce91bd89f403f4ef54d301d846f5"
+    },
+    {
+      "locale": "ur",
+      "path": "ur.json",
+      "sha256": "413620b77d1132f6c80a5847740c70e8733b8de032972465e18d274c2016a906",
+      "contentSha256": "7ae447b66f4ae29f895cddfb052871927559222a23bf4562b6fefb8a468289ba"
+    },
+    {
+      "locale": "hi",
+      "path": "hi.json",
+      "sha256": "a5332e73c096e2d02ff08ae098cde59d0e552188353d17a55301a16a93c7f4a1",
+      "contentSha256": "6e8247cca460a64e96435d1a27454061f69d501a93b0ab2fb0311797119ed1ca"
+    }
+  ]
+}
