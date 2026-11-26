@@ -10,32 +10,32 @@
     {
       "locale": "zh-CN",
       "path": "zh-CN.json",
-      "sha256": "30c1652782e89bd71085adf5f247277cbd64f23b371084ec7c3cff82e94d4846",
-      "contentSha256": "3ed741235cdd81b9dff9b4068c17f62dee276127b82039f35b851205613795c1"
+      "sha256": "17897d4060dd2dd4e6fd7114a55109f3431bfd2c143928a89634f395300a4b1f",
+      "contentSha256": "d9ab12dc30d0d8875aca86085f8c64288394b9bcf4e6fbb50e10a85344d07cda"
     },
     {
       "locale": "zh-TW",
       "path": "zh-TW.json",
-      "sha256": "5829e3a4bb9b35d73b88de28d0699a65ab4f3646f077d90b82461ff7594dd22a",
-      "contentSha256": "fa8239880f18ae9fc3bb5597c55608d4b47afc5545be4105774d7527e3c9d9b5"
+      "sha256": "8f16ae141f91047eb614a947aec82dce943c1ffd595fe3a6953fa281cbddb5fe",
+      "contentSha256": "38ce443dbee91a2eee29f243b78c8eb3ab515188d7e52899cdd09c2d77947b0c"
     },
     {
       "locale": "en",
       "path": "en.json",
-      "sha256": "8889cd10d3d2a177d076c2395df87e4b4cfaffba233184ecb4a023f6e005aed0",
-      "contentSha256": "74e7866cd394d705bf0c6e6966b7739578316ca22d7ea02c6b3a6efe68dd4d79"
+      "sha256": "ae397ae47f137e6ea0eeead3b22615c2c0bf52443aa242d4fab7c3043f2b4550",
+      "contentSha256": "efe28ccb4754c4b56d7f655b53f4342146769e778841506f01d5c4dbf66ea43f"
     },
     {
       "locale": "ur",
       "path": "ur.json",
-      "sha256": "d64e5ad7072723827cb75e326be08221044d37f204ff7df1906b027b9d328eef",
-      "contentSha256": "96145fcf037e3812e2facc158e785a43411dcf468ba21e04d88b9fd5738167f7"
+      "sha256": "f76ff4cbdf856fc73ec0684e74ecb13fc1822cb339fc043a46e3d925c1bc52f1",
+      "contentSha256": "3c547d588f07ce4920959b6be226795b949e1b61ba91a15533d9f8b0393a0a46"
     },
     {
       "locale": "hi",
       "path": "hi.json",
-      "sha256": "94ecb6dcb66e1ad55f777541ed2966669236bb6e6cf10b1ab92a4899e083fdfd",
-      "contentSha256": "555311c46b33b304927a0e80cbd8bafddecbd2699a799d5c5c3fac6a1e59ce42"
+      "sha256": "18c9c6abca1e7cfb52312b759670f062570d38fdde5cd76b27247291e53730cd",
+      "contentSha256": "467934327cf59911e058e815fe2873015556390163e7020005eece5aa6060e9b"
     }
   ]
 }

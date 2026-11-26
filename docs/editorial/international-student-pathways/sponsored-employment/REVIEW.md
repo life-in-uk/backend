@@ -9,6 +9,8 @@
 - Verified sponsor-side CoS fee rules and official reporting. Personal visa fees are separate. If the most appropriate SOC, agency assignment or immigration history is unclear, flag the issue for qualified review. [Sponsor guidance](https://www.gov.uk/government/publications/sponsor-a-skilled-worker/workers-and-temporary-workers-sponsor-a-skilled-worker-accessible) · [Visa scam reporting](https://www.gov.uk/report-suspicious-emails-websites-phishing/report-visa-and-immigration-scams)
 - Reviewed the live catalogue and source handoffs. All ten prospective API details returned 404, 20 existing locale-specific API link checks passed, and all 22 unique Guide source URLs returned HTTP 200. The [research table](RESEARCH.md) preserves public evidence and inaccessible sources.
 
+On 26 November 2026 the final check confirmed that the general threshold is not pro-rated for part-time work, that the occupation rate is adjusted to the contracted hours, and that eligible new entrants must meet the applicable code, table and route requirements. The revised safety check distinguishes hiring a person out to fill a client position, including a temporary assignment, from a genuine service or project controlled by the sponsor. It also separates prohibited charges for finding work from permitted optional services and applicant visa fees. The expiry section uses existing permission and a valid in-time application as separate checks. Wider earned-settlement reform remains distinct from changes with a confirmed commencement date. [Agency fee guidance](https://www.gov.uk/agency-workers-your-rights/fees) · [Statements of changes](https://www.gov.uk/government/collections/immigration-rules-statement-of-changes)
+
 ## Technical checks
 
 | Validation | Result |
@@ -19,6 +21,6 @@
 | Publisher regression and rehearsal | All 50 tests passed. Local pack/check and the generic runner accepted the exact Work Visa scope and selected `family-visa-v1` with mocked host operations. |
 | Frontend fixture preview | All ten localized routes passed at 320 px, with canonical URLs, five hreflang destinations, Urdu RTL, and one section-aware disclaimer per Guide using the PR #48 preview. |
 
-Local ZIP SHA-256 `0c2b0435e06b21d7177a2e16b00ac8145a28500fa2729f72a460c09bc298102e`. Manifest SHA-256 `a35b2b0a9208b1d83f4401b537f08c64c19142287738e6202931fc48b86ed841`.
+Local ZIP SHA-256 `6eb96f962b34ad60477624ff8a2ae283e35871d14c15321f8678cbd49584a571`. Manifest SHA-256 `11bb1c7bd13fe87342661616997f30057f021c3784cfc880d614b5f20e9bc311`.
 
 After the owner reviews the texts, recheck dates and rules, verify the exact merged digests and obtain separate approval for staging and protected publication. Confirm the curated Work Visa hub can expose both slugs before their frontend release. Leave the Phase 1 articles and the shared frontend disclaimer unchanged. [Protected runbook](../../../../deploy/PUBLISHING.md)
