@@ -63,27 +63,41 @@ class MarketIndexStore {
                 o.reference24h(), ts(o.reference24hAt())) == 1;
     }
 
-    /** An existing observation locked for a possible correction, with the batch that last set its value. */
+    /**
+     * An existing observation locked for a possible correction: its values, the batch that set them (provenance) and
+     * its precedence, the newest batch that set or confirmed them.
+     */
     record LockedObservation(long id, MarketIndexSymbol.TimeSource timeSource, BigDecimal value, BigDecimal previousClose,
-            BigDecimal reference24h, Instant reference24hAt, UUID batchId, Instant collectedAt, Instant receivedAt) { }
+            BigDecimal reference24h, Instant reference24hAt, UUID batchId, Instant collectedAt, Instant receivedAt,
+            UUID precedenceBatchId, Instant precedenceCollectedAt) { }
 
     /**
      * Locks the row of (symbol, source, observedAt) until the transaction ends ({@code FOR UPDATE}), so concurrent
-     * batches correct one row strictly one after the other, each seeing the other's committed value. The batch is read
-     * separately after the lock (batch rows never change), so the precedence check always uses the current row.
+     * batches decide on one row strictly one after the other, each seeing the other's committed values and precedence.
+     * The setting batch is read separately after the lock (batch rows never change).
      */
     LockedObservation lockObservation(MarketIndexSymbol symbol, String source, Instant observedAt) {
         var row = jdbc.query("""
-                SELECT id, observed_at_source, value, previous_close, reference_24h, reference_24h_at, batch_id, received_at
+                SELECT id, observed_at_source, value, previous_close, reference_24h, reference_24h_at, batch_id, received_at,
+                    confirmed_batch_id, confirmed_collected_at
                 FROM market_index_observation WHERE symbol = ? AND source = ? AND observed_at = ? FOR UPDATE""",
                 (rs, n) -> new Object[] {rs.getLong(1), MarketIndexSymbol.TimeSource.valueOf(rs.getString(2)), rs.getBigDecimal(3),
-                        rs.getBigDecimal(4), rs.getBigDecimal(5), instant(rs, 6), rs.getObject(7, UUID.class), instant(rs, 8)},
+                        rs.getBigDecimal(4), rs.getBigDecimal(5), instant(rs, 6), rs.getObject(7, UUID.class), instant(rs, 8),
+                        rs.getObject(9, UUID.class), instant(rs, 10)},
                 symbol.name(), source, ts(observedAt)).stream().findFirst()
                 .orElseThrow(() -> new IllegalStateException("Observation vanished"));
         Instant collectedAt = jdbc.queryForObject("SELECT collected_at FROM market_index_ingest_batch WHERE batch_id = ?",
                 (rs, n) -> instant(rs, 1), row[6]);
+        boolean confirmed = row[8] != null;
         return new LockedObservation((Long) row[0], (MarketIndexSymbol.TimeSource) row[1], (BigDecimal) row[2],
-                (BigDecimal) row[3], (BigDecimal) row[4], (Instant) row[5], (UUID) row[6], collectedAt, (Instant) row[7]);
+                (BigDecimal) row[3], (BigDecimal) row[4], (Instant) row[5], (UUID) row[6], collectedAt, (Instant) row[7],
+                confirmed ? (UUID) row[8] : (UUID) row[6], confirmed ? (Instant) row[9] : collectedAt);
+    }
+
+    /** A newer batch delivered the same values: raise the row's precedence to it; the values and provenance stay. */
+    void confirmObservation(LockedObservation current, UUID batchId, Instant collectedAt) {
+        jdbc.update("UPDATE market_index_observation SET confirmed_batch_id = ?, confirmed_collected_at = ? WHERE id = ?",
+                batchId, ts(collectedAt), current.id());
     }
 
     /** Replaces a locked observation's value with a correction and keeps the replaced value as a revision. */
@@ -92,14 +106,17 @@ class MarketIndexStore {
         jdbc.update("""
                 INSERT INTO market_index_observation_revision (observation_id, symbol, source, observed_at,
                     previous_observed_at_source, previous_value, previous_previous_close, previous_reference_24h,
-                    previous_reference_24h_at, previous_batch_id, previous_collected_at, previous_received_at, batch_id, collected_at)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+                    previous_reference_24h_at, previous_batch_id, previous_collected_at, previous_received_at,
+                    previous_precedence_batch_id, previous_precedence_collected_at, batch_id, collected_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
                 current.id(), symbol.name(), source, ts(o.observedAt()), current.timeSource().name(), current.value(),
                 current.previousClose(), current.reference24h(), ts(current.reference24hAt()), current.batchId(),
-                ts(current.collectedAt()), ts(current.receivedAt()), batchId, ts(collectedAt));
+                ts(current.collectedAt()), ts(current.receivedAt()), current.precedenceBatchId(),
+                ts(current.precedenceCollectedAt()), batchId, ts(collectedAt));
         jdbc.update("""
                 UPDATE market_index_observation SET observed_at_source = ?, value = ?, previous_close = ?, reference_24h = ?,
-                    reference_24h_at = ?, batch_id = ?, received_at = clock_timestamp()
+                    reference_24h_at = ?, batch_id = ?, received_at = clock_timestamp(),
+                    confirmed_batch_id = NULL, confirmed_collected_at = NULL
                 WHERE id = ?""",
                 o.timeSource().name(), o.value(), o.previousClose(), o.reference24h(), ts(o.reference24hAt()), batchId,
                 current.id());

@@ -18,6 +18,14 @@ ALTER TABLE market_index_observation
     ADD COLUMN reference_24h    numeric(12,4),
     ADD COLUMN reference_24h_at timestamptz;
 
+-- Correction precedence (see "Upstream corrections" below): the newest batch that delivered the row's current values,
+-- whether it set them or confirmed them unchanged (a DUPLICATE). NULL until a newer batch confirms the row (then the
+-- batch in batch_id is the precedence). batch_id keeps naming the batch that set the values (provenance).
+ALTER TABLE market_index_observation
+    ADD COLUMN confirmed_collected_at timestamptz,
+    ADD COLUMN confirmed_batch_id     uuid,
+    ADD CONSTRAINT market_index_observation_confirmed CHECK ((confirmed_collected_at IS NULL) = (confirmed_batch_id IS NULL));
+
 ALTER TABLE market_index_observation ADD CONSTRAINT market_index_observation_reference_24h CHECK (
     (reference_24h IS NULL) = (reference_24h_at IS NULL)
     AND (reference_24h IS NULL OR (reference_24h > 0 AND reference_24h_at = observed_at - interval '24 hours'))
@@ -48,7 +56,8 @@ CREATE TABLE market_index_instrument_health (
 -- (symbol, source, observed_at) rejected the whole batch (409 OBSERVATION_CONFLICT), so one revised close discarded
 -- every other instrument in that batch and every later batch that repeated it. From V18 the value collected latest
 -- wins: the stored row is updated in place only when the correcting batch's (collected_at, batch_id) is greater than
--- that of the batch that last set it, so an older or replayed batch can never overwrite a newer correction. The value
+-- the row's precedence, the newest batch that set or confirmed its values, so an older, replayed or late intermediate
+-- batch can never overwrite a newer correction or a value a newer batch confirmed. The value
 -- it replaces is kept here, insert-only. Rows are removed with their observation (retention). Batch ids are kept as
 -- plain values, not foreign keys, so batch retention is unchanged. A new table only: the previous image never reads it
 -- (and, after a rollback, answers 409 for a differing value again, as before).
@@ -66,10 +75,14 @@ CREATE TABLE market_index_observation_revision (
     previous_batch_id           uuid NOT NULL,
     previous_collected_at       timestamptz NOT NULL,
     previous_received_at        timestamptz NOT NULL,
+    -- The precedence the correction had to beat: the newest batch that set or confirmed the replaced values.
+    previous_precedence_batch_id     uuid NOT NULL,
+    previous_precedence_collected_at timestamptz NOT NULL,
     batch_id                    uuid NOT NULL,
     collected_at                timestamptz NOT NULL,
     revised_at                  timestamptz NOT NULL DEFAULT clock_timestamp(),
-    CHECK (collected_at > previous_collected_at OR (collected_at = previous_collected_at AND batch_id > previous_batch_id))
+    CHECK (collected_at > previous_precedence_collected_at
+        OR (collected_at = previous_precedence_collected_at AND batch_id > previous_precedence_batch_id))
 );
 
 CREATE INDEX market_index_observation_revision_observation ON market_index_observation_revision (observation_id);

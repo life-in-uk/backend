@@ -93,19 +93,26 @@ class MarketIndexService {
     }
 
     /**
-     * One observation of a new batch. A new instant is STORED; the same value again is a DUPLICATE. A different value
-     * for a stored instant is an upstream correction: it is applied (CORRECTED, the replaced value kept as a revision)
-     * only if this batch is newer than the batch that last set the value, by (collectedAt, batchId); otherwise it is
+     * One observation of a new batch. A new instant is STORED; the same value again is a DUPLICATE (from a newer batch
+     * it raises the row's precedence to that batch). A different value for a stored instant is an upstream correction:
+     * it is applied (CORRECTED, the replaced value kept as a revision) only if this batch is newer, by (collectedAt,
+     * batchId), than the row's precedence, the newest batch that set or confirmed its values; otherwise it is
      * SUPERSEDED and changes nothing. So the outcome depends only on the batches, never on their arrival order, and an
      * older or replayed batch can never overwrite a newer correction.
      */
     private String store(MarketIndexPayloads.Batch batch, MarketIndexPayloads.Observation o) {
         if (store.insertObservation(batch.batchId(), batch.source(), o)) return "STORED";
         var current = store.lockObservation(o.symbol(), batch.source(), o.observedAt());
-        if (same(current, o)) return "DUPLICATE";
-        if (!newer(batch.collectedAt(), batch.batchId(), current.collectedAt(), current.batchId())) {
-            log.info("Market observation correction superseded: source={} symbol={} observedAt={} batch={} keeps {} from batch {}",
-                    batch.source(), o.symbol(), o.observedAt(), batch.batchId(), current.value().toPlainString(), current.batchId());
+        boolean newest = newer(batch.collectedAt(), batch.batchId(), current.precedenceCollectedAt(), current.precedenceBatchId());
+        if (same(current, o)) {
+            // A newer confirmation is evidence too: a late batch collected before it must not overwrite these values.
+            if (newest) store.confirmObservation(current, batch.batchId(), batch.collectedAt());
+            return "DUPLICATE";
+        }
+        if (!newest) {
+            log.info("Market observation correction superseded: source={} symbol={} observedAt={} batch={} keeps {} (precedence batch {})",
+                    batch.source(), o.symbol(), o.observedAt(), batch.batchId(), current.value().toPlainString(),
+                    current.precedenceBatchId());
             return "SUPERSEDED";
         }
         store.correctObservation(current, o.symbol(), batch.source(), o, batch.batchId(), batch.collectedAt());

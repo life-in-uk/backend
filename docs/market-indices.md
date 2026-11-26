@@ -382,13 +382,17 @@ the trading day of 2026-11-26 because the US closes of 2026-11-25 (Thanksgiving)
 
 **Policy.** For an existing (symbol, source, `observedAt`) the values from the most recent collection win:
 
-- Precedence is the pair (`collectedAt`, `batchId`) of the batch that carries the values: a later `collectedAt`
-  wins; at the same `collectedAt` the greater `batchId` (canonical lowercase text) wins. The outcome therefore
-  depends only on the batches, never on the order in which they arrive.
+- Precedence is the pair (`collectedAt`, `batchId`): a later `collectedAt` wins; at the same `collectedAt` the
+  greater `batchId` (canonical lowercase text) wins. A row's precedence is the newest batch that **set or confirmed**
+  its values: a `DUPLICATE` from a newer batch raises it (`confirmed_batch_id`, `confirmed_collected_at`; the values
+  and `batch_id` provenance stay). So if batch A stores X, a newer batch C confirms X and an intermediate batch B
+  (A < B < C) arrives late with Y, B is `SUPERSEDED`: the newest evidence says X. The outcome depends only on the
+  batches, never on the order in which they arrive.
 - A newer batch with different values corrects the row in place (`CORRECTED`): value, previous close, 24-hour
   reference, `observedAtSource`, `batch_id` (so `provenance.collectedAt` is that batch's) and `received_at`. The
-  replaced values, both batch ids and both collection times are inserted into `market_index_observation_revision`
-  (insert-only; a `CHECK` enforces that the correcting batch is newer). Revisions are deleted with their
+  replaced values, the batch that set them, the precedence it had to beat and the correcting batch are inserted into
+  `market_index_observation_revision` (insert-only; a `CHECK` enforces that the correcting batch is newer than that
+  precedence). A correction resets the confirmation to the correcting batch. Revisions are deleted with their
   observation by retention.
 - An older batch with different values changes nothing (`SUPERSEDED`), so a late outbox retry, a re-sent rejected
   batch or a replay can never overwrite a newer correction. An identical retry of a committed `batchId` stays a
@@ -471,6 +475,11 @@ Repeated on 2026-11-26 with per-pair crypto health (`market_index_instrument_hea
 | 7 | This branch, the production collector's whole outbox replayed (see "Corrections") | 3,329 previously rejected batches all 200; 51 corrections; every value equals the newest collected one |
 | 8 | Previous image on that corrected V18 database (rollback) | Health UP; Guides 200; `latest` serves the corrected values; a differing value is 409 `OBSERVATION_CONFLICT` again (V17 behaviour); revision table ignored |
 | 9 | This branch again (roll-forward) | The same request: 200, DJI `CORRECTED`, a new UKX minute `STORED` |
+
+Steps 7–9 were repeated after adding confirmation precedence, this time upgrading a V17 database created by the
+previous image (as in production): V18 applied in 21 ms; the replay gave the same results (all `sina` batches 200,
+51 corrections, every value the newest collected); rollback and roll-forward as above. Rows written by the previous
+image after a rollback have no confirmation and fall back to their setting batch.
 
 Enablement order (each step is safe on its own and has its own approval):
 

@@ -348,6 +348,40 @@ class MarketIndexApiTest {
         assertThat(index(latest(), "SPX").get("value").stringValue()).isEqualTo("6910.3900");
     }
 
+    /**
+     * A stores X; a newer C confirms X; an intermediate B (A < B < C) arrives late with Y. C is the newest evidence and
+     * it says X, so B is SUPERSEDED. A confirmation moves the row's precedence forward without changing its value.
+     */
+    @Test
+    void aLateIntermediateBatchNeverOverwritesAValueConfirmedByANewerBatch() throws Exception {
+        Instant t = now().minusSeconds(900);
+        Instant a = now().minusSeconds(600);
+        Instant b = a.plusSeconds(120);
+        Instant c = a.plusSeconds(240);
+        UUID batchA = UUID.randomUUID();
+        UUID batchC = UUID.randomUUID();
+        assertThat(result(ingest(batch(batchA, "provider-x", a, obs("DJI", "50185.6914", t, "PROVIDER"))), "DJI")).isEqualTo("STORED");
+        assertThat(result(ingest(batch(batchC, "provider-x", c, obs("DJI", "50185.6914", t, "PROVIDER"))), "DJI")).isEqualTo("DUPLICATE");
+        assertThat(result(ingest(batch(UUID.randomUUID(), "provider-x", b, obs("DJI", "50182.9492", t, "PROVIDER"))), "DJI"))
+                .isEqualTo("SUPERSEDED");
+        assertThat(stored("DJI", t)).isEqualByComparingTo("50185.6914");
+        assertThat(revisions("DJI")).isZero();
+        // The value's provenance stays with the batch that set it; the confirmation only raises precedence.
+        assertThat(jdbc.queryForObject("SELECT batch_id FROM market_index_observation WHERE symbol = 'DJI'", UUID.class)).isEqualTo(batchA);
+        assertThat(jdbc.queryForObject("SELECT confirmed_batch_id FROM market_index_observation WHERE symbol = 'DJI'", UUID.class)).isEqualTo(batchC);
+
+        // An older duplicate never lowers the confirmation; a batch newer than C still corrects.
+        assertThat(result(ingest(batch(UUID.randomUUID(), "provider-x", b.plusSeconds(1), obs("DJI", "50185.6914", t, "PROVIDER"))), "DJI"))
+                .isEqualTo("DUPLICATE");
+        assertThat(jdbc.queryForObject("SELECT confirmed_batch_id FROM market_index_observation WHERE symbol = 'DJI'", UUID.class)).isEqualTo(batchC);
+        assertThat(result(ingest(batch(UUID.randomUUID(), "provider-x", c.plusSeconds(1), obs("DJI", "50182.9492", t, "PROVIDER"))), "DJI"))
+                .isEqualTo("CORRECTED");
+        assertThat(stored("DJI", t)).isEqualByComparingTo("50182.9492");
+        // The audit records the precedence the correction had to beat: C, not A.
+        assertThat(jdbc.queryForObject("SELECT previous_precedence_batch_id FROM market_index_observation_revision WHERE symbol = 'DJI'",
+                UUID.class)).isEqualTo(batchC);
+    }
+
     @Test
     void correctionPrecedenceDependsOnTheBatchesNotOnArrivalOrder() throws Exception {
         // Same collectedAt, different values: the greater batch id wins whichever arrives first.
