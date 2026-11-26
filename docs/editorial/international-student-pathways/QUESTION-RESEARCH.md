@@ -14,3 +14,7 @@ Observed 26 November 2026. These are qualitative signals from separately posted 
 | “Should I take Graduate permission or build a career elsewhere, and can I return later?” | Separately posted [return to India discussion](https://www.reddit.com/r/Indians_StudyAbroad/comments/1v8hn33/considering_moving_back_to_india_after_a_uk/) and [career options after returning to Pakistan](https://www.reddit.com/r/pkmigrate/comments/1y37t34/regretting_moving_back_to_pakistan_after_my_uk/) describe uncertainty on either side of leaving. | Students without an eligible role and former Graduate holders overseas. The hub includes a parallel career plan and records to keep. No judgement about leaving, and no promise of return. |
 
 Official sponsor and fraud guidance supports the first batch safeguards. Research access to Xiaohongshu and broader community platforms remains a follow-up. Use an accessible first-party search analytics account, if available later, to compare phrasing across locales.
+
+## Phase 2 findings
+
+The [sponsored employment evidence table](sponsored-employment/RESEARCH.md) adds independent community discussions about a licensed firm declining to sponsor a specific vacancy, the difference between salary floors and going rates, recruiting before graduation, agency contracts near expiry, and authenticating a CoS. It records sampling, access limits and links. These questions justify two task-focused Guides.

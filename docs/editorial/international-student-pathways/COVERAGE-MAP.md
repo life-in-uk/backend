@@ -18,3 +18,7 @@
 ## Existing navigation
 
 The public Work Visa hub and backend sitemap support `work-visa`. Detail paths use `/<locale>/work-visa/<slug>`. The [frontend discovery PR](https://github.com/life-in-uk/frontend/pull/46) adds a localized after-study group to the curated Work Visa reading order. It limits links to published Guide variants, adds a pathways link from the Education and University hubs, and links the Graduate Visa Guide from the existing Skilled Worker switching Guide. The University hub remains unavailable until its own Guides are published. The draft Guides cross-link and use only existing public destination slugs otherwise. This backend follow-up contains only the two draft Guides and their review files.
+
+## Phase 2 coverage
+
+The live catalogue now contains 77 Guides per locale. The two Phase 1 slugs are in the API and sitemap. The [sponsored employment audit](sponsored-employment/RESEARCH.md#audit-decision) uses their careers, expiry and route coverage as a starting point. Recruitment cycles belong within the job-search Guide. The offer check adds an applied screening process and fictional arithmetic. It links to existing rule details.

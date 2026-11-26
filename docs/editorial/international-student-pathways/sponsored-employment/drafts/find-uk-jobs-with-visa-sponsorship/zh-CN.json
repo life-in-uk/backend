@@ -1,0 +1,262 @@
+{
+  "slug": "find-uk-jobs-with-visa-sponsorship",
+  "category": "work-visa",
+  "title": "英国留学后怎么找提供签证担保的工作",
+  "summary": "用官方担保名册筛选雇主，再核对具体岗位。把这份工作作为转签计划前，先问到针对该岗位的书面答复。",
+  "content": "# 英国留学后怎么找提供签证担保的工作\n\n最后更新: 2026-11-26\n\n## 从具体岗位找起\n先找与你的技能相符、并写明该岗位可提供担保的职位。可查雇主招聘官网、学校就业中心、适用的官方 Find a Job 服务和毕业生招聘网站。把招聘网站当作线索，再回到雇主原公告核实。记下岗位编号、截止日、入职日、雇主名称、以及担保原文。有担保执照的公司，仍可能不给某些团队、地点或毕业生项目提供担保。[求职渠道](#guide-evidence-start)\n\n## 核对实际聘用你的公司\n打开内政部持牌雇主名册，下载最新版。按法定名称、必要时不同拼法及所在地查找，同时核对路线栏是否有 Skilled Worker、以及执照评级。公告若用品牌名，问人力资源部门到底是哪家法人聘用和担保你。子公司或招聘机构可能不在查到的执照范围内。记下查阅日期，依赖邀约前再核对一次。[官方担保名册](#guide-evidence-register) · [雇主担保如何运作](/zh-CN/work-visa/skilled-worker-sponsorship-cos)\n\n## 固定批次和滚动招聘都找\n许多大型毕业生项目在秋季开始招聘，次年入职。有的边收申请边评估，招满可能提前关闭。再建一份滚动招聘或可尽快入职的岗位清单，核对每个日期。科技、工程岗要比对职责、工具和所需经验。金融或创意岗位要查具体方向和合同。医疗职业可能要求专业注册，成人社会照护另有担保规则。学历和所学专业本身不能决定邀约是否符合移民要求。[招聘时间](#guide-evidence-cycles)\n\n## 承诺之前问清 HR\n如实说明你持有什么许可、何时到期。把“目前有无工作权”和“未来是否需要担保”分开回答。可以这样问：“聘用我的法人能给这个岗位做 Skilled Worker 担保吗？如果可以，HR 何时能确认 CoS、职业代码、合同工时和基本工资？”持 Graduate 签证今天能入职，也可能需要担保才能做完整个合同。例如，项目入职日晚于你许可到期，而招聘方只说公司有执照，就请对方针对该岗位书面答复，同时继续申请其他岗位。[工作许可和转签](#guide-evidence-ask) · [核对 Skilled Worker 邀约](/zh-CN/work-visa/check-skilled-worker-job-offer)\n\n## 从到期日倒推时间\n把 eVisa 或 UKVI 最新通知上的日期，与招聘截止、邀约、入职及预计签发 CoS 的日期对照。雇主和合资格岗位都能及时落实时，查能否直接从 Student 转签。若需要时间求职且符合 Graduate 条件，把费用和到期日一起考虑。Graduate 到期前要确认自己确实符合哪条路径，并为递交有效申请留足时间。工作邀约、面试或未来给 CoS 的承诺都不会延长许可。快到期应找受监管顾问。没有合法依据继续停留时，应安排按时离境。[转签与求助](#guide-evidence-deadline) · [毕业签申请时机](/zh-CN/work-visa/graduate-visa-uk) · [毕业后路径](/zh-CN/work-visa/uk-options-after-graduation)\n",
+  "status": "DRAFT",
+  "publishedAt": null,
+  "updatedAt": "2026-11-26T00:00:00Z",
+  "sources": [
+    {
+      "key": "graduate",
+      "organisation": "UKVI",
+      "title": "Graduate visa overview",
+      "url": "https://www.gov.uk/graduate-visa",
+      "accessedAt": "2026-11-26T00:00:00Z"
+    },
+    {
+      "key": "student-work",
+      "organisation": "UKCISA",
+      "title": "Working after studies",
+      "url": "https://www.ukcisa.org.uk/student-advice/working/working-after-studies/",
+      "accessedAt": "2026-11-26T00:00:00Z"
+    },
+    {
+      "key": "skilled-rules",
+      "organisation": "Home Office",
+      "title": "Immigration Rules Appendix Skilled Worker",
+      "url": "https://www.gov.uk/guidance/immigration-rules/immigration-rules-appendix-skilled-worker",
+      "accessedAt": "2026-11-26T00:00:00Z"
+    },
+    {
+      "key": "skilled-switch",
+      "organisation": "UKVI",
+      "title": "Switch to a Skilled Worker visa",
+      "url": "https://www.gov.uk/skilled-worker-visa/switch-to-this-visa",
+      "accessedAt": "2026-11-26T00:00:00Z"
+    },
+    {
+      "key": "sponsors",
+      "organisation": "Home Office",
+      "title": "Register of licensed worker sponsors",
+      "url": "https://www.gov.uk/government/publications/register-of-licensed-sponsors-workers",
+      "accessedAt": "2026-11-26T00:00:00Z"
+    },
+    {
+      "key": "care",
+      "organisation": "UKVI",
+      "title": "Health and Care Worker visa",
+      "url": "https://www.gov.uk/health-care-worker-visa",
+      "accessedAt": "2026-11-26T00:00:00Z"
+    },
+    {
+      "key": "care-sponsor",
+      "organisation": "Home Office",
+      "title": "Workers and Temporary Workers sponsor a skilled worker",
+      "url": "https://www.gov.uk/government/publications/sponsor-a-skilled-worker/workers-and-temporary-workers-sponsor-a-skilled-worker-accessible",
+      "accessedAt": "2026-11-26T00:00:00Z"
+    },
+    {
+      "key": "care-reg",
+      "organisation": "Nursing and Midwifery Council",
+      "title": "Joining the register",
+      "url": "https://www.nmc.org.uk/registration/joining-the-register/",
+      "accessedAt": "2026-11-26T00:00:00Z"
+    },
+    {
+      "key": "advice",
+      "organisation": "GOV.UK",
+      "title": "Find an immigration adviser",
+      "url": "https://www.gov.uk/find-an-immigration-adviser",
+      "accessedAt": "2026-11-26T00:00:00Z"
+    },
+    {
+      "key": "careers",
+      "organisation": "University of Liverpool",
+      "title": "International careers FAQ",
+      "url": "https://www.liverpool.ac.uk/careers/employability/international-plus/faqs/",
+      "accessedAt": "2026-11-26T00:00:00Z"
+    },
+    {
+      "key": "section-3c-act",
+      "organisation": "UK Parliament",
+      "title": "Immigration Act 1971 section 3C",
+      "url": "https://www.legislation.gov.uk/ukpga/1971/77/section/3C",
+      "accessedAt": "2026-11-26T00:00:00Z"
+    },
+    {
+      "key": "careers-lse",
+      "organisation": "LSE Careers",
+      "title": "Careers in the UK for international students",
+      "url": "https://info.lse.ac.uk/current-students/careers/information-and-resources/country-profiles/uk-for-international-students",
+      "accessedAt": "2026-11-26T00:00:00Z"
+    },
+    {
+      "key": "targetjobs",
+      "organisation": "targetjobs",
+      "title": "When to apply for graduate jobs",
+      "url": "https://targetjobs.co.uk/careers-advice/finding-a-job/when-to-apply-for-graduate-jobs",
+      "accessedAt": "2026-11-26T00:00:00Z"
+    },
+    {
+      "key": "job-search",
+      "organisation": "DWP",
+      "title": "Find a job",
+      "url": "https://www.gov.uk/find-a-job",
+      "accessedAt": "2026-11-26T00:00:00Z"
+    }
+  ],
+  "evidence": [
+    {
+      "key": "start",
+      "statement": "先找与你的技能相符、并写明该岗位可提供担保的职位。 可查雇主招聘官网、学校就业中心、适用的官方 Find a Job 服务和毕业生招聘网站。",
+      "supports": [
+        {
+          "sourceKey": "careers-lse",
+          "locator": "Job search and sponsorship",
+          "excerpt": null,
+          "note": "先找与你的技能相符、并写明该岗位可提供担保的职位。 可查雇主招聘官网、学校就业中心、适用的官方 Find a Job 服务和毕业生招聘网站。"
+        },
+        {
+          "sourceKey": "job-search",
+          "locator": "Official vacancy search links for the UK nations",
+          "excerpt": null,
+          "note": "先找与你的技能相符、并写明该岗位可提供担保的职位。 可查雇主招聘官网、学校就业中心、适用的官方 Find a Job 服务和毕业生招聘网站。"
+        },
+        {
+          "sourceKey": "targetjobs",
+          "locator": "Structured and rolling recruitment",
+          "excerpt": null,
+          "note": "先找与你的技能相符、并写明该岗位可提供担保的职位。 可查雇主招聘官网、学校就业中心、适用的官方 Find a Job 服务和毕业生招聘网站。"
+        },
+        {
+          "sourceKey": "sponsors",
+          "locator": "Worker sponsor register",
+          "excerpt": null,
+          "note": "先找与你的技能相符、并写明该岗位可提供担保的职位。 可查雇主招聘官网、学校就业中心、适用的官方 Find a Job 服务和毕业生招聘网站。"
+        }
+      ]
+    },
+    {
+      "key": "register",
+      "statement": "打开内政部持牌雇主名册，下载最新版。 按法定名称、必要时不同拼法及所在地查找，同时核对路线栏是否有 Skilled Worker、以及执照评级。",
+      "supports": [
+        {
+          "sourceKey": "sponsors",
+          "locator": "Worker sponsor register",
+          "excerpt": null,
+          "note": "打开内政部持牌雇主名册，下载最新版。 按法定名称、必要时不同拼法及所在地查找，同时核对路线栏是否有 Skilled Worker、以及执照评级。"
+        },
+        {
+          "sourceKey": "care-sponsor",
+          "locator": "Care workers and senior care workers, sponsorship and passing on costs",
+          "excerpt": null,
+          "note": "打开内政部持牌雇主名册，下载最新版。 按法定名称、必要时不同拼法及所在地查找，同时核对路线栏是否有 Skilled Worker、以及执照评级。"
+        }
+      ]
+    },
+    {
+      "key": "cycles",
+      "statement": "许多大型毕业生项目在秋季开始招聘，次年入职。 有的边收申请边评估，招满可能提前关闭。",
+      "supports": [
+        {
+          "sourceKey": "careers",
+          "locator": "Graduate role timing and international careers support",
+          "excerpt": null,
+          "note": "许多大型毕业生项目在秋季开始招聘，次年入职。 有的边收申请边评估，招满可能提前关闭。"
+        },
+        {
+          "sourceKey": "targetjobs",
+          "locator": "Structured and rolling recruitment",
+          "excerpt": null,
+          "note": "许多大型毕业生项目在秋季开始招聘，次年入职。 有的边收申请边评估，招满可能提前关闭。"
+        },
+        {
+          "sourceKey": "care",
+          "locator": "Eligible work, sponsors and fee/IHS overview",
+          "excerpt": null,
+          "note": "许多大型毕业生项目在秋季开始招聘，次年入职。 有的边收申请边评估，招满可能提前关闭。"
+        },
+        {
+          "sourceKey": "care-sponsor",
+          "locator": "Care workers and senior care workers, sponsorship and passing on costs",
+          "excerpt": null,
+          "note": "许多大型毕业生项目在秋季开始招聘，次年入职。 有的边收申请边评估，招满可能提前关闭。"
+        },
+        {
+          "sourceKey": "care-reg",
+          "locator": "Registration routes",
+          "excerpt": null,
+          "note": "许多大型毕业生项目在秋季开始招聘，次年入职。 有的边收申请边评估，招满可能提前关闭。"
+        }
+      ]
+    },
+    {
+      "key": "ask",
+      "statement": "如实说明你持有什么许可、何时到期。 把“目前有无工作权”和“未来是否需要担保”分开回答。",
+      "supports": [
+        {
+          "sourceKey": "skilled-switch",
+          "locator": "Student switching conditions",
+          "excerpt": null,
+          "note": "如实说明你持有什么许可、何时到期。 把“目前有无工作权”和“未来是否需要担保”分开回答。"
+        },
+        {
+          "sourceKey": "skilled-rules",
+          "locator": "SW 1.5A, SW 4.4, SW 12.2–12.3 and SW 21–24",
+          "excerpt": null,
+          "note": "如实说明你持有什么许可、何时到期。 把“目前有无工作权”和“未来是否需要担保”分开回答。"
+        },
+        {
+          "sourceKey": "student-work",
+          "locator": "Work after course completion and pending applications",
+          "excerpt": null,
+          "note": "如实说明你持有什么许可、何时到期。 把“目前有无工作权”和“未来是否需要担保”分开回答。"
+        },
+        {
+          "sourceKey": "graduate",
+          "locator": "Eligibility, duration and when to apply",
+          "excerpt": null,
+          "note": "如实说明你持有什么许可、何时到期。 把“目前有无工作权”和“未来是否需要担保”分开回答。"
+        },
+        {
+          "sourceKey": "sponsors",
+          "locator": "Worker sponsor register",
+          "excerpt": null,
+          "note": "如实说明你持有什么许可、何时到期。 把“目前有无工作权”和“未来是否需要担保”分开回答。"
+        }
+      ]
+    },
+    {
+      "key": "deadline",
+      "statement": "把 eVisa 或 UKVI 最新通知上的日期，与招聘截止、邀约、入职及预计签发 CoS 的日期对照。 雇主和合资格岗位都能及时落实时，查能否直接从 Student 转签。",
+      "supports": [
+        {
+          "sourceKey": "skilled-switch",
+          "locator": "Student switching conditions",
+          "excerpt": null,
+          "note": "把 eVisa 或 UKVI 最新通知上的日期，与招聘截止、邀约、入职及预计签发 CoS 的日期对照。 雇主和合资格岗位都能及时落实时，查能否直接从 Student 转签。"
+        },
+        {
+          "sourceKey": "graduate",
+          "locator": "Eligibility, duration and when to apply",
+          "excerpt": null,
+          "note": "把 eVisa 或 UKVI 最新通知上的日期，与招聘截止、邀约、入职及预计签发 CoS 的日期对照。 雇主和合资格岗位都能及时落实时，查能否直接从 Student 转签。"
+        },
+        {
+          "sourceKey": "section-3c-act",
+          "locator": "Section 3C subsections 1 to 3",
+          "excerpt": null,
+          "note": "把 eVisa 或 UKVI 最新通知上的日期，与招聘截止、邀约、入职及预计签发 CoS 的日期对照。 雇主和合资格岗位都能及时落实时，查能否直接从 Student 转签。"
+        },
+        {
+          "sourceKey": "advice",
+          "locator": "Check adviser registration",
+          "excerpt": null,
+          "note": "把 eVisa 或 UKVI 最新通知上的日期，与招聘截止、邀约、入职及预计签发 CoS 的日期对照。 雇主和合资格岗位都能及时落实时，查能否直接从 Student 转签。"
+        }
+      ]
+    }
+  ]
+}

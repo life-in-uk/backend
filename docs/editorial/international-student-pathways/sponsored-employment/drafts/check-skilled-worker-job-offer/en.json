@@ -1,0 +1,230 @@
+{
+  "slug": "check-skilled-worker-job-offer",
+  "category": "work-visa",
+  "title": "How to check whether a UK job offer qualifies for Skilled Worker sponsorship",
+  "summary": "Check who actually sponsors you, what the job involves, the pay and hours, and whether the dates fit. Use this checklist before accepting or paying anything.",
+  "content": "# How to check whether a UK job offer qualifies for Skilled Worker sponsorship\n\nLast updated: 2026-11-26\n\n## Get the job details in writing\nAsk the employer for the legal sponsor, full duties, proposed SOC 2020 occupation code, basic gross annual pay, paid weekly hours, start date and CoS timetable. Check the duties against the official occupation entry. A high-sounding title, a degree or a code picked only to get a lower going rate does not make the vacancy eligible. If a recruiter is involved, ask who employs you and who would assign the CoS. A worker filling an ongoing routine role for a third party raises separate sponsorship restrictions. Check the exact arrangement before relying on it. [Job and sponsor checks](#guide-evidence-duties)\n\n## Compare the floor and going rate\nOn the usual standard Skilled Worker option A, the offer must meet both £41,700 and the applicable full going rate. Under ordinary new entrant option E, compare both £33,400 and 70% of the applicable going rate. Use the correct table and hours. For tables based on 37.5 hours, adjust the going rate to the sponsored hours. The general annual floor does not go down just because you work part-time. Use qualifying pay, generally guaranteed basic gross pay. Bonuses and overtime cannot make up a gap. Health, education, shortage-list and transitional cases can have different rules. [Salary rules](#guide-evidence-pay) · [Detailed salary tables and exceptions](/en/work-visa/skilled-worker-occupations-salary)\n\n## Try the check on a fictional offer\nAssume the applicable full going rate is £50,000 for 37.5 hours and the offer is for 37.5 hours, at £34,900 basic plus a possible £1,100 bonus. Standard option A needs £50,000. If the applicant qualifies for new entrant option E, 70% of £50,000 is £35,000, higher than £33,400. The offer is £100 short on eligible pay. Even a revised £35,000 basic would only pass this example's pay check. The code, sponsorship, permission history and remaining requirements still matter. [Worked pay check](#guide-evidence-example)\n\n## Check whether new entrant applies to you\nA Graduate visa alone does not settle this. Appendix Skilled Worker gives separate grounds, including eligible recent Student or Graduate history, age under 26 and some professional or postdoctoral routes. Check the exact condition and the four-year combined cap. For example, 18 months of Graduate permission plus a requested 3-year Skilled Worker grant exceeds 4 years. Earlier Skilled Worker or Tier 2 time can also count. Ask HR to check your permission dates and the actual proposed grant. If you are still a Student, being able to switch directly is a separate test. [New entrant and switching](#guide-evidence-entrant) · [Student and Graduate timing](/en/work-visa/graduate-visa-uk)\n\n## Stop and verify before paying\nA WhatsApp promise, company logo or screenshot is not proof. Find a phone number or email on the employer's official website and independently ask HR to verify the role and CoS. Do not buy a CoS. The sponsor cannot pass the new CoS fee or associated admin costs to the worker under the applicable rules. The worker may have their own visa fees. Keep messages and receipts and use official fraud reporting if needed. If there is no confirmed sponsor or valid route as expiry approaches, seek regulated advice and follow the expiry plan. [Costs and reporting](#guide-evidence-fraud) · [Options before expiry](/en/work-visa/uk-options-after-graduation) · [Keep looking for sponsored jobs](/en/work-visa/find-uk-jobs-with-visa-sponsorship)\n",
+  "status": "DRAFT",
+  "publishedAt": null,
+  "updatedAt": "2026-11-26T00:00:00Z",
+  "sources": [
+    {
+      "key": "skilled-rules",
+      "organisation": "Home Office",
+      "title": "Immigration Rules Appendix Skilled Worker",
+      "url": "https://www.gov.uk/guidance/immigration-rules/immigration-rules-appendix-skilled-worker",
+      "accessedAt": "2026-11-26T00:00:00Z"
+    },
+    {
+      "key": "skilled-switch",
+      "organisation": "UKVI",
+      "title": "Switch to a Skilled Worker visa",
+      "url": "https://www.gov.uk/skilled-worker-visa/switch-to-this-visa",
+      "accessedAt": "2026-11-26T00:00:00Z"
+    },
+    {
+      "key": "skilled-pay",
+      "organisation": "UKVI",
+      "title": "Skilled Worker lower salary options",
+      "url": "https://www.gov.uk/skilled-worker-visa/when-you-can-be-paid-less",
+      "accessedAt": "2026-11-26T00:00:00Z"
+    },
+    {
+      "key": "care-sponsor",
+      "organisation": "Home Office",
+      "title": "Workers and Temporary Workers sponsor a skilled worker",
+      "url": "https://www.gov.uk/government/publications/sponsor-a-skilled-worker/workers-and-temporary-workers-sponsor-a-skilled-worker-accessible",
+      "accessedAt": "2026-11-26T00:00:00Z"
+    },
+    {
+      "key": "fraud",
+      "organisation": "Home Office",
+      "title": "Report visa and immigration scams",
+      "url": "https://www.gov.uk/report-suspicious-emails-websites-phishing/report-visa-and-immigration-scams",
+      "accessedAt": "2026-11-26T00:00:00Z"
+    },
+    {
+      "key": "crime",
+      "organisation": "Home Office",
+      "title": "Report an immigration or border crime",
+      "url": "https://www.gov.uk/report-immigration-crime",
+      "accessedAt": "2026-11-26T00:00:00Z"
+    },
+    {
+      "key": "advice",
+      "organisation": "GOV.UK",
+      "title": "Find an immigration adviser",
+      "url": "https://www.gov.uk/find-an-immigration-adviser",
+      "accessedAt": "2026-11-26T00:00:00Z"
+    },
+    {
+      "key": "skilled-job",
+      "organisation": "UKVI",
+      "title": "Skilled Worker visa job requirements",
+      "url": "https://www.gov.uk/skilled-worker-visa/your-job",
+      "accessedAt": "2026-11-26T00:00:00Z"
+    },
+    {
+      "key": "occupation-codes",
+      "organisation": "Home Office",
+      "title": "Skilled Worker eligible occupations and codes",
+      "url": "https://www.gov.uk/government/publications/skilled-worker-visa-eligible-occupations/skilled-worker-visa-eligible-occupations-and-codes",
+      "accessedAt": "2026-11-26T00:00:00Z"
+    },
+    {
+      "key": "occupation-rules",
+      "organisation": "Home Office",
+      "title": "Immigration Rules Appendix Skilled Occupations",
+      "url": "https://www.gov.uk/guidance/immigration-rules/immigration-rules-appendix-skilled-occupations",
+      "accessedAt": "2026-11-26T00:00:00Z"
+    },
+    {
+      "key": "recruitment-agencies",
+      "organisation": "Fair Work Agency",
+      "title": "Employment agencies and businesses overview",
+      "url": "https://www.gov.uk/employment-agencies-and-businesses/overview",
+      "accessedAt": "2026-11-26T00:00:00Z"
+    },
+    {
+      "key": "agency-fees",
+      "organisation": "GOV.UK",
+      "title": "Agency workers and fees",
+      "url": "https://www.gov.uk/agency-workers-your-rights/fees",
+      "accessedAt": "2026-11-26T00:00:00Z"
+    }
+  ],
+  "evidence": [
+    {
+      "key": "duties",
+      "statement": "Ask the employer for the legal sponsor, full duties, proposed SOC 2020 occupation code, basic gross annual pay, paid weekly hours, start date and CoS timetable. Check the duties against the official occupation entry.",
+      "supports": [
+        {
+          "sourceKey": "skilled-rules",
+          "locator": "SW 1.5A, SW 4.4, SW 12.2–12.3 and SW 21–24",
+          "excerpt": null,
+          "note": "Ask the employer for the legal sponsor, full duties, proposed SOC 2020 occupation code, basic gross annual pay, paid weekly hours, start date and CoS timetable. Check the duties against the official occupation entry."
+        },
+        {
+          "sourceKey": "occupation-codes",
+          "locator": "Job duties and code classification",
+          "excerpt": null,
+          "note": "Ask the employer for the legal sponsor, full duties, proposed SOC 2020 occupation code, basic gross annual pay, paid weekly hours, start date and CoS timetable. Check the duties against the official occupation entry."
+        },
+        {
+          "sourceKey": "care-sponsor",
+          "locator": "Care workers and senior care workers, sponsorship and passing on costs",
+          "excerpt": null,
+          "note": "Ask the employer for the legal sponsor, full duties, proposed SOC 2020 occupation code, basic gross annual pay, paid weekly hours, start date and CoS timetable. Check the duties against the official occupation entry."
+        },
+        {
+          "sourceKey": "recruitment-agencies",
+          "locator": "Employment agency duties and further guidance",
+          "excerpt": null,
+          "note": "Ask the employer for the legal sponsor, full duties, proposed SOC 2020 occupation code, basic gross annual pay, paid weekly hours, start date and CoS timetable. Check the duties against the official occupation entry."
+        }
+      ]
+    },
+    {
+      "key": "pay",
+      "statement": "On the usual standard Skilled Worker option A, the offer must meet both £41,700 and the applicable full going rate. Under ordinary new entrant option E, compare both £33,400 and 70% of the applicable going rate. Use the correct table and hours. For tables based on 37.5 hours, adjust the going rate to the sponsored hours. The general annual floor does not go down just because you work part-time. Use qualifying pay, generally guaranteed basic gross pay. Bonuses and overtime cannot make up a gap. Health, education, shortage-list and transitional cases can have different rules.",
+      "supports": [
+        {
+          "sourceKey": "skilled-job",
+          "locator": "Salary floors, rates and exceptions",
+          "excerpt": null,
+          "note": "On the usual standard Skilled Worker option A, the offer must meet both £41,700 and the applicable full going rate. Under ordinary new entrant option E, compare both £33,400 and 70% of the applicable going rate. Use the correct table and hours. For tables based on 37.5 hours, adjust the going rate to the sponsored hours. The general annual floor does not go down just because you work part-time. Use qualifying pay, generally guaranteed basic gross pay. Bonuses and overtime cannot make up a gap. Health, education, shortage-list and transitional cases can have different rules."
+        },
+        {
+          "sourceKey": "skilled-rules",
+          "locator": "SW 1.5A, SW 4.4, SW 12.2–12.3 and SW 21–24",
+          "excerpt": null,
+          "note": "On the usual standard Skilled Worker option A, the offer must meet both £41,700 and the applicable full going rate. Under ordinary new entrant option E, compare both £33,400 and 70% of the applicable going rate. Use the correct table and hours. For tables based on 37.5 hours, adjust the going rate to the sponsored hours. The general annual floor does not go down just because you work part-time. Use qualifying pay, generally guaranteed basic gross pay. Bonuses and overtime cannot make up a gap. Health, education, shortage-list and transitional cases can have different rules."
+        },
+        {
+          "sourceKey": "occupation-rules",
+          "locator": "Applicable going rate tables",
+          "excerpt": null,
+          "note": "On the usual standard Skilled Worker option A, the offer must meet both £41,700 and the applicable full going rate. Under ordinary new entrant option E, compare both £33,400 and 70% of the applicable going rate. Use the correct table and hours. For tables based on 37.5 hours, adjust the going rate to the sponsored hours. The general annual floor does not go down just because you work part-time. Use qualifying pay, generally guaranteed basic gross pay. Bonuses and overtime cannot make up a gap. Health, education, shortage-list and transitional cases can have different rules."
+        }
+      ]
+    },
+    {
+      "key": "example",
+      "statement": "Assume the applicable full going rate is £50,000 for 37.5 hours and the offer is for 37.5 hours, at £34,900 basic plus a possible £1,100 bonus. Standard option A needs £50,000. If the applicant qualifies for new entrant option E, 70% of £50,000 is £35,000, higher than £33,400. The offer is £100 short on eligible pay. Even a revised £35,000 basic would only pass this example's pay check. The code, sponsorship, permission history and remaining requirements still matter.",
+      "supports": [
+        {
+          "sourceKey": "skilled-rules",
+          "locator": "SW 1.5A, SW 4.4, SW 12.2–12.3 and SW 21–24",
+          "excerpt": null,
+          "note": "Assume the applicable full going rate is £50,000 for 37.5 hours and the offer is for 37.5 hours, at £34,900 basic plus a possible £1,100 bonus. Standard option A needs £50,000. If the applicant qualifies for new entrant option E, 70% of £50,000 is £35,000, higher than £33,400. The offer is £100 short on eligible pay. Even a revised £35,000 basic would only pass this example's pay check. The code, sponsorship, permission history and remaining requirements still matter."
+        },
+        {
+          "sourceKey": "skilled-pay",
+          "locator": "New entrants and qualifying salary",
+          "excerpt": null,
+          "note": "Assume the applicable full going rate is £50,000 for 37.5 hours and the offer is for 37.5 hours, at £34,900 basic plus a possible £1,100 bonus. Standard option A needs £50,000. If the applicant qualifies for new entrant option E, 70% of £50,000 is £35,000, higher than £33,400. The offer is £100 short on eligible pay. Even a revised £35,000 basic would only pass this example's pay check. The code, sponsorship, permission history and remaining requirements still matter."
+        }
+      ]
+    },
+    {
+      "key": "entrant",
+      "statement": "A Graduate visa alone does not settle this. Appendix Skilled Worker gives separate grounds, including eligible recent Student or Graduate history, age under 26 and some professional or postdoctoral routes. Check the exact condition and the four-year combined cap. For example, 18 months of Graduate permission plus a requested 3-year Skilled Worker grant exceeds 4 years. Earlier Skilled Worker or Tier 2 time can also count. Ask HR to check your permission dates and the actual proposed grant. If you are still a Student, being able to switch directly is a separate test.",
+      "supports": [
+        {
+          "sourceKey": "skilled-rules",
+          "locator": "SW 1.5A, SW 4.4, SW 12.2–12.3 and SW 21–24",
+          "excerpt": null,
+          "note": "A Graduate visa alone does not settle this. Appendix Skilled Worker gives separate grounds, including eligible recent Student or Graduate history, age under 26 and some professional or postdoctoral routes. Check the exact condition and the four-year combined cap. For example, 18 months of Graduate permission plus a requested 3-year Skilled Worker grant exceeds 4 years. Earlier Skilled Worker or Tier 2 time can also count. Ask HR to check your permission dates and the actual proposed grant. If you are still a Student, being able to switch directly is a separate test."
+        },
+        {
+          "sourceKey": "skilled-pay",
+          "locator": "New entrants and qualifying salary",
+          "excerpt": null,
+          "note": "A Graduate visa alone does not settle this. Appendix Skilled Worker gives separate grounds, including eligible recent Student or Graduate history, age under 26 and some professional or postdoctoral routes. Check the exact condition and the four-year combined cap. For example, 18 months of Graduate permission plus a requested 3-year Skilled Worker grant exceeds 4 years. Earlier Skilled Worker or Tier 2 time can also count. Ask HR to check your permission dates and the actual proposed grant. If you are still a Student, being able to switch directly is a separate test."
+        },
+        {
+          "sourceKey": "skilled-switch",
+          "locator": "Student switching conditions",
+          "excerpt": null,
+          "note": "A Graduate visa alone does not settle this. Appendix Skilled Worker gives separate grounds, including eligible recent Student or Graduate history, age under 26 and some professional or postdoctoral routes. Check the exact condition and the four-year combined cap. For example, 18 months of Graduate permission plus a requested 3-year Skilled Worker grant exceeds 4 years. Earlier Skilled Worker or Tier 2 time can also count. Ask HR to check your permission dates and the actual proposed grant. If you are still a Student, being able to switch directly is a separate test."
+        }
+      ]
+    },
+    {
+      "key": "fraud",
+      "statement": "A WhatsApp promise, company logo or screenshot is not proof. Find a phone number or email on the employer's official website and independently ask HR to verify the role and CoS.",
+      "supports": [
+        {
+          "sourceKey": "care-sponsor",
+          "locator": "Care workers and senior care workers, sponsorship and passing on costs",
+          "excerpt": null,
+          "note": "A WhatsApp promise, company logo or screenshot is not proof. Find a phone number or email on the employer's official website and independently ask HR to verify the role and CoS."
+        },
+        {
+          "sourceKey": "fraud",
+          "locator": "Scam signs and reporting",
+          "excerpt": null,
+          "note": "A WhatsApp promise, company logo or screenshot is not proof. Find a phone number or email on the employer's official website and independently ask HR to verify the role and CoS."
+        },
+        {
+          "sourceKey": "crime",
+          "locator": "Reporting suspected immigration crime",
+          "excerpt": null,
+          "note": "A WhatsApp promise, company logo or screenshot is not proof. Find a phone number or email on the employer's official website and independently ask HR to verify the role and CoS."
+        },
+        {
+          "sourceKey": "agency-fees",
+          "locator": "Work-finding fee rules and exceptions",
+          "excerpt": null,
+          "note": "A WhatsApp promise, company logo or screenshot is not proof. Find a phone number or email on the employer's official website and independently ask HR to verify the role and CoS."
+        },
+        {
+          "sourceKey": "advice",
+          "locator": "Check adviser registration",
+          "excerpt": null,
+          "note": "A WhatsApp promise, company logo or screenshot is not proof. Find a phone number or email on the employer's official website and independently ask HR to verify the role and CoS."
+        }
+      ]
+    }
+  ]
+}

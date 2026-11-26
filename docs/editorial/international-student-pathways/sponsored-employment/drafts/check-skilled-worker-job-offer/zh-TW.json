@@ -1,0 +1,230 @@
+{
+  "slug": "check-skilled-worker-job-offer",
+  "category": "work-visa",
+  "title": "收到英國聘用邀約後，怎麼查是否符合 Skilled Worker 擔保",
+  "summary": "接受邀約或付費前，逐一查核擔保方、實際工作、薪資工時和時程。",
+  "content": "# 收到英國聘用邀約後，怎麼查是否符合 Skilled Worker 擔保\n\n最後更新: 2026-11-26\n\n## 先拿到書面職缺資料\n請雇主寫明法定擔保方、完整職責、擬用的 SOC 2020 職業代碼、稅前基本年薪、每週有薪工時、到職日及 CoS 時程。拿工作內容比對官方職業條目。好聽的職稱、學位，或為採較低職業薪資標準而挑的代碼，都無法使職缺符合資格。有仲介時，問誰實際聘用、誰核發 CoS。持續為第三方填補日常職缺另有擔保限制，先查核聘用安排。[職缺與擔保查核](#guide-evidence-duties)\n\n## 年薪門檻和職業標準都要達到\n一般 Skilled Worker A 選項通常須同時達到 £41,700 及適用的全額職業薪資標準。採一般職涯新人 E 選項時，須同時符合 £33,400 及適用職業標準的 70%。使用正確表格和工時。以每週 37.5 小時為基準的表，應依擔保工時換算職業標準。一般年薪門檻不會單因兼職降低。使用符合規則的薪資，通常是保證的稅前基本薪資。獎金和加班費不能補缺口。醫療、教育、短缺清單和過渡個案可能有其他規則。[薪資規則](#guide-evidence-pay) · [詳細薪資表與例外](/zh-TW/work-visa/skilled-worker-occupations-salary)\n\n## 用虛構邀約來試算\n假設每週 37.5 小時的全額職業薪資標準是 £50,000。邀約也是每週 37.5 小時，基本年薪 £34,900，另有可能發放 £1,100 獎金。一般 A 選項需要 £50,000。若符合新人 E 選項，£50,000 的 70% 是 £35,000，高於 £33,400。合格薪資還差 £100。即使調整基本薪資至 £35,000，也只通過算例的薪資檢查。仍要確認代碼、擔保、居留許可紀錄和其他要求。[薪資算例](#guide-evidence-example)\n\n## 核對職涯新人選項\nGraduate 簽證本身不保證能採新人選項。Skilled Worker 附錄列出不同資格，例如符合要求的近期 Student 或 Graduate 紀錄、未滿 26 歲、特定專業或博士後工作。查看適用條件和合計 4 年的上限。舉例，18 個月的 Graduate 加上打算申請 3 年 Skilled Worker，會超過 4 年。之前的 Skilled Worker 或 Tier 2 期間也可能計入。請人資按自己的許可日期和打算申請的效期核算。Student 能否直接轉換仍須另外核對。[新人和轉簽](#guide-evidence-entrant) · [Student 和 Graduate 時程](/zh-TW/work-visa/graduate-visa-uk)\n\n## 付款前先停下來查證\nWhatsApp 承諾、商標或截圖不能證明擔保。從雇主官網獨立找到電話或電郵，請人資查證職缺和 CoS。別購買 CoS。依適用規則，擔保方不可向勞工收取新 CoS 的費用及相關行政成本；勞工可能須付自己的簽證費。保存訊息與收據，必要時透過官方管道通報。快到期而還沒有確認的擔保或有效途徑，應諮詢受監管的顧問並依到期備案處理。[費用和通報](#guide-evidence-fraud) · [到期前的選項](/zh-TW/work-visa/uk-options-after-graduation) · [繼續找擔保職缺](/zh-TW/work-visa/find-uk-jobs-with-visa-sponsorship)\n",
+  "status": "DRAFT",
+  "publishedAt": null,
+  "updatedAt": "2026-11-26T00:00:00Z",
+  "sources": [
+    {
+      "key": "skilled-rules",
+      "organisation": "Home Office",
+      "title": "Immigration Rules Appendix Skilled Worker",
+      "url": "https://www.gov.uk/guidance/immigration-rules/immigration-rules-appendix-skilled-worker",
+      "accessedAt": "2026-11-26T00:00:00Z"
+    },
+    {
+      "key": "skilled-switch",
+      "organisation": "UKVI",
+      "title": "Switch to a Skilled Worker visa",
+      "url": "https://www.gov.uk/skilled-worker-visa/switch-to-this-visa",
+      "accessedAt": "2026-11-26T00:00:00Z"
+    },
+    {
+      "key": "skilled-pay",
+      "organisation": "UKVI",
+      "title": "Skilled Worker lower salary options",
+      "url": "https://www.gov.uk/skilled-worker-visa/when-you-can-be-paid-less",
+      "accessedAt": "2026-11-26T00:00:00Z"
+    },
+    {
+      "key": "care-sponsor",
+      "organisation": "Home Office",
+      "title": "Workers and Temporary Workers sponsor a skilled worker",
+      "url": "https://www.gov.uk/government/publications/sponsor-a-skilled-worker/workers-and-temporary-workers-sponsor-a-skilled-worker-accessible",
+      "accessedAt": "2026-11-26T00:00:00Z"
+    },
+    {
+      "key": "fraud",
+      "organisation": "Home Office",
+      "title": "Report visa and immigration scams",
+      "url": "https://www.gov.uk/report-suspicious-emails-websites-phishing/report-visa-and-immigration-scams",
+      "accessedAt": "2026-11-26T00:00:00Z"
+    },
+    {
+      "key": "crime",
+      "organisation": "Home Office",
+      "title": "Report an immigration or border crime",
+      "url": "https://www.gov.uk/report-immigration-crime",
+      "accessedAt": "2026-11-26T00:00:00Z"
+    },
+    {
+      "key": "advice",
+      "organisation": "GOV.UK",
+      "title": "Find an immigration adviser",
+      "url": "https://www.gov.uk/find-an-immigration-adviser",
+      "accessedAt": "2026-11-26T00:00:00Z"
+    },
+    {
+      "key": "skilled-job",
+      "organisation": "UKVI",
+      "title": "Skilled Worker visa job requirements",
+      "url": "https://www.gov.uk/skilled-worker-visa/your-job",
+      "accessedAt": "2026-11-26T00:00:00Z"
+    },
+    {
+      "key": "occupation-codes",
+      "organisation": "Home Office",
+      "title": "Skilled Worker eligible occupations and codes",
+      "url": "https://www.gov.uk/government/publications/skilled-worker-visa-eligible-occupations/skilled-worker-visa-eligible-occupations-and-codes",
+      "accessedAt": "2026-11-26T00:00:00Z"
+    },
+    {
+      "key": "occupation-rules",
+      "organisation": "Home Office",
+      "title": "Immigration Rules Appendix Skilled Occupations",
+      "url": "https://www.gov.uk/guidance/immigration-rules/immigration-rules-appendix-skilled-occupations",
+      "accessedAt": "2026-11-26T00:00:00Z"
+    },
+    {
+      "key": "recruitment-agencies",
+      "organisation": "Fair Work Agency",
+      "title": "Employment agencies and businesses overview",
+      "url": "https://www.gov.uk/employment-agencies-and-businesses/overview",
+      "accessedAt": "2026-11-26T00:00:00Z"
+    },
+    {
+      "key": "agency-fees",
+      "organisation": "GOV.UK",
+      "title": "Agency workers and fees",
+      "url": "https://www.gov.uk/agency-workers-your-rights/fees",
+      "accessedAt": "2026-11-26T00:00:00Z"
+    }
+  ],
+  "evidence": [
+    {
+      "key": "duties",
+      "statement": "請雇主寫明法定擔保方、完整職責、擬用的 SOC 2020 職業代碼、稅前基本年薪、每週有薪工時、到職日及 CoS 時程。 拿工作內容比對官方職業條目。",
+      "supports": [
+        {
+          "sourceKey": "skilled-rules",
+          "locator": "SW 1.5A, SW 4.4, SW 12.2–12.3 and SW 21–24",
+          "excerpt": null,
+          "note": "請雇主寫明法定擔保方、完整職責、擬用的 SOC 2020 職業代碼、稅前基本年薪、每週有薪工時、到職日及 CoS 時程。 拿工作內容比對官方職業條目。"
+        },
+        {
+          "sourceKey": "occupation-codes",
+          "locator": "Job duties and code classification",
+          "excerpt": null,
+          "note": "請雇主寫明法定擔保方、完整職責、擬用的 SOC 2020 職業代碼、稅前基本年薪、每週有薪工時、到職日及 CoS 時程。 拿工作內容比對官方職業條目。"
+        },
+        {
+          "sourceKey": "care-sponsor",
+          "locator": "Care workers and senior care workers, sponsorship and passing on costs",
+          "excerpt": null,
+          "note": "請雇主寫明法定擔保方、完整職責、擬用的 SOC 2020 職業代碼、稅前基本年薪、每週有薪工時、到職日及 CoS 時程。 拿工作內容比對官方職業條目。"
+        },
+        {
+          "sourceKey": "recruitment-agencies",
+          "locator": "Employment agency duties and further guidance",
+          "excerpt": null,
+          "note": "請雇主寫明法定擔保方、完整職責、擬用的 SOC 2020 職業代碼、稅前基本年薪、每週有薪工時、到職日及 CoS 時程。 拿工作內容比對官方職業條目。"
+        }
+      ]
+    },
+    {
+      "key": "pay",
+      "statement": "一般 Skilled Worker A 選項通常須同時達到 £41,700 及適用的全額職業薪資標準。採一般職涯新人 E 選項時，須同時符合 £33,400 及適用職業標準的 70%。使用正確表格和工時。以每週 37.5 小時為基準的表，應依擔保工時換算職業標準。一般年薪門檻不會單因兼職降低。使用符合規則的薪資，通常是保證的稅前基本薪資。獎金和加班費不能補缺口。醫療、教育、短缺清單和過渡個案可能有其他規則。",
+      "supports": [
+        {
+          "sourceKey": "skilled-job",
+          "locator": "Salary floors, rates and exceptions",
+          "excerpt": null,
+          "note": "一般 Skilled Worker A 選項通常須同時達到 £41,700 及適用的全額職業薪資標準。採一般職涯新人 E 選項時，須同時符合 £33,400 及適用職業標準的 70%。使用正確表格和工時。以每週 37.5 小時為基準的表，應依擔保工時換算職業標準。一般年薪門檻不會單因兼職降低。使用符合規則的薪資，通常是保證的稅前基本薪資。獎金和加班費不能補缺口。醫療、教育、短缺清單和過渡個案可能有其他規則。"
+        },
+        {
+          "sourceKey": "skilled-rules",
+          "locator": "SW 1.5A, SW 4.4, SW 12.2–12.3 and SW 21–24",
+          "excerpt": null,
+          "note": "一般 Skilled Worker A 選項通常須同時達到 £41,700 及適用的全額職業薪資標準。採一般職涯新人 E 選項時，須同時符合 £33,400 及適用職業標準的 70%。使用正確表格和工時。以每週 37.5 小時為基準的表，應依擔保工時換算職業標準。一般年薪門檻不會單因兼職降低。使用符合規則的薪資，通常是保證的稅前基本薪資。獎金和加班費不能補缺口。醫療、教育、短缺清單和過渡個案可能有其他規則。"
+        },
+        {
+          "sourceKey": "occupation-rules",
+          "locator": "Applicable going rate tables",
+          "excerpt": null,
+          "note": "一般 Skilled Worker A 選項通常須同時達到 £41,700 及適用的全額職業薪資標準。採一般職涯新人 E 選項時，須同時符合 £33,400 及適用職業標準的 70%。使用正確表格和工時。以每週 37.5 小時為基準的表，應依擔保工時換算職業標準。一般年薪門檻不會單因兼職降低。使用符合規則的薪資，通常是保證的稅前基本薪資。獎金和加班費不能補缺口。醫療、教育、短缺清單和過渡個案可能有其他規則。"
+        }
+      ]
+    },
+    {
+      "key": "example",
+      "statement": "假設每週 37.5 小時的全額職業薪資標準是 £50,000。邀約也是每週 37.5 小時，基本年薪 £34,900，另有可能發放 £1,100 獎金。一般 A 選項需要 £50,000。若符合新人 E 選項，£50,000 的 70% 是 £35,000，高於 £33,400。合格薪資還差 £100。即使調整基本薪資至 £35,000，也只通過算例的薪資檢查。仍要確認代碼、擔保、居留許可紀錄和其他要求。",
+      "supports": [
+        {
+          "sourceKey": "skilled-rules",
+          "locator": "SW 1.5A, SW 4.4, SW 12.2–12.3 and SW 21–24",
+          "excerpt": null,
+          "note": "假設每週 37.5 小時的全額職業薪資標準是 £50,000。邀約也是每週 37.5 小時，基本年薪 £34,900，另有可能發放 £1,100 獎金。一般 A 選項需要 £50,000。若符合新人 E 選項，£50,000 的 70% 是 £35,000，高於 £33,400。合格薪資還差 £100。即使調整基本薪資至 £35,000，也只通過算例的薪資檢查。仍要確認代碼、擔保、居留許可紀錄和其他要求。"
+        },
+        {
+          "sourceKey": "skilled-pay",
+          "locator": "New entrants and qualifying salary",
+          "excerpt": null,
+          "note": "假設每週 37.5 小時的全額職業薪資標準是 £50,000。邀約也是每週 37.5 小時，基本年薪 £34,900，另有可能發放 £1,100 獎金。一般 A 選項需要 £50,000。若符合新人 E 選項，£50,000 的 70% 是 £35,000，高於 £33,400。合格薪資還差 £100。即使調整基本薪資至 £35,000，也只通過算例的薪資檢查。仍要確認代碼、擔保、居留許可紀錄和其他要求。"
+        }
+      ]
+    },
+    {
+      "key": "entrant",
+      "statement": "Graduate 簽證本身不保證能採新人選項。Skilled Worker 附錄列出不同資格，例如符合要求的近期 Student 或 Graduate 紀錄、未滿 26 歲、特定專業或博士後工作。查看適用條件和合計 4 年的上限。舉例，18 個月的 Graduate 加上打算申請 3 年 Skilled Worker，會超過 4 年。之前的 Skilled Worker 或 Tier 2 期間也可能計入。請人資按自己的許可日期和打算申請的效期核算。Student 能否直接轉換仍須另外核對。",
+      "supports": [
+        {
+          "sourceKey": "skilled-rules",
+          "locator": "SW 1.5A, SW 4.4, SW 12.2–12.3 and SW 21–24",
+          "excerpt": null,
+          "note": "Graduate 簽證本身不保證能採新人選項。Skilled Worker 附錄列出不同資格，例如符合要求的近期 Student 或 Graduate 紀錄、未滿 26 歲、特定專業或博士後工作。查看適用條件和合計 4 年的上限。舉例，18 個月的 Graduate 加上打算申請 3 年 Skilled Worker，會超過 4 年。之前的 Skilled Worker 或 Tier 2 期間也可能計入。請人資按自己的許可日期和打算申請的效期核算。Student 能否直接轉換仍須另外核對。"
+        },
+        {
+          "sourceKey": "skilled-pay",
+          "locator": "New entrants and qualifying salary",
+          "excerpt": null,
+          "note": "Graduate 簽證本身不保證能採新人選項。Skilled Worker 附錄列出不同資格，例如符合要求的近期 Student 或 Graduate 紀錄、未滿 26 歲、特定專業或博士後工作。查看適用條件和合計 4 年的上限。舉例，18 個月的 Graduate 加上打算申請 3 年 Skilled Worker，會超過 4 年。之前的 Skilled Worker 或 Tier 2 期間也可能計入。請人資按自己的許可日期和打算申請的效期核算。Student 能否直接轉換仍須另外核對。"
+        },
+        {
+          "sourceKey": "skilled-switch",
+          "locator": "Student switching conditions",
+          "excerpt": null,
+          "note": "Graduate 簽證本身不保證能採新人選項。Skilled Worker 附錄列出不同資格，例如符合要求的近期 Student 或 Graduate 紀錄、未滿 26 歲、特定專業或博士後工作。查看適用條件和合計 4 年的上限。舉例，18 個月的 Graduate 加上打算申請 3 年 Skilled Worker，會超過 4 年。之前的 Skilled Worker 或 Tier 2 期間也可能計入。請人資按自己的許可日期和打算申請的效期核算。Student 能否直接轉換仍須另外核對。"
+        }
+      ]
+    },
+    {
+      "key": "fraud",
+      "statement": "WhatsApp 承諾、商標或截圖不能證明擔保。 從雇主官網獨立找到電話或電郵，請人資查證職缺和 CoS。",
+      "supports": [
+        {
+          "sourceKey": "care-sponsor",
+          "locator": "Care workers and senior care workers, sponsorship and passing on costs",
+          "excerpt": null,
+          "note": "WhatsApp 承諾、商標或截圖不能證明擔保。 從雇主官網獨立找到電話或電郵，請人資查證職缺和 CoS。"
+        },
+        {
+          "sourceKey": "fraud",
+          "locator": "Scam signs and reporting",
+          "excerpt": null,
+          "note": "WhatsApp 承諾、商標或截圖不能證明擔保。 從雇主官網獨立找到電話或電郵，請人資查證職缺和 CoS。"
+        },
+        {
+          "sourceKey": "crime",
+          "locator": "Reporting suspected immigration crime",
+          "excerpt": null,
+          "note": "WhatsApp 承諾、商標或截圖不能證明擔保。 從雇主官網獨立找到電話或電郵，請人資查證職缺和 CoS。"
+        },
+        {
+          "sourceKey": "agency-fees",
+          "locator": "Work-finding fee rules and exceptions",
+          "excerpt": null,
+          "note": "WhatsApp 承諾、商標或截圖不能證明擔保。 從雇主官網獨立找到電話或電郵，請人資查證職缺和 CoS。"
+        },
+        {
+          "sourceKey": "advice",
+          "locator": "Check adviser registration",
+          "excerpt": null,
+          "note": "WhatsApp 承諾、商標或截圖不能證明擔保。 從雇主官網獨立找到電話或電郵，請人資查證職缺和 CoS。"
+        }
+      ]
+    }
+  ]
+}

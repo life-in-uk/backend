@@ -18,3 +18,11 @@ Both new Guides fit the existing Work Visa category. They link to each other and
 3. **Residence and exit planning**. Expand only gaps surfaced in review. Test practical travel and expiry scenarios, family members' separate dates, route-specific residence versus long residence and evidence retention. Offer a parallel career plan outside the UK, including university alumni, international employers and a later lawful application if eligible. Link to the existing settlement and partner series. Review the earned settlement tracker through its own editorial approval process if the law changes.
 
 Use the [question research](QUESTION-RESEARCH.md), [coverage map](COVERAGE-MAP.md), [route comparison](VISA-PATHWAYS.md) and [source register](SOURCE-REGISTER.md) together. Required sign-offs and release constraints are in [review](REVIEW.md).
+
+## Phase 2 handoff
+
+The first two Guides passed Production API acceptance across all five locales. Their static frontend release is being coordinated with PR #48 so discovery and the section-aware disclaimer can ship together.
+
+[Sponsored employment research](sponsored-employment/RESEARCH.md) informs two new drafts. The search Guide covers vacancies and recruitment. The offer Guide covers the sponsor, role, pay and fraud checks. They link into the existing Work Visa and Graduate material. The new batch is editorial only.
+
+Next research priority: NHS and regulated healthcare roles versus adult social care. Gather role-specific examples of registration, sponsorship, pay and applicant screening across the UK nations. Verify the care transition and dependant rules independently before drafting detailed eligibility advice.

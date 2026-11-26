@@ -1,0 +1,41 @@
+{
+  "slug": "check-skilled-worker-job-offer",
+  "category": "work-visa",
+  "status": "DRAFT",
+  "sourceLocale": "zh-CN",
+  "sourcesVerifiedOn": "2026-11-26",
+  "editorialStatus": "Owner and independent immigration and fluent-language review pending.",
+  "canonicalization": "guide-content-v1",
+  "variants": [
+    {
+      "locale": "zh-CN",
+      "path": "zh-CN.json",
+      "sha256": "30c1652782e89bd71085adf5f247277cbd64f23b371084ec7c3cff82e94d4846",
+      "contentSha256": "3ed741235cdd81b9dff9b4068c17f62dee276127b82039f35b851205613795c1"
+    },
+    {
+      "locale": "zh-TW",
+      "path": "zh-TW.json",
+      "sha256": "5829e3a4bb9b35d73b88de28d0699a65ab4f3646f077d90b82461ff7594dd22a",
+      "contentSha256": "fa8239880f18ae9fc3bb5597c55608d4b47afc5545be4105774d7527e3c9d9b5"
+    },
+    {
+      "locale": "en",
+      "path": "en.json",
+      "sha256": "8889cd10d3d2a177d076c2395df87e4b4cfaffba233184ecb4a023f6e005aed0",
+      "contentSha256": "74e7866cd394d705bf0c6e6966b7739578316ca22d7ea02c6b3a6efe68dd4d79"
+    },
+    {
+      "locale": "ur",
+      "path": "ur.json",
+      "sha256": "d64e5ad7072723827cb75e326be08221044d37f204ff7df1906b027b9d328eef",
+      "contentSha256": "96145fcf037e3812e2facc158e785a43411dcf468ba21e04d88b9fd5738167f7"
+    },
+    {
+      "locale": "hi",
+      "path": "hi.json",
+      "sha256": "94ecb6dcb66e1ad55f777541ed2966669236bb6e6cf10b1ab92a4899e083fdfd",
+      "contentSha256": "555311c46b33b304927a0e80cbd8bafddecbd2699a799d5c5c3fac6a1e59ce42"
+    }
+  ]
+}
