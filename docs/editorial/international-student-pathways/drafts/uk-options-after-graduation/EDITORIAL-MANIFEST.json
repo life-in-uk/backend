@@ -10,32 +10,32 @@
     {
       "locale": "zh-CN",
       "path": "zh-CN.json",
-      "sha256": "40b53b15786e78fe0fa0bb0e375314066c1543bbb810b5f36716922c47823c14",
-      "contentSha256": "eb5cb37421fc5e261c4606a6c952ec6ebd1d6dfde776c2995556cd0a82f6f22c"
+      "sha256": "ac0df93fcb96cffd0249cc00418c06f292953d1678c9f6efbab77cbd67e4f267",
+      "contentSha256": "2ce28dd288003d3f09597663eadc91f31c2e116e48e892f472fc3df3dfae67d6"
     },
     {
       "locale": "zh-TW",
       "path": "zh-TW.json",
-      "sha256": "177a915ddae2d24c8650fa0fa091c95b8d80deb5217ec16c72ed1bd32a586562",
-      "contentSha256": "5789e4e39dcca0ac4cbdb029e29d90375100df964a736df32218930a844a92ad"
+      "sha256": "a2c579a15c4a4dfc82074330b935fc9bb8f78571372b084bc1a7f868f35d62a8",
+      "contentSha256": "d40316916d004aac098526897028930333e4a41de046a2aec4770a1d6bd688bc"
     },
     {
       "locale": "en",
       "path": "en.json",
-      "sha256": "e701fba4eeda6e298ec57d075de571433e7feeb3cc41d17651b455ba6df4192b",
-      "contentSha256": "66811f70b199e4916e64c4a8e8987ea41d5b30f1f7153a48b3904fe270072ed0"
+      "sha256": "2693bed50becd24ac79ab599a62203584f836b2b59a392c2ea12f52ff9ee455b",
+      "contentSha256": "1d55d67a0fc5015d163cf4eb338a485dfd08049ec5be53ce7c2ecfae83779b8c"
     },
     {
       "locale": "ur",
       "path": "ur.json",
-      "sha256": "fed77cb15857e5f264dc204eff394283e4c9cd532df44969de0b7c0f04d02183",
-      "contentSha256": "91479504c715ca2e1c0b502ac594a6e77118780c17d6e52b968197ca6c70b6ba"
+      "sha256": "8d40b44989dd83869c8f838c8d213c5d9c5cce8011004695ec92f1c891746d25",
+      "contentSha256": "0d4e4b85479ab09638260b4e4cc233f218cc64d69304d484299f0b1185976450"
     },
     {
       "locale": "hi",
       "path": "hi.json",
-      "sha256": "5f07666c6732c5613049aca30e4ff8379271deec215f56272f64e84e0d936745",
-      "contentSha256": "8f45f87ad797a4741de37fa1b197d15a69badb7872ffce1ec9416920c792ce55"
+      "sha256": "90f79548c34d1a75d6f1b19f30d96acdc8c46ed2547e0a4eb04b653ead8cf712",
+      "contentSha256": "c4d975f5a078e1dbeda092d03a922a33c94514a40271e1a7935d45883655ae3e"
     }
   ]
 }

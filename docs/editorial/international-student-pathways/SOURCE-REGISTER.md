@@ -41,3 +41,4 @@ Verified 26 November 2026. Immigration law and Home Office operational guidance 
 | `advice` | GOV.UK, [Find an immigration adviser](https://www.gov.uk/find-an-immigration-adviser) | Check adviser registration | Official advice signpost |
 | `careers` | University of Liverpool, [International careers FAQ](https://www.liverpool.ac.uk/careers/employability/international-plus/faqs/) | Graduate role timing and international careers support | Recruitment context, schedules vary |
 | `warwick` | University of Warwick, [Postgraduate career planning](https://warwick.ac.uk/study/postgraduate/whywarwick/careers/) | Graduate scheme timeline | Recruitment context, schedules vary |
+| `section-3c-act` | UK Parliament, [Immigration Act 1971 section 3C](https://www.legislation.gov.uk/ukpga/1971/77/section/3C) | Section 3C subsections 1 to 3 | Operative law on in-time applications and departure from the UK |
