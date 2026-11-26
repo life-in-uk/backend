@@ -22,14 +22,14 @@
     {
       "locale": "en",
       "path": "en.json",
-      "sha256": "3f8ca5008a5f0fc984d67ae54754ba397267f7ae2fc00ca3529bbaab1031556c",
-      "contentSha256": "cfec3a2db9f832cc7dae45504b433d061369f2a0d711badcbc9a44af7a17eba8"
+      "sha256": "4212bd7e243e3dc9017ffa41d87d6f137420dd685047789f911a62e2adf5d9e7",
+      "contentSha256": "509036d3f38e29d0681eb6cf6242a2bed464f4cc70236b449794e5a4204bafa9"
     },
     {
       "locale": "ur",
       "path": "ur.json",
-      "sha256": "25e0f9af04f1ba937e0d9519e058640862ae42028239d3c569607081c048f3a4",
-      "contentSha256": "d5d1ce2c32ddfba9fa798ccdc012594c6fc50a7f9c584231f691d6ff6580e541"
+      "sha256": "e5456b38e9cdd70782c8eec7c2959e27fc252fccb339b656f097c8a305877cf8",
+      "contentSha256": "a8f14c99cdcb3cc0ee108577c343913de2d84a63be31df7e69f6561e295c2c4a"
     },
     {
       "locale": "hi",

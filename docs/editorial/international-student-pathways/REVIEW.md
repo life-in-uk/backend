@@ -21,9 +21,9 @@
 | Production Java Guide reader and quality gate | All ten passed. Java hashes matched the editorial manifests with zero blocking findings and zero warnings. |
 | Backend and publisher | `mvn -B -ntp -o verify` gave 1,242 passed, 53 skipped, zero failures. All 50 publisher regression tests passed. |
 | Offline rehearsal | Existing pack and check accepted the exact two-slug `work-visa` archive. The generic runner loaded it, selected `family-visa-v1`, and passed the pinned scope to mocked host staging and publication. |
-| Frontend local preview | The current renderer produced ten detail pages at 320 px. Checked headings, evidence anchors, canonical, alternates, localized links, horizontal overflow and Urdu RTL. These were draft fixtures. |
+| Frontend local preview | Static and interactive previews used local publication fixtures. A 320 px browser smoke test verified both detail routes and Urdu RTL, the published-only Work Visa group, the Education entry link and the conditional University entry link in all five locales. Three evidence labels were shortened to fit the mobile layout. |
 
-Offline archive SHA-256 `5d748bce6e052e5945175b8c2adbc7bdf05af8945f4efaf1b2b2e044dd1a55ef` and manifest SHA-256 `9d13df30e40aeda6cd70ec31c7626e120311f061b1ef9fbcaaf079312e19e107`. The archive is local review evidence.
+Offline archive SHA-256 `abbae2283f9b9bd4f31666014ecf56cd1e64158dca329cf2e314477e6a3ca9c2` and manifest SHA-256 `b5d727c20d9a7ee0bd8ff8c4eb6a670ba5eb5528cf921ab9dbd803e3e2625be4`. The archive is local review evidence.
 
 ## Before a future release
 
