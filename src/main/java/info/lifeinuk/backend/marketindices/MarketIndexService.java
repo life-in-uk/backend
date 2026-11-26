@@ -19,7 +19,8 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
 /**
- * Ingestion (one transaction per batch: all observations stored, or none), heartbeats and the public latest-value
+ * Ingestion (one transaction per batch; each observation STORED, DUPLICATE, CORRECTED or SUPERSEDED, see
+ * {@link #store}), heartbeats and the public latest-value
  * view. Retention runs separately ({@link MarketIndexRetention}) and never on the acknowledgement path.
  */
 @Service
@@ -69,30 +70,58 @@ class MarketIndexService {
                 // A concurrent identical request committed first.
                 return replay(batch, store.batch(batch.batchId()).orElseThrow(() -> new IllegalStateException("Batch vanished")));
             }
-            var results = new ArrayList<ObservationResult>();
-            for (var o : batch.observations()) {
-                if (store.insertObservation(batch.batchId(), batch.source(), o)) {
-                    results.add(new ObservationResult(o.symbol().name(), o.observedAt(), "STORED"));
-                    continue;
-                }
-                var stored = store.observation(o.symbol(), batch.source(), o.observedAt()).orElseThrow(() -> new IllegalStateException("Observation vanished"));
-                if (!same(stored, o)) {
-                    // Rolls back the whole batch: a source never reports two different values for one instant.
-                    throw new MarketIndexPayloads.Rejected(HttpStatus.CONFLICT, "OBSERVATION_CONFLICT",
-                            "observations[" + o.symbol() + "] differs from the value already stored for that symbol, source and observedAt.");
-                }
-                results.add(new ObservationResult(o.symbol().name(), o.observedAt(), "DUPLICATE"));
-            }
+            // Rows are locked in one fixed order (symbol, observedAt), so concurrent batches cannot deadlock.
+            var ordered = new ArrayList<>(batch.observations());
+            ordered.sort(java.util.Comparator.comparing((MarketIndexPayloads.Observation o) -> o.symbol().name())
+                    .thenComparing(MarketIndexPayloads.Observation::observedAt));
+            var outcome = new java.util.HashMap<MarketIndexPayloads.Observation, String>();
+            for (var o : ordered) outcome.put(o, store(batch, o));
+            var results = batch.observations().stream()
+                    .map(o -> new ObservationResult(o.symbol().name(), o.observedAt(), outcome.get(o))).toList();
             return new Acknowledgement("ACCEPTED", batch.batchId(), false, List.copyOf(results));
         });
         Objects.requireNonNull(ack);
         long stored = ack.observations().stream().filter(r -> r.result().equals("STORED")).count();
+        long corrected = ack.observations().stream().filter(r -> r.result().equals("CORRECTED")).count();
+        long superseded = ack.observations().stream().filter(r -> r.result().equals("SUPERSEDED")).count();
         Duration lag = batch.observations().stream().map(o -> Duration.between(o.observedAt(), now()))
                 .max(Duration::compareTo).orElse(Duration.ZERO);
-        log.info("Market index batch {} source={} key={} replay={} stored={} duplicate={} oldestObservationAgeSeconds={}",
-                batch.batchId(), batch.source(), key.id(), ack.replay(), stored,
-                ack.replay() ? 0 : ack.observations().size() - stored, lag.toSeconds());
+        log.info("Market index batch {} source={} key={} replay={} stored={} corrected={} superseded={} duplicate={} oldestObservationAgeSeconds={}",
+                batch.batchId(), batch.source(), key.id(), ack.replay(), stored, corrected, superseded,
+                ack.replay() ? 0 : ack.observations().size() - stored - corrected - superseded, lag.toSeconds());
         return ack;
+    }
+
+    /**
+     * One observation of a new batch. A new instant is STORED; the same value again is a DUPLICATE. A different value
+     * for a stored instant is an upstream correction: it is applied (CORRECTED, the replaced value kept as a revision)
+     * only if this batch is newer than the batch that last set the value, by (collectedAt, batchId); otherwise it is
+     * SUPERSEDED and changes nothing. So the outcome depends only on the batches, never on their arrival order, and an
+     * older or replayed batch can never overwrite a newer correction.
+     */
+    private String store(MarketIndexPayloads.Batch batch, MarketIndexPayloads.Observation o) {
+        if (store.insertObservation(batch.batchId(), batch.source(), o)) return "STORED";
+        var current = store.lockObservation(o.symbol(), batch.source(), o.observedAt());
+        if (same(current, o)) return "DUPLICATE";
+        if (!newer(batch.collectedAt(), batch.batchId(), current.collectedAt(), current.batchId())) {
+            log.info("Market observation correction superseded: source={} symbol={} observedAt={} batch={} keeps {} from batch {}",
+                    batch.source(), o.symbol(), o.observedAt(), batch.batchId(), current.value().toPlainString(), current.batchId());
+            return "SUPERSEDED";
+        }
+        store.correctObservation(current, o.symbol(), batch.source(), o, batch.batchId(), batch.collectedAt());
+        log.info("Market observation corrected: source={} symbol={} observedAt={} value {} -> {} batch {} -> {}",
+                batch.source(), o.symbol(), o.observedAt(), current.value().toPlainString(), o.value().toPlainString(),
+                current.batchId(), batch.batchId());
+        return "CORRECTED";
+    }
+
+    /**
+     * Correction precedence: the later collection wins; at the same collectedAt, the greater batchId (compared as its
+     * canonical lowercase text, which orders exactly like PostgreSQL's uuid ordering used by the revision CHECK).
+     */
+    static boolean newer(Instant collectedAt, UUID batchId, Instant storedCollectedAt, UUID storedBatchId) {
+        int byTime = collectedAt.compareTo(storedCollectedAt);
+        return byTime > 0 || (byTime == 0 && batchId.toString().compareTo(storedBatchId.toString()) > 0);
     }
 
     private static Acknowledgement replay(MarketIndexPayloads.Batch batch, MarketIndexStore.StoredBatch existing) {
@@ -104,7 +133,7 @@ class MarketIndexService {
         return new Acknowledgement("ACCEPTED", batch.batchId(), true, results);
     }
 
-    private static boolean same(MarketIndexStore.StoredObservation stored, MarketIndexPayloads.Observation o) {
+    private static boolean same(MarketIndexStore.LockedObservation stored, MarketIndexPayloads.Observation o) {
         return stored.timeSource() == o.timeSource() && stored.value().compareTo(o.value()) == 0
                 && sameDecimal(stored.previousClose(), o.previousClose())
                 && sameDecimal(stored.reference24h(), o.reference24h())

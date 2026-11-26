@@ -1,6 +1,7 @@
 package info.lifeinuk.backend.marketindices;
 
 import info.lifeinuk.backend.support.IsolatedPostgres;
+import java.math.BigDecimal;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -240,21 +241,194 @@ class MarketIndexApiTest {
     }
 
     @Test
-    void identicalObservationFromAnotherBatchIsADuplicateAndADifferentValueRollsBackTheWholeBatch() throws Exception {
+    void identicalObservationFromAnotherBatchIsADuplicateAndADifferentValueIsACorrectionThatNeverBlocksTheBatch() throws Exception {
         Instant t = now().minusSeconds(120);
         assertThat(ingest(batch(UUID.randomUUID(), "provider-x", now(), obs("UKX", "8123.45", t, "PROVIDER"))).statusCode()).isEqualTo(200);
         var duplicate = json.readTree(ingest(batch(UUID.randomUUID(), "provider-x", now(),
                 obs("UKX", "8123.4500", t, "PROVIDER"), obs("DJI", "44012.3", t, "EXCHANGE"))).body());
         assertThat(duplicate.get("observations").findValuesAsString("result")).containsExactly("DUPLICATE", "STORED");
 
-        UUID conflicting = UUID.randomUUID();
-        var conflict = ingest(batch(conflicting, "provider-x", now(), obs("SPX", "5987.21", t, "EXCHANGE"),
+        UUID correcting = UUID.randomUUID();
+        var corrected = ingest(batch(correcting, "provider-x", now(), obs("SPX", "5987.21", t, "EXCHANGE"),
                 obs("UKX", "9999.99", t, "PROVIDER")));
-        assertThat(conflict.statusCode()).isEqualTo(409);
-        assertThat(code(conflict)).isEqualTo("OBSERVATION_CONFLICT");
-        assertThat(jdbc.queryForObject("SELECT count(*) FROM market_index_ingest_batch WHERE batch_id = ?", Integer.class, conflicting)).isZero();
-        assertThat(jdbc.queryForObject("SELECT count(*) FROM market_index_observation WHERE symbol = 'SPX'", Integer.class)).isZero();
+        assertThat(corrected.statusCode()).isEqualTo(200);
+        assertThat(json.readTree(corrected.body()).get("observations").findValuesAsString("result")).containsExactly("CORRECTED", "STORED");
+        assertThat(jdbc.queryForObject("SELECT value FROM market_index_observation WHERE symbol = 'UKX'", BigDecimal.class))
+                .isEqualByComparingTo("9999.99");
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM market_index_observation WHERE symbol = 'SPX'", Integer.class)).isOne();
+        assertThat(jdbc.queryForObject("SELECT previous_value FROM market_index_observation_revision", BigDecimal.class))
+                .isEqualByComparingTo("8123.45");
         assertThat(ingest(batch(UUID.randomUUID(), "mock", now(), obs("UKX", "1.0", t, "COLLECTOR"))).statusCode()).isEqualTo(200);
+    }
+
+    // ---------------------------------------------------------------- upstream corrections
+
+    String result(HttpResponse<String> response, String symbol) {
+        assertThat(response.statusCode()).as(response.body()).isEqualTo(200);
+        for (JsonNode o : json.readTree(response.body()).get("observations")) {
+            if (o.get("symbol").stringValue().equals(symbol)) return o.get("result").stringValue();
+        }
+        throw new AssertionError(symbol);
+    }
+
+    BigDecimal stored(String symbol, Instant observedAt) {
+        return jdbc.queryForObject("SELECT value FROM market_index_observation WHERE symbol = ? AND source = 'provider-x' AND observed_at = ?",
+                BigDecimal.class, symbol, java.sql.Timestamp.from(observedAt));
+    }
+
+    int revisions(String symbol) {
+        return jdbc.queryForObject("SELECT count(*) FROM market_index_observation_revision WHERE symbol = ?", Integer.class, symbol);
+    }
+
+    /**
+     * The production incident of 2026-11-25/26: Sina revised the Dow's 21:00 close from 50185.6914 to 50182.9492 after
+     * it was stored. Every later batch repeated the revised close, was rejected whole with 409 OBSERVATION_CONFLICT and
+     * took the fresh FTSE 100 values with it. Now the revision corrects the close and the FTSE 100 is stored.
+     */
+    @Test
+    void theRealDowCloseCorrectionNoLongerBlocksTheFtse() throws Exception {
+        Instant close = now().truncatedTo(ChronoUnit.MINUTES).minus(Duration.ofHours(19));
+        Instant first = close.plusSeconds(6 * 60 + 11);
+        var original = ingest(batch(UUID.randomUUID(), "provider-x", first, obs("UKX", "10433.6602", close.minus(Duration.ofMinutes(270)), "PROVIDER"),
+                obs("SPX", "7182.7798", close, "PROVIDER"), obs("IXIC", "23585.8008", close, "PROVIDER"), obs("DJI", "50185.6914", close, "PROVIDER")));
+        assertThat(result(original, "DJI")).isEqualTo("STORED");
+
+        // Next cycle: the revised close beside unchanged ones.
+        var revised = ingest(batch(UUID.randomUUID(), "provider-x", first.plusSeconds(300),
+                obs("UKX", "10433.6602", close.minus(Duration.ofMinutes(270)), "PROVIDER"), obs("SPX", "7182.7798", close, "PROVIDER"),
+                obs("IXIC", "23585.8008", close, "PROVIDER"), obs("DJI", "50182.9492", close, "PROVIDER")));
+        assertThat(result(revised, "DJI")).isEqualTo("CORRECTED");
+        assertThat(result(revised, "SPX")).isEqualTo("DUPLICATE");
+
+        // The next trading day: a fresh FTSE 100 minute with the US closes repeated (US holiday) is stored.
+        Instant ftse = now().truncatedTo(ChronoUnit.MINUTES).minusSeconds(60);
+        var nextDay = ingest(batch(UUID.randomUUID(), "provider-x", now(), obs("UKX", "10630.65", ftse, "PROVIDER"),
+                obs("SPX", "7182.7798", close, "PROVIDER"), obs("IXIC", "23585.8008", close, "PROVIDER"), obs("DJI", "50182.9492", close, "PROVIDER")));
+        assertThat(result(nextDay, "UKX")).isEqualTo("STORED");
+        assertThat(result(nextDay, "DJI")).isEqualTo("DUPLICATE");
+
+        var latest = latest();
+        assertThat(index(latest, "DJI").get("value").stringValue()).isEqualTo("50182.9492");
+        assertThat(index(latest, "UKX").get("value").stringValue()).isEqualTo("10630.6500");
+        assertThat(Instant.parse(index(latest, "UKX").get("provenance").get("observedAt").stringValue())).isEqualTo(ftse);
+        // The replaced close is kept for audit with both batches.
+        var audit = jdbc.queryForMap("SELECT previous_value, previous_batch_id, batch_id, previous_collected_at, collected_at "
+                + "FROM market_index_observation_revision WHERE symbol = 'DJI'");
+        assertThat((BigDecimal) audit.get("previous_value")).isEqualByComparingTo("50185.6914");
+        assertThat(audit.get("previous_batch_id").toString()).isEqualTo(json.readTree(original.body()).get("batchId").stringValue());
+        assertThat(audit.get("batch_id").toString()).isEqualTo(json.readTree(revised.body()).get("batchId").stringValue());
+        assertThat(revisions("DJI")).isOne();
+    }
+
+    @Test
+    void anOlderOrReplayedBatchNeverOverwritesANewerCorrection() throws Exception {
+        Instant t = now().minusSeconds(600);
+        Instant c0 = now().minusSeconds(300);
+        UUID oldBatch = UUID.randomUUID();
+        String oldBody = batch(oldBatch, "provider-x", c0, obs("SPX", "6910.79", t, "PROVIDER"));
+        assertThat(result(ingest(oldBody), "SPX")).isEqualTo("STORED");
+        assertThat(result(ingest(batch(UUID.randomUUID(), "provider-x", c0.plusSeconds(120), obs("SPX", "6910.39", t, "PROVIDER"))), "SPX"))
+                .isEqualTo("CORRECTED");
+
+        // The original batch again (an outbox retry after a lost acknowledgement): a replay, nothing changes.
+        var replay = ingest(oldBody);
+        assertThat(json.readTree(replay.body()).get("replay").booleanValue()).isTrue();
+        assertThat(stored("SPX", t)).isEqualByComparingTo("6910.39");
+        // The same batch id with different content is still refused.
+        assertThat(code(ingest(batch(oldBatch, "provider-x", c0, obs("SPX", "6910.54", t, "PROVIDER"))))).isEqualTo("BATCH_ID_CONFLICT");
+
+        // A different batch collected before the correction (out of order, e.g. one rejected earlier and re-sent):
+        // superseded, with nothing changed and no revision.
+        var older = ingest(batch(UUID.randomUUID(), "provider-x", c0.plusSeconds(60), obs("SPX", "6910.54", t, "PROVIDER"),
+                obs("IXIC", "22000.10", t, "PROVIDER")));
+        assertThat(result(older, "SPX")).isEqualTo("SUPERSEDED");
+        assertThat(result(older, "IXIC")).isEqualTo("STORED");
+        assertThat(stored("SPX", t)).isEqualByComparingTo("6910.39");
+        assertThat(revisions("SPX")).isOne();
+        assertThat(index(latest(), "SPX").get("value").stringValue()).isEqualTo("6910.3900");
+    }
+
+    @Test
+    void correctionPrecedenceDependsOnTheBatchesNotOnArrivalOrder() throws Exception {
+        // Same collectedAt, different values: the greater batch id wins whichever arrives first.
+        Instant collected = now().minusSeconds(60);
+        UUID low = UUID.fromString("00000000-0000-4000-8000-000000000001");
+        UUID high = UUID.fromString("ffffffff-0000-4000-8000-000000000001");
+        Instant a = now().minusSeconds(600);
+        Instant b = now().minusSeconds(540);
+        ingest(batch(low, "provider-x", collected, obs("DJI", "100.00", a, "PROVIDER")));
+        ingest(batch(high, "provider-x", collected, obs("DJI", "200.00", a, "PROVIDER")));
+        ingest(batch(UUID.fromString("ffffffff-0000-4000-8000-000000000002"), "provider-x", collected, obs("DJI", "200.00", b, "PROVIDER")));
+        ingest(batch(UUID.fromString("00000000-0000-4000-8000-000000000002"), "provider-x", collected, obs("DJI", "100.00", b, "PROVIDER")));
+        assertThat(stored("DJI", a)).isEqualByComparingTo("200.00");
+        assertThat(stored("DJI", b)).isEqualByComparingTo("200.00");
+
+        // A value that flips and flips back (Sina's settling close): the latest collection wins each time, audited.
+        Instant close = now().minusSeconds(900);
+        Instant c = now().minusSeconds(400);
+        for (String v : new String[] {"7237.36", "7237.79", "7237.17", "7237.79", "7237.17", "7237.17"}) {
+            c = c.plusSeconds(30);
+            ingest(batch(UUID.randomUUID(), "provider-x", c, obs("SPX", v, close, "PROVIDER")));
+        }
+        assertThat(stored("SPX", close)).isEqualByComparingTo("7237.17");
+        assertThat(revisions("SPX")).isEqualTo(4);
+    }
+
+    @Test
+    void concurrentCorrectionsConvergeOnTheNewestCollectionWithoutDeadlocks() throws Exception {
+        Instant t = now().minusSeconds(600);
+        Instant base = now().minusSeconds(300);
+        ingest(batch(UUID.randomUUID(), "provider-x", base, obs("UKX", "100.00", t, "PROVIDER"), obs("DJI", "100.00", t, "PROVIDER")));
+        var start = new CountDownLatch(1);
+        var pool = Executors.newFixedThreadPool(8);
+        try {
+            var calls = new ArrayList<Future<HttpResponse<String>>>();
+            for (int i = 1; i <= 8; i++) {
+                String value = (100 + i) + ".00";
+                // Alternate the order of the two symbols in the request; locking order is fixed server-side.
+                String body = i % 2 == 0
+                        ? batch(UUID.randomUUID(), "provider-x", base.plusSeconds(i), obs("UKX", value, t, "PROVIDER"), obs("DJI", value, t, "PROVIDER"))
+                        : batch(UUID.randomUUID(), "provider-x", base.plusSeconds(i), obs("DJI", value, t, "PROVIDER"), obs("UKX", value, t, "PROVIDER"));
+                calls.add(pool.submit((Callable<HttpResponse<String>>) () -> { start.await(); return ingest(body); }));
+            }
+            start.countDown();
+            for (var call : calls) assertThat(call.get().statusCode()).isEqualTo(200);
+        } finally {
+            pool.shutdownNow();
+        }
+        // Whatever the commit order, the newest collection (i = 8) holds, and every applied change is audited.
+        assertThat(stored("UKX", t)).isEqualByComparingTo("108.00");
+        assertThat(stored("DJI", t)).isEqualByComparingTo("108.00");
+        assertThat(revisions("UKX")).isBetween(1, 8);
+        assertThat(revisions("UKX")).isEqualTo(revisions("DJI"));
+        assertThat(count("market_index_ingest_batch")).isEqualTo(9);
+    }
+
+    @Test
+    void cryptoAndIndexCorrectionsAreIndependentAndRetentionStillWorks() throws Exception {
+        Instant at = now().truncatedTo(ChronoUnit.MINUTES).minusSeconds(120);
+        Instant c0 = now().minusSeconds(60);
+        var first = ingest(batch(UUID.randomUUID(), "provider-x", c0, obs("UKX", "101.00", at, "PROVIDER"),
+                crypto("BTCUSD", "57885.27", at, null), crypto("ETHUSD", "1640.18", at, null)));
+        assertThat(result(first, "BTCUSD")).isEqualTo("STORED");
+        // A revised BTC/USD bar beside an unchanged ETH/USD and a new index minute: only BTC changes.
+        Instant next = at.plusSeconds(60);
+        var second = ingest(batch(UUID.randomUUID(), "provider-x", c0.plusSeconds(30), obs("UKX", "102.00", next, "PROVIDER"),
+                crypto("BTCUSD", "57890.00", at, null), crypto("ETHUSD", "1640.18", at, null)));
+        assertThat(result(second, "BTCUSD")).isEqualTo("CORRECTED");
+        assertThat(result(second, "ETHUSD")).isEqualTo("DUPLICATE");
+        assertThat(result(second, "UKX")).isEqualTo("STORED");
+        assertThat(revisions("BTCUSD")).isOne();
+        assertThat(revisions("ETHUSD")).isZero();
+
+        // The superseded batch is no longer referenced by any observation: batch retention can delete it (revisions
+        // keep its id as a value, not a reference), and deleting an observation removes its revisions.
+        UUID firstBatch = UUID.fromString(json.readTree(first.body()).get("batchId").stringValue());
+        jdbc.update("UPDATE market_index_observation SET batch_id = ? WHERE batch_id = ?",
+                UUID.fromString(json.readTree(second.body()).get("batchId").stringValue()), firstBatch);
+        assertThat(store.deleteOrphanBatchesBefore(Instant.now().plusSeconds(60), 100)).isEqualTo(1);
+        jdbc.update("DELETE FROM market_index_observation WHERE symbol = 'BTCUSD'");
+        assertThat(revisions("BTCUSD")).isZero();
     }
 
     @Test
@@ -579,12 +753,13 @@ class MarketIndexApiTest {
         assertThat(ukx.get("changePercent").stringValue()).isEqualTo("1.00");
         assertThat(ukx.get("market").get("exchange").stringValue()).isEqualTo("LSE");
 
-        // An identical retry is a replay; a different reference for the same instant is a conflict.
+        // An identical retry is a replay; a later different reference for the same instant is a correction.
         assertThat(json.readTree(ingest(body).body()).get("replay").booleanValue()).isTrue();
-        var conflict = ingest(batch(UUID.randomUUID(), "provider-x", now(), crypto("BTCUSD", "57885.27", at, "61784.83")));
-        assertThat(conflict.statusCode()).isEqualTo(409);
-        assertThat(code(conflict)).isEqualTo("OBSERVATION_CONFLICT");
-        var same = ingest(batch(UUID.randomUUID(), "provider-x", now(), crypto("BTCUSD", "57885.27", at, "61784.82")));
+        var correction = ingest(batch(UUID.randomUUID(), "provider-x", now(), crypto("BTCUSD", "57885.27", at, "61784.83")));
+        assertThat(correction.statusCode()).isEqualTo(200);
+        assertThat(json.readTree(correction.body()).get("observations").get(0).get("result").stringValue()).isEqualTo("CORRECTED");
+        assertThat(index(latest(), "BTCUSD").get("reference24h").stringValue()).isEqualTo("61784.8300");
+        var same = ingest(batch(UUID.randomUUID(), "provider-x", now(), crypto("BTCUSD", "57885.27", at, "61784.83")));
         assertThat(json.readTree(same.body()).get("observations").get(0).get("result").stringValue()).isEqualTo("DUPLICATE");
     }
 

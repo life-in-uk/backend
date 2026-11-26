@@ -43,3 +43,33 @@ CREATE TABLE market_index_instrument_health (
     CHECK (status = 'FAILED' OR (last_successful_collection_at IS NOT NULL AND last_successful_collection_at >= last_attempt_at)),
     CHECK (status = 'OK' OR last_successful_collection_at IS NULL OR last_successful_collection_at < last_attempt_at)
 );
+
+-- Upstream corrections (docs/market-indices.md, "Corrections"). Until V18 a second, different value for an existing
+-- (symbol, source, observed_at) rejected the whole batch (409 OBSERVATION_CONFLICT), so one revised close discarded
+-- every other instrument in that batch and every later batch that repeated it. From V18 the value collected latest
+-- wins: the stored row is updated in place only when the correcting batch's (collected_at, batch_id) is greater than
+-- that of the batch that last set it, so an older or replayed batch can never overwrite a newer correction. The value
+-- it replaces is kept here, insert-only. Rows are removed with their observation (retention). Batch ids are kept as
+-- plain values, not foreign keys, so batch retention is unchanged. A new table only: the previous image never reads it
+-- (and, after a rollback, answers 409 for a differing value again, as before).
+CREATE TABLE market_index_observation_revision (
+    id                          bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    observation_id              bigint NOT NULL REFERENCES market_index_observation (id) ON DELETE CASCADE,
+    symbol                      text NOT NULL,
+    source                      text NOT NULL,
+    observed_at                 timestamptz NOT NULL,
+    previous_observed_at_source text NOT NULL CHECK (previous_observed_at_source IN ('EXCHANGE', 'PROVIDER', 'COLLECTOR')),
+    previous_value              numeric(12,4) NOT NULL CHECK (previous_value > 0),
+    previous_previous_close     numeric(12,4),
+    previous_reference_24h      numeric(12,4),
+    previous_reference_24h_at   timestamptz,
+    previous_batch_id           uuid NOT NULL,
+    previous_collected_at       timestamptz NOT NULL,
+    previous_received_at        timestamptz NOT NULL,
+    batch_id                    uuid NOT NULL,
+    collected_at                timestamptz NOT NULL,
+    revised_at                  timestamptz NOT NULL DEFAULT clock_timestamp(),
+    CHECK (collected_at > previous_collected_at OR (collected_at = previous_collected_at AND batch_id > previous_batch_id))
+);
+
+CREATE INDEX market_index_observation_revision_observation ON market_index_observation_revision (observation_id);

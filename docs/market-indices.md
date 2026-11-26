@@ -187,16 +187,25 @@ Checks run in this order:
 A replay is therefore never refused for having crossed the backfill cutoff, and never accepted without
 authentication and source authorization.
 
-`DUPLICATE` means an identical observation (same symbol, source, `observedAt` and values) came in an earlier
-batch; this is normal while a market is closed. Each batch is one transaction: either every observation is
-stored, or none is.
+Each new batch is one transaction, and every observation in it gets exactly one result:
+
+| Result | Meaning |
+| --- | --- |
+| `STORED` | A new instant for that symbol and source. |
+| `DUPLICATE` | The same values were stored for that instant before (normal while a market is closed). |
+| `CORRECTED` | (V18) Different values for a stored instant, from a newer batch: applied, and the replaced values kept as a revision. See "Corrections". |
+| `SUPERSEDED` | (V18) Different values for a stored instant, from a batch older than the one that set them: not applied. |
+
+A whole batch is still refused only for authentication, authorization, structure, source or time-window errors
+(the table below). Before V18 a differing value rejected the whole batch with 409 `OBSERVATION_CONFLICT`; V18 never
+returns that code.
 
 | Status | Code | Collector action |
 | --- | --- | --- |
 | 400 | `MARKET_BATCH_INVALID` (message names the field) | Permanent: mark rejected |
 | 401 | `COLLECTOR_UNAUTHORIZED` | Pause sending, keep outbox, alert |
 | 403 | `SOURCE_NOT_AUTHORIZED` (the key is not bound to this source) | Permanent: configuration error, alert |
-| 409 | `BATCH_ID_CONFLICT`, `OBSERVATION_CONFLICT` (nothing stored) | Permanent: mark rejected, alert |
+| 409 | `BATCH_ID_CONFLICT` (nothing stored); before V18 also `OBSERVATION_CONFLICT` | Permanent: mark rejected, alert |
 | 413 | `PAYLOAD_TOO_LARGE` | Permanent |
 | 415 | `UNSUPPORTED_MEDIA_TYPE` | Permanent |
 | 422 | `SOURCE_NOT_ACCEPTED`, `MOCK_TIME_SOURCE_INVALID`, `FUTURE_OBSERVATION`, `OBSERVATION_AFTER_COLLECTION`, `OBSERVATION_TOO_OLD` | Permanent |
@@ -359,6 +368,50 @@ the `observed_at` index. It filtered 1,839,600 rows of other sources and took 15
 whole table. The scalar `max()` form is always resolved on the natural-key index, so its cost is bounded by that
 symbol and source's own rows.
 
+## Corrections (V18)
+
+**Incident (2026-11-20 to 2026-11-26).** Sina revises values after first publishing them: index closes settle in the
+minutes after the close (SPX 2026-11-20 21:00: 6910.79, 6910.54, 6910.79, then 6910.39 for good, which is also the
+next day's previous close), the FTSE 100's last minute is replaced by the official closing price at the next
+morning's pre-open (2026-11-23 16:30: 10480.82 then 10486.35), and a forming minute differs from its final value.
+The collector repeats the newest value of a closed market every cycle. Under V17 any differing value rejected the
+whole batch (409 `OBSERVATION_CONFLICT`), and the collector marks such a batch rejected for good, so one revised
+close discarded every later batch until a new minute replaced it. In production 3,320 batches were rejected; 751
+observations (734 FTSE 100 minutes from 2026-11-23 08:15 onwards) never arrived, and the FTSE 100 was STALE through
+the trading day of 2026-11-26 because the US closes of 2026-11-25 (Thanksgiving) were revised.
+
+**Policy.** For an existing (symbol, source, `observedAt`) the values from the most recent collection win:
+
+- Precedence is the pair (`collectedAt`, `batchId`) of the batch that carries the values: a later `collectedAt`
+  wins; at the same `collectedAt` the greater `batchId` (canonical lowercase text) wins. The outcome therefore
+  depends only on the batches, never on the order in which they arrive.
+- A newer batch with different values corrects the row in place (`CORRECTED`): value, previous close, 24-hour
+  reference, `observedAtSource`, `batch_id` (so `provenance.collectedAt` is that batch's) and `received_at`. The
+  replaced values, both batch ids and both collection times are inserted into `market_index_observation_revision`
+  (insert-only; a `CHECK` enforces that the correcting batch is newer). Revisions are deleted with their
+  observation by retention.
+- An older batch with different values changes nothing (`SUPERSEDED`), so a late outbox retry, a re-sent rejected
+  batch or a replay can never overwrite a newer correction. An identical retry of a committed `batchId` stays a
+  replay (`ALREADY_ACCEPTED`, nothing re-applied); a different body under that id stays 409 `BATCH_ID_CONFLICT`.
+- A correction passes exactly the same validation as a new observation (structure, mock time source, crypto
+  24-hour window, backfill window). Each instrument is decided on its own, so a correction to one never affects
+  another; the batch stays all-or-nothing only for validation errors.
+- Concurrency: the existing row is locked (`SELECT ... FOR UPDATE`) before the precedence check, and rows are taken
+  in a fixed (symbol, `observedAt`) order, so concurrent batches serialise per row and cannot deadlock.
+- A value that flips and flips back is applied each time, each audited (observed: at most four flips in the ten
+  minutes after a close, then stable). A collector clock stepping backwards can make a newer value lose
+  (`SUPERSEDED`) until a later cycle; collector times are bounded by `collector-clock-skew`.
+
+The collector needs no change: it treats any 200 acknowledgement of its batch as sent and ignores the per-observation
+results.
+
+**Verification against production data.** All 3,823 outbox batches of the production collector (a read-only copy
+taken 2026-11-26 16:27 UTC, 494 sent and 3,329 rejected, in their original order and with their original bodies)
+were sent to this branch on a fresh database: every `sina` batch answered 200 (the 20 `mock` burn-in batches 422,
+as the test server accepts only `sina`), with 1,664 `STORED`, 13,497 `DUPLICATE` and 51 `CORRECTED` results over 30
+instants, and every stored value equals the most recently collected one (DJI 2026-11-25 21:00 = 50182.9492, SPX
+2026-11-20 21:00 = 6910.3901, UKX 2026-11-25 16:30 = 10433.66).
+
 ## Crypto: BTC/USD and ETH/USD (V18)
 
 Owner decision 2026-11-21: Sina Finance crypto minute bars, through the same collector, outbox, batch, endpoint,
@@ -388,7 +441,9 @@ accepted the licensing and redistribution risk of that source; Sina has not gran
 ## Release: V17 to V18
 
 V18 widens two `CHECK`s (symbols; up to 6 observations per batch), adds two nullable columns and one `CHECK`, and
-creates `market_index_instrument_health` (per-pair crypto health, a new table). Existing rows are unchanged and all
+creates `market_index_instrument_health` (per-pair crypto health) and `market_index_observation_revision`
+(correction audit), both new tables. From V18 an observation row can be updated in place by a correction (see
+"Corrections"). Existing rows are unchanged and all
 satisfy the new constraints. Release with `approve_migrations=18`. The previous image
 (V17 code) is compatible with a V18 database: it reads only its four symbols by name, ignores the new columns and
 validates the newer schema under Flyway's default `ignoreMigrationPatterns` (`*:future`). Rollback is therefore an
@@ -413,6 +468,9 @@ Repeated on 2026-11-26 with per-pair crypto health (`market_index_instrument_hea
 | 4 | Previous image on the V18 database (rollback) | "Schema is up to date" (only the expected Flyway "newer than the latest available migration" warning); health UP; Guides 200; four-index batch and heartbeat 200; crypto batch and `instruments` heartbeat 400; `latest` lists exactly the four indices; health rows untouched |
 | 5 | This branch again (roll-forward) | Before any new heartbeat both pairs `UNKNOWN` (the rows predate the source's newest heartbeat, so they are not shown as current); after one heartbeat with `instruments`, BTCUSD `PROVIDER_FAILED`, ETHUSD HEALTHY |
 | 6 | This branch with the real collector (mock provider, crypto on, HTTP) | Four cycles, BTC/USD failing in cycles 2–3: every batch and heartbeat 200; heartbeat row `OK` throughout; BTCUSD rows `OK:0`, `FAILED:1`, `FAILED:2`, `OK:0`; ETHUSD `OK:0` throughout; one backend warning at the first failure |
+| 7 | This branch, the production collector's whole outbox replayed (see "Corrections") | 3,329 previously rejected batches all 200; 51 corrections; every value equals the newest collected one |
+| 8 | Previous image on that corrected V18 database (rollback) | Health UP; Guides 200; `latest` serves the corrected values; a differing value is 409 `OBSERVATION_CONFLICT` again (V17 behaviour); revision table ignored |
+| 9 | This branch again (roll-forward) | The same request: 200, DJI `CORRECTED`, a new UKX minute `STORED` |
 
 Enablement order (each step is safe on its own and has its own approval):
 
@@ -431,6 +489,8 @@ batches and heartbeats are then exactly the four-index ones a V17 image accepts;
 roll back the backend image. Rolling back the backend image while crypto is on would make the previous image reject
 every batch (`MARKET_BATCH_INVALID`, indices included) and every heartbeat (`HEARTBEAT_INVALID`) until crypto is
 switched off; pending batches stay in the collector outbox, but batches already rejected are not retried.
+After any backend image rollback the previous image also brings back the whole-batch 409 `OBSERVATION_CONFLICT` for
+a revised value (the incident in "Corrections"); corrected rows and revisions stay valid and readable.
 
 ## Release: V16 to V17 and previous-image compatibility
 
