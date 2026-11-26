@@ -1,6 +1,6 @@
 # Editorial review and release readiness
 
-**GO for owner review · DRAFT.** Two Work Visa Guides, each complete in zh-CN, zh-TW, en, ur and hi. Owner approval, an independent immigration wording review, and independent fluent-language review remain pending. Urdu and Hindi received a consistency and readability pass in this assignment. Native fluency and human sign-off remain unverified.
+**GO for owner review · DRAFT.** Two Work Visa Guides, each complete in zh-CN, zh-TW, en, ur and hi. The final official-source and five-locale consistency pass was completed on 26 November 2026. Owner authorization is pending. Independent professional immigration review and independent fluent-language review, especially Urdu and Hindi, have not taken place.
 
 ## Immigration checks and open review items
 
@@ -8,6 +8,7 @@
 - Treat the sponsor's successful completion notification as the normal application prerequisite. Where UKVI cannot see a report but the file would otherwise qualify, the caseworker guidance calls for checking with the sponsor. The reader should never plan an early application around that operational safeguard. Ask an adviser to review late results, resits, gaps in permission and unusual CAS history. [Graduate caseworker guidance](https://www.gov.uk/government/publications/graduate-caseworker-guidance/graduate-caseworker-guidance-accessible-version)
 - Check Student ST 26.6 and the individual's conditions before starting a permanent role while awaiting a decision. Check section 3C separately for permission and travel. The pending-application travel rule describes the wider Common Travel Area. Departure from the UK can independently end section 3C permission. The UK-born child limb and separately timed family applications require care. [Appendix Student](https://www.gov.uk/guidance/immigration-rules/immigration-rules-appendix-student) · [Section 3C guidance](https://www.gov.uk/government/publications/3c-and-3d-leave/3c-and-3d-leave-accessible) · [Graduate dependants](https://www.gov.uk/graduate-visa/your-partner-and-children)
 - Separate Skilled Worker new entrant eligibility and the four-year combined permission cap from the qualifications for settlement. Verify the occupation, eligible pay, hours, contract and permission record. Recheck the wider earned-settlement programme as changes commence. [Appendix Skilled Worker](https://www.gov.uk/guidance/immigration-rules/immigration-rules-appendix-skilled-worker) · [Earned settlement response](https://www.gov.uk/government/consultations/earned-settlement/outcome/a-fairer-pathway-to-settlement-government-response-to-the-consultation)
+- The final pass made the three Student switching conditions explicit, separated the new entrant test and its combined four-year cap, and clarified eligible applications before expiry. It also made the section 3C departure rule and dependant application rules explicit in all five locales. The hub now dates the separate B2 settlement change while preserving the current five-year example. [Immigration Act 1971, section 3C](https://www.legislation.gov.uk/ukpga/1971/77/section/3C)
 - Review language for the differences between permission, an application, a decision and an employer's intention. Retain standard English route names and official identifiers beside natural locale explanations. Review Urdu bidirectional wording around numbers and acronyms on a phone.
 
 ## Validation evidence
@@ -15,17 +16,20 @@
 | Check | Result |
 |---|---|
 | Catalogue and duplicate review | 75 public Guides per locale, 425 sitemap URLs, 220 relevant localized detail bodies checked. Both proposed slugs were absent from the catalogue and all ten public detail APIs returned 404. Repository and available local editorial inventory checked. The protected runner must still reconcile private records before writes. |
-| Sources and links | 37 canonical source URLs and 30 existing localized detail links returned HTTP 200. Draft peers were rendered locally. Community evidence supports question selection only. |
+| Sources and links | 38 canonical source URLs and 30 existing localized detail links returned HTTP 200 across the programme checks. Draft peers were rendered locally. Community evidence supports question selection only. |
 | Editorial parity | `python3 -B docs/editorial/international-student-pathways/validate-drafts.py` passed both checks across ten files. These check locale completeness, dates, worked prices, canonical and file hashes, evidence and links. |
 | Production Java Guide reader and quality gate | All ten passed. Java hashes matched the editorial manifests with zero blocking findings and zero warnings. |
 | Backend and publisher | `mvn -B -ntp -o verify` gave 1,242 passed, 53 skipped, zero failures. All 50 publisher regression tests passed. |
 | Offline rehearsal | Existing pack and check accepted the exact two-slug `work-visa` archive. The generic runner loaded it, selected `family-visa-v1`, and passed the pinned scope to mocked host staging and publication. |
-| Frontend local preview | The current renderer produced ten detail pages at 320 px. Checked headings, evidence anchors, canonical, alternates, localized links, horizontal overflow and Urdu RTL. These were draft fixtures. |
+| Frontend local preview | Static and interactive previews used local publication fixtures. A 320 px browser smoke test verified both detail routes and Urdu RTL, the published-only Work Visa group, the Education entry link and the conditional University entry link in all five locales. Three evidence labels were shortened to fit the mobile layout. |
 
-Offline archive SHA-256 `8ed6f9f53c8de1c0cd02a2e51ec0021c268728e1408e108c711efc1911e71222` and manifest SHA-256 `7b640b2725ce9dba2a17f22fabe46029a86ec14598a7ca94decdc53c4e818c8d`. The archive is local review evidence.
+Offline archive SHA-256 `abbae2283f9b9bd4f31666014ecf56cd1e64158dca329cf2e314477e6a3ca9c2` and manifest SHA-256 `b5d727c20d9a7ee0bd8ff8c4eb6a670ba5eb5528cf921ab9dbd803e3e2625be4`. The archive is local review evidence.
 
 ## Before a future release
 
-1. Approve the ten exact editorial hashes after factual and language review. If content changes, regenerate both handoff manifests and rehearse the new archive.
-2. Resolve discoverability in the curated Work Visa hub for all five locales before public rollout. The existing detail route and static renderer work. Frontend curation and any resulting release follow separate scope and approvals.
-3. Use the existing manifest-driven [protected publisher](../../../deploy/PUBLISHING.md) for these two new slugs together, with release review and verified backups. Follow the separate frontend release process for public static pages.
+1. Approve the ten exact hashes after the pending reviews. Merge the backend editorial follow-up and frontend discovery PR only with owner authorization and green CI. Verify merged Guide files byte-for-byte against the local ZIP and require a green CI run on the exact merged backend revision.
+2. Recheck live rules and fees, and confirm both slugs are still absent from public listings. When separately authorized to stage, upload the exact ZIP to the existing private versioned release location at `editorial/household/packages/<archive-sha256>.zip`. Download the exact version to verify the bytes and record the S3 Version ID.
+3. Dispatch the existing **Publish reviewed guides** on backend `main` with `release=manifest`, `package_sha256`, `manifest_sha256` and `package_version`. Stop at the GitHub Production approval gate. The job checks private conflicts and takes verified backups before draft staging and publication, checks the ten revision IDs and hashes and uses `family-visa-v1`.
+4. After approval, verify the immutable receipt, backups, revision and publication IDs, public content, five localized listings and sitemap. Run the separately approved frontend Production release from the discovery-enabled revision. Smoke-test the ten public routes, Work Visa and Education discovery, canonical and alternate URLs, mobile and Urdu RTL. Exercise University navigation only where that hub already has published Guides. Preserve the withdrawal identifiers and prior frontend release reference.
+
+The [discovery PR](https://github.com/life-in-uk/frontend/pull/46) adds a locale-aware Work Visa group and gates the Education and University hub links on published data. The University series is outside this release. See the existing [publisher and recovery runbook](../../../deploy/PUBLISHING.md).

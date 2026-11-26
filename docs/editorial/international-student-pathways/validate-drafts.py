@@ -32,6 +32,13 @@ CUTOFFS = {
     "ur": ("31 دسمبر 2026", "1 جنوری 2027"),
     "hi": ("31 दिसंबर 2026", "1 जनवरी 2027"),
 }
+SETTLEMENT_B2_DATES = {
+    "zh-CN": "2027 年 3 月 26 日",
+    "zh-TW": "2027 年 3 月 26 日",
+    "en": "26 March 2027",
+    "ur": "26 مارچ 2027",
+    "hi": "26 मार्च 2027",
+}
 
 
 def draft(slug, locale):
@@ -87,9 +94,11 @@ class StudentPathwaysDraftTest(unittest.TestCase):
         for locale in LOCALES:
             with self.subTest(locale=locale):
                 body = draft(GRADUATE, locale)["content"]
-                for value in (*CUTOFFS[locale], *amounts, "18", "3C", "ST 26.6"):
+                for value in (*CUTOFFS[locale], *amounts, "18", "24", "3C", "ST 26.6", "SW 1.5A", "Tier 2"):
                     self.assertIn(value, body)
                 example = draft(HUB, locale)["content"]
+                self.assertIn(SETTLEMENT_B2_DATES[locale], example)
+                self.assertIn("B2", example)
                 for value in ("2", "3", "5", "10", "3C"):
                     self.assertRegex(example, rf"(?<!\d){value}(?!\d)")
 

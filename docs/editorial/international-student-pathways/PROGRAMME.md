@@ -9,7 +9,7 @@ Research cut-off 26 November 2026. UK immigration rules have UK-wide scope. Empl
 | `uk-options-after-graduation` | Decide what to do this week, especially when a course, an offer and visa expiry have different dates. This is the editorial entry point. |
 | `graduate-visa-uk` | Check completion reporting, application date and duration, cost, work and family conditions. Compare a confirmed direct Skilled Worker option with Graduate permission. |
 
-Both new Guides fit the existing Work Visa category. They link to each other and to published specialists. The University application drafts remain separate. The Work Visa hub's curated reading order needs a placement review before release. See the coverage map. Core content is free and the programme contains no commercial recommendations.
+Both new Guides fit the existing Work Visa category. They link to each other and to published specialists. The University application drafts remain separate. The proposed localized placement is in the separate frontend discovery PR. See the coverage map. Core content is free and the programme contains no commercial recommendations.
 
 ## Subsequent batches
 
