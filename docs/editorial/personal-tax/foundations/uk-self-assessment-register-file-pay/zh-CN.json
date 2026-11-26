@@ -1,0 +1,281 @@
+{
+  "slug": "uk-self-assessment-register-file-pay",
+  "category": "money",
+  "title": "英国 2025/26 自评报税：注册、网上提交和缴税",
+  "summary": "判断是否要交个人税表，了解怎样注册、网上报税、付款及纠正错误。",
+  "content": "# 英国 2025/26 自评报税：注册、网上提交和缴税\n\n最后更新: 2026-11-26\n\n## 先确定要不要报税\n本指南适用于英格兰、苏格兰、威尔士和北爱尔兰个人，税年为 **2025 年 4 月 6 日至 2026 年 4 月 5 日**。申报流程全英国通用，但实际所得税率取决于纳税人身份和收入类别。工资已通过 PAYE 正确扣税的雇员，一般不会仅因受雇而必须交税表。租金、未扣税收入、个人自雇、海外收入或应税资本利得可能改变结论。用 HMRC 对应税年的工具核对。如收到申报通知，在 HMRC 撤回前，须按适用期限提交。[查询是否需报税](#guide-evidence-need)\n\n## 注册并核对期限\n用 HMRC 注册查询工具，按是否报过税及本次申报原因选择途径。首次申报需要注册。已有 UTR 就先查是否要恢复原账户，不要另要一个号码。保管好 **10 位纳税人唯一参考号（UTR）** 和登录资料。注册后还要提交税表。[注册或重新启用](#guide-evidence-registration) · [登录与 UTR](#guide-evidence-online)\n\n如果以前从未报过税，或已注册但不需要提交 2024/25 税表，须在 **2026 年 10 月 5 日**前告知 HMRC 需要申报 **2025/26**。纸质税表期限为 **2026 年 10 月 31 日**。网上申报和缴税通常都须在 **2027 年 1 月 31 日晚上 11:59** 前完成。错过注册日期请尽快办理。逾期注册后，申报期限为 HMRC 信件或电子邮件所列日期起 3 个月，通常的缴税期限仍然适用。查看自己的通知。[HMRC 期限](#guide-evidence-deadlines)\n\n## 网上提交之后，再另行缴税\n1. 整理 P60 或 P45、已扣税金及适用的利息、股息、租金或资本利得记录。保留减免和扣除的凭证。交税表时，应按要求填入 PAYE 收入及已扣税额。参见[英国工资单与 PAYE](/zh-CN/money/uk-paye-tax-codes-national-insurance)。\n2. 打开 GOV.UK 的 **File your Self Assessment tax return online**，选 **Sign in**，按提示输入 UTR，选 2025/26 税表。打开适用栏目并填写，核对税额后提交，保存回执。保存草稿不等于提交。以非居民身份在海外居住的人应查专用表格或适用商业软件。个人房东或个体经营者应查税务数字化（MTD）是否已从 2026/27 年度起适用，还是之后才开始，该要求可能取决于以往相关年度扣除费用前的合资格收入合计。[HMRC 网上申报](#guide-evidence-online) · [MTD 时间表](#guide-evidence-digital)\n3. 查看账单和账户对账单上的付款金额及日期，再打开 GOV.UK 的 **Pay your Self Assessment tax bill**。用个人借记卡网上付款时，参考号是 UTR 后加 **K**。保存收据，检查是否入账。给所选付款方式留足处理时间。[付款方式](#guide-evidence-payments) · [网上刷卡参考号](#guide-evidence-card)\n\n## 算一遍：首张税单加上预缴\n假设 **2025/26** 尾款为 **£2,400**，此前未预缴，全部可计入下年度预缴计算且没有例外，例如该年通过自评以外途径支付的税低于 80%。**2026/27** 每期预缴额为 **£1,200**。**2027 年 1 月 31 日**应付 £2,400 加首期 £1,200，共 **£3,600**。第二期 **£1,200** 通常在 **2027 年 7 月 31 日**到期。请以账户对账单为准。相关税额不足 £1,000，或超过 80% 的税已通过自评以外的途径缴清，通常不用预缴。资本利得税不计入所得税预缴金额。若预计 2026/27 年度应缴税额较低，可申请调低预缴额。调得过低，差额可能产生利息。[HMRC 预缴规则](#guide-evidence-account)\n\n## 改错、迟缴和找人帮忙\n普通 **2025/26** 税表一般可在 **2028 年 1 月 31 日**前修改。网上提交后等 72 小时，顺序选 **Self Assessment account → More Self Assessment details → At a glance → Tax return options**，选税年、改好后重新提交。过期或用其他软件申报，要按 HMRC 的修正规则处理。按一般规则，逾期申报通常先罚 **£100**，之后还可能有额外罚款。即使暂时付不起税，也应尽快申报。迟缴可能产生利息和另外的罚款。查申诉途径；若不能按时缴足，尽早找 HMRC 查询可否分期。[修正税表](#guide-evidence-amend) · [罚款](#guide-evidence-penalty) · [付款困难](#guide-evidence-time-to-pay)\n\n账目齐全、情况简单时可以考虑自己填。涉及税务居民身份、海外收入、卖房、大额亏损或 HMRC 调查时，可找有相关经验的合资格会计师或税务顾问。核实资质、费用和专业身份，用 HMRC 官方程序授权，勿交出登录资料。提交前自己确认，纳税责任仍由你承担。[选择税务代理](#guide-evidence-agent)\n",
+  "status": "DRAFT",
+  "publishedAt": null,
+  "updatedAt": "2026-11-26T00:00:00Z",
+  "sources": [
+    {
+      "key": "need",
+      "organisation": "HMRC",
+      "title": "Check if you need to send a Self Assessment tax return",
+      "url": "https://www.gov.uk/check-if-you-need-tax-return",
+      "accessedAt": "2026-11-26T00:00:00Z"
+    },
+    {
+      "key": "deadlines",
+      "organisation": "HMRC",
+      "title": "Self Assessment tax returns: deadlines",
+      "url": "https://www.gov.uk/self-assessment-tax-returns/deadlines",
+      "accessedAt": "2026-11-26T00:00:00Z"
+    },
+    {
+      "key": "registration",
+      "organisation": "HMRC",
+      "title": "Check how to register for Self Assessment",
+      "url": "https://www.gov.uk/register-for-self-assessment",
+      "accessedAt": "2026-11-26T00:00:00Z"
+    },
+    {
+      "key": "online",
+      "organisation": "HMRC",
+      "title": "File your Self Assessment tax return online",
+      "url": "https://www.gov.uk/log-in-file-self-assessment-tax-return",
+      "accessedAt": "2026-11-26T00:00:00Z"
+    },
+    {
+      "key": "digital",
+      "organisation": "HMRC",
+      "title": "Using Making Tax Digital for Income Tax for the first time",
+      "url": "https://www.gov.uk/guidance/use-making-tax-digital-for-income-tax/using-making-tax-digital-for-income-tax-for-the-first-time",
+      "accessedAt": "2026-11-26T00:00:00Z"
+    },
+    {
+      "key": "payments",
+      "organisation": "HMRC",
+      "title": "Pay your Self Assessment tax bill",
+      "url": "https://www.gov.uk/pay-self-assessment-tax-bill",
+      "accessedAt": "2026-11-26T00:00:00Z"
+    },
+    {
+      "key": "card",
+      "organisation": "HMRC",
+      "title": "Pay your Self Assessment tax bill: by card online",
+      "url": "https://www.gov.uk/pay-self-assessment-tax-bill/by-debit-or-credit-card-online",
+      "accessedAt": "2026-11-26T00:00:00Z"
+    },
+    {
+      "key": "account",
+      "organisation": "HMRC",
+      "title": "Understand your Self Assessment tax bill: payments on account",
+      "url": "https://www.gov.uk/understand-self-assessment-bill/payments-on-account",
+      "accessedAt": "2026-11-26T00:00:00Z"
+    },
+    {
+      "key": "tma59a",
+      "organisation": "legislation.gov.uk",
+      "title": "Taxes Management Act 1970, section 59A",
+      "url": "https://www.legislation.gov.uk/ukpga/1970/9/section/59A",
+      "accessedAt": "2026-11-26T00:00:00Z"
+    },
+    {
+      "key": "amend",
+      "organisation": "HMRC",
+      "title": "Self Assessment tax returns: corrections",
+      "url": "https://www.gov.uk/self-assessment-tax-returns/corrections",
+      "accessedAt": "2026-11-26T00:00:00Z"
+    },
+    {
+      "key": "tma9za",
+      "organisation": "legislation.gov.uk",
+      "title": "Taxes Management Act 1970, section 9ZA",
+      "url": "https://www.legislation.gov.uk/ukpga/1970/9/section/9ZA",
+      "accessedAt": "2026-11-26T00:00:00Z"
+    },
+    {
+      "key": "penalty",
+      "organisation": "HMRC",
+      "title": "Self Assessment tax returns: penalties",
+      "url": "https://www.gov.uk/self-assessment-tax-returns/penalties",
+      "accessedAt": "2026-11-26T00:00:00Z"
+    },
+    {
+      "key": "time-to-pay",
+      "organisation": "HMRC",
+      "title": "If you cannot pay your tax bill on time",
+      "url": "https://www.gov.uk/difficulties-paying-hmrc",
+      "accessedAt": "2026-11-26T00:00:00Z"
+    },
+    {
+      "key": "agent",
+      "organisation": "HMRC",
+      "title": "How to choose a tax agent",
+      "url": "https://www.gov.uk/guidance/how-to-choose-a-tax-agent",
+      "accessedAt": "2026-11-26T00:00:00Z"
+    },
+    {
+      "key": "authorise-agent",
+      "organisation": "HMRC",
+      "title": "Authorising an agent to deal with your tax affairs",
+      "url": "https://www.gov.uk/guidance/authorising-an-agent-to-deal-with-your-tax-affairs",
+      "accessedAt": "2026-11-26T00:00:00Z"
+    }
+  ],
+  "evidence": [
+    {
+      "key": "need",
+      "statement": "按税年核对申报义务，并处理 HMRC 发出的申报通知。",
+      "supports": [
+        {
+          "sourceKey": "need",
+          "locator": "2025 to 2026 check and notice to file",
+          "excerpt": null,
+          "note": "按税年核对申报义务，并处理 HMRC 发出的申报通知。"
+        }
+      ]
+    },
+    {
+      "key": "deadlines",
+      "statement": "2025/26 年度须分别查告知、申报和付款日期；申报和付款可能不同期。",
+      "supports": [
+        {
+          "sourceKey": "deadlines",
+          "locator": "2025 to 2026 return, filing and payment deadlines",
+          "excerpt": null,
+          "note": "2025/26 年度须分别查告知、申报和付款日期；申报和付款可能不同期。"
+        }
+      ]
+    },
+    {
+      "key": "registration",
+      "statement": "用 HMRC 注册查询工具选择符合情况的注册或恢复途径。",
+      "supports": [
+        {
+          "sourceKey": "registration",
+          "locator": "Check the correct registration or reactivation route",
+          "excerpt": null,
+          "note": "用 HMRC 注册查询工具选择符合情况的注册或恢复途径。"
+        }
+      ]
+    },
+    {
+      "key": "online",
+      "statement": "HMRC 网上申报需要 UTR 和登录资料；非居民申报等情况不能用这个服务。",
+      "supports": [
+        {
+          "sourceKey": "online",
+          "locator": "How to sign in, UTR and who cannot use the service",
+          "excerpt": null,
+          "note": "HMRC 网上申报需要 UTR 和登录资料；非居民申报等情况不能用这个服务。"
+        }
+      ]
+    },
+    {
+      "key": "digital",
+      "statement": "个人房东或个体经营者的合资格收入达到条件时，应查 MTD 开始日期和软件要求。",
+      "supports": [
+        {
+          "sourceKey": "digital",
+          "locator": "Who is included and when to start",
+          "excerpt": null,
+          "note": "个人房东或个体经营者的合资格收入达到条件时，应查 MTD 开始日期和软件要求。"
+        }
+      ]
+    },
+    {
+      "key": "payments",
+      "statement": "申报与支付是两件事，要核对所选付款方式的到账时间。",
+      "supports": [
+        {
+          "sourceKey": "payments",
+          "locator": "Payment methods and time to reach HMRC",
+          "excerpt": null,
+          "note": "申报与支付是两件事，要核对所选付款方式的到账时间。"
+        }
+      ]
+    },
+    {
+      "key": "card",
+      "statement": "用个人借记卡网上付款时，付款参考号是 10 位 UTR 加字母 K。",
+      "supports": [
+        {
+          "sourceKey": "card",
+          "locator": "Payment reference for online card payment",
+          "excerpt": null,
+          "note": "用个人借记卡网上付款时，付款参考号是 10 位 UTR 加字母 K。"
+        }
+      ]
+    },
+    {
+      "key": "account",
+      "statement": "预缴税款是下一税年的分期预付款；账单可能同时包含旧年补款和新年预付款。",
+      "supports": [
+        {
+          "sourceKey": "account",
+          "locator": "Who pays, due dates and example",
+          "excerpt": null,
+          "note": "预缴税款是下一税年的分期预付款；账单可能同时包含旧年补款和新年预付款。"
+        },
+        {
+          "sourceKey": "tma59a",
+          "locator": "Payments on account of income tax",
+          "excerpt": null,
+          "note": "预缴税款是下一税年的分期预付款；账单可能同时包含旧年补款和新年预付款。"
+        }
+      ]
+    },
+    {
+      "key": "amend",
+      "statement": "在适用期限内通过网上途径修正并重新提交。",
+      "supports": [
+        {
+          "sourceKey": "amend",
+          "locator": "Online return options; amendment period",
+          "excerpt": null,
+          "note": "在适用期限内通过网上途径修正并重新提交。"
+        },
+        {
+          "sourceKey": "tma9za",
+          "locator": "Amendment of personal or trustee return",
+          "excerpt": null,
+          "note": "在适用期限内通过网上途径修正并重新提交。"
+        }
+      ]
+    },
+    {
+      "key": "penalty",
+      "statement": "迟报和迟缴后果不同，MTD 另有规则。",
+      "supports": [
+        {
+          "sourceKey": "penalty",
+          "locator": "Late filing, late payment and appeals",
+          "excerpt": null,
+          "note": "迟报和迟缴后果不同，MTD 另有规则。"
+        }
+      ]
+    },
+    {
+      "key": "time-to-pay",
+      "statement": "不能付清时尽早联系 HMRC，核对能否采用分期计划。",
+      "supports": [
+        {
+          "sourceKey": "time-to-pay",
+          "locator": "Payment plan and eligibility",
+          "excerpt": null,
+          "note": "不能付清时尽早联系 HMRC，核对能否采用分期计划。"
+        }
+      ]
+    },
+    {
+      "key": "agent",
+      "statement": "核实代理资格，再通过官方程序授权。",
+      "supports": [
+        {
+          "sourceKey": "agent",
+          "locator": "Choosing and authorising a tax agent",
+          "excerpt": null,
+          "note": "核实代理资格，再通过官方程序授权。"
+        },
+        {
+          "sourceKey": "authorise-agent",
+          "locator": "Authorisation and responsibility",
+          "excerpt": null,
+          "note": "核实代理资格，再通过官方程序授权。"
+        }
+      ]
+    }
+  ]
+}

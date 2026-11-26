@@ -1,0 +1,41 @@
+{
+  "slug": "uk-self-assessment-register-file-pay",
+  "category": "money",
+  "status": "DRAFT",
+  "sourceLocale": "zh-CN",
+  "sourcesVerifiedOn": "2026-11-26",
+  "editorialStatus": "DRAFT · Editor and fluent-language review pending. No Production approval.",
+  "canonicalization": "guide-content-v1",
+  "variants": [
+    {
+      "locale": "en",
+      "path": "en.json",
+      "sha256": "9e2883189d446413736903342f73b13092f9fab6072fbc9cbbcc46d0c2f6dad7",
+      "contentSha256": "94e40804e1b5ac16d40c9939e2e7c1027dc04e35054abef86bfe30a8a6842fa8"
+    },
+    {
+      "locale": "zh-CN",
+      "path": "zh-CN.json",
+      "sha256": "79fa8c9145c1ea2a319c48afa70eb2787731d39617e680d6704082fa05193973",
+      "contentSha256": "322d5deaaa5edbf9742cf7de368e3fc905673130ade179f190622d1e84ddce46"
+    },
+    {
+      "locale": "zh-TW",
+      "path": "zh-TW.json",
+      "sha256": "de79c28c39a37889b6893f2f23c91a045e3987e4b425bb9cdd0b206fbbceae3b",
+      "contentSha256": "c2f0a81e2dc979cf767d9453bf2e964ed2b7a2772db459e3932757a1da5abc4e"
+    },
+    {
+      "locale": "ur",
+      "path": "ur.json",
+      "sha256": "b43209524f16b7dcffce978db052088ac93e02d86db8bcf3dfe9dc3531638104",
+      "contentSha256": "72f00cd15737fea394104f70dedcb7bc0ef0e014d00f32fa618f351e411a45ef"
+    },
+    {
+      "locale": "hi",
+      "path": "hi.json",
+      "sha256": "95344de33224a98ce87152e02cad53806bf11bb208429831743cd05608d24982",
+      "contentSha256": "357e68e83eef7553a30150884672208bf91774f8682ed3dfe3f239a1ee30df72"
+    }
+  ]
+}

@@ -1,0 +1,199 @@
+{
+  "slug": "uk-paye-tax-codes-national-insurance",
+  "category": "money",
+  "title": "英国 2026/27 工资单：PAYE、税码与国民保险",
+  "summary": "用每月 £3,000 的例子核对工资扣税和国民保险，并了解如何处理可疑税码。",
+  "content": "# 英国 2026/27 工资单：PAYE、税码与国民保险\n\n最后更新: 2026-11-26\n\n## 从税前工资开始核对\n本指南适用英国雇员，覆盖 **2026 年 4 月 6 日至 2027 年 4 月 5 日**。PAYE 是 HMRC 通过雇主扣缴所得税的方法。雇员第 1 类国民保险（NI）是另一项扣款。税前工资是扣款前的金额，应税工资可能与其不同。工资和奖金通常计税，部分福利也计税。标准个人免税额为 **£12,570**。调整后净收入超过 **£100,000** 的部分，每多 £2，免税额通常减少 £1。扣除免税额后的应税收入按适用税档计税。[HMRC 免税额和税档](#guide-evidence-tax-bands)\n\n英格兰和北爱尔兰采用主要工资所得税档。威尔士自行确定税率，2026/27 年度实际工资税率与英格兰、北爱尔兰相同。苏格兰有自己的工资税档。纳税人所属制度通常取决于居住地，不能只看雇主地址。适用税码开头的 **S** 或 **C** 分别指苏格兰、威尔士所得税。税码是给发薪部门的扣税指令；多份工作的税码可以不同。[各地税率](#guide-evidence-pay-period) · [税码字母](#guide-evidence-codes)\n\n## 算一遍：月薪 £3,000\n假设 2026/27 全年一份工作，每月工资一样，使用标准免税额及 NI A 类，没有福利、养老金扣款、学生贷款或其他收入。年税前工资 **£36,000**，应税工资 **£23,430**。英格兰、威尔士及北爱尔兰全部落在 20% 档，年所得税 **£4,686.00**。苏格兰先对 £3,967 收 19%，再对 £12,989 收 20%，剩下 £6,474 收 21%，合计 **£4,711.07**。[所得税档](#guide-evidence-tax-bands)\n\n这个例子在英国四地的雇员 NI 均为 **(£3,000 − £1,048) × 8% = 每月 £156.16**。A 类每月超过 £4,189 的部分通常按 2% 扣。普通雇员的 NI 按发薪周期计算。用月薪减去年税的十二分之一和当月 NI，苏格兰以外参考到手 **£2,453.34**，苏格兰 **£2,451.25**。实际工资单会因税码及发薪规则不同而有差异。[每月 NI 和 PAYE 门槛](#guide-evidence-pay-period)\n\n## 工资单不对怎么办？\n1. 换工作时，把 P45 交给新雇主；没有就填入职核对表。保存工资单，税年结束时仍在职的工作也要保存 P60。税码末尾 W1、M1 或 X 可能表示只按当期工资计算的紧急税码。有些工资单会用 NONCUM 表示同样的非累计计税方式。HMRC 收到正确信息后再核对。[紧急税码](#guide-evidence-emergency)\n2. 税前工资、扣款或 NI 类别不对，先找发薪部门。税码有疑问时，登录 HMRC 的当年所得税服务，选中该工作，核对预计收入、福利及旧工作是否还列着。更新不准确的信息或联系 HMRC，再检查下一张工资单。税年已经结束，可用 HMRC 退税查询工具或按收到的计算通知办理。[当年所得税服务](#guide-evidence-check-pay) · [退税途径](#guide-evidence-refund)\n3. 核对自己承担的合规费用，例如符合条件的制服护理或认可的专业会费。普通通勤和已全额报销的费用不符合条件。用 HMRC 雇员工作开支服务申报；需要填自评税表的人应在税表中申报。扣除额通常是减少应税收入。例如 2026/27 年度符合条件的 £60 扣除额若全部适用 20% 档，可少缴 £12 所得税。[工作开支规则](#guide-evidence-expenses)\n\n如果只有工资且 PAYE 已正确扣税，通常不需要额外申报。收到 HMRC 通知要处理，其他收入也要另查。跨境工作、多份工作税码长期不对或税单无法核对时，考虑求助。参见[自评报税](/zh-CN/money/uk-self-assessment-register-file-pay)与[申请国民保险号码](/zh-CN/money/national-insurance-number-newcomers)。\n",
+  "status": "DRAFT",
+  "publishedAt": null,
+  "updatedAt": "2026-11-26T00:00:00Z",
+  "sources": [
+    {
+      "key": "tax-bands",
+      "organisation": "HMRC",
+      "title": "Income Tax rates and allowances for current and previous tax years",
+      "url": "https://www.gov.uk/government/publications/rates-and-allowances-income-tax/income-tax-rates-and-allowances-current-and-past",
+      "accessedAt": "2026-11-26T00:00:00Z"
+    },
+    {
+      "key": "scottish-budget",
+      "organisation": "Scottish Government",
+      "title": "Scottish Budget 2026 to 2027: tax policy",
+      "url": "https://www.gov.scot/publications/scottish-budget-2026-2027/pages/4/",
+      "accessedAt": "2026-11-26T00:00:00Z"
+    },
+    {
+      "key": "welsh-budget",
+      "organisation": "Welsh Government",
+      "title": "Final Budget Report 2026 to 2027",
+      "url": "https://www.gov.wales/sites/default/files/publications/2026-01/final-budget-2026-2027-report.pdf",
+      "accessedAt": "2026-11-26T00:00:00Z"
+    },
+    {
+      "key": "pay-period",
+      "organisation": "HMRC",
+      "title": "Rates and thresholds for employers 2026 to 2027",
+      "url": "https://www.gov.uk/guidance/rates-and-thresholds-for-employers-2026-to-2027",
+      "accessedAt": "2026-11-26T00:00:00Z"
+    },
+    {
+      "key": "codes",
+      "organisation": "HMRC",
+      "title": "Tax codes: what your tax code means",
+      "url": "https://www.gov.uk/tax-codes/what-your-tax-code-means",
+      "accessedAt": "2026-11-26T00:00:00Z"
+    },
+    {
+      "key": "welsh-status",
+      "organisation": "HMRC",
+      "title": "Income Tax in Wales",
+      "url": "https://www.gov.uk/welsh-income-tax",
+      "accessedAt": "2026-11-26T00:00:00Z"
+    },
+    {
+      "key": "emergency",
+      "organisation": "HMRC",
+      "title": "Tax codes: emergency tax codes",
+      "url": "https://www.gov.uk/tax-codes/emergency-tax-codes",
+      "accessedAt": "2026-11-26T00:00:00Z"
+    },
+    {
+      "key": "pay-records",
+      "organisation": "HMRC",
+      "title": "Keeping your pay and tax records: employees",
+      "url": "https://www.gov.uk/keeping-your-pay-tax-records/employees-and-limited-company-directors",
+      "accessedAt": "2026-11-26T00:00:00Z"
+    },
+    {
+      "key": "check-pay",
+      "organisation": "HMRC",
+      "title": "Check your Income Tax for the current year",
+      "url": "https://www.gov.uk/check-income-tax-current-year",
+      "accessedAt": "2026-11-26T00:00:00Z"
+    },
+    {
+      "key": "expenses",
+      "organisation": "HMRC",
+      "title": "Claim tax relief for your job expenses",
+      "url": "https://www.gov.uk/tax-relief-for-employees/overview",
+      "accessedAt": "2026-11-26T00:00:00Z"
+    },
+    {
+      "key": "refund",
+      "organisation": "HMRC",
+      "title": "Check how to claim a tax refund",
+      "url": "https://www.gov.uk/claim-tax-refund",
+      "accessedAt": "2026-11-26T00:00:00Z"
+    }
+  ],
+  "evidence": [
+    {
+      "key": "tax-bands",
+      "statement": "2026/27 年度标准个人免税额是 £12,570，工资按适用档次计算所得税。",
+      "supports": [
+        {
+          "sourceKey": "tax-bands",
+          "locator": "Personal allowances, UK and Scottish tables for 2026 to 2027",
+          "excerpt": null,
+          "note": "2026/27 年度标准个人免税额是 £12,570，工资按适用档次计算所得税。"
+        },
+        {
+          "sourceKey": "scottish-budget",
+          "locator": "Scottish Income Tax bands",
+          "excerpt": null,
+          "note": "2026/27 年度标准个人免税额是 £12,570，工资按适用档次计算所得税。"
+        },
+        {
+          "sourceKey": "welsh-budget",
+          "locator": "Welsh Rates of Income Tax",
+          "excerpt": null,
+          "note": "2026/27 年度标准个人免税额是 £12,570，工资按适用档次计算所得税。"
+        }
+      ]
+    },
+    {
+      "key": "pay-period",
+      "statement": "2026/27 年度按月发薪的 A 类雇员，国民保险按 £1,048 和 £4,189 两个门槛及 8% 和 2% 税率计算。",
+      "supports": [
+        {
+          "sourceKey": "pay-period",
+          "locator": "Employee Class 1 thresholds and rates",
+          "excerpt": null,
+          "note": "2026/27 年度按月发薪的 A 类雇员，国民保险按 £1,048 和 £4,189 两个门槛及 8% 和 2% 税率计算。"
+        }
+      ]
+    },
+    {
+      "key": "codes",
+      "statement": "税码前缀 S、C 分别指苏格兰、威尔士 PAYE 制度。不同工作可以有不同税码。",
+      "supports": [
+        {
+          "sourceKey": "codes",
+          "locator": "Letters in your tax code",
+          "excerpt": null,
+          "note": "税码前缀 S、C 分别指苏格兰、威尔士 PAYE 制度。不同工作可以有不同税码。"
+        },
+        {
+          "sourceKey": "welsh-status",
+          "locator": "When you pay Welsh Income Tax",
+          "excerpt": null,
+          "note": "税码前缀 S、C 分别指苏格兰、威尔士 PAYE 制度。不同工作可以有不同税码。"
+        }
+      ]
+    },
+    {
+      "key": "emergency",
+      "statement": "W1、M1、X 表示紧急税码，通常仅按当期工资计税。 工资单上也可能显示 NONCUM。",
+      "supports": [
+        {
+          "sourceKey": "emergency",
+          "locator": "When an emergency code is used",
+          "excerpt": null,
+          "note": "W1、M1、X 表示紧急税码，通常仅按当期工资计税。 工资单上也可能显示 NONCUM。"
+        },
+        {
+          "sourceKey": "pay-records",
+          "locator": "Income from employment",
+          "excerpt": null,
+          "note": "W1、M1、X 表示紧急税码，通常仅按当期工资计税。 工资单上也可能显示 NONCUM。"
+        }
+      ]
+    },
+    {
+      "key": "check-pay",
+      "statement": "可在 HMRC 当年所得税服务核对工作、预计收入和税码。",
+      "supports": [
+        {
+          "sourceKey": "check-pay",
+          "locator": "Check your tax code and tell HMRC about changes",
+          "excerpt": null,
+          "note": "可在 HMRC 当年所得税服务核对工作、预计收入和税码。"
+        }
+      ]
+    },
+    {
+      "key": "expenses",
+      "statement": "符合条件的未报销工作开支可能获得所得税减免。填写自评税表的人应在税表中申报。",
+      "supports": [
+        {
+          "sourceKey": "expenses",
+          "locator": "When you can claim and how to get relief",
+          "excerpt": null,
+          "note": "符合条件的未报销工作开支可能获得所得税减免。填写自评税表的人应在税表中申报。"
+        }
+      ]
+    },
+    {
+      "key": "refund",
+      "statement": "退税途径取决于多缴原因及税务年度是否结束。",
+      "supports": [
+        {
+          "sourceKey": "refund",
+          "locator": "Choose a refund route",
+          "excerpt": null,
+          "note": "退税途径取决于多缴原因及税务年度是否结束。"
+        }
+      ]
+    }
+  ]
+}
