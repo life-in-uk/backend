@@ -19,7 +19,8 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
 /**
- * Ingestion (one transaction per batch: all observations stored, or none), heartbeats and the public latest-value
+ * Ingestion (one transaction per batch; each observation STORED, DUPLICATE, CORRECTED or SUPERSEDED, see
+ * {@link #store}), heartbeats and the public latest-value
  * view. Retention runs separately ({@link MarketIndexRetention}) and never on the acknowledgement path.
  */
 @Service
@@ -69,30 +70,65 @@ class MarketIndexService {
                 // A concurrent identical request committed first.
                 return replay(batch, store.batch(batch.batchId()).orElseThrow(() -> new IllegalStateException("Batch vanished")));
             }
-            var results = new ArrayList<ObservationResult>();
-            for (var o : batch.observations()) {
-                if (store.insertObservation(batch.batchId(), batch.source(), o)) {
-                    results.add(new ObservationResult(o.symbol().name(), o.observedAt(), "STORED"));
-                    continue;
-                }
-                var stored = store.observation(o.symbol(), batch.source(), o.observedAt()).orElseThrow(() -> new IllegalStateException("Observation vanished"));
-                if (!same(stored, o)) {
-                    // Rolls back the whole batch: a source never reports two different values for one instant.
-                    throw new MarketIndexPayloads.Rejected(HttpStatus.CONFLICT, "OBSERVATION_CONFLICT",
-                            "observations[" + o.symbol() + "] differs from the value already stored for that symbol, source and observedAt.");
-                }
-                results.add(new ObservationResult(o.symbol().name(), o.observedAt(), "DUPLICATE"));
-            }
+            // Rows are locked in one fixed order (symbol, observedAt), so concurrent batches cannot deadlock.
+            var ordered = new ArrayList<>(batch.observations());
+            ordered.sort(java.util.Comparator.comparing((MarketIndexPayloads.Observation o) -> o.symbol().name())
+                    .thenComparing(MarketIndexPayloads.Observation::observedAt));
+            var outcome = new java.util.HashMap<MarketIndexPayloads.Observation, String>();
+            for (var o : ordered) outcome.put(o, store(batch, o));
+            var results = batch.observations().stream()
+                    .map(o -> new ObservationResult(o.symbol().name(), o.observedAt(), outcome.get(o))).toList();
             return new Acknowledgement("ACCEPTED", batch.batchId(), false, List.copyOf(results));
         });
         Objects.requireNonNull(ack);
         long stored = ack.observations().stream().filter(r -> r.result().equals("STORED")).count();
+        long corrected = ack.observations().stream().filter(r -> r.result().equals("CORRECTED")).count();
+        long superseded = ack.observations().stream().filter(r -> r.result().equals("SUPERSEDED")).count();
         Duration lag = batch.observations().stream().map(o -> Duration.between(o.observedAt(), now()))
                 .max(Duration::compareTo).orElse(Duration.ZERO);
-        log.info("Market index batch {} source={} key={} replay={} stored={} duplicate={} oldestObservationAgeSeconds={}",
-                batch.batchId(), batch.source(), key.id(), ack.replay(), stored,
-                ack.replay() ? 0 : ack.observations().size() - stored, lag.toSeconds());
+        log.info("Market index batch {} source={} key={} replay={} stored={} corrected={} superseded={} duplicate={} oldestObservationAgeSeconds={}",
+                batch.batchId(), batch.source(), key.id(), ack.replay(), stored, corrected, superseded,
+                ack.replay() ? 0 : ack.observations().size() - stored - corrected - superseded, lag.toSeconds());
         return ack;
+    }
+
+    /**
+     * One observation of a new batch. A new instant is STORED; the same value again is a DUPLICATE (from a newer batch
+     * it raises the row's precedence to that batch). A different value for a stored instant is an upstream correction:
+     * it is applied (CORRECTED, the replaced value kept as a revision) only if this batch is newer, by (collectedAt,
+     * batchId), than the row's precedence, the newest batch that set or confirmed its values; otherwise it is
+     * SUPERSEDED and changes nothing. So the outcome depends only on the batches, never on their arrival order, and an
+     * older or replayed batch can never overwrite a newer correction.
+     */
+    private String store(MarketIndexPayloads.Batch batch, MarketIndexPayloads.Observation o) {
+        if (store.insertObservation(batch.batchId(), batch.source(), o)) return "STORED";
+        var current = store.lockObservation(o.symbol(), batch.source(), o.observedAt());
+        boolean newest = newer(batch.collectedAt(), batch.batchId(), current.precedenceCollectedAt(), current.precedenceBatchId());
+        if (same(current, o)) {
+            // A newer confirmation is evidence too: a late batch collected before it must not overwrite these values.
+            if (newest) store.confirmObservation(current, batch.batchId(), batch.collectedAt());
+            return "DUPLICATE";
+        }
+        if (!newest) {
+            log.info("Market observation correction superseded: source={} symbol={} observedAt={} batch={} keeps {} (precedence batch {})",
+                    batch.source(), o.symbol(), o.observedAt(), batch.batchId(), current.value().toPlainString(),
+                    current.precedenceBatchId());
+            return "SUPERSEDED";
+        }
+        store.correctObservation(current, o.symbol(), batch.source(), o, batch.batchId(), batch.collectedAt());
+        log.info("Market observation corrected: source={} symbol={} observedAt={} value {} -> {} batch {} -> {}",
+                batch.source(), o.symbol(), o.observedAt(), current.value().toPlainString(), o.value().toPlainString(),
+                current.batchId(), batch.batchId());
+        return "CORRECTED";
+    }
+
+    /**
+     * Correction precedence: the later collection wins; at the same collectedAt, the greater batchId (compared as its
+     * canonical lowercase text, which orders exactly like PostgreSQL's uuid ordering used by the revision CHECK).
+     */
+    static boolean newer(Instant collectedAt, UUID batchId, Instant storedCollectedAt, UUID storedBatchId) {
+        int byTime = collectedAt.compareTo(storedCollectedAt);
+        return byTime > 0 || (byTime == 0 && batchId.toString().compareTo(storedBatchId.toString()) > 0);
     }
 
     private static Acknowledgement replay(MarketIndexPayloads.Batch batch, MarketIndexStore.StoredBatch existing) {
@@ -104,10 +140,15 @@ class MarketIndexService {
         return new Acknowledgement("ACCEPTED", batch.batchId(), true, results);
     }
 
-    private static boolean same(MarketIndexStore.StoredObservation stored, MarketIndexPayloads.Observation o) {
+    private static boolean same(MarketIndexStore.LockedObservation stored, MarketIndexPayloads.Observation o) {
         return stored.timeSource() == o.timeSource() && stored.value().compareTo(o.value()) == 0
-                && (stored.previousClose() == null ? o.previousClose() == null
-                        : o.previousClose() != null && stored.previousClose().compareTo(o.previousClose()) == 0);
+                && sameDecimal(stored.previousClose(), o.previousClose())
+                && sameDecimal(stored.reference24h(), o.reference24h())
+                && Objects.equals(stored.reference24hAt(), o.reference24hAt());
+    }
+
+    private static boolean sameDecimal(BigDecimal stored, BigDecimal sent) {
+        return stored == null ? sent == null : sent != null && stored.compareTo(sent) == 0;
     }
 
     // ---------------------------------------------------------------- heartbeat
@@ -116,9 +157,21 @@ class MarketIndexService {
 
     HeartbeatAck heartbeat(MarketIndexPayloads.Heartbeat heartbeat, MarketIndexIngestSecurity.Key key) {
         MarketIndexPayloads.requireAuthorized(heartbeat.source(), key.sources(), properties);
-        boolean applied = Boolean.TRUE.equals(tx.execute(status -> store.upsertHeartbeat(heartbeat, key.id())));
+        boolean applied = Boolean.TRUE.equals(tx.execute(status -> {
+            boolean newest = store.upsertHeartbeat(heartbeat, key.id());
+            if (newest) store.replaceInstrumentHealth(heartbeat);
+            return newest;
+        }));
         if (heartbeat.status() == MarketIndexPayloads.CollectorStatus.PROVIDER_FAILED) {
             log.warn("Market index collector source={} reports provider failure {}", heartbeat.source(), heartbeat.providerFailureCode());
+        }
+        for (var instrument : heartbeat.instruments()) {
+            // When a pair starts failing, then about hourly (every 30th failed 120 s cycle) while it keeps failing.
+            int failures = instrument.consecutiveFailures();
+            if (failures == 1 || (failures > 0 && failures % 30 == 0)) {
+                log.warn("Market collector source={} symbol={} failing: {} consecutive failures, last {}", heartbeat.source(),
+                        instrument.symbol(), failures, instrument.failureCode());
+            }
         }
         return new HeartbeatAck("ACCEPTED", applied);
     }
@@ -131,12 +184,31 @@ class MarketIndexService {
 
     record Freshness(String status, Long ageSeconds, String basis, long freshWithinSeconds, long staleAfterSeconds) { }
 
+    /**
+     * One instrument. Stock indices: points, change against {@code previousClose} (changeBasis PREVIOUS_CLOSE). Crypto:
+     * USD price, change against {@code reference24h}, the price exactly 24 hours before observedAt (changeBasis
+     * ROLLING_24H); change and changePercent are null when no verified 24-hour reference exists.
+     */
     record Index(String symbol, String name, String value, String previousClose, String change, String changePercent,
-            String source, String collectorStatus, Provenance provenance, Market market, Freshness freshness) { }
+            String source, String collectorStatus, Provenance provenance, Market market, Freshness freshness,
+            String assetClass, String currency, String changeBasis, String reference24h, Instant reference24hAt) { }
 
     record SourceStatus(String source, String status) { }
 
-    record Collector(String status, String basis, long heartbeatTimeoutSeconds, List<SourceStatus> sources) { }
+    /**
+     * One crypto pair's collection health, independent of the indices and of the other pair: {@code status} is a
+     * {@link CollectorState} for that pair alone; {@code freshness} is its value's freshness status (STALE or
+     * UNAVAILABLE when its data is old or missing).
+     */
+    record InstrumentStatus(String symbol, String source, String status, Integer consecutiveFailures, String failureCode,
+            Instant lastAttemptAt, Instant lastSuccessfulCollectionAt, String freshness) { }
+
+    /**
+     * {@code status}, {@code sources} and each index's {@code collectorStatus} describe the stock indices exactly as
+     * before crypto (from the heartbeat's top-level fields); {@code instruments} adds BTC/USD and ETH/USD.
+     */
+    record Collector(String status, String basis, long heartbeatTimeoutSeconds, List<SourceStatus> sources,
+            List<InstrumentStatus> instruments) { }
 
     record Latest(Instant generatedAt, Collector collector, List<Index> indices, String attribution) { }
 
@@ -162,21 +234,50 @@ class MarketIndexService {
         return CollectorState.HEALTHY;
     }
 
+    /**
+     * One crypto pair's state from its own health in the source's heartbeat. A collector that is silent or unknown
+     * stays so for every instrument; a heartbeat without the pair's health (crypto off, or an older collector) is
+     * UNKNOWN for that pair; otherwise the same checks as the source state, applied to the pair's own times.
+     */
+    static CollectorState instrumentState(CollectorState sourceState, MarketIndexStore.StoredHeartbeat heartbeat,
+            MarketIndexStore.StoredInstrumentHealth health, Duration timeout) {
+        if (sourceState == CollectorState.DISCONNECTED || sourceState == CollectorState.UNKNOWN) return sourceState;
+        if (health == null) return CollectorState.UNKNOWN;
+        // Rows from an older heartbeat (one applied by an image that does not maintain them, e.g. after a rollback and
+        // roll-forward) describe the past, not the present.
+        if (health.sentAt().isBefore(heartbeat.sentAt())) return CollectorState.UNKNOWN;
+        if (health.lastSuccessfulCollectionAt() == null) return CollectorState.NO_SUCCESSFUL_COLLECTION;
+        if (health.status() != MarketIndexPayloads.InstrumentStatus.OK) return CollectorState.PROVIDER_FAILED;
+        if (Duration.between(health.lastAttemptAt(), heartbeat.sentAt()).compareTo(timeout) > 0) {
+            return CollectorState.COLLECTION_STALLED;
+        }
+        return CollectorState.HEALTHY;
+    }
+
     Latest latest() {
         Instant now = now();
         var sources = properties.publicSources();
         var states = new java.util.LinkedHashMap<String, CollectorState>();
+        var heartbeats = new java.util.HashMap<String, MarketIndexStore.StoredHeartbeat>();
+        var health = new java.util.HashMap<String, java.util.Map<MarketIndexSymbol, MarketIndexStore.StoredInstrumentHealth>>();
         for (String source : sources) {
-            states.put(source, state(store.heartbeat(source).orElse(null), now, properties.heartbeatTimeout()));
+            var heartbeat = store.heartbeat(source).orElse(null);
+            heartbeats.put(source, heartbeat);
+            states.put(source, state(heartbeat, now, properties.heartbeatTimeout()));
+            var bySymbol = new java.util.EnumMap<MarketIndexSymbol, MarketIndexStore.StoredInstrumentHealth>(MarketIndexSymbol.class);
+            if (heartbeat != null) store.instrumentHealth(source).forEach(h -> bySymbol.put(h.symbol(), h));
+            health.put(source, bySymbol);
         }
         var aggregate = states.values().stream().max(Enum::compareTo).orElse(CollectorState.UNKNOWN);
-        var collector = new Collector(aggregate.name(), "heartbeatReceivedAt", properties.heartbeatTimeout().toSeconds(),
-                states.entrySet().stream().map(e -> new SourceStatus(e.getKey(), e.getValue().name())).toList());
         var indices = new ArrayList<Index>();
+        var instruments = new ArrayList<InstrumentStatus>();
         for (var symbol : MarketIndexSymbol.values()) {
             var session = symbol.exchange.session(now);
             var market = new Market(symbol.exchange.name(), symbol.exchange.zone.getId(), session.state().name(),
                     symbol.exchange.coveredThrough);
+            String assetClass = symbol.crypto() ? "CRYPTO" : "INDEX";
+            String currency = symbol.crypto() ? "USD" : null;
+            String changeBasis = symbol.crypto() ? "ROLLING_24H" : "PREVIOUS_CLOSE";
             // Newest per public source, never later than now; then the newest of those.
             MarketIndexStore.StoredObservation row = null;
             for (String source : sources) {
@@ -187,24 +288,58 @@ class MarketIndexService {
                     row == null ? null : row.timeSource(), session, now, properties);
             var fresh = new Freshness(freshness.status().name(), freshness.ageSeconds(), "observedAt",
                     properties.freshWithin().toSeconds(), properties.staleAfter().toSeconds());
+            if (symbol.crypto()) instruments.add(instrumentStatus(symbol, row, sources, states, heartbeats, health, fresh));
             if (row == null) {
                 indices.add(new Index(symbol.name(), symbol.displayName, null, null, null, null, null, null,
-                        new Provenance(null, null, null, null), market, fresh));
+                        new Provenance(null, null, null, null), market, fresh, assetClass, currency, changeBasis, null, null));
                 continue;
             }
+            BigDecimal basis = symbol.crypto() ? row.reference24h() : row.previousClose();
             String change = null;
             String percent = null;
-            if (row.previousClose() != null) {
-                BigDecimal difference = row.value().subtract(row.previousClose());
+            if (basis != null) {
+                BigDecimal difference = row.value().subtract(basis);
                 change = difference.setScale(2, RoundingMode.HALF_EVEN).toPlainString();
                 percent = difference.multiply(BigDecimal.valueOf(100))
-                        .divide(row.previousClose(), 2, RoundingMode.HALF_EVEN).toPlainString();
+                        .divide(basis, 2, RoundingMode.HALF_EVEN).toPlainString();
             }
             indices.add(new Index(symbol.name(), symbol.displayName, row.value().toPlainString(),
                     row.previousClose() == null ? null : row.previousClose().toPlainString(), change, percent, row.source(),
-                    states.get(row.source()).name(),
-                    new Provenance(row.observedAt(), row.timeSource().name(), row.collectedAt(), row.receivedAt()), market, fresh));
+                    symbol.crypto()
+                            ? instrumentState(states.get(row.source()), heartbeats.get(row.source()),
+                                    health.get(row.source()).get(symbol), properties.heartbeatTimeout()).name()
+                            : states.get(row.source()).name(),
+                    new Provenance(row.observedAt(), row.timeSource().name(), row.collectedAt(), row.receivedAt()), market, fresh,
+                    assetClass, currency, changeBasis,
+                    row.reference24h() == null ? null : row.reference24h().toPlainString(), row.reference24hAt()));
         }
+        var collector = new Collector(aggregate.name(), "heartbeatReceivedAt", properties.heartbeatTimeout().toSeconds(),
+                states.entrySet().stream().map(e -> new SourceStatus(e.getKey(), e.getValue().name())).toList(),
+                List.copyOf(instruments));
         return new Latest(now, collector, List.copyOf(indices), properties.attribution());
+    }
+
+    /**
+     * A pair's monitoring entry: from the source of its newest value, or (no value yet) the first public source that
+     * reports the pair's health, else the first public source.
+     */
+    private InstrumentStatus instrumentStatus(MarketIndexSymbol symbol, MarketIndexStore.StoredObservation row,
+            List<String> sources, java.util.Map<String, CollectorState> states,
+            java.util.Map<String, MarketIndexStore.StoredHeartbeat> heartbeats,
+            java.util.Map<String, java.util.Map<MarketIndexSymbol, MarketIndexStore.StoredInstrumentHealth>> health,
+            Freshness freshness) {
+        String source = row != null ? row.source()
+                : sources.stream().filter(s -> health.get(s).containsKey(symbol)).findFirst()
+                        .orElse(sources.isEmpty() ? null : sources.get(0));
+        if (source == null) {
+            return new InstrumentStatus(symbol.name(), null, CollectorState.UNKNOWN.name(), null, null, null, null,
+                    freshness.status());
+        }
+        var h = health.get(source).get(symbol);
+        if (h != null && heartbeats.get(source) != null && h.sentAt().isBefore(heartbeats.get(source).sentAt())) h = null;
+        var state = instrumentState(states.get(source), heartbeats.get(source), h, properties.heartbeatTimeout());
+        return new InstrumentStatus(symbol.name(), source, state.name(), h == null ? null : h.consecutiveFailures(),
+                h == null ? null : h.failureCode(), h == null ? null : h.lastAttemptAt(),
+                h == null ? null : h.lastSuccessfulCollectionAt(), freshness.status());
     }
 }

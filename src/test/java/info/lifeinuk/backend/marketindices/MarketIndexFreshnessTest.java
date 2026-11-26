@@ -111,7 +111,13 @@ class MarketIndexFreshnessTest {
                         if (status == Status.FRESH) {
                             assertThat(source).isNotEqualTo(TimeSource.COLLECTOR);
                             assertThat(session.state()).isEqualTo(MarketCalendar.State.OPEN);
-                            assertThat(observedAt).isAfterOrEqualTo(session.openedAt());
+                            if (exchange.continuous) {
+                                // 24/7: no session start; only a market time within fresh-within.
+                                assertThat(session.openedAt()).isNull();
+                                assertThat(ageSeconds).isBetween(0L, DEFAULTS.freshWithin().toSeconds());
+                            } else {
+                                assertThat(observedAt).isAfterOrEqualTo(session.openedAt());
+                            }
                         }
                         if (status == Status.MARKET_CLOSED) {
                             assertThat(session.state()).isEqualTo(MarketCalendar.State.CLOSED);
@@ -124,5 +130,19 @@ class MarketIndexFreshnessTest {
                 }
             }
         }
+    }
+
+    @Test
+    void cryptoOnASaturdayIsRatedByAgeAlone() {
+        Instant saturday = Instant.parse("2026-11-21T11:22:00Z");
+        var crypto = MarketCalendar.Exchange.CRYPTO_24_7.session(saturday);
+        assertThat(status(saturday.minusSeconds(120), TimeSource.PROVIDER, crypto, saturday)).isEqualTo(Status.FRESH);
+        assertThat(status(saturday.minusSeconds(1200), TimeSource.PROVIDER, crypto, saturday)).isEqualTo(Status.FRESH);
+        assertThat(status(saturday.minusSeconds(1201), TimeSource.PROVIDER, crypto, saturday)).isEqualTo(Status.DELAYED);
+        assertThat(status(saturday.minusSeconds(3601), TimeSource.PROVIDER, crypto, saturday)).isEqualTo(Status.STALE);
+        assertThat(status(saturday.minusSeconds(60), TimeSource.COLLECTOR, crypto, saturday)).isEqualTo(Status.MARKET_TIME_UNKNOWN);
+        // The same Saturday leaves the stock indices closed, exactly as before.
+        var lse = MarketCalendar.Exchange.LSE.session(saturday);
+        assertThat(status(Instant.parse("2026-11-20T16:30:00Z"), TimeSource.PROVIDER, lse, saturday)).isEqualTo(Status.MARKET_CLOSED);
     }
 }

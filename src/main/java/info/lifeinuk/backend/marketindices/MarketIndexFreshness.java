@@ -33,8 +33,10 @@ final class MarketIndexFreshness {
         return switch (session.state()) {
             case UNKNOWN -> new Result(stale ? Status.STALE : Status.MARKET_STATUS_UNKNOWN, ageSeconds);
             // A value from before this session opened (e.g. the previous close) is never FRESH.
+            // A continuous market (crypto) has no session start, so only the age decides.
             case OPEN -> new Result(stale ? Status.STALE
-                    : !observedAt.isBefore(session.openedAt()) && age.compareTo(properties.freshWithin()) <= 0
+                    : (session.openedAt() == null || !observedAt.isBefore(session.openedAt()))
+                            && age.compareTo(properties.freshWithin()) <= 0
                     ? Status.FRESH : Status.DELAYED, ageSeconds);
             // The closing value must be stamped within close-tolerance either side of the last scheduled close (early
             // closes included). Earlier is an older session; later (e.g. a weekend or after-hours stamp, or the regular

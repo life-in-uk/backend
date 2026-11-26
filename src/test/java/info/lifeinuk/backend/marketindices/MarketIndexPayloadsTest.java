@@ -97,7 +97,7 @@ class MarketIndexPayloadsTest {
         String ok = obs("UKX", "1", "2026-11-20T14:15:00Z", "PROVIDER");
         assertThat(reject("[]").code).isEqualTo("MARKET_BATCH_INVALID");
         assertThat(reject("{").code).isEqualTo("MARKET_BATCH_INVALID");
-        assertThat(reject(batch("provider-x", "2026-11-20T14:32:05Z", "")).getMessage()).contains("1 to 4");
+        assertThat(reject(batch("provider-x", "2026-11-20T14:32:05Z", "")).getMessage()).contains("1 to 6");
         assertThat(reject(batch("provider-x", "2026-11-20T14:32:05Z", ok + "," + ok)).getMessage()).contains("repeated");
         assertThat(reject(batch("provider-x", "2026-11-20T14:32:05Z", obs("FTMC", "1", "2026-11-20T14:15:00Z", "PROVIDER"))).getMessage()).contains("symbol");
         assertThat(reject(batch("provider-x", "2026-11-20T14:32:05Z", obs("UKX", "1", "2026-11-20T14:15:00Z", "MARKET"))).getMessage()).contains("observedAtSource");
@@ -176,5 +176,124 @@ class MarketIndexPayloadsTest {
         assertThat(rejectHeartbeat(heartbeat("OK", null, "2026-11-20T14:28:00Z")).code).isEqualTo("HEARTBEAT_TIME_INVALID");
         assertThat(rejectHeartbeat(heartbeat("OK", null, "2026-11-20T14:32:00Z").replace("\"pendingBatches\":0", "\"pendingBatches\":-1")).code)
                 .isEqualTo("HEARTBEAT_INVALID");
+    }
+
+    static String withInstruments(String heartbeat, String... entries) {
+        return heartbeat.substring(0, heartbeat.length() - 1) + ",\"instruments\":[" + String.join(",", entries) + "]}";
+    }
+
+    static String instrument(String symbol, String status, int failures, String code, String lastSuccess) {
+        return "{\"symbol\":\"" + symbol + "\",\"status\":\"" + status + "\",\"lastAttemptAt\":\"2026-11-20T14:31:00Z\","
+                + "\"consecutiveFailures\":" + failures
+                + (lastSuccess == null ? "" : ",\"lastSuccessfulCollectionAt\":\"" + lastSuccess + "\"")
+                + (code == null ? "" : ",\"failureCode\":\"" + code + "\"") + "}";
+    }
+
+    @Test
+    void heartbeatInstrumentHealthIsOptionalAndPerCryptoPair() {
+        String base = heartbeat("OK", null, "2026-11-20T14:32:00Z");
+        // The four-index heartbeat (every collector before crypto, or with crypto off) is unchanged.
+        assertThat(MarketIndexPayloads.heartbeat(base.getBytes(StandardCharsets.UTF_8), NOW, PROPS).instruments()).isEmpty();
+
+        var parsed = MarketIndexPayloads.heartbeat(withInstruments(base,
+                instrument("BTCUSD", "FAILED", 3, "UPSTREAM_TIMEOUT", "2026-11-20T14:25:00Z"),
+                instrument("ETHUSD", "OK", 0, null, "2026-11-20T14:31:00Z")).getBytes(StandardCharsets.UTF_8), NOW, PROPS);
+        // The top-level status still describes the indices: OK while BTC/USD fails.
+        assertThat(parsed.status()).isEqualTo(MarketIndexPayloads.CollectorStatus.OK);
+        assertThat(parsed.instruments()).extracting(MarketIndexPayloads.InstrumentHealth::symbol)
+                .containsExactly(MarketIndexSymbol.BTCUSD, MarketIndexSymbol.ETHUSD);
+        var btc = parsed.instruments().get(0);
+        assertThat(btc.status()).isEqualTo(MarketIndexPayloads.InstrumentStatus.FAILED);
+        assertThat(btc.consecutiveFailures()).isEqualTo(3);
+        assertThat(btc.failureCode()).isEqualTo("UPSTREAM_TIMEOUT");
+        // Never succeeded: FAILED without a last success.
+        assertThat(MarketIndexPayloads.heartbeat(withInstruments(base, instrument("BTCUSD", "FAILED", 1, "X", null))
+                .getBytes(StandardCharsets.UTF_8), NOW, PROPS).instruments().get(0).lastSuccessfulCollectionAt()).isNull();
+
+        for (String bad : new String[] {
+                instrument("UKX", "OK", 0, null, "2026-11-20T14:31:00Z"),                // indices are the top-level status
+                instrument("DOGEUSD", "OK", 0, null, "2026-11-20T14:31:00Z"),
+                instrument("BTCUSD", "DOWN", 1, "X", null),
+                instrument("BTCUSD", "OK", 1, null, "2026-11-20T14:31:00Z"),            // OK with failures
+                instrument("BTCUSD", "OK", 0, "X", "2026-11-20T14:31:00Z"),             // OK with a failure code
+                instrument("BTCUSD", "OK", 0, null, null),                              // OK without a success
+                instrument("BTCUSD", "OK", 0, null, "2026-11-20T14:30:00Z"),            // OK with an older success
+                instrument("BTCUSD", "FAILED", 0, "X", null),                           // FAILED without failures
+                instrument("BTCUSD", "FAILED", 2, null, null),                          // FAILED without a code
+                instrument("BTCUSD", "FAILED", 2, "X", "2026-11-20T14:31:00Z"),         // FAILED but succeeded last
+                instrument("BTCUSD", "FAILED", 2, "lower", null),
+                instrument("BTCUSD", "FAILED", -1, "X", null),
+                instrument("BTCUSD", "OK", 0, null, "2026-11-20T14:31:00Z").replace("}", ",\"extra\":1}"),
+                instrument("BTCUSD", "OK", 0, null, "2026-11-20T14:31:00Z") + "," + instrument("BTCUSD", "OK", 0, null, "2026-11-20T14:31:00Z"),
+                "\"BTCUSD\"" }) {
+            assertThat(rejectHeartbeat(withInstruments(base, bad)).code).as(bad).isEqualTo("HEARTBEAT_INVALID");
+        }
+        assertThat(rejectHeartbeat(base.substring(0, base.length() - 1) + ",\"instruments\":{}}").code).isEqualTo("HEARTBEAT_INVALID");
+        String future = instrument("ETHUSD", "OK", 0, null, "2026-11-20T14:31:00Z").replace("14:31:00Z", "14:59:00Z");
+        assertThat(rejectHeartbeat(withInstruments(base, future)).code).isEqualTo("HEARTBEAT_TIME_INVALID");
+    }
+
+    static String crypto(String symbol, String value, String observedAt, String extra) {
+        return "{\"symbol\":\"" + symbol + "\",\"value\":\"" + value + "\",\"observedAt\":\"" + observedAt
+                + "\",\"observedAtSource\":\"PROVIDER\"" + extra + "}";
+    }
+
+    @Test
+    void allSixInstrumentsInOneBatchWithTheCryptoReference() {
+        var batch = full(batch("provider-x", "2026-11-20T14:32:05Z", String.join(",",
+                crypto("ETHUSD", "1640.18", "2026-11-20T14:31:00Z", ""),
+                crypto("BTCUSD", "57885.27", "2026-11-20T14:31:00Z", ",\"reference24h\":\"61784.82\",\"reference24hAt\":\"2026-11-19T14:31:00Z\""),
+                obs("DJI", "43000.10", "2026-11-20T14:31:00Z", "PROVIDER"), obs("IXIC", "19000.10", "2026-11-20T14:31:00Z", "PROVIDER"),
+                obs("SPX", "5900.10", "2026-11-20T14:31:00Z", "PROVIDER"), obs("UKX", "9000.10", "2026-11-20T14:31:00Z", "PROVIDER")))
+                .getBytes(StandardCharsets.UTF_8));
+        assertThat(batch.observations()).extracting(MarketIndexPayloads.Observation::symbol).containsExactly(MarketIndexSymbol.values());
+        var btc = batch.observations().get(4);
+        assertThat(btc.reference24h().toPlainString()).isEqualTo("61784.8200");
+        assertThat(btc.reference24hAt()).isEqualTo(Instant.parse("2026-11-19T14:31:00Z"));
+        assertThat(btc.previousClose()).isNull();
+        var eth = batch.observations().get(5);
+        assertThat(eth.reference24h()).isNull();
+        assertThat(eth.reference24hAt()).isNull();
+    }
+
+    @Test
+    void cryptoReferenceRules() {
+        String at = "2026-11-20T14:31:00Z";
+        var cases = java.util.Map.of(
+                ",\"previousClose\":\"61000.00\"", "previousClose is not used",
+                ",\"reference24h\":\"61000.00\"", "sent together",
+                ",\"reference24hAt\":\"2026-11-19T14:31:00Z\"", "sent together",
+                ",\"reference24h\":\"61000.00\",\"reference24hAt\":\"2026-11-19T14:32:00Z\"", "exactly 24 hours",
+                ",\"reference24h\":\"61000.00\",\"reference24hAt\":\"2026-11-19T14:30:00Z\"", "exactly 24 hours",
+                ",\"reference24h\":\"0\",\"reference24hAt\":\"2026-11-19T14:31:00Z\"", "greater than zero",
+                ",\"reference24h\":\"61000.00\",\"reference24hAt\":\"2026-11-19\"", "ISO 8601");
+        cases.forEach((extra, message) -> {
+            var rejected = reject(batch("provider-x", "2026-11-20T14:32:05Z", crypto("BTCUSD", "57885.27", at, extra)));
+            assertThat(rejected.code).as(extra).isEqualTo("MARKET_BATCH_INVALID");
+            assertThat(rejected.getMessage()).as(extra).contains(message);
+        });
+        var index = reject(batch("provider-x", "2026-11-20T14:32:05Z", crypto("UKX", "9000.00", at,
+                ",\"reference24h\":\"8900.00\",\"reference24hAt\":\"2026-11-19T14:31:00Z\"")));
+        assertThat(index.getMessage()).contains("only used for BTCUSD and ETHUSD");
+        assertThat(reject(batch("provider-x", "2026-11-20T14:32:05Z", crypto("XRPUSD", "1.00", at, ""))).getMessage())
+                .contains("UKX, SPX, IXIC, DJI, BTCUSD, ETHUSD");
+    }
+
+    /** A stock-index-only batch hashes exactly as under V17, so replays of earlier stored batches still match. */
+    @Test
+    void indexOnlyHashIsUnchangedAndTheCryptoReferenceIsHashed() throws Exception {
+        var batch = full(batch("provider-x", "2026-11-20T14:32:05Z", obs("SPX", "5987.21", "2026-11-20T14:16:30Z", "EXCHANGE"))
+                .getBytes(StandardCharsets.UTF_8));
+        String v17 = "market-index-batch-v1\n" + BATCH + "\nprovider-x\n2026-11-20T14:32:05Z\nSPX|5987.2100|-|2026-11-20T14:16:30Z|EXCHANGE\n";
+        assertThat(batch.requestSha256()).isEqualTo(java.util.HexFormat.of().formatHex(
+                java.security.MessageDigest.getInstance("SHA-256").digest(v17.getBytes(StandardCharsets.UTF_8))));
+
+        String with = crypto("BTCUSD", "57885.27", "2026-11-20T14:31:00Z", ",\"reference24h\":\"61784.82\",\"reference24hAt\":\"2026-11-19T14:31:00Z\"");
+        String other = crypto("BTCUSD", "57885.27", "2026-11-20T14:31:00Z", ",\"reference24h\":\"61784.83\",\"reference24hAt\":\"2026-11-19T14:31:00Z\"");
+        String without = crypto("BTCUSD", "57885.27", "2026-11-20T14:31:00Z", "");
+        var hashes = java.util.stream.Stream.of(with, other, without)
+                .map(o -> full(batch("provider-x", "2026-11-20T14:32:05Z", o).getBytes(StandardCharsets.UTF_8)).requestSha256())
+                .distinct().count();
+        assertThat(hashes).isEqualTo(3);
     }
 }
