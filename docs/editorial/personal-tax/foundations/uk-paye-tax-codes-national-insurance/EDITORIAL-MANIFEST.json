@@ -3,39 +3,39 @@
   "category": "money",
   "status": "DRAFT",
   "sourceLocale": "zh-CN",
-  "sourcesVerifiedOn": "2026-11-21",
+  "sourcesVerifiedOn": "2026-11-26",
   "editorialStatus": "DRAFT · Editor and fluent-language review pending. No Production approval.",
   "canonicalization": "guide-content-v1",
   "variants": [
     {
       "locale": "en",
       "path": "en.json",
-      "sha256": "33742fbb62f3f07a25de254a60475a7aaacc19bb376d6ec6c6bef05b1c783dfd",
-      "contentSha256": "a13e2ad2a8be1a3dcdf4b3c28d2e9d7c8a482c1ecd9154a10befae6a23b76fa3"
+      "sha256": "1a371dff02bcf4bd4e838aa1b7efba230e5653167910c6497113afd008014634",
+      "contentSha256": "87039328dcb6ee45553fa5d786ee90ca12833160ef52720bf3841208555b2bd0"
     },
     {
       "locale": "zh-CN",
       "path": "zh-CN.json",
-      "sha256": "4432d5f5ae1c4de3e8282920d8bf31637c4aba6ee885f2ca2b539bb094a4188f",
-      "contentSha256": "b3c28f08e44c4fdf34069e84ed100045a32745ee07f4518c090108ee961c3550"
+      "sha256": "d53c3924c2d93fd66635eb331aa53fbb68d17096a4809496d5813aa480c85ce4",
+      "contentSha256": "719f7f14dfbfcee51916f0aa2a0191e274fa0e2f1dc458efb143ddca96e49ca4"
     },
     {
       "locale": "zh-TW",
       "path": "zh-TW.json",
-      "sha256": "c896674a286a6de5a147bef62caeb095997c64b71136a028335ce9045abfc41b",
-      "contentSha256": "7529feeb95db8173602360273a78aaf78f32b6843f96afabae7356423b7f233b"
+      "sha256": "a615e3601b366265798785e215ed9de6b1b93e4dc291bc42bfa3508bbf437793",
+      "contentSha256": "356ccc28f7d0e51875f85103069d3b19d141b8c02c599920651ac7931040637c"
     },
     {
       "locale": "ur",
       "path": "ur.json",
-      "sha256": "f6cd2d8eeb9f23abd1f1cfd45dbc9e33394b518d0d89947449d35c1fbed434d8",
-      "contentSha256": "1ffadb148df1e04888ad427c80fbb3bac659b053371a956e4c7babdf03a7846e"
+      "sha256": "efcde831e0aaf546e6f2e0664e2d0be483d2cb7c40d694e82dfb14bf120a3a9f",
+      "contentSha256": "6ac4d9da594c1c966953eee82f4154cb122d319812b7d41613a6ec6e742e86ab"
     },
     {
       "locale": "hi",
       "path": "hi.json",
-      "sha256": "f943c64546de8129986a1d6db25c80bf34b6d9225ec85f2282afc1ec08e79676",
-      "contentSha256": "4b356e5b9fda823b8b01424a87973b3481e8c4a0ef0a8db43ee50c1951c4c36a"
+      "sha256": "f40ff3e5bc25c319e1aab4b22f3fc88c8072955760cd750be4f430e20fcfccdb",
+      "contentSha256": "b63f1fd639da18344b00fa462120406c66b9c78d78aab964e9525cea845b18cc"
     }
   ]
 }

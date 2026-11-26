@@ -3,115 +3,115 @@
   "category": "money",
   "title": "UK Self Assessment for 2025/26: register, file and pay",
   "summary": "Check if you need a personal tax return, register or reactivate, file online, pay HMRC and fix mistakes.",
-  "content": "# UK Self Assessment for 2025/26: register, file and pay\n\nLast updated: 2026-11-21\n\n## Check whether you need a return\nThis Guide covers individuals in England, Scotland, Wales and Northern Ireland for **6 April 2025 to 5 April 2026**. The filing process is UK-wide. Your actual Income Tax rates may depend on your taxpayer status and type of income. Most employees whose tax is fully dealt with by PAYE do not need to file just because they are employed. Rent, untaxed income, individual self-employment, overseas income and taxable gains can change that. Use HMRC’s checker for the year. If HMRC has issued a notice to file, submit by the applicable deadline unless HMRC withdraws it. [Check if you need a return](#guide-evidence-need)\n\n## Register and check the dates\nUse HMRC’s registration checker. Say whether you have filed before and follow the route for why you need a return. First-time filers need to register. If you already have a UTR, check whether to reactivate instead of asking for another. Keep your **10-digit Unique Taxpayer Reference (UTR)** and sign-in details safe. Registration is separate from filing. [Registration or reactivation](#guide-evidence-registration) · [Sign in and UTR](#guide-evidence-online)\n\nFor **2025/26**, the usual first-time notification date was **5 October 2026**. Paper returns were due **31 October 2026**. The usual online filing and payment deadline is **31 January 2027 at 11:59 pm**. If you have missed registration, act now. HMRC may give you a later filing deadline, normally three months from its notice for late registration, but the tax payment deadline remains **31 January 2027**. Check your own notice. [HMRC deadlines](#guide-evidence-deadlines)\n\n## File online, then pay separately\n1. Gather P60 or P45 details, tax already deducted, and records of interest, dividends, rent or gains as relevant. Keep evidence for allowable claims. If you submit a return, include required PAYE income and tax deducted. See [payslips and PAYE](/en/money/uk-paye-tax-codes-national-insurance).\n2. Open GOV.UK’s **File your Self Assessment tax return online**, select **Sign in**, enter your UTR when requested and choose the correct 2025/26 return. Select the sections that apply, fill in your figures, review the calculation, submit and save the acknowledgement. Keeping a draft is not filing. If you lived abroad as a non-resident, check the separate form or compatible commercial-software route. If you are an individual landlord or sole trader, check whether Making Tax Digital (MTD) applies for a later reporting period. Its scope can depend on combined qualifying receipts before expenses and the relevant prior year. [HMRC online filing](#guide-evidence-online) · [MTD timetable](#guide-evidence-digital)\n3. Check the bill and account statement for the amount and dates, then use **Pay your Self Assessment tax bill** on GOV.UK. For online personal debit card payment, the payment reference is your UTR followed by **K**. Save the receipt and check the payment appears in your account. Allow time for the payment method you choose. [Payment options](#guide-evidence-payments) · [Online card payment reference](#guide-evidence-card)\n\n## Worked example: first bill with advance payments\nSuppose your **2025/26** balance is **£2,400**, with no previous advance payments, all of it counts for payments on account, and the exceptions do not apply. For example, less than 80% of your year's tax was paid outside Self Assessment. Each advance payment towards **2026/27** is **£1,200**. On **31 January 2027** the £2,400 balance plus the first £1,200 instalment is **£3,600**. The second **£1,200** is normally due on **31 July 2027**. Check the statement. Payments on account usually do not apply if the relevant bill was under £1,000 or more than 80% was paid outside Self Assessment. Capital Gains Tax is excluded from the income-tax advance calculation. [Payments on account](#guide-evidence-account)\n\n## Correct mistakes and know when to ask for help\nFor an ordinary 2025/26 return, an amendment is usually due by **31 January 2028**. Wait 72 hours after filing online. In your account open **Self Assessment account → More Self Assessment details → At a glance → Tax return options**, choose the year, correct and submit again. If time has passed or you used separate software, follow HMRC’s correction instructions. Late filing under the ordinary regime can start with a **£100** penalty; late payment can bring interest and separate penalties. Check appeal rights and contact HMRC promptly about a possible payment plan if you cannot pay. [Corrections](#guide-evidence-amend) · [Penalties](#guide-evidence-penalty) · [Payment help](#guide-evidence-time-to-pay)\n\nStraightforward returns with complete records may suit DIY filing. Consider a qualified accountant or tax adviser for residence, overseas income, property disposals, large losses or an HMRC enquiry. Check relevant expertise, fees and professional standing. Authorise via HMRC rather than giving away your sign-in, and check the return before it is sent. You remain responsible for your tax. [Choosing a tax agent](#guide-evidence-agent)\n",
+  "content": "# UK Self Assessment for 2025/26: register, file and pay\n\nLast updated: 2026-11-26\n\n## Check whether you need a return\nThis Guide covers individuals in England, Scotland, Wales and Northern Ireland for **6 April 2025 to 5 April 2026**. The filing process is UK-wide. Your actual Income Tax rates may depend on your taxpayer status and type of income. Most employees whose tax is fully dealt with by PAYE do not need to file just because they are employed. Rent, untaxed income, individual self-employment, overseas income and taxable gains can change that. Use HMRC’s checker for the year. If HMRC has issued a notice to file, submit by the applicable deadline unless HMRC withdraws it. [Check if you need a return](#guide-evidence-need)\n\n## Register and check the dates\nUse HMRC’s registration checker. Say whether you have filed before and follow the route for why you need a return. First-time filers need to register. If you already have a UTR, check whether to reactivate instead of asking for another. Keep your **10-digit Unique Taxpayer Reference (UTR)** and sign-in details safe. Registration is separate from filing. [Registration or reactivation](#guide-evidence-registration) · [Sign in and UTR](#guide-evidence-online)\n\nFor **2025/26**, the notification deadline was **5 October 2026** if you had never filed or had registered before but did not need to file for 2024/25. Paper returns were due **31 October 2026**. The usual online filing and payment deadline is **31 January 2027 at 11:59 pm**. If you have missed registration, act now. If you register late, HMRC will give you a filing deadline three months from the date on its letter or email. The usual tax payment deadline still applies. Check your own notice. [HMRC deadlines](#guide-evidence-deadlines)\n\n## File online, then pay separately\n1. Gather P60 or P45 details, tax already deducted, and records of interest, dividends, rent or gains as relevant. Keep evidence for allowable claims. If you submit a return, include required PAYE income and tax deducted. See [payslips and PAYE](/en/money/uk-paye-tax-codes-national-insurance).\n2. Open GOV.UK’s **File your Self Assessment tax return online**, select **Sign in**, enter your UTR when requested and choose the correct 2025/26 return. Select the sections that apply, fill in your figures, review the calculation, submit and save the acknowledgement. Keeping a draft is not filing. If you lived abroad as a non-resident, check the separate form or compatible commercial-software route. If you are an individual landlord or sole trader, check whether Making Tax Digital (MTD) already applies to you from 2026/27 or starts later. Its scope can depend on combined qualifying receipts before expenses and the relevant prior year. [HMRC online filing](#guide-evidence-online) · [MTD timetable](#guide-evidence-digital)\n3. Check the bill and account statement for the amount and dates, then use **Pay your Self Assessment tax bill** on GOV.UK. For online personal debit card payment, the payment reference is your UTR followed by **K**. Save the receipt and check the payment appears in your account. Allow time for the payment method you choose. [Payment options](#guide-evidence-payments) · [Online card payment reference](#guide-evidence-card)\n\n## Worked example: first bill with advance payments\nSuppose your **2025/26** balance is **£2,400**, with no previous advance payments, all of it counts for payments on account, and the exceptions do not apply. For example, less than 80% of your year's tax was paid outside Self Assessment. Each advance payment towards **2026/27** is **£1,200**. On **31 January 2027** the £2,400 balance plus the first £1,200 instalment is **£3,600**. The second **£1,200** is normally due on **31 July 2027**. Check the statement. Payments on account usually do not apply if the relevant bill was under £1,000 or more than 80% was paid outside Self Assessment. Capital Gains Tax is excluded from the income-tax advance calculation. If you expect to owe less for 2026/27, you can ask HMRC to reduce your payments on account. Interest can apply to any shortfall if you reduce them too far. [Payments on account](#guide-evidence-account)\n\n## Correct mistakes and know when to ask for help\nFor an ordinary 2025/26 return, an amendment is usually due by **31 January 2028**. Wait 72 hours after filing online. In your account open **Self Assessment account → More Self Assessment details → At a glance → Tax return options**, choose the year, correct and submit again. If time has passed or you used separate software, follow HMRC’s correction instructions. Under the ordinary rules, late filing usually starts with a **£100** penalty and further penalties can follow. File as soon as you can, even if you cannot yet pay. Paying late can trigger interest and separate penalties. Check appeal rights and contact HMRC promptly about a possible payment plan if you cannot pay. [Corrections](#guide-evidence-amend) · [Penalties](#guide-evidence-penalty) · [Payment help](#guide-evidence-time-to-pay)\n\nStraightforward returns with complete records may suit DIY filing. Consider a qualified accountant or tax adviser for residence, overseas income, property disposals, large losses or an HMRC enquiry. Check relevant expertise, fees and professional standing. Authorise via HMRC rather than giving away your sign-in, and check the return before it is sent. You remain responsible for your tax. [Choosing a tax agent](#guide-evidence-agent)\n",
   "status": "DRAFT",
   "publishedAt": null,
-  "updatedAt": "2026-11-21T00:00:00Z",
+  "updatedAt": "2026-11-26T00:00:00Z",
   "sources": [
     {
       "key": "need",
       "organisation": "HMRC",
       "title": "Check if you need to send a Self Assessment tax return",
       "url": "https://www.gov.uk/check-if-you-need-tax-return",
-      "accessedAt": "2026-11-21T00:00:00Z"
+      "accessedAt": "2026-11-26T00:00:00Z"
     },
     {
       "key": "deadlines",
       "organisation": "HMRC",
       "title": "Self Assessment tax returns: deadlines",
       "url": "https://www.gov.uk/self-assessment-tax-returns/deadlines",
-      "accessedAt": "2026-11-21T00:00:00Z"
+      "accessedAt": "2026-11-26T00:00:00Z"
     },
     {
       "key": "registration",
       "organisation": "HMRC",
       "title": "Check how to register for Self Assessment",
       "url": "https://www.gov.uk/register-for-self-assessment",
-      "accessedAt": "2026-11-21T00:00:00Z"
+      "accessedAt": "2026-11-26T00:00:00Z"
     },
     {
       "key": "online",
       "organisation": "HMRC",
       "title": "File your Self Assessment tax return online",
       "url": "https://www.gov.uk/log-in-file-self-assessment-tax-return",
-      "accessedAt": "2026-11-21T00:00:00Z"
+      "accessedAt": "2026-11-26T00:00:00Z"
     },
     {
       "key": "digital",
       "organisation": "HMRC",
       "title": "Using Making Tax Digital for Income Tax for the first time",
       "url": "https://www.gov.uk/guidance/use-making-tax-digital-for-income-tax/using-making-tax-digital-for-income-tax-for-the-first-time",
-      "accessedAt": "2026-11-21T00:00:00Z"
+      "accessedAt": "2026-11-26T00:00:00Z"
     },
     {
       "key": "payments",
       "organisation": "HMRC",
       "title": "Pay your Self Assessment tax bill",
       "url": "https://www.gov.uk/pay-self-assessment-tax-bill",
-      "accessedAt": "2026-11-21T00:00:00Z"
+      "accessedAt": "2026-11-26T00:00:00Z"
     },
     {
       "key": "card",
       "organisation": "HMRC",
       "title": "Pay your Self Assessment tax bill: by card online",
       "url": "https://www.gov.uk/pay-self-assessment-tax-bill/by-debit-or-credit-card-online",
-      "accessedAt": "2026-11-21T00:00:00Z"
+      "accessedAt": "2026-11-26T00:00:00Z"
     },
     {
       "key": "account",
       "organisation": "HMRC",
       "title": "Understand your Self Assessment tax bill: payments on account",
       "url": "https://www.gov.uk/understand-self-assessment-bill/payments-on-account",
-      "accessedAt": "2026-11-21T00:00:00Z"
+      "accessedAt": "2026-11-26T00:00:00Z"
     },
     {
       "key": "tma59a",
       "organisation": "legislation.gov.uk",
       "title": "Taxes Management Act 1970, section 59A",
       "url": "https://www.legislation.gov.uk/ukpga/1970/9/section/59A",
-      "accessedAt": "2026-11-21T00:00:00Z"
+      "accessedAt": "2026-11-26T00:00:00Z"
     },
     {
       "key": "amend",
       "organisation": "HMRC",
       "title": "Self Assessment tax returns: corrections",
       "url": "https://www.gov.uk/self-assessment-tax-returns/corrections",
-      "accessedAt": "2026-11-21T00:00:00Z"
+      "accessedAt": "2026-11-26T00:00:00Z"
     },
     {
       "key": "tma9za",
       "organisation": "legislation.gov.uk",
       "title": "Taxes Management Act 1970, section 9ZA",
       "url": "https://www.legislation.gov.uk/ukpga/1970/9/section/9ZA",
-      "accessedAt": "2026-11-21T00:00:00Z"
+      "accessedAt": "2026-11-26T00:00:00Z"
     },
     {
       "key": "penalty",
       "organisation": "HMRC",
       "title": "Self Assessment tax returns: penalties",
       "url": "https://www.gov.uk/self-assessment-tax-returns/penalties",
-      "accessedAt": "2026-11-21T00:00:00Z"
+      "accessedAt": "2026-11-26T00:00:00Z"
     },
     {
       "key": "time-to-pay",
       "organisation": "HMRC",
       "title": "If you cannot pay your tax bill on time",
       "url": "https://www.gov.uk/difficulties-paying-hmrc",
-      "accessedAt": "2026-11-21T00:00:00Z"
+      "accessedAt": "2026-11-26T00:00:00Z"
     },
     {
       "key": "agent",
       "organisation": "HMRC",
       "title": "How to choose a tax agent",
       "url": "https://www.gov.uk/guidance/how-to-choose-a-tax-agent",
-      "accessedAt": "2026-11-21T00:00:00Z"
+      "accessedAt": "2026-11-26T00:00:00Z"
     },
     {
       "key": "authorise-agent",
       "organisation": "HMRC",
       "title": "Authorising an agent to deal with your tax affairs",
       "url": "https://www.gov.uk/guidance/authorising-an-agent-to-deal-with-your-tax-affairs",
-      "accessedAt": "2026-11-21T00:00:00Z"
+      "accessedAt": "2026-11-26T00:00:00Z"
     }
   ],
   "evidence": [

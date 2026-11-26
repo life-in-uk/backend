@@ -54,6 +54,8 @@ class FoundationTest(unittest.TestCase):
                     self.assertEqual(evidence_shape(guide), evidence_shape(source))
                     body = guide["content"]
                     self.assertTrue(body.startswith("# " + guide["title"] + "\n"))
+                    self.assertIn(manifest["sourcesVerifiedOn"], body.splitlines()[2])
+                    self.assertTrue(all(item["accessedAt"].startswith(manifest["sourcesVerifiedOn"]) for item in guide["sources"]))
                     anchors = set(re.findall(r"\(#guide-evidence-([a-z0-9-]+)\)", body))
                     self.assertEqual(anchors, {item["key"] for item in guide["evidence"]})
                     expected = {f"/{locale}/money/{SA}", f"/{locale}/money/{NINO}"} if slug == PAYE else {f"/{locale}/money/{PAYE}"}
@@ -82,6 +84,8 @@ class FoundationTest(unittest.TestCase):
             for amount in amounts[:5]:
                 self.assertIn(amount, body, locale)
             self.assertIn("£60", body, locale)
+            for marker in ("W1", "M1", "NONCUM", "£1,048", "£4,189"):
+                self.assertIn(marker, body, locale)
         self.assertIn(amounts[-1], draft(PAYE, "en")["content"])
 
     def test_self_assessment_example_and_dates(self):
@@ -97,7 +101,8 @@ class FoundationTest(unittest.TestCase):
         self.assertEqual((first, balance + first), (1200, 3600))
         for locale in LOCALES:
             body = draft(SA, locale)["content"]
-            for expected in (*dates[locale], f"£{balance:,}", f"£{first:,}", f"£{balance + first:,}", "2025/26", "2026/27"):
+            for expected in (*dates[locale], f"£{balance:,}", f"£{first:,}", f"£{balance + first:,}",
+                             "2024/25", "2025/26", "2026/27", "11:59", "£1,000", "80%", "£100", "72"):
                 self.assertIn(expected, body, locale)
 
 
