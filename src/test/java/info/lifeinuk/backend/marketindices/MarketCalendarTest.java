@@ -3,6 +3,7 @@ package info.lifeinuk.backend.marketindices;
 import info.lifeinuk.backend.marketindices.MarketCalendar.Exchange;
 import info.lifeinuk.backend.marketindices.MarketCalendar.State;
 import java.time.Instant;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -65,5 +66,30 @@ class MarketCalendarTest {
         assertThat(MarketIndexSymbol.SPX.exchange).isEqualTo(Exchange.NYSE);
         assertThat(MarketIndexSymbol.DJI.exchange).isEqualTo(Exchange.NYSE);
         assertThat(MarketIndexSymbol.IXIC.exchange).isEqualTo(Exchange.NASDAQ);
+    }
+
+    /** Crypto trades through weekends, UK and US holidays and every clock change. */
+    @ParameterizedTest(name = "crypto is open at {0}")
+    @CsvSource({"2026-11-21T11:20:00Z", "2026-11-22T23:59:59Z", "2026-12-25T12:00:00Z", "2026-11-26T16:00:00Z",
+            "2026-03-29T01:30:00Z", "2026-11-01T06:30:00Z", "2030-01-01T00:00:00Z", "2024-06-01T00:00:00Z"})
+    void cryptoIsAlwaysOpenWithNoSessionStart(String at) {
+        var session = Exchange.CRYPTO_24_7.session(Instant.parse(at));
+        assertThat(session.state()).isEqualTo(State.OPEN);
+        assertThat(session.openedAt()).isNull();
+        assertThat(session.lastClose()).isNull();
+    }
+
+    @Test
+    void stockExchangesKeepTheirWeekendClosureAndOnlyCryptoIsContinuous() {
+        Instant saturday = Instant.parse("2026-11-21T11:20:00Z");
+        for (var exchange : Exchange.values()) {
+            assertThat(exchange.continuous).isEqualTo(exchange == Exchange.CRYPTO_24_7);
+            if (!exchange.continuous) assertThat(exchange.session(saturday).state()).isEqualTo(State.CLOSED);
+        }
+        assertThat(MarketIndexSymbol.BTCUSD.crypto()).isTrue();
+        assertThat(MarketIndexSymbol.ETHUSD.crypto()).isTrue();
+        for (var symbol : List.of(MarketIndexSymbol.UKX, MarketIndexSymbol.SPX, MarketIndexSymbol.IXIC, MarketIndexSymbol.DJI)) {
+            assertThat(symbol.crypto()).isFalse();
+        }
     }
 }

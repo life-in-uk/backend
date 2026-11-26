@@ -15,7 +15,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 /**
- * SQL for V17. Observations are insert-only. Statements carry their own {@link #TIMEOUT} (a JDBC query timeout), as
+ * SQL for V17 and V18 (the crypto 24-hour reference). Observations are insert-only. Statements carry their own {@link #TIMEOUT} (a JDBC query timeout), as
  * the weather budget does, so a slow database cannot hold a request or retention thread indefinitely. Query plans at
  * representative volume are recorded in docs/market-indices.md.
  */
@@ -34,7 +34,7 @@ class MarketIndexStore {
 
     record StoredObservation(MarketIndexSymbol symbol, String source, Instant observedAt,
             MarketIndexSymbol.TimeSource timeSource, BigDecimal value, BigDecimal previousClose,
-            Instant collectedAt, Instant receivedAt) { }
+            Instant collectedAt, Instant receivedAt, BigDecimal reference24h, Instant reference24hAt) { }
 
     record StoredHeartbeat(String source, MarketIndexPayloads.CollectorStatus status, Instant sentAt,
             Instant lastAttemptAt, Instant lastSuccessfulCollectionAt, Instant receivedAt) { }
@@ -56,15 +56,72 @@ class MarketIndexStore {
     /** True if inserted; false if (symbol, source, observedAt) already exists. */
     boolean insertObservation(UUID batchId, String source, MarketIndexPayloads.Observation o) {
         return jdbc.update("""
-                INSERT INTO market_index_observation (symbol, source, observed_at, observed_at_source, value, previous_close, batch_id)
-                VALUES (?, ?, ?, ?, ?, ?, ?) ON CONFLICT ON CONSTRAINT market_index_observation_natural DO NOTHING""",
-                o.symbol().name(), source, ts(o.observedAt()), o.timeSource().name(), o.value(), o.previousClose(), batchId) == 1;
+                INSERT INTO market_index_observation (symbol, source, observed_at, observed_at_source, value, previous_close, batch_id,
+                    reference_24h, reference_24h_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT ON CONSTRAINT market_index_observation_natural DO NOTHING""",
+                o.symbol().name(), source, ts(o.observedAt()), o.timeSource().name(), o.value(), o.previousClose(), batchId,
+                o.reference24h(), ts(o.reference24hAt())) == 1;
     }
 
-    Optional<StoredObservation> observation(MarketIndexSymbol symbol, String source, Instant observedAt) {
-        return jdbc.query(SELECT + " WHERE o.symbol = ? AND o.source = ? AND o.observed_at = ?",
-                MarketIndexStore::observation, symbol.name(), source, ts(observedAt)).stream().findFirst();
+    /**
+     * An existing observation locked for a possible correction: its values, the batch that set them (provenance) and
+     * its precedence, the newest batch that set or confirmed them.
+     */
+    record LockedObservation(long id, MarketIndexSymbol.TimeSource timeSource, BigDecimal value, BigDecimal previousClose,
+            BigDecimal reference24h, Instant reference24hAt, UUID batchId, Instant collectedAt, Instant receivedAt,
+            UUID precedenceBatchId, Instant precedenceCollectedAt) { }
+
+    /**
+     * Locks the row of (symbol, source, observedAt) until the transaction ends ({@code FOR UPDATE}), so concurrent
+     * batches decide on one row strictly one after the other, each seeing the other's committed values and precedence.
+     * The setting batch is read separately after the lock (batch rows never change).
+     */
+    LockedObservation lockObservation(MarketIndexSymbol symbol, String source, Instant observedAt) {
+        var row = jdbc.query("""
+                SELECT id, observed_at_source, value, previous_close, reference_24h, reference_24h_at, batch_id, received_at,
+                    confirmed_batch_id, confirmed_collected_at
+                FROM market_index_observation WHERE symbol = ? AND source = ? AND observed_at = ? FOR UPDATE""",
+                (rs, n) -> new Object[] {rs.getLong(1), MarketIndexSymbol.TimeSource.valueOf(rs.getString(2)), rs.getBigDecimal(3),
+                        rs.getBigDecimal(4), rs.getBigDecimal(5), instant(rs, 6), rs.getObject(7, UUID.class), instant(rs, 8),
+                        rs.getObject(9, UUID.class), instant(rs, 10)},
+                symbol.name(), source, ts(observedAt)).stream().findFirst()
+                .orElseThrow(() -> new IllegalStateException("Observation vanished"));
+        Instant collectedAt = jdbc.queryForObject("SELECT collected_at FROM market_index_ingest_batch WHERE batch_id = ?",
+                (rs, n) -> instant(rs, 1), row[6]);
+        boolean confirmed = row[8] != null;
+        return new LockedObservation((Long) row[0], (MarketIndexSymbol.TimeSource) row[1], (BigDecimal) row[2],
+                (BigDecimal) row[3], (BigDecimal) row[4], (Instant) row[5], (UUID) row[6], collectedAt, (Instant) row[7],
+                confirmed ? (UUID) row[8] : (UUID) row[6], confirmed ? (Instant) row[9] : collectedAt);
     }
+
+    /** A newer batch delivered the same values: raise the row's precedence to it; the values and provenance stay. */
+    void confirmObservation(LockedObservation current, UUID batchId, Instant collectedAt) {
+        jdbc.update("UPDATE market_index_observation SET confirmed_batch_id = ?, confirmed_collected_at = ? WHERE id = ?",
+                batchId, ts(collectedAt), current.id());
+    }
+
+    /** Replaces a locked observation's value with a correction and keeps the replaced value as a revision. */
+    void correctObservation(LockedObservation current, MarketIndexSymbol symbol, String source,
+            MarketIndexPayloads.Observation o, UUID batchId, Instant collectedAt) {
+        jdbc.update("""
+                INSERT INTO market_index_observation_revision (observation_id, symbol, source, observed_at,
+                    previous_observed_at_source, previous_value, previous_previous_close, previous_reference_24h,
+                    previous_reference_24h_at, previous_batch_id, previous_collected_at, previous_received_at,
+                    previous_precedence_batch_id, previous_precedence_collected_at, batch_id, collected_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+                current.id(), symbol.name(), source, ts(o.observedAt()), current.timeSource().name(), current.value(),
+                current.previousClose(), current.reference24h(), ts(current.reference24hAt()), current.batchId(),
+                ts(current.collectedAt()), ts(current.receivedAt()), current.precedenceBatchId(),
+                ts(current.precedenceCollectedAt()), batchId, ts(collectedAt));
+        jdbc.update("""
+                UPDATE market_index_observation SET observed_at_source = ?, value = ?, previous_close = ?, reference_24h = ?,
+                    reference_24h_at = ?, batch_id = ?, received_at = clock_timestamp(),
+                    confirmed_batch_id = NULL, confirmed_collected_at = NULL
+                WHERE id = ?""",
+                o.timeSource().name(), o.value(), o.previousClose(), o.reference24h(), ts(o.reference24hAt()), batchId,
+                current.id());
+    }
+
 
     /**
      * The newest observation of one symbol and source with {@code observed_at <= notAfter}: a future-dated row cannot
@@ -82,13 +139,14 @@ class MarketIndexStore {
     }
 
     private static final String SELECT = """
-            SELECT o.symbol, o.source, o.observed_at, o.observed_at_source, o.value, o.previous_close, b.collected_at, o.received_at
+            SELECT o.symbol, o.source, o.observed_at, o.observed_at_source, o.value, o.previous_close, b.collected_at, o.received_at,
+                o.reference_24h, o.reference_24h_at
             FROM market_index_observation o JOIN market_index_ingest_batch b ON b.batch_id = o.batch_id""";
 
     private static StoredObservation observation(ResultSet rs, int row) throws SQLException {
         return new StoredObservation(MarketIndexSymbol.valueOf(rs.getString(1)), rs.getString(2), instant(rs, 3),
                 MarketIndexSymbol.TimeSource.valueOf(rs.getString(4)), rs.getBigDecimal(5), rs.getBigDecimal(6),
-                instant(rs, 7), instant(rs, 8));
+                instant(rs, 7), instant(rs, 8), rs.getBigDecimal(9), instant(rs, 10));
     }
 
     /**
@@ -113,6 +171,37 @@ class MarketIndexStore {
                 RETURNING sent_at = ?""", Boolean.class,
                 h.source(), credentialId, h.status().name(), h.providerFailureCode(), ts(h.sentAt()), ts(h.lastAttemptAt()),
                 ts(h.lastSuccessfulCollectionAt()), h.pendingBatches(), ts(h.oldestPendingCollectedAt()), ts(h.sentAt())));
+    }
+
+    record StoredInstrumentHealth(String source, MarketIndexSymbol symbol, MarketIndexPayloads.InstrumentStatus status,
+            String failureCode, int consecutiveFailures, Instant lastAttemptAt, Instant lastSuccessfulCollectionAt,
+            Instant sentAt) { }
+
+    /**
+     * Replaces one source's per-pair crypto health with an applied heartbeat's list (call only when
+     * {@link #upsertHeartbeat} applied the report, in the same transaction): an empty list removes the rows, so a
+     * collector with crypto switched off leaves no outdated health behind.
+     */
+    void replaceInstrumentHealth(MarketIndexPayloads.Heartbeat h) {
+        jdbc.update("DELETE FROM market_index_instrument_health WHERE source = ?", h.source());
+        for (var i : h.instruments()) {
+            jdbc.update("""
+                    INSERT INTO market_index_instrument_health (source, symbol, status, failure_code, consecutive_failures,
+                        last_attempt_at, last_successful_collection_at, sent_at)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)""",
+                    h.source(), i.symbol().name(), i.status().name(), i.failureCode(), i.consecutiveFailures(),
+                    ts(i.lastAttemptAt()), ts(i.lastSuccessfulCollectionAt()), ts(h.sentAt()));
+        }
+    }
+
+    List<StoredInstrumentHealth> instrumentHealth(String source) {
+        return jdbc.query("""
+                SELECT source, symbol, status, failure_code, consecutive_failures, last_attempt_at,
+                    last_successful_collection_at, sent_at
+                FROM market_index_instrument_health WHERE source = ? ORDER BY symbol""",
+                (rs, n) -> new StoredInstrumentHealth(rs.getString(1), MarketIndexSymbol.valueOf(rs.getString(2)),
+                        MarketIndexPayloads.InstrumentStatus.valueOf(rs.getString(3)), rs.getString(4), rs.getInt(5),
+                        instant(rs, 6), instant(rs, 7), instant(rs, 8)), source);
     }
 
     Optional<StoredHeartbeat> heartbeat(String source) {

@@ -7,15 +7,17 @@ behaviour that is applied only with owner approval (see "Phase 2: collector rout
 market-data display licence first.
 
 The external Stock Index Collector runs on the owner's PC (WSL2, Python, SQLite, systemd, 120 s interval). After
-each collection it pushes one batch of up to four observations to the backend. The backend stores them in
+each collection it pushes one batch of up to six observations to the backend. The backend stores them in
 PostgreSQL and serves the latest values read-only.
 
-| Symbol | Index | Exchange calendar |
-| --- | --- | --- |
-| `UKX` | FTSE 100 | LSE, Europe/London |
-| `SPX` | S&P 500 | NYSE, America/New_York |
-| `IXIC` | Nasdaq Composite | Nasdaq, America/New_York |
-| `DJI` | Dow Jones Industrial Average | NYSE, America/New_York |
+| Symbol | Instrument | Market calendar | Change basis |
+| --- | --- | --- | --- |
+| `UKX` | FTSE 100 | LSE, Europe/London | Previous close |
+| `SPX` | S&P 500 | NYSE, America/New_York | Previous close |
+| `IXIC` | Nasdaq Composite | Nasdaq, America/New_York | Previous close |
+| `DJI` | Dow Jones Industrial Average | NYSE, America/New_York | Previous close |
+| `BTCUSD` | Bitcoin, USD | `CRYPTO_24_7`: always open | Rolling 24 hours (V18, see "Crypto") |
+| `ETHUSD` | Ethereum, USD | `CRYPTO_24_7`: always open | Rolling 24 hours (V18, see "Crypto") |
 
 ## Timestamp provenance
 
@@ -159,8 +161,11 @@ and duplicate fields are rejected.
 - `source`: `^[a-z0-9][a-z0-9._-]{0,39}$`, which must be in `MARKET_INDICES_ACCEPTED_SOURCES`.
 - `value` and `previousClose` (optional): decimal **strings** matching `^[0-9]{1,8}(\.[0-9]{1,4})?$` and > 0.
   NaN, Infinity, exponents and JSON numbers are rejected.
+- `previousClose` is for the stock indices only. `BTCUSD` and `ETHUSD` instead take the optional pair
+  `reference24h` (decimal string, > 0) and `reference24hAt`, which must be **exactly** `observedAt` minus 24 hours.
+  Both or neither; anything else is `400 MARKET_BATCH_INVALID`.
 - Timestamps: ISO 8601 with `Z` or an explicit offset, at most microsecond precision.
-- 1–4 observations, each symbol at most once.
+- 1–6 observations, each symbol at most once.
 
 Response `200` (also returned for an identical retry, with `"replay": true` and results `ALREADY_ACCEPTED`):
 
@@ -182,16 +187,25 @@ Checks run in this order:
 A replay is therefore never refused for having crossed the backfill cutoff, and never accepted without
 authentication and source authorization.
 
-`DUPLICATE` means an identical observation (same symbol, source, `observedAt` and values) came in an earlier
-batch; this is normal while a market is closed. Each batch is one transaction: either every observation is
-stored, or none is.
+Each new batch is one transaction, and every observation in it gets exactly one result:
+
+| Result | Meaning |
+| --- | --- |
+| `STORED` | A new instant for that symbol and source. |
+| `DUPLICATE` | The same values were stored for that instant before (normal while a market is closed). |
+| `CORRECTED` | (V18) Different values for a stored instant, from a newer batch: applied, and the replaced values kept as a revision. See "Corrections". |
+| `SUPERSEDED` | (V18) Different values for a stored instant, from a batch older than the one that set them: not applied. |
+
+A whole batch is still refused only for authentication, authorization, structure, source or time-window errors
+(the table below). Before V18 a differing value rejected the whole batch with 409 `OBSERVATION_CONFLICT`; V18 never
+returns that code.
 
 | Status | Code | Collector action |
 | --- | --- | --- |
 | 400 | `MARKET_BATCH_INVALID` (message names the field) | Permanent: mark rejected |
 | 401 | `COLLECTOR_UNAUTHORIZED` | Pause sending, keep outbox, alert |
 | 403 | `SOURCE_NOT_AUTHORIZED` (the key is not bound to this source) | Permanent: configuration error, alert |
-| 409 | `BATCH_ID_CONFLICT`, `OBSERVATION_CONFLICT` (nothing stored) | Permanent: mark rejected, alert |
+| 409 | `BATCH_ID_CONFLICT` (nothing stored); before V18 also `OBSERVATION_CONFLICT` | Permanent: mark rejected, alert |
 | 413 | `PAYLOAD_TOO_LARGE` | Permanent |
 | 415 | `UNSUPPORTED_MEDIA_TYPE` | Permanent |
 | 422 | `SOURCE_NOT_ACCEPTED`, `MOCK_TIME_SOURCE_INVALID`, `FUTURE_OBSERVATION`, `OBSERVATION_AFTER_COLLECTION`, `OBSERVATION_TOO_OLD` | Permanent |
@@ -213,6 +227,26 @@ Same header and limits.
 `providerFailureCode` (`^[A-Z][A-Z0-9_]{0,39}$`) is required exactly when `collectorStatus` is
 `PROVIDER_FAILED`. `OK` requires `lastSuccessfulCollectionAt` at or after `lastAttemptAt`. `PROVIDER_FAILED`
 requires `lastSuccessfulCollectionAt` to be absent or earlier than `lastAttemptAt`.
+
+Optional (V18) `instruments`: the collector's per-pair crypto health, sent only when the collector has crypto on.
+The top-level fields above keep describing the four stock indices only, exactly as before; a heartbeat without
+`instruments` is the four-index heartbeat every version accepts.
+
+```json
+"instruments": [
+  { "symbol": "BTCUSD", "status": "FAILED", "lastAttemptAt": "2026-11-20T14:32:05Z",
+    "lastSuccessfulCollectionAt": "2026-11-20T14:24:05Z", "consecutiveFailures": 4, "failureCode": "UPSTREAM_TIMEOUT" },
+  { "symbol": "ETHUSD", "status": "OK", "lastAttemptAt": "2026-11-20T14:32:05Z",
+    "lastSuccessfulCollectionAt": "2026-11-20T14:32:05Z", "consecutiveFailures": 0 }
+]
+```
+
+Only `BTCUSD` and `ETHUSD`, each at most once. `OK` means the pair's last attempt succeeded: `consecutiveFailures`
+0, no `failureCode`, `lastSuccessfulCollectionAt` at or after `lastAttemptAt`. `FAILED` means it did not:
+`consecutiveFailures` at least 1, a `failureCode`, and `lastSuccessfulCollectionAt` absent (never collected) or
+earlier than `lastAttemptAt`. Times may not be later than `sentAt`. When the report is applied (newest `sentAt`), the
+source's rows in `market_index_instrument_health` are replaced by the list; a heartbeat without it removes them. The
+backend logs a warning when a pair reports its first failure in a row, then every 30th (about hourly).
 
 The response is `200 {"status":"ACCEPTED","applied":true}`. Errors:
 
@@ -244,8 +278,38 @@ Public, no parameters, `Cache-Control: no-store`. Until `MARKET_INDICES_PUBLIC_E
 }
 ```
 
-All four symbols are always present, in the fixed order. A symbol without data has `null` values and status
-`UNAVAILABLE`. Only `MARKET_INDICES_PUBLIC_SOURCES` are read; startup fails if `mock` is listed there. History is
+Every instrument also has `assetClass` (`INDEX` or `CRYPTO`), `currency` (`null` for index points, `USD` for
+crypto), `changeBasis` (`PREVIOUS_CLOSE` or `ROLLING_24H`), and for crypto `reference24h` and `reference24hAt`. A
+crypto `change`/`changePercent` is against `reference24h`, and both are `null` when the collector had no verified
+24-hour window: `null` means "no 24-hour change available", never "unchanged". Crypto `previousClose` is always
+`null`, and its `market` is `{"exchange": "CRYPTO_24_7", "timeZone": "UTC", "session": "OPEN",
+"calendarCoveredThrough": null}`.
+
+`collector.instruments` (V18) monitors BTC/USD and ETH/USD independently of the indices and of each other. It
+never changes `collector.status`, `collector.sources` or an index's `collectorStatus`, which keep their stock-index
+meaning:
+
+```json
+"instruments": [
+  { "symbol": "BTCUSD", "source": "sina", "status": "PROVIDER_FAILED", "consecutiveFailures": 4,
+    "failureCode": "UPSTREAM_TIMEOUT", "lastAttemptAt": "2026-11-20T14:32:05Z",
+    "lastSuccessfulCollectionAt": "2026-11-20T14:24:05Z", "freshness": "DELAYED" },
+  { "symbol": "ETHUSD", "source": "sina", "status": "HEALTHY", "consecutiveFailures": 0, "failureCode": null,
+    "lastAttemptAt": "2026-11-20T14:32:05Z", "lastSuccessfulCollectionAt": "2026-11-20T14:32:05Z", "freshness": "FRESH" }
+]
+```
+
+`status` is the pair's own collector state, and also its `collectorStatus` in `indices`: `DISCONNECTED` or
+`UNKNOWN` when the source is (the PC or collector is down); `UNKNOWN` when the source's newest heartbeat has no
+health for the pair (crypto off, or a collector before this change); `NO_SUCCESSFUL_COLLECTION` (never collected);
+`PROVIDER_FAILED` (last attempt failed; `consecutiveFailures` and `failureCode` say how long and why);
+`COLLECTION_STALLED` (the pair's last attempt is older than `heartbeat-timeout` relative to the heartbeat's
+`sentAt`); otherwise `HEALTHY`. A success resets `consecutiveFailures` to 0 (recovery). `freshness` is the pair's
+value freshness: `STALE` when its newest value is older than `stale-after`, `UNAVAILABLE` when there is none. The
+source is that of the newest value, else the first public source reporting the pair.
+
+All six symbols are always present, in the fixed order (`UKX`, `SPX`, `IXIC`, `DJI`, `BTCUSD`, `ETHUSD`; the
+array keeps its name `indices`). A symbol without data has `null` values and status `UNAVAILABLE`. Only `MARKET_INDICES_PUBLIC_SOURCES` are read; startup fails if `mock` is listed there. History is
 not public.
 
 ## Authentication
@@ -303,6 +367,139 @@ For a source whose newest row is a year old, with statistics not yet updated, it
 the `observed_at` index. It filtered 1,839,600 rows of other sources and took 159 ms, and the cost grows with the
 whole table. The scalar `max()` form is always resolved on the natural-key index, so its cost is bounded by that
 symbol and source's own rows.
+
+## Corrections (V18)
+
+**Incident (2026-11-20 to 2026-11-26).** Sina revises values after first publishing them: index closes settle in the
+minutes after the close (SPX 2026-11-20 21:00: 6910.79, 6910.54, 6910.79, then 6910.39 for good, which is also the
+next day's previous close), the FTSE 100's last minute is replaced by the official closing price at the next
+morning's pre-open (2026-11-23 16:30: 10480.82 then 10486.35), and a forming minute differs from its final value.
+The collector repeats the newest value of a closed market every cycle. Under V17 any differing value rejected the
+whole batch (409 `OBSERVATION_CONFLICT`), and the collector marks such a batch rejected for good, so one revised
+close discarded every later batch until a new minute replaced it. In production 3,320 batches were rejected; 751
+observations (734 FTSE 100 minutes from 2026-11-23 08:15 onwards) never arrived, and the FTSE 100 was STALE through
+the trading day of 2026-11-26 because the US closes of 2026-11-25 (Thanksgiving) were revised.
+
+**Policy.** For an existing (symbol, source, `observedAt`) the values from the most recent collection win:
+
+- Precedence is the pair (`collectedAt`, `batchId`): a later `collectedAt` wins; at the same `collectedAt` the
+  greater `batchId` (canonical lowercase text) wins. A row's precedence is the newest batch that **set or confirmed**
+  its values: a `DUPLICATE` from a newer batch raises it (`confirmed_batch_id`, `confirmed_collected_at`; the values
+  and `batch_id` provenance stay). So if batch A stores X, a newer batch C confirms X and an intermediate batch B
+  (A < B < C) arrives late with Y, B is `SUPERSEDED`: the newest evidence says X. The outcome depends only on the
+  batches, never on the order in which they arrive.
+- A newer batch with different values corrects the row in place (`CORRECTED`): value, previous close, 24-hour
+  reference, `observedAtSource`, `batch_id` (so `provenance.collectedAt` is that batch's) and `received_at`. The
+  replaced values, the batch that set them, the precedence it had to beat and the correcting batch are inserted into
+  `market_index_observation_revision` (insert-only; a `CHECK` enforces that the correcting batch is newer than that
+  precedence). A correction resets the confirmation to the correcting batch. Revisions are deleted with their
+  observation by retention.
+- An older batch with different values changes nothing (`SUPERSEDED`), so a late outbox retry, a re-sent rejected
+  batch or a replay can never overwrite a newer correction. An identical retry of a committed `batchId` stays a
+  replay (`ALREADY_ACCEPTED`, nothing re-applied); a different body under that id stays 409 `BATCH_ID_CONFLICT`.
+- A correction passes exactly the same validation as a new observation (structure, mock time source, crypto
+  24-hour window, backfill window). Each instrument is decided on its own, so a correction to one never affects
+  another; the batch stays all-or-nothing only for validation errors.
+- Concurrency: the existing row is locked (`SELECT ... FOR UPDATE`) before the precedence check, and rows are taken
+  in a fixed (symbol, `observedAt`) order, so concurrent batches serialise per row and cannot deadlock.
+- A value that flips and flips back is applied each time, each audited (observed: at most four flips in the ten
+  minutes after a close, then stable). A collector clock stepping backwards can make a newer value lose
+  (`SUPERSEDED`) until a later cycle; collector times are bounded by `collector-clock-skew`.
+
+The collector needs no change: it treats any 200 acknowledgement of its batch as sent and ignores the per-observation
+results.
+
+**Verification against production data.** All 3,823 outbox batches of the production collector (a read-only copy
+taken 2026-11-26 16:27 UTC, 494 sent and 3,329 rejected, in their original order and with their original bodies)
+were sent to this branch on a fresh database: every `sina` batch answered 200 (the 20 `mock` burn-in batches 422,
+as the test server accepts only `sina`), with 1,664 `STORED`, 13,497 `DUPLICATE` and 51 `CORRECTED` results over 30
+instants, and every stored value equals the most recently collected one (DJI 2026-11-25 21:00 = 50182.9492, SPX
+2026-11-20 21:00 = 6910.3901, UKX 2026-11-25 16:30 = 10433.66).
+
+## Crypto: BTC/USD and ETH/USD (V18)
+
+Owner decision 2026-11-21: Sina Finance crypto minute bars, through the same collector, outbox, batch, endpoint,
+tables and public read as the indices (one collector, one outbox, one upload pipeline, six instruments). The owner
+accepted the licensing and redistribution risk of that source; Sina has not granted permission.
+
+- **Market semantics.** Crypto trades continuously: `MarketCalendar.Exchange.CRYPTO_24_7` is always `OPEN` with
+  no session start, so freshness is the observation's age alone (FRESH within `fresh-within`, then DELAYED, STALE
+  after `stale-after`; a `COLLECTOR` time is never FRESH). No exchange session, weekend or holiday rule applies.
+  The stock indices keep their calendars unchanged.
+- **Change.** A rolling 24-hour change: the price at `observedAt` against `reference24h`, the price exactly 24
+  hours earlier. The collector derives both from continuous Sina minute bars and sends the reference only when every
+  minute of the window is present (Stock Index Collector `sina_crypto.py`). The backend stores what it receives and
+  enforces, in the payload parser and a V18 `CHECK`, that `reference24hAt = observedAt - 24 hours`, that crypto rows
+  never carry `previous_close` and index rows never carry a reference.
+- **Idempotency.** A crypto line in the canonical request hash adds its reference. Index lines hash exactly as
+  under V17, so replays of earlier stored batches still match.
+- **Retention: unchanged (decision).** The same `retention` (P730D) and `max-backfill` (P30D) apply. Crypto adds
+  one row per symbol per 2-minute cycle (about 1,440 rows a day, 1.05 M over two years for one source), well
+  within the measured volume above (4.2 M rows: latest-value lookup 0.066 ms, retention 6 ms per 1,000 rows) and
+  within retention's 20,000 rows per hourly run. The latest-value query is per symbol and source, so crypto rows
+  never slow an index lookup. A separate retention would add configuration for no measured need.
+- **Caching: unchanged (decision).** `GET /api/market-indices/latest` stays `Cache-Control: no-store`, and
+  CloudFront forwards it uncached: freshness and `ageSeconds` are computed per request, and a crypto value changes
+  every cycle. The collector already limits upstream load (two small requests per cycle once its window is warm).
+
+## Release: V17 to V18
+
+V18 widens two `CHECK`s (symbols; up to 6 observations per batch), adds two nullable columns and one `CHECK`, and
+creates `market_index_instrument_health` (per-pair crypto health) and `market_index_observation_revision`
+(correction audit), both new tables. From V18 an observation row can be updated in place by a correction (see
+"Corrections"). Existing rows are unchanged and all
+satisfy the new constraints. Release with `approve_migrations=18`. The previous image
+(V17 code) is compatible with a V18 database: it reads only its four symbols by name, ignores the new columns and
+validates the newer schema under Flyway's default `ignoreMigrationPatterns` (`*:future`). Rollback is therefore an
+image rollback only. Crypto rows then stay stored but unused.
+
+Rehearsed on 2026-11-23 against a disposable PostgreSQL 16 cluster with both jars, public read enabled:
+
+| Step | Image | Result |
+| --- | --- | --- |
+| 1 | Previous (`main` 18a2fcd) on an empty database | Migrated V1–V17; health UP; Guides 200; `latest` 200. A UKX row was then added |
+| 2 | This branch on the V17 database | "Migrating schema to version 18"; applied in 6 ms; health UP. A BTCUSD row with its 24-hour reference was then added |
+| 3 | Previous image again on the V18 database (rollback) | "Schema is up to date"; health UP; Guides 200; `latest` lists exactly the four indices (UKX value unchanged), the crypto row ignored |
+| 4 | This branch again | `latest` lists six; BTCUSD `ROLLING_24H`, `changePercent` -6.31, FRESH; ETHUSD `UNAVAILABLE` |
+
+Repeated on 2026-11-26 with per-pair crypto health (`market_index_instrument_health`), fresh PostgreSQL 16 cluster:
+
+| Step | Image | Result |
+| --- | --- | --- |
+| 1 | Previous (`main` 18a2fcd) on an empty database | V1–V17; health UP; Guides 200 |
+| 2 | Previous on V17, traffic | Four-index batch 200 STORED; four-index heartbeat 200; six-instrument batch 400 `MARKET_BATCH_INVALID`; heartbeat with `instruments` 400 `HEARTBEAT_INVALID` (why the collector goes last) |
+| 3 | This branch on the V17 database | V18 applied in 14 ms; four-index batch and heartbeat 200; six-instrument batch 200 (6 STORED); heartbeat with `instruments` 200; `latest`: indices HEALTHY, BTCUSD `PROVIDER_FAILED` (3 failures), ETHUSD HEALTHY, `collector.status` HEALTHY |
+| 4 | Previous image on the V18 database (rollback) | "Schema is up to date" (only the expected Flyway "newer than the latest available migration" warning); health UP; Guides 200; four-index batch and heartbeat 200; crypto batch and `instruments` heartbeat 400; `latest` lists exactly the four indices; health rows untouched |
+| 5 | This branch again (roll-forward) | Before any new heartbeat both pairs `UNKNOWN` (the rows predate the source's newest heartbeat, so they are not shown as current); after one heartbeat with `instruments`, BTCUSD `PROVIDER_FAILED`, ETHUSD HEALTHY |
+| 6 | This branch with the real collector (mock provider, crypto on, HTTP) | Four cycles, BTC/USD failing in cycles 2–3: every batch and heartbeat 200; heartbeat row `OK` throughout; BTCUSD rows `OK:0`, `FAILED:1`, `FAILED:2`, `OK:0`; ETHUSD `OK:0` throughout; one backend warning at the first failure |
+| 7 | This branch, the production collector's whole outbox replayed (see "Corrections") | 3,329 previously rejected batches all 200; 51 corrections; every value equals the newest collected one |
+| 8 | Previous image on that corrected V18 database (rollback) | Health UP; Guides 200; `latest` serves the corrected values; a differing value is 409 `OBSERVATION_CONFLICT` again (V17 behaviour); revision table ignored |
+| 9 | This branch again (roll-forward) | The same request: 200, DJI `CORRECTED`, a new UKX minute `STORED` |
+
+Steps 7–9 were repeated after adding confirmation precedence, this time upgrading a V17 database created by the
+previous image (as in production): V18 applied in 21 ms; the replay gave the same results (all `sina` batches 200,
+51 corrections, every value the newest collected); rollback and roll-forward as above. Rows written by the previous
+image after a rollback have no confirmation and fall back to their setting batch.
+
+Enablement order (each step is safe on its own and has its own approval):
+
+1. **Frontend first.** A V18 backend always lists six instruments; the homepage before the crypto change accepts
+   exactly four and would fall back to its placeholders, hiding the indices too. The new homepage accepts four or
+   six (crypto rows then show as unavailable).
+2. **Backend** with `approve_migrations=18`. The current collector keeps sending four-index batches, which V18
+   accepts unchanged; BTCUSD and ETHUSD are listed as `UNAVAILABLE`.
+3. **Collector** upgrade (SQLite schema 3 to 4, automatic), then `crypto_enabled: true` and a restart. Never before
+   step 2: a V17 backend rejects a batch containing crypto as `MARKET_BATCH_INVALID`, discarding that cycle's
+   indices as well. The first cycle sends prices without a 24-hour change; the next completes the window. With
+   crypto on, heartbeats also carry `instruments`, which only V18 accepts.
+
+Rollback after step 3 runs in reverse: set `crypto_enabled: false` on the collector and restart it first (its
+batches and heartbeats are then exactly the four-index ones a V17 image accepts; its SQLite schema 4 stays), then
+roll back the backend image. Rolling back the backend image while crypto is on would make the previous image reject
+every batch (`MARKET_BATCH_INVALID`, indices included) and every heartbeat (`HEARTBEAT_INVALID`) until crypto is
+switched off; pending batches stay in the collector outbox, but batches already rejected are not retried.
+After any backend image rollback the previous image also brings back the whole-batch 409 `OBSERVATION_CONFLICT` for
+a revised value (the incident in "Corrections"); corrected rows and revisions stay valid and readable.
 
 ## Release: V16 to V17 and previous-image compatibility
 
