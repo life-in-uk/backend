@@ -33,3 +33,7 @@ Offline archive SHA-256 `abbae2283f9b9bd4f31666014ecf56cd1e64158dca329cf2e314477
 4. After approval, verify the immutable receipt, backups, revision and publication IDs, public content, five localized listings and sitemap. Run the separately approved frontend Production release from the discovery-enabled revision. Smoke-test the ten public routes, Work Visa and Education discovery, canonical and alternate URLs, mobile and Urdu RTL. Exercise University navigation only where that hub already has published Guides. Preserve the withdrawal identifiers and prior frontend release reference.
 
 The [discovery PR](https://github.com/life-in-uk/frontend/pull/46) adds a locale-aware Work Visa group and gates the Education and University hub links on published data. The University series is outside this release. See the existing [publisher and recovery runbook](../../../deploy/PUBLISHING.md).
+
+## Phase 2 review checkpoint
+
+The [sponsored employment review record](sponsored-employment/REVIEW.md) covers both new Guides, source checks, localized evidence, the salary example, offline archive and owner handoff. The first batch retains its disclosed limitations for independent professional immigration review and independent fluent-language review. Its public publication IDs are `b5d343be-fb80-41a6-a198-fbe15f1ca797` and `b31d0cec-9b59-40e2-baa3-7c2a49278b8c`. [Protected publication run](https://github.com/life-in-uk/backend/actions/runs/45891624024)

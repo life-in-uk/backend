@@ -1,0 +1,41 @@
+{
+  "slug": "find-uk-jobs-with-visa-sponsorship",
+  "category": "work-visa",
+  "status": "DRAFT",
+  "sourceLocale": "zh-CN",
+  "sourcesVerifiedOn": "2026-11-26",
+  "editorialStatus": "Owner and independent immigration and fluent-language review pending.",
+  "canonicalization": "guide-content-v1",
+  "variants": [
+    {
+      "locale": "zh-CN",
+      "path": "zh-CN.json",
+      "sha256": "cefe9190a09451757a8c1a67863b278bec465684c6697e1d1bcb990b425d6967",
+      "contentSha256": "0284a7cbbb5aeee24adbcb36665bc783273ee101aef53916c0b2ee611d54d57f"
+    },
+    {
+      "locale": "zh-TW",
+      "path": "zh-TW.json",
+      "sha256": "611564a5870a11d076ee9575819e710dcb50ea9fad74daeb64bfaf08fb55fdac",
+      "contentSha256": "9ed60b43f5237c50b5cc61c23a37145e0bc942d8b2408f7d60876b0cda9fd7a6"
+    },
+    {
+      "locale": "en",
+      "path": "en.json",
+      "sha256": "4fdce2926d7f1fbd002dbda34ff7a31edea5a35319bfd94e3e20b78044dd160a",
+      "contentSha256": "df4c1d0bb76f35f9aeb807a766920b4b108920ec923b8ac19fc35743cfc5d7c8"
+    },
+    {
+      "locale": "ur",
+      "path": "ur.json",
+      "sha256": "8a79a406c50fad42824b4d613c8f58f7d02873d4e273169e0ed61434bbd6cb03",
+      "contentSha256": "ee943aad6db72386a9d36baa4388ee34dd5a6bb4c0256889916bc14581d582ce"
+    },
+    {
+      "locale": "hi",
+      "path": "hi.json",
+      "sha256": "1f9f4fd77e854862160206afa5bad105d7b7380915af584b2ad5e5a786cfc7fa",
+      "contentSha256": "da6af31d753ecb1940160614561e41b879ef71dd721d59b7c217d14abd6107b1"
+    }
+  ]
+}
