@@ -1,0 +1,63 @@
+{
+  "slug": "chinese-medical-records-vaccinations-england",
+  "category": "health-nhs",
+  "status": "DRAFT",
+  "sourceLocale": "zh-CN",
+  "scope": "Existing Guide replacement proposal only",
+  "reviewedOn": "2026-11-27",
+  "canonicalization": "guide-content-v1",
+  "previousPublicSnapshot": {
+    "zh-CN": {
+      "sourceRevisionId": "56a308dc-b7d2-4e5c-98d2-7566a8e76d28",
+      "contentSha256": "d1b3593933134cd1afdfb4837f3492a05ab1e85d097aa6c093176c70adb87cb5"
+    },
+    "zh-TW": {
+      "sourceRevisionId": "56a308dc-b7d2-4e5c-98d2-7566a8e76d28",
+      "contentSha256": "af3b3b3d24970b064e2d859726e77b5a5761365320a125aee69ddf7b1a84e5c6"
+    },
+    "en": {
+      "sourceRevisionId": "56a308dc-b7d2-4e5c-98d2-7566a8e76d28",
+      "contentSha256": "75910213fb6f65f3a5643ba33c8848156687fb3c359dc6504d557ac89b039df4"
+    },
+    "ur": {
+      "sourceRevisionId": "56a308dc-b7d2-4e5c-98d2-7566a8e76d28",
+      "contentSha256": "323f2c78b431125e64231d7b19a17aeaef609568f1ce62f92148837faa81000b"
+    },
+    "hi": {
+      "sourceRevisionId": "56a308dc-b7d2-4e5c-98d2-7566a8e76d28",
+      "contentSha256": "e5109c2bbdcdbb848bdbba70441da3779d36c2e6102a033200dd99528f887db5"
+    }
+  },
+  "variants": [
+    {
+      "locale": "zh-CN",
+      "path": "zh-CN.json",
+      "sha256": "cf56847b3d807eaa3e495d3bfd79b41b703b21fb64f7955816c1df500c80fb03",
+      "contentSha256": "8b18000aeba20b2e54b35c5efe9eba537f6700cd76b513366742687ec5b42411"
+    },
+    {
+      "locale": "zh-TW",
+      "path": "zh-TW.json",
+      "sha256": "4d1f9737f8abd0f88e77e6645570df192d3ef1febdb2c820e0d38d50a49dabe6",
+      "contentSha256": "b94817cf34aef4ea0f128f06cd020938723abbe42473863a7e4be0d829374a3f"
+    },
+    {
+      "locale": "en",
+      "path": "en.json",
+      "sha256": "d4ed2c5bd67efe4f5cab28194a04755352177e76541ed18adb7943cbc3b6f71a",
+      "contentSha256": "41d2b896e4a17f5138d98fe2c811343616ce3a50205c3afdaba266f48e21dd89"
+    },
+    {
+      "locale": "ur",
+      "path": "ur.json",
+      "sha256": "20c0d3fb8235cfe9aefce42b75ddebd683d6b6232f4d344fed2deda3bafe571e",
+      "contentSha256": "a273fdbda555c2ecba04202d6894f2f10bb80aa676cd3407d2c60002f2bd82f6"
+    },
+    {
+      "locale": "hi",
+      "path": "hi.json",
+      "sha256": "02f98b08224166734bc9378274d978a13b787a876905372d4745cd5b7742f440",
+      "contentSha256": "17de2627d69cca71d88ccf52170f88676ec20e6fe129b5358a00a7a6a8ef5f48"
+    }
+  ]
+}

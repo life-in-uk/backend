@@ -3,7 +3,7 @@
   "category": "money",
   "status": "DRAFT",
   "sourceLocale": "zh-CN",
-  "scope": "Existing Guide replacement proposal only",
+  "scope": "Reconciled F5 localization and safeguarding proposal; existing Guide replacement only",
   "reviewedOn": "2026-11-27",
   "canonicalization": "guide-content-v1",
   "previousPublicSnapshot": {
@@ -32,32 +32,32 @@
     {
       "locale": "zh-CN",
       "path": "zh-CN.json",
-      "sha256": "9d96e4adc24af1ba15dcc3025884f451f1af488fe1ebbc7185ef20f82613f33a",
-      "contentSha256": "e3263c195567a18d09b947679cc4e6006c66bb93d601a0ba919b2cbd6f369c09"
+      "sha256": "4123bfeda3220b575800719b8c5b9f4314f7cf32090577574847c564d4c4df13",
+      "contentSha256": "9877c5fe1ec1d825c1a530cdf09929ecbcc02a6af0afc25f65b9c17f6da3639b"
     },
     {
       "locale": "zh-TW",
       "path": "zh-TW.json",
-      "sha256": "d2f8f24dbcddf3a339c85915c85c5e32ef505641c92eb420d5166b0c6960b748",
-      "contentSha256": "83a520bc0d32fa4e07c7babb8376ee80317cbe202d8f6ee8a953aba75b5d5544"
+      "sha256": "102406201b4612e9775392afffb2642c8fc48c27d756b7b8b591e60e69fbc1c7",
+      "contentSha256": "865b2695bf73b3d97858cb636d86cfb27c3af10af4788d2ef53953cb270713d2"
     },
     {
       "locale": "en",
       "path": "en.json",
-      "sha256": "fa378ef359033745f1eb15dc5f7c1ae955c8e81be30697333e686b4948498292",
-      "contentSha256": "7e5eaac729203988c21a153c9a030cfabea8c0dbfc5b214581776422cc6d53c9"
+      "sha256": "b0582dd725857dbda2ca59b3b8f416a2b846bb36b611b033f2da709045c185da",
+      "contentSha256": "e1bc6235f9a24dfcc2752907f35346dc6c644949e6719e0ef9d094636c1cf604"
     },
     {
       "locale": "ur",
       "path": "ur.json",
-      "sha256": "3d4dd036976f88acac6eea12b7951e49e747b78c8d922bd93e2af3b6bb693bdf",
-      "contentSha256": "4367f96958256f71ef9ef40c9900796eddf76a26cc216879448d1f0bbc45307f"
+      "sha256": "854476829b0418a1c87e896d36e0f0ef30614a5a2d3e36f053c50c75b172ed9e",
+      "contentSha256": "5636edaa2213e13b8b8b12c1b1fc1a603112cc33c9f4302514963a468e06d68a"
     },
     {
       "locale": "hi",
       "path": "hi.json",
-      "sha256": "1d17c50a5d9a93fd8e7ecb1de9e2bae6e0807e9870d2c1f53755fe7e15d56ec5",
-      "contentSha256": "30761a3a59fd003d971ca8860a2ed770cddc67f1d014507d711a394abd0ffae1"
+      "sha256": "665dc9e66aedeefd872f25032d474058516702682c01295a721d764746d964eb",
+      "contentSha256": "5c308a3f52a51c15913465360e019b35c8bedf7342c541f6de570eaec168cb83"
     }
   ]
 }
