@@ -1,6 +1,6 @@
 # Primary source register
 
-Verified on 26 November 2026. The Immigration Rules and Appendix Skilled Occupations are the operative texts. Public pages and sponsor guidance explain them. The 2025 statement is historical evidence of the care entry change. The earned-settlement response describes reform policy; check current Rules and any relevant commencement provisions before release.
+Final check on 27 November 2026. The Immigration Rules and Appendix Skilled Occupations are the operative texts. Public pages and sponsor guidance explain them. The 2025 statement is historical evidence of the care entry change. The earned-settlement response describes reform policy; check current Rules and any relevant commencement provisions before release.
 
 | Reference | Source | Locator and scope |
 |---|---|---|

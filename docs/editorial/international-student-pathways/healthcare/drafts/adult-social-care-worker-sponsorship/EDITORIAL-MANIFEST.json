@@ -3,39 +3,39 @@
   "category": "work-visa",
   "status": "DRAFT",
   "sourceLocale": "zh-CN",
-  "sourcesVerifiedOn": "2026-11-26",
+  "sourcesVerifiedOn": "2026-11-27",
   "editorialStatus": "Owner and independent immigration and fluent-language review pending.",
   "canonicalization": "guide-content-v1",
   "variants": [
     {
       "locale": "zh-CN",
       "path": "zh-CN.json",
-      "sha256": "e8901dcb96d4ebaf1cf72ecf3558f4368e63ac8cab8faf924c264faeb7cd7f44",
-      "contentSha256": "f33cbce40030973debcc02c9e70dc704eff1168e3ad1ef5a1798ac189ca8cdfd"
+      "sha256": "2abb0d44bebab21b1602f6c8d9d376c309f9945f7e76f54c30cc114aed30efa8",
+      "contentSha256": "4e06a9b4a71bb822463fccb2d9af568e9cbbd6e41202c3c376271ed40f0704a0"
     },
     {
       "locale": "zh-TW",
       "path": "zh-TW.json",
-      "sha256": "6ea22e0b62df5ad6dc2949dc7f03de9fd32e2792793e0d5e7be8e6c1363a399e",
-      "contentSha256": "5eb049f6b6943245339f257344758521d0c7150d6bea4ad822252649f8bcf0d7"
+      "sha256": "ff6314eb2b125bdc7cc286bac0d37798c1e0504d5a86c02a75e31c7ebefbea10",
+      "contentSha256": "7f1eded821de4d412e654897e6220248cbfea268de82f0e89b69cc4ed7557459"
     },
     {
       "locale": "en",
       "path": "en.json",
-      "sha256": "32718f70883b8189a44fa6df06bcc1e2f11b453d7ab90294f79dfcf44ad7ff75",
-      "contentSha256": "c8f371d8e443fdf36590e8e5f7ad6cc9a1a4f87315608d7cc66d790c8955c348"
+      "sha256": "8eea0d3299d021357aa76d6145b2c6b2a82fe541ab51f0117ad6ae390afd0715",
+      "contentSha256": "a2c58552c1ee38c1be9262e73f94b44d8b8d36d755d1b9dd1152aa18ad363904"
     },
     {
       "locale": "ur",
       "path": "ur.json",
-      "sha256": "df844c803144026d9038f44fb39f0a3fb0b4275ee140970227c729a29862180c",
-      "contentSha256": "8b92b5a3b417ebd35d5628340c7f924775d534f407f04d2d4e0cd7a35f26787f"
+      "sha256": "9c329398c1edcaf704cddd82583267f5625f2c4167c74d3cf65031ad68a6e8dc",
+      "contentSha256": "7c147ee64220f493208b7ed83ad40976c405ac4aaa975d03874f7ee2cca6510c"
     },
     {
       "locale": "hi",
       "path": "hi.json",
-      "sha256": "2353ddec63fb63cb50b016e2924515167af331f295f1839770d5fb1a1ed955a1",
-      "contentSha256": "9f54ce6e525daa6cbae8224ff7a68fbc2ec4ef163230da12d0cf1bf966dce957"
+      "sha256": "075ebf35749e392a5166ea5e863ada23f3377684e9207e855cb3435963f6db86",
+      "contentSha256": "5e87ddefb39326c505c470d46344aec1a145729fbf655b02a8ab65ec2eaa08cb"
     }
   ]
 }
