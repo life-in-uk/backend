@@ -1,0 +1,41 @@
+{
+  "slug": "uk-personal-loans-apply-and-compare",
+  "category": "money",
+  "status": "DRAFT",
+  "sourceLocale": "zh-CN",
+  "sourcesVerifiedOn": "2026-11-27",
+  "editorialStatus": "Owner, independent professional financial and fluent-language review pending.",
+  "canonicalization": "guide-content-v1",
+  "variants": [
+    {
+      "locale": "zh-CN",
+      "path": "zh-CN.json",
+      "sha256": "8a27dbf6c3edb6f03b04987b1259c6b54b9328ab41e90999ce6f00c24cbd0ad4",
+      "contentSha256": "23ca4df61bd4669862a34c451f820b9e266b35b655ecb26da5930acc545da7e3"
+    },
+    {
+      "locale": "zh-TW",
+      "path": "zh-TW.json",
+      "sha256": "8a2b693b1f8b6c579fe98e5bedd80c8a779597bba0ce587fd6394dbb96a4d316",
+      "contentSha256": "8290d92d5db35c68695d2eb84bee175b9b2cd636387b584de7d35f5fc1c1afa7"
+    },
+    {
+      "locale": "en",
+      "path": "en.json",
+      "sha256": "64ab9db8a02c9f8945ab2e44bd6468bef1308caee941272c8f894af3ef8408ae",
+      "contentSha256": "34246a48048d8a33f4b008eac9d694d71fe6f635e0d49519980f44bb06351b5e"
+    },
+    {
+      "locale": "ur",
+      "path": "ur.json",
+      "sha256": "6e07498047277ebe5f9a108d9c37a1ec0174f7dfcb9961abdcaa3fab69f3e1f4",
+      "contentSha256": "d269e8296416026a4634f67239576b9e62b2d85e545aba01b879bb0213b35ff5"
+    },
+    {
+      "locale": "hi",
+      "path": "hi.json",
+      "sha256": "b94036007bc714ba51b3b62282d65d11b41763ac3812cd6346281baa43492aae",
+      "contentSha256": "89cfa5fb25bebf269302366989ac50c9eb2834574a506342d54b00c955f1abfa"
+    }
+  ]
+}

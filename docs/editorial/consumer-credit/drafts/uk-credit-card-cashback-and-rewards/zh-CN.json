@@ -1,0 +1,107 @@
+{
+  "slug": "uk-credit-card-cashback-and-rewards",
+  "category": "money",
+  "title": "英国返现和积分信用卡：怎么算实际收益",
+  "summary": "只用原本就计划的消费来比较返现、积分和里程，扣除费用并核对限制。",
+  "content": "# 英国返现和积分信用卡：怎么算实际收益\n\n最后更新: 2026-11-27\n\n## 按实际兑换价值计算\n返现通常以现金或账单抵扣发放。积分、航空里程值多少，要看你实际会换什么，并扣除适用的税费或预订费用。查最低兑换门槛、过期日以及有没有可兑换的座位。开卡奖励可能要求在限期内达到合资格消费额。日常消费达不到就不要把奖励计入比较。 [奖励条款](#guide-evidence-types)\n\n## 查哪些消费有效，哪些会收费\n核对年费、奖励比例、上限、排除交易和退款的影响。提现和余额转移通常不赚奖励。外币交易费另算；外币支付拿到积分，仍可能要付手续费。分别比较首年与以后没有开卡奖励的年份，依据当前协议和奖励规则。 [费用和排除项](#guide-evidence-terms)\n\n## 算例：£3,000 合资格消费\n假设返现 1%，原本可得 £30，但上限是 £25。扣除 £24 年费，净得 £1。如果同年已经达到上限，再有一笔 £200 外币交易，手续费 3% 即 £6，最后净亏 £5。利息会进一步减少收益。这些数字只演示算法。 [净收益算法](#guide-evidence-example)\n\n## 按日常预算比较\n列出本来就会发生的支出，再核对奖励上限、可用兑换价值、年费、外币费和利息。一个月的利息就可能抵消小额奖励。不要为了奖励多花钱。若打算留有欠款，先看借款成本再考虑奖励价值。本文为一般信息，不构成个人财务建议。 [信用卡成本](#guide-evidence-checklist) · [用卡和还款](/zh-CN/money/uk-first-credit-card) · [信用历史](/zh-CN/money/uk-credit-history-and-credit-score)\n",
+  "status": "DRAFT",
+  "publishedAt": null,
+  "updatedAt": "2026-11-27T00:00:00Z",
+  "sources": [
+    {
+      "key": "cards",
+      "organisation": "MoneyHelper",
+      "title": "A simple guide to credit cards",
+      "url": "https://www.moneyhelper.org.uk/en/everyday-money/credit/simple-guide-to-credit-cards",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "rewards",
+      "organisation": "American Express",
+      "title": "Cardmember Agreement Part 1",
+      "url": "https://secure.cmax.americanexpress.com/Internet/Acquisition/GB_en/AppContent/common/config/Plat-CB-everyday-TandC-3BP.pdf",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "airline",
+      "organisation": "British Airways",
+      "title": "Reward flights",
+      "url": "https://www.britishairways.com/content/the-british-airways-club/avios/spending-avios/reward-flights",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    }
+  ],
+  "evidence": [
+    {
+      "key": "types",
+      "statement": "返现通常以现金或账单抵扣发放。 积分、航空里程值多少，要看你实际会换什么，并扣除适用的税费或预订费用。",
+      "supports": [
+        {
+          "sourceKey": "cards",
+          "locator": "Types, interest, repayments and rewards",
+          "excerpt": null,
+          "note": "返现通常以现金或账单抵扣发放。 积分、航空里程值多少，要看你实际会换什么，并扣除适用的税费或预订费用。"
+        },
+        {
+          "sourceKey": "rewards",
+          "locator": "Example issuer terms, charges and excluded transactions",
+          "excerpt": null,
+          "note": "返现通常以现金或账单抵扣发放。 积分、航空里程值多少，要看你实际会换什么，并扣除适用的税费或预订费用。"
+        },
+        {
+          "sourceKey": "airline",
+          "locator": "Availability, Avios and cash charges",
+          "excerpt": null,
+          "note": "返现通常以现金或账单抵扣发放。 积分、航空里程值多少，要看你实际会换什么，并扣除适用的税费或预订费用。"
+        }
+      ]
+    },
+    {
+      "key": "terms",
+      "statement": "核对年费、奖励比例、上限、排除交易和退款的影响。提现和余额转移通常不赚奖励。外币交易费另算；外币支付拿到积分，仍可能要付手续费。分别比较首年与以后没有开卡奖励的年份，依据当前协议和奖励规则。",
+      "supports": [
+        {
+          "sourceKey": "cards",
+          "locator": "Types, interest, repayments and rewards",
+          "excerpt": null,
+          "note": "核对年费、奖励比例、上限、排除交易和退款的影响。提现和余额转移通常不赚奖励。外币交易费另算；外币支付拿到积分，仍可能要付手续费。分别比较首年与以后没有开卡奖励的年份，依据当前协议和奖励规则。"
+        },
+        {
+          "sourceKey": "rewards",
+          "locator": "Example issuer terms, charges and excluded transactions",
+          "excerpt": null,
+          "note": "核对年费、奖励比例、上限、排除交易和退款的影响。提现和余额转移通常不赚奖励。外币交易费另算；外币支付拿到积分，仍可能要付手续费。分别比较首年与以后没有开卡奖励的年份，依据当前协议和奖励规则。"
+        }
+      ]
+    },
+    {
+      "key": "example",
+      "statement": "假设返现 1%，原本可得 £30，但上限是 £25。扣除 £24 年费，净得 £1。如果同年已经达到上限，再有一笔 £200 外币交易，手续费 3% 即 £6，最后净亏 £5。利息会进一步减少收益。这些数字只演示算法。",
+      "supports": [
+        {
+          "sourceKey": "cards",
+          "locator": "Types, interest, repayments and rewards",
+          "excerpt": null,
+          "note": "假设返现 1%，原本可得 £30，但上限是 £25。扣除 £24 年费，净得 £1。如果同年已经达到上限，再有一笔 £200 外币交易，手续费 3% 即 £6，最后净亏 £5。利息会进一步减少收益。这些数字只演示算法。"
+        },
+        {
+          "sourceKey": "rewards",
+          "locator": "Example issuer terms, charges and excluded transactions",
+          "excerpt": null,
+          "note": "假设返现 1%，原本可得 £30，但上限是 £25。扣除 £24 年费，净得 £1。如果同年已经达到上限，再有一笔 £200 外币交易，手续费 3% 即 £6，最后净亏 £5。利息会进一步减少收益。这些数字只演示算法。"
+        }
+      ]
+    },
+    {
+      "key": "checklist",
+      "statement": "列出本来就会发生的支出，再核对奖励上限、可用兑换价值、年费、外币费和利息。 一个月的利息就可能抵消小额奖励。",
+      "supports": [
+        {
+          "sourceKey": "cards",
+          "locator": "Types, interest, repayments and rewards",
+          "excerpt": null,
+          "note": "列出本来就会发生的支出，再核对奖励上限、可用兑换价值、年费、外币费和利息。 一个月的利息就可能抵消小额奖励。"
+        }
+      ]
+    }
+  ]
+}

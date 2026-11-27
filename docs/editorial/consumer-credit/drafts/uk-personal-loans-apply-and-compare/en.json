@@ -1,0 +1,178 @@
+{
+  "slug": "uk-personal-loans-apply-and-compare",
+  "category": "money",
+  "title": "UK personal loans: how to apply and compare the real cost",
+  "summary": "Compare written offers, understand representative APR and check early settlement before committing to monthly repayments.",
+  "content": "# UK personal loans: how to apply and compare the real cost\n\nLast updated: 2026-11-27\n\n## Know what you are putting at risk\nAn unsecured personal loan normally pays you a lump sum and you repay it over an agreed term, often in fixed monthly instalments. A secured loan puts an asset such as your home at risk if repayments fail. Unsecured borrowing can still have serious consequences if you miss payments. Set a budget that covers rent, bills and irregular expenses before deciding how much you can repay. [Borrowing types](#guide-evidence-types)\n\n## From eligibility check to written offer\nCheck the lender’s age, residence, income and address rules. Use a confirmed soft-search checker first if available. Give accurate employment and income details and check your credit reports. A full application usually uses a hard search. A representative APR is an advertising figure: the rate or lower is expected for at least 51% of agreements arising from the promotion. It does not mean 51% of applicants get approved. Compare your own offer’s actual APR, amount received, fees, instalments, total payable and term on the same borrowing amount. [APR and application](#guide-evidence-apply) · [Credit history and searches](/en/money/uk-credit-history-and-credit-score)\n\n## Worked example: two offers to borrow £3,000\nAssume no upfront fee and equal monthly instalments. At £140 for 24 months, repay £3,360, or £360 above the amount borrowed. At £100 for 36 months, repay £3,600, or £600 above the amount borrowed. The second is £40 a month lower but costs £240 more overall. Ask for the actual figures in writing, including any fees, before accepting. [Comparing costs](#guide-evidence-example)\n\n## Check early repayment and consolidation\nOn a regulated agreement you can generally repay early. Ask for a dated settlement figure, including any applicable interest or charges, and check separately how partial overpayments work. The displayed balance, settlement figure and sum of remaining instalments can differ. For consolidation, compare the total cost including closure fees, avoid borrowing again on cleared accounts, and check whether the new loan puts property at risk. Lower monthly payments can mean paying more over a longer term. [Early repayment](#guide-evidence-settlement)\n\n## Watch for fraud and get support early\nBe wary of guaranteed approval or an unexpected fee for releasing funds. Verify the firm and its phone number through the FCA rather than using details from the message. Never pay under pressure. If you cannot afford bills or debt repayments, contact your lender and get free independent debt advice before taking on more credit. General information only, without personalised financial advice. [Loan fee fraud](#guide-evidence-support) · [Free debt advice](#guide-evidence-debt) · [Bank accounts for newcomers](/en/money/open-uk-bank-account-new-arrival)\n",
+  "status": "DRAFT",
+  "publishedAt": null,
+  "updatedAt": "2026-11-27T00:00:00Z",
+  "sources": [
+    {
+      "key": "apply",
+      "organisation": "MoneyHelper",
+      "title": "How to apply for a credit card or loan",
+      "url": "https://www.moneyhelper.org.uk/en/everyday-money/credit/apply-to-borrow-for-credit-card-or-loan",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "loans",
+      "organisation": "MoneyHelper",
+      "title": "Personal loans",
+      "url": "https://www.moneyhelper.org.uk/en/everyday-money/credit/personal-loans",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "borrow",
+      "organisation": "MoneyHelper",
+      "title": "Options for borrowing money",
+      "url": "https://www.moneyhelper.org.uk/en/everyday-money/credit/options-for-borrowing-money",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "apr",
+      "organisation": "Financial Conduct Authority",
+      "title": "Representative APR",
+      "url": "https://handbook.fca.org.uk/glossary/G3354",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "early",
+      "organisation": "UK Parliament",
+      "title": "Consumer Credit Act 1974 section 94",
+      "url": "https://www.legislation.gov.uk/ukpga/1974/39/section/94",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "fees",
+      "organisation": "Financial Conduct Authority",
+      "title": "Loan fee fraud",
+      "url": "https://www.fca.org.uk/consumers/loan-fee-fraud",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "debt",
+      "organisation": "MoneyHelper",
+      "title": "Help if you are struggling with debt",
+      "url": "https://www.moneyhelper.org.uk/en/money-troubles/dealing-with-debt/help-if-youre-struggling-with-debt",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "debt-uk",
+      "organisation": "GOV.UK",
+      "title": "Get free debt advice",
+      "url": "https://www.gov.uk/debt-advice",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    }
+  ],
+  "evidence": [
+    {
+      "key": "types",
+      "statement": "An unsecured personal loan normally pays you a lump sum and you repay it over an agreed term, often in fixed monthly instalments. A secured loan puts an asset such as your home at risk if repayments fail.",
+      "supports": [
+        {
+          "sourceKey": "loans",
+          "locator": "Costs, application and early settlement",
+          "excerpt": null,
+          "note": "An unsecured personal loan normally pays you a lump sum and you repay it over an agreed term, often in fixed monthly instalments. A secured loan puts an asset such as your home at risk if repayments fail."
+        },
+        {
+          "sourceKey": "borrow",
+          "locator": "Secured and unsecured credit",
+          "excerpt": null,
+          "note": "An unsecured personal loan normally pays you a lump sum and you repay it over an agreed term, often in fixed monthly instalments. A secured loan puts an asset such as your home at risk if repayments fail."
+        }
+      ]
+    },
+    {
+      "key": "apply",
+      "statement": "Check the lender’s age, residence, income and address rules. Use a confirmed soft-search checker first if available.",
+      "supports": [
+        {
+          "sourceKey": "apply",
+          "locator": "Application details and eligibility checks",
+          "excerpt": null,
+          "note": "Check the lender’s age, residence, income and address rules. Use a confirmed soft-search checker first if available."
+        },
+        {
+          "sourceKey": "loans",
+          "locator": "Costs, application and early settlement",
+          "excerpt": null,
+          "note": "Check the lender’s age, residence, income and address rules. Use a confirmed soft-search checker first if available."
+        },
+        {
+          "sourceKey": "apr",
+          "locator": "Representative APR definition",
+          "excerpt": null,
+          "note": "Check the lender’s age, residence, income and address rules. Use a confirmed soft-search checker first if available."
+        }
+      ]
+    },
+    {
+      "key": "example",
+      "statement": "Assume no upfront fee and equal monthly instalments. At £140 for 24 months, repay £3,360, or £360 above the amount borrowed. At £100 for 36 months, repay £3,600, or £600 above the amount borrowed. The second is £40 a month lower but costs £240 more overall. Ask for the actual figures in writing, including any fees, before accepting.",
+      "supports": [
+        {
+          "sourceKey": "loans",
+          "locator": "Costs, application and early settlement",
+          "excerpt": null,
+          "note": "Assume no upfront fee and equal monthly instalments. At £140 for 24 months, repay £3,360, or £360 above the amount borrowed. At £100 for 36 months, repay £3,600, or £600 above the amount borrowed. The second is £40 a month lower but costs £240 more overall. Ask for the actual figures in writing, including any fees, before accepting."
+        }
+      ]
+    },
+    {
+      "key": "settlement",
+      "statement": "On a regulated agreement you can generally repay early. Ask for a dated settlement figure, including any applicable interest or charges, and check separately how partial overpayments work. The displayed balance, settlement figure and sum of remaining instalments can differ. For consolidation, compare the total cost including closure fees, avoid borrowing again on cleared accounts, and check whether the new loan puts property at risk. Lower monthly payments can mean paying more over a longer term.",
+      "supports": [
+        {
+          "sourceKey": "early",
+          "locator": "Early payment rights on regulated agreements",
+          "excerpt": null,
+          "note": "On a regulated agreement you can generally repay early. Ask for a dated settlement figure, including any applicable interest or charges, and check separately how partial overpayments work. The displayed balance, settlement figure and sum of remaining instalments can differ. For consolidation, compare the total cost including closure fees, avoid borrowing again on cleared accounts, and check whether the new loan puts property at risk. Lower monthly payments can mean paying more over a longer term."
+        },
+        {
+          "sourceKey": "loans",
+          "locator": "Costs, application and early settlement",
+          "excerpt": null,
+          "note": "On a regulated agreement you can generally repay early. Ask for a dated settlement figure, including any applicable interest or charges, and check separately how partial overpayments work. The displayed balance, settlement figure and sum of remaining instalments can differ. For consolidation, compare the total cost including closure fees, avoid borrowing again on cleared accounts, and check whether the new loan puts property at risk. Lower monthly payments can mean paying more over a longer term."
+        },
+        {
+          "sourceKey": "borrow",
+          "locator": "Secured and unsecured credit",
+          "excerpt": null,
+          "note": "On a regulated agreement you can generally repay early. Ask for a dated settlement figure, including any applicable interest or charges, and check separately how partial overpayments work. The displayed balance, settlement figure and sum of remaining instalments can differ. For consolidation, compare the total cost including closure fees, avoid borrowing again on cleared accounts, and check whether the new loan puts property at risk. Lower monthly payments can mean paying more over a longer term."
+        }
+      ]
+    },
+    {
+      "key": "support",
+      "statement": "Be wary of guaranteed approval or an unexpected fee for releasing funds. Verify the firm and its phone number through the FCA rather than using details from the message.",
+      "supports": [
+        {
+          "sourceKey": "fees",
+          "locator": "Advance fees, verification and reporting",
+          "excerpt": null,
+          "note": "Be wary of guaranteed approval or an unexpected fee for releasing funds. Verify the firm and its phone number through the FCA rather than using details from the message."
+        }
+      ]
+    },
+    {
+      "key": "debt",
+      "statement": "Free debt advice",
+      "supports": [
+        {
+          "sourceKey": "debt",
+          "locator": "Free support and repayment difficulties",
+          "excerpt": null,
+          "note": "Free debt advice"
+        },
+        {
+          "sourceKey": "debt-uk",
+          "locator": "Independent debt support routes",
+          "excerpt": null,
+          "note": "Free debt advice"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "slug": "uk-credit-card-cashback-and-rewards",
+  "category": "money",
+  "status": "DRAFT",
+  "sourceLocale": "zh-CN",
+  "sourcesVerifiedOn": "2026-11-27",
+  "editorialStatus": "Owner, independent professional financial and fluent-language review pending.",
+  "canonicalization": "guide-content-v1",
+  "variants": [
+    {
+      "locale": "zh-CN",
+      "path": "zh-CN.json",
+      "sha256": "08c22b197355ac47423b31b2d94d336c0ae004893b94216d7546349215f7733e",
+      "contentSha256": "c4838ab3bda3f22e9bf3ed9efa05be1bd5a478d3fe3e0066d2c5c9f1713e497b"
+    },
+    {
+      "locale": "zh-TW",
+      "path": "zh-TW.json",
+      "sha256": "150cf10ed493cdcadd312b59443738bba10842c0c86cd8c748c736eb399042b2",
+      "contentSha256": "6caadd2c6ad2487475542268a3d971b4a8cf3afb6ca8b8703f94f59361d4dc45"
+    },
+    {
+      "locale": "en",
+      "path": "en.json",
+      "sha256": "53a95c61166a47d7a1494132e8dca070222786ab089cb1390c22bf5d1d71d106",
+      "contentSha256": "318642f3d7cc579cac93cba7837c6347f95e67572f1b13700c02610b99214792"
+    },
+    {
+      "locale": "ur",
+      "path": "ur.json",
+      "sha256": "aaa16e910e3b06a6b31caa5733606f2dd0695ec34b4fb9b219affac05ac5a394",
+      "contentSha256": "a4de6a01d050a9ae6d5f3f213266ea0b64807ae89d26e67ed29b1be8fcdd0942"
+    },
+    {
+      "locale": "hi",
+      "path": "hi.json",
+      "sha256": "040375f78ed67b1cd6850a5051881201a742fea97be7344aaa8c636e17cf2c33",
+      "contentSha256": "b7fd5db9a81fef33a2c321e824c85200becacb3b463bbfd0aaa93b3a8df85fa5"
+    }
+  ]
+}

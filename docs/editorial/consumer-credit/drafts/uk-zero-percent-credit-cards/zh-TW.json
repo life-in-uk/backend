@@ -1,0 +1,147 @@
+{
+  "slug": "uk-zero-percent-credit-cards",
+  "category": "money",
+  "title": "英國 0% 信用卡：餘額轉移、刷卡消費與轉帳",
+  "summary": "先確認需要哪一種交易，再比較費用，以及能否在優惠期滿前還清。",
+  "content": "# 英國 0% 信用卡：餘額轉移、刷卡消費與轉帳\n\n最後更新: 2026-11-27\n\n## 按用途辨別交易\n刷卡 0% 只適用於符合資格的新消費。餘額轉移是把另一張信用卡的欠款轉過來。Money transfer（資金轉帳）是用卡片額度轉款到合格銀行帳戶，仍須向發卡機構還款。ATM 預借現金一般會收手續費，並可能從提款日開始計息；不會自動適用資金轉帳優惠。各類交易的費用及利率可能不同。 [交易類型](#guide-evidence-types)\n\n## 確認額度、期限和限制\n查優惠起算日、轉移期限、手續費、可轉移額度及優惠到期利率。可轉移金額可能低於信用額度，手續費也可能占用額度。有些發卡機構不接受同品牌或同銀行集團的餘額轉移，先確認雙方機構。舊卡還沒看到轉移入帳前照常繳款。餘額轉移免息不代表新刷卡也免息，漏繳最低額可能影響優惠。確認還款分配順序，包括兩筆餘額利率相同時；通常先還利率較高的餘額。 [條款及還款分配](#guide-evidence-terms)\n\n## 算例：轉移 £2,400\n假設手續費計入欠款、沒有新增消費，而且優惠到期前還清。手續費 3% 是 £72，總還款 £2,472，分 12 個月每月 £206。手續費 1.5% 是 £36，總還款 £2,436，分 6 個月每月 £406。第二種少花 £36，但每月應還金額接近兩倍。安排在期滿前還清，也要比較留在舊卡的成本。 [轉移成本](#guide-evidence-example)\n\n## 規劃還款，別仰賴下一檔優惠\n把最低額設為自動扣繳備援，確認生效，並依預算額外還到清零。記下期限，每月回頭檢查餘額。重複轉移可能要再繳費，下一張卡也未必會核准。若基本生活費或最低應繳額有困難，聯絡貸款機構並尋求免費債務諮詢。本文為一般資訊，不構成個人財務建議。 [債務協助](#guide-evidence-checklist) · [第一張信用卡](/zh-TW/money/uk-first-credit-card) · [信用報告](/zh-TW/money/uk-credit-history-and-credit-score)\n",
+  "status": "DRAFT",
+  "publishedAt": null,
+  "updatedAt": "2026-11-27T00:00:00Z",
+  "sources": [
+    {
+      "key": "cards",
+      "organisation": "MoneyHelper",
+      "title": "A simple guide to credit cards",
+      "url": "https://www.moneyhelper.org.uk/en/everyday-money/credit/simple-guide-to-credit-cards",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "transfer",
+      "organisation": "MoneyHelper",
+      "title": "Deciding whether to transfer a credit card balance",
+      "url": "https://www.moneyhelper.org.uk/en/everyday-money/credit/deciding-whether-to-transfer-your-credit-card-balance",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "issuer",
+      "organisation": "Nationwide",
+      "title": "Transfer a balance to your credit card",
+      "url": "https://www.nationwide.co.uk/credit-cards/help/transfer-balance",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "repayment",
+      "organisation": "Financial Conduct Authority",
+      "title": "CONC 6.7 Post contract business practices",
+      "url": "https://handbook.fca.org.uk/handbook/conc6/conc6s7",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "debt",
+      "organisation": "MoneyHelper",
+      "title": "Help if you are struggling with debt",
+      "url": "https://www.moneyhelper.org.uk/en/money-troubles/dealing-with-debt/help-if-youre-struggling-with-debt",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "money-transfer",
+      "organisation": "MBNA",
+      "title": "Money transfers",
+      "url": "https://www.mbna.co.uk/credit-cards/help-and-support/my-account/balance-and-money-transfers/money-transfers.html",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "debt-uk",
+      "organisation": "GOV.UK",
+      "title": "Get free debt advice",
+      "url": "https://www.gov.uk/debt-advice",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    }
+  ],
+  "evidence": [
+    {
+      "key": "types",
+      "statement": "刷卡 0% 只適用於符合資格的新消費。 餘額轉移是把另一張信用卡的欠款轉過來。",
+      "supports": [
+        {
+          "sourceKey": "cards",
+          "locator": "Types, interest, repayments and rewards",
+          "excerpt": null,
+          "note": "刷卡 0% 只適用於符合資格的新消費。 餘額轉移是把另一張信用卡的欠款轉過來。"
+        },
+        {
+          "sourceKey": "money-transfer",
+          "locator": "Issuer explanation and example offer terms",
+          "excerpt": null,
+          "note": "刷卡 0% 只適用於符合資格的新消費。 餘額轉移是把另一張信用卡的欠款轉過來。"
+        },
+        {
+          "sourceKey": "transfer",
+          "locator": "Transfer fees and repayment",
+          "excerpt": null,
+          "note": "刷卡 0% 只適用於符合資格的新消費。 餘額轉移是把另一張信用卡的欠款轉過來。"
+        }
+      ]
+    },
+    {
+      "key": "terms",
+      "statement": "查優惠起算日、轉移期限、手續費、可轉移額度及優惠到期利率。可轉移金額可能低於信用額度，手續費也可能占用額度。有些發卡機構不接受同品牌或同銀行集團的餘額轉移，先確認雙方機構。舊卡還沒看到轉移入帳前照常繳款。餘額轉移免息不代表新刷卡也免息，漏繳最低額可能影響優惠。確認還款分配順序，包括兩筆餘額利率相同時；通常先還利率較高的餘額。",
+      "supports": [
+        {
+          "sourceKey": "transfer",
+          "locator": "Transfer fees and repayment",
+          "excerpt": null,
+          "note": "查優惠起算日、轉移期限、手續費、可轉移額度及優惠到期利率。可轉移金額可能低於信用額度，手續費也可能占用額度。有些發卡機構不接受同品牌或同銀行集團的餘額轉移，先確認雙方機構。舊卡還沒看到轉移入帳前照常繳款。餘額轉移免息不代表新刷卡也免息，漏繳最低額可能影響優惠。確認還款分配順序，包括兩筆餘額利率相同時；通常先還利率較高的餘額。"
+        },
+        {
+          "sourceKey": "issuer",
+          "locator": "Issuer-specific eligibility, limits and excluded accounts",
+          "excerpt": null,
+          "note": "查優惠起算日、轉移期限、手續費、可轉移額度及優惠到期利率。可轉移金額可能低於信用額度，手續費也可能占用額度。有些發卡機構不接受同品牌或同銀行集團的餘額轉移，先確認雙方機構。舊卡還沒看到轉移入帳前照常繳款。餘額轉移免息不代表新刷卡也免息，漏繳最低額可能影響優惠。確認還款分配順序，包括兩筆餘額利率相同時；通常先還利率較高的餘額。"
+        },
+        {
+          "sourceKey": "repayment",
+          "locator": "Credit card repayment allocation and treatment of customers",
+          "excerpt": null,
+          "note": "查優惠起算日、轉移期限、手續費、可轉移額度及優惠到期利率。可轉移金額可能低於信用額度，手續費也可能占用額度。有些發卡機構不接受同品牌或同銀行集團的餘額轉移，先確認雙方機構。舊卡還沒看到轉移入帳前照常繳款。餘額轉移免息不代表新刷卡也免息，漏繳最低額可能影響優惠。確認還款分配順序，包括兩筆餘額利率相同時；通常先還利率較高的餘額。"
+        }
+      ]
+    },
+    {
+      "key": "example",
+      "statement": "假設手續費計入欠款、沒有新增消費，而且優惠到期前還清。手續費 3% 是 £72，總還款 £2,472，分 12 個月每月 £206。手續費 1.5% 是 £36，總還款 £2,436，分 6 個月每月 £406。第二種少花 £36，但每月應還金額接近兩倍。安排在期滿前還清，也要比較留在舊卡的成本。",
+      "supports": [
+        {
+          "sourceKey": "transfer",
+          "locator": "Transfer fees and repayment",
+          "excerpt": null,
+          "note": "假設手續費計入欠款、沒有新增消費，而且優惠到期前還清。手續費 3% 是 £72，總還款 £2,472，分 12 個月每月 £206。手續費 1.5% 是 £36，總還款 £2,436，分 6 個月每月 £406。第二種少花 £36，但每月應還金額接近兩倍。安排在期滿前還清，也要比較留在舊卡的成本。"
+        }
+      ]
+    },
+    {
+      "key": "checklist",
+      "statement": "把最低額設為自動扣繳備援，確認生效，並依預算額外還到清零。 記下期限，每月回頭檢查餘額。",
+      "supports": [
+        {
+          "sourceKey": "transfer",
+          "locator": "Transfer fees and repayment",
+          "excerpt": null,
+          "note": "把最低額設為自動扣繳備援，確認生效，並依預算額外還到清零。 記下期限，每月回頭檢查餘額。"
+        },
+        {
+          "sourceKey": "debt",
+          "locator": "Free support and repayment difficulties",
+          "excerpt": null,
+          "note": "把最低額設為自動扣繳備援，確認生效，並依預算額外還到清零。 記下期限，每月回頭檢查餘額。"
+        },
+        {
+          "sourceKey": "debt-uk",
+          "locator": "Independent debt support routes",
+          "excerpt": null,
+          "note": "把最低額設為自動扣繳備援，確認生效，並依預算額外還到清零。 記下期限，每月回頭檢查餘額。"
+        }
+      ]
+    }
+  ]
+}

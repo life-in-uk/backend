@@ -1,0 +1,41 @@
+{
+  "slug": "uk-zero-percent-credit-cards",
+  "category": "money",
+  "status": "DRAFT",
+  "sourceLocale": "zh-CN",
+  "sourcesVerifiedOn": "2026-11-27",
+  "editorialStatus": "Owner, independent professional financial and fluent-language review pending.",
+  "canonicalization": "guide-content-v1",
+  "variants": [
+    {
+      "locale": "zh-CN",
+      "path": "zh-CN.json",
+      "sha256": "f219a87cce5c58f55f78b989fbe20ef0edf8182aa4b4c32aefc467f14e58daec",
+      "contentSha256": "342a3f7ebe1c4ca4e0c6e1fc5dd2dcd4782ae5aef4012c486796e123252700fc"
+    },
+    {
+      "locale": "zh-TW",
+      "path": "zh-TW.json",
+      "sha256": "7fd4ae0c827df2bcb7b6adcda2ebd0264cae13efc439dc95994fbd2cd17e501e",
+      "contentSha256": "6005a2134fdcc57585dc1126c280a2a8387b031fc8a5a01337b09d729aea08dc"
+    },
+    {
+      "locale": "en",
+      "path": "en.json",
+      "sha256": "b9776dfb9a21d3f9f0b632424ceb390f9f3e275d161aa6642a3cb7aff61da961",
+      "contentSha256": "1b08ec2f65d2a925fa12e835bf843b8582a6229e367634f2373e938b0b0ff6c2"
+    },
+    {
+      "locale": "ur",
+      "path": "ur.json",
+      "sha256": "9821d048346ef7199e9f5e2e05556b8e62d35f4a79beb0e380b4d4b1c5663afe",
+      "contentSha256": "720e01c9bbbfa57e1a0918bcc717b1d15beb6f590c3e9ddab25b55166dfc4043"
+    },
+    {
+      "locale": "hi",
+      "path": "hi.json",
+      "sha256": "fee1ae49fb53c60e3cf75b49ec8b09c3f3c15f63b1a961a22315461a9c78f413",
+      "contentSha256": "4466474d751579e55c80856225957d420ed2f47cba7c4b81d82e7be048f5b62d"
+    }
+  ]
+}

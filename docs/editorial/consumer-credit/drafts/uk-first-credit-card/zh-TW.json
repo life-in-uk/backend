@@ -1,0 +1,199 @@
+{
+  "slug": "uk-first-credit-card",
+  "category": "money",
+  "title": "在英國怎麼申辦第一張信用卡",
+  "summary": "確認申請資格，了解建立信用的卡片，以及遭拒、還款和消費爭議的處理方法。",
+  "content": "# 在英國怎麼申辦第一張信用卡\n\n最後更新: 2026-11-27\n\n## 申辦前準備資料\n先問發卡機構最低年齡、在英居住、收入和地址紀錄的要求。準備證件姓名、近期住址、就業或學生身分、如實申報的收入及指定文件。剛搬到英國，可問海外住址能否納入紀錄，或可否提出其他身分及地址證明。選民登記須符合資格；無法登記時，問機構可使用哪些替代證明。銀行開戶與授信審核是兩件事。 [審核資料](#guide-evidence-eligibility) · [信用報告](/zh-TW/money/uk-credit-history-and-credit-score) · [開立銀行帳戶](/zh-TW/money/open-uk-bank-account-new-arrival)\n\n## 先預查，再決定要不要送件\n確認資格預查用的是軟查詢；結果只能估計過件機會。正式申請通常會留下硬查詢紀錄。機構會評估實際情況和還款能力，信用分數並不保證核卡。遭拒時先暫停，別連續送件。可問發卡機構拒絕的原因或使用哪家信用資料機構，再查報告是否有地址錯誤、陌生帳戶等問題。 [查詢和退件](#guide-evidence-search)\n\n## 建立信用的卡片和還款方式\n這類卡片的起始額度可能偏低，年化百分率（APR）可能較高。按時還款且紀錄有通報，有助建立信用紀錄，不需要特地付利息。額度使用率是已用金額除以總額度，沒有每家機構都用的固定百分比。查看帳單餘額、最低應繳金額和到期日。若條款和前期餘額允許，用 Direct Debit 自動扣繳帳單全額，可避免一般刷卡消費利息。留足扣款資金，首次自動扣繳還沒啟用就手動繳款。只繳最低額可能多年還不完。 [還款核對](#guide-evidence-repay)\n\n## 第 75 條、退單與盜刷\n如果店家違約或作不實陳述，商品或服務的現金價超過 £100 且不超過 £30,000，且符合買方、貸款機構和店家的法定關係，《消費者信貸法》第 75 條可能讓貸款機構負連帶責任。若其他條件也成立，價值 £600 的商品只刷 £50 訂金仍可能受保障。透過第三方付款或代買，會使關係更複雜。Chargeback（退單）屬於卡組織程序，有自己的申請期限，簽帳金融卡也可能適用。保留收據及往來紀錄，及早聯絡發卡機構。出現不明交易時，可先鎖卡，再用可信電話聯絡發卡機構。先向該機構申訴，再確認金融申訴專員服務的受理條件及時限。 [消費爭議](#guide-evidence-dispute) · [未經授權交易](#guide-evidence-fraud)\n\n## 還款有困難時\n本文為一般資訊，不構成個人財務建議。借款前請確認合約和預算。可能無法準時付款時，及早聯絡貸款機構，並可尋求免費的獨立債務諮詢。 [債務協助](#guide-evidence-help)\n",
+  "status": "DRAFT",
+  "publishedAt": null,
+  "updatedAt": "2026-11-27T00:00:00Z",
+  "sources": [
+    {
+      "key": "apply",
+      "organisation": "MoneyHelper",
+      "title": "How to apply for a credit card or loan",
+      "url": "https://www.moneyhelper.org.uk/en/everyday-money/credit/apply-to-borrow-for-credit-card-or-loan",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "refused",
+      "organisation": "MoneyHelper",
+      "title": "What to do if refused a loan or credit card",
+      "url": "https://www.moneyhelper.org.uk/en/everyday-money/credit/what-to-do-if-you-have-been-refused-a-loan-or-credit-card",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "history",
+      "organisation": "MoneyHelper",
+      "title": "How to improve your credit score",
+      "url": "https://www.moneyhelper.org.uk/en/everyday-money/credit/how-to-improve-your-credit-score",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "cards",
+      "organisation": "MoneyHelper",
+      "title": "A simple guide to credit cards",
+      "url": "https://www.moneyhelper.org.uk/en/everyday-money/credit/simple-guide-to-credit-cards",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "section75",
+      "organisation": "UK Parliament",
+      "title": "Consumer Credit Act 1974 section 75",
+      "url": "https://www.legislation.gov.uk/ukpga/1974/39/section/75",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "goods",
+      "organisation": "Financial Ombudsman Service",
+      "title": "Goods and services bought with credit",
+      "url": "https://www.financial-ombudsman.org.uk/consumers/complaints-can-help/credit-borrowing-money/goods-services-bought-credit",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "fraud",
+      "organisation": "Financial Ombudsman Service",
+      "title": "Unauthorised payments and identity theft",
+      "url": "https://www.financial-ombudsman.org.uk/consumers/complaints-can-help/fraud-scams/scams-involving-unauthorised-payments-identity-theft",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "issuer-check",
+      "organisation": "Nationwide",
+      "title": "Credit scoring guide",
+      "url": "https://www.nationwide.co.uk/help/credit-scoring-guide",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "repayment",
+      "organisation": "Financial Conduct Authority",
+      "title": "CONC 6.7 Post contract business practices",
+      "url": "https://handbook.fca.org.uk/handbook/conc6/conc6s7",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "debt",
+      "organisation": "MoneyHelper",
+      "title": "Help if you are struggling with debt",
+      "url": "https://www.moneyhelper.org.uk/en/money-troubles/dealing-with-debt/help-if-youre-struggling-with-debt",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "debt-uk",
+      "organisation": "GOV.UK",
+      "title": "Get free debt advice",
+      "url": "https://www.gov.uk/debt-advice",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    }
+  ],
+  "evidence": [
+    {
+      "key": "eligibility",
+      "statement": "先問發卡機構最低年齡、在英居住、收入和地址紀錄的要求。 準備證件姓名、近期住址、就業或學生身分、如實申報的收入及指定文件。",
+      "supports": [
+        {
+          "sourceKey": "apply",
+          "locator": "Application details and eligibility checks",
+          "excerpt": null,
+          "note": "先問發卡機構最低年齡、在英居住、收入和地址紀錄的要求。 準備證件姓名、近期住址、就業或學生身分、如實申報的收入及指定文件。"
+        },
+        {
+          "sourceKey": "issuer-check",
+          "locator": "Worked example of lender assessment inputs",
+          "excerpt": null,
+          "note": "先問發卡機構最低年齡、在英居住、收入和地址紀錄的要求。 準備證件姓名、近期住址、就業或學生身分、如實申報的收入及指定文件。"
+        }
+      ]
+    },
+    {
+      "key": "search",
+      "statement": "確認資格預查用的是軟查詢；結果只能估計過件機會。 正式申請通常會留下硬查詢紀錄。",
+      "supports": [
+        {
+          "sourceKey": "apply",
+          "locator": "Application details and eligibility checks",
+          "excerpt": null,
+          "note": "確認資格預查用的是軟查詢；結果只能估計過件機會。 正式申請通常會留下硬查詢紀錄。"
+        },
+        {
+          "sourceKey": "refused",
+          "locator": "Refusal and next steps",
+          "excerpt": null,
+          "note": "確認資格預查用的是軟查詢；結果只能估計過件機會。 正式申請通常會留下硬查詢紀錄。"
+        }
+      ]
+    },
+    {
+      "key": "repay",
+      "statement": "這類卡片的起始額度可能偏低，年化百分率（APR）可能較高。 按時還款且紀錄有通報，有助建立信用紀錄，不需要特地付利息。",
+      "supports": [
+        {
+          "sourceKey": "cards",
+          "locator": "Types, interest, repayments and rewards",
+          "excerpt": null,
+          "note": "這類卡片的起始額度可能偏低，年化百分率（APR）可能較高。 按時還款且紀錄有通報，有助建立信用紀錄，不需要特地付利息。"
+        },
+        {
+          "sourceKey": "history",
+          "locator": "Credit history and repayment behaviour",
+          "excerpt": null,
+          "note": "這類卡片的起始額度可能偏低，年化百分率（APR）可能較高。 按時還款且紀錄有通報，有助建立信用紀錄，不需要特地付利息。"
+        },
+        {
+          "sourceKey": "repayment",
+          "locator": "Credit card repayment allocation and treatment of customers",
+          "excerpt": null,
+          "note": "這類卡片的起始額度可能偏低，年化百分率（APR）可能較高。 按時還款且紀錄有通報，有助建立信用紀錄，不需要特地付利息。"
+        }
+      ]
+    },
+    {
+      "key": "dispute",
+      "statement": "如果店家違約或作不實陳述，商品或服務的現金價超過 £100 且不超過 £30,000，且符合買方、貸款機構和店家的法定關係，《消費者信貸法》第 75 條可能讓貸款機構負連帶責任。若其他條件也成立，價值 £600 的商品只刷 £50 訂金仍可能受保障。透過第三方付款或代買，會使關係更複雜。Chargeback（退單）屬於卡組織程序，有自己的申請期限，簽帳金融卡也可能適用。保留收據及往來紀錄，及早聯絡發卡機構。出現不明交易時，可先鎖卡，再用可信電話聯絡發卡機構。先向該機構申訴，再確認金融申訴專員服務的受理條件及時限。",
+      "supports": [
+        {
+          "sourceKey": "section75",
+          "locator": "Linked credit and supplier liability",
+          "excerpt": null,
+          "note": "如果店家違約或作不實陳述，商品或服務的現金價超過 £100 且不超過 £30,000，且符合買方、貸款機構和店家的法定關係，《消費者信貸法》第 75 條可能讓貸款機構負連帶責任。若其他條件也成立，價值 £600 的商品只刷 £50 訂金仍可能受保障。透過第三方付款或代買，會使關係更複雜。Chargeback（退單）屬於卡組織程序，有自己的申請期限，簽帳金融卡也可能適用。保留收據及往來紀錄，及早聯絡發卡機構。出現不明交易時，可先鎖卡，再用可信電話聯絡發卡機構。先向該機構申訴，再確認金融申訴專員服務的受理條件及時限。"
+        },
+        {
+          "sourceKey": "goods",
+          "locator": "Section 75 and chargeback",
+          "excerpt": null,
+          "note": "如果店家違約或作不實陳述，商品或服務的現金價超過 £100 且不超過 £30,000，且符合買方、貸款機構和店家的法定關係，《消費者信貸法》第 75 條可能讓貸款機構負連帶責任。若其他條件也成立，價值 £600 的商品只刷 £50 訂金仍可能受保障。透過第三方付款或代買，會使關係更複雜。Chargeback（退單）屬於卡組織程序，有自己的申請期限，簽帳金融卡也可能適用。保留收據及往來紀錄，及早聯絡發卡機構。出現不明交易時，可先鎖卡，再用可信電話聯絡發卡機構。先向該機構申訴，再確認金融申訴專員服務的受理條件及時限。"
+        }
+      ]
+    },
+    {
+      "key": "fraud",
+      "statement": "未經授權交易",
+      "supports": [
+        {
+          "sourceKey": "fraud",
+          "locator": "Reporting unauthorised payments and complaints",
+          "excerpt": null,
+          "note": "未經授權交易"
+        }
+      ]
+    },
+    {
+      "key": "help",
+      "statement": "本文為一般資訊，不構成個人財務建議。 借款前請確認合約和預算。",
+      "supports": [
+        {
+          "sourceKey": "debt",
+          "locator": "Free support and repayment difficulties",
+          "excerpt": null,
+          "note": "本文為一般資訊，不構成個人財務建議。 借款前請確認合約和預算。"
+        },
+        {
+          "sourceKey": "debt-uk",
+          "locator": "Independent debt support routes",
+          "excerpt": null,
+          "note": "本文為一般資訊，不構成個人財務建議。 借款前請確認合約和預算。"
+        }
+      ]
+    }
+  ]
+}
