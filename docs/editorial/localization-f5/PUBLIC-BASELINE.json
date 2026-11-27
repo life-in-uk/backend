@@ -1,0 +1,429 @@
+{
+  "capturedOn": "2026-11-27",
+  "guideCount": 10,
+  "localizedRoutesChecked": 50,
+  "healthHubRoutesChecked": 5,
+  "canonicalization": "guide-content-v1",
+  "guides": {
+    "chinese-medical-records-vaccinations-england": {
+      "zh-CN": {
+        "url": "https://lifeinuk.info/zh-CN/health/chinese-medical-records-vaccinations-england",
+        "title": "带着中国病历、疫苗记录和慢性病来到英国，怎么交给 GP？",
+        "summary": "来英格兰后如何向 GP 说明在中国的病史、用药和疫苗记录，病历翻译的官方原则，以及转诊和补种疫苗的一般做法。",
+        "sourceRevisionId": "56a308dc-b7d2-4e5c-98d2-7566a8e76d28",
+        "contentSha256": "d1b3593933134cd1afdfb4837f3492a05ab1e85d097aa6c093176c70adb87cb5",
+        "recomputedFromPublicProjection": true
+      },
+      "zh-TW": {
+        "url": "https://lifeinuk.info/zh-TW/health/chinese-medical-records-vaccinations-england",
+        "title": "帶著中國病歷、疫苗記錄和慢性病來到英國，怎麼交給 GP？",
+        "summary": "來英格蘭後如何向 GP 說明在中國的病史、用藥和疫苗記錄，病歷翻譯的官方原則，以及轉診和補種疫苗的一般做法。",
+        "sourceRevisionId": "56a308dc-b7d2-4e5c-98d2-7566a8e76d28",
+        "contentSha256": "af3b3b3d24970b064e2d859726e77b5a5761365320a125aee69ddf7b1a84e5c6",
+        "recomputedFromPublicProjection": true
+      },
+      "en": {
+        "url": "https://lifeinuk.info/en/health/chinese-medical-records-vaccinations-england",
+        "title": "Coming to the UK with Chinese medical records, vaccination records and a long-term condition: how do you share them with a GP?",
+        "summary": "How to tell a GP in England about your medical history, medicines and vaccinations from China, the official principles for translating medical records, and how referrals and catch-up vaccinations generally work.",
+        "sourceRevisionId": "56a308dc-b7d2-4e5c-98d2-7566a8e76d28",
+        "contentSha256": "75910213fb6f65f3a5643ba33c8848156687fb3c359dc6504d557ac89b039df4",
+        "recomputedFromPublicProjection": true
+      },
+      "ur": {
+        "url": "https://lifeinuk.info/ur/health/chinese-medical-records-vaccinations-england",
+        "title": "چینی میڈیکل ریکارڈ، ویکسینیشن ریکارڈ اور طویل مدتی بیماری کے ساتھ برطانیہ آئے ہیں: انہیں GP تک کیسے پہنچائیں؟",
+        "summary": "انگلینڈ آنے کے بعد GP کو چین میں اپنی بیماریوں، دواؤں اور ویکسینیشن کے بارے میں کیسے بتائیں، میڈیکل ریکارڈ کے ترجمے کے سرکاری اصول، اور ریفرل اور رہ جانے والی ویکسین لگوانے کا عام طریقہ۔",
+        "sourceRevisionId": "56a308dc-b7d2-4e5c-98d2-7566a8e76d28",
+        "contentSha256": "323f2c78b431125e64231d7b19a17aeaef609568f1ce62f92148837faa81000b",
+        "recomputedFromPublicProjection": true
+      },
+      "hi": {
+        "url": "https://lifeinuk.info/hi/health/chinese-medical-records-vaccinations-england",
+        "title": "चीनी मेडिकल रिकॉर्ड, टीकाकरण रिकॉर्ड और लंबी बीमारी के साथ ब्रिटेन आए हैं: इन्हें GP तक कैसे पहुँचाएँ?",
+        "summary": "इंग्लैंड आने के बाद GP को चीन में अपनी बीमारियों, दवाइयों और टीकों के बारे में कैसे बताएँ, मेडिकल रिकॉर्ड के अनुवाद के आधिकारिक सिद्धांत, और रेफ़रल और छूटे टीके लगवाने का सामान्य तरीका।",
+        "sourceRevisionId": "56a308dc-b7d2-4e5c-98d2-7566a8e76d28",
+        "contentSha256": "e5109c2bbdcdbb848bdbba70441da3779d36c2e6102a033200dd99528f887db5",
+        "recomputedFromPublicProjection": true
+      }
+    },
+    "medicines-prescriptions-england": {
+      "zh-CN": {
+        "url": "https://lifeinuk.info/zh-CN/health/medicines-prescriptions-england",
+        "title": "英国怎么买药？处方、Pharmacy First、国内一直吃的药到了英国怎么办",
+        "summary": "英格兰的药品分类、Pharmacy First、处方费与免费条件、PPC、紧急用药，以及从国内带药、通用名、中药和抗生素的注意事项。",
+        "sourceRevisionId": "4c528296-9639-4b5a-91d6-2ccb5b13c658",
+        "contentSha256": "7ec7cce6c6841222dd7df0e30e325bc014c8d34454e3ad9f3dbcff59b043a378",
+        "recomputedFromPublicProjection": true
+      },
+      "zh-TW": {
+        "url": "https://lifeinuk.info/zh-TW/health/medicines-prescriptions-england",
+        "title": "英國怎麼買藥？處方、Pharmacy First、國內一直吃的藥到了英國怎麼辦",
+        "summary": "英格蘭的藥品分類、Pharmacy First、處方費與免費條件、PPC、緊急用藥，以及從國內帶藥、通用名、中藥和抗生素的注意事項。",
+        "sourceRevisionId": "4c528296-9639-4b5a-91d6-2ccb5b13c658",
+        "contentSha256": "31183776db6549b99c383055215340f956720f10dab50733292ee5a4c5da9877",
+        "recomputedFromPublicProjection": true
+      },
+      "en": {
+        "url": "https://lifeinuk.info/en/health/medicines-prescriptions-england",
+        "title": "How do you get medicines in the UK? Prescriptions, Pharmacy First, and the medicines you took back home",
+        "summary": "Medicine categories in England, Pharmacy First, prescription charges and exemptions, PPCs, emergency supplies, and what to know about bringing medicines from China, generic names, Chinese herbal medicines and antibiotics.",
+        "sourceRevisionId": "4c528296-9639-4b5a-91d6-2ccb5b13c658",
+        "contentSha256": "dbbe7fccc89dd98219e75abcd0374477915983340a5e1d54926d12de4c4e447f",
+        "recomputedFromPublicProjection": true
+      },
+      "ur": {
+        "url": "https://lifeinuk.info/ur/health/medicines-prescriptions-england",
+        "title": "برطانیہ میں دوا کیسے لیں؟ نسخہ، Pharmacy First، اور اپنے ملک میں مستقل لی جانے والی دوا کا کیا کریں",
+        "summary": "انگلینڈ میں دواؤں کی اقسام، Pharmacy First، نسخے کی فیس اور مفت ہونے کی شرائط، PPC، ہنگامی دوا، اور چین سے دوا لانے، جنرک نام، چینی جڑی بوٹیوں کی دواؤں اور اینٹی بائیوٹکس کے بارے میں ضروری باتیں۔",
+        "sourceRevisionId": "4c528296-9639-4b5a-91d6-2ccb5b13c658",
+        "contentSha256": "b4ad0a189f54b95ba11ceea126082e634904ec383c8a9d745bf0651bd5c4de3d",
+        "recomputedFromPublicProjection": true
+      },
+      "hi": {
+        "url": "https://lifeinuk.info/hi/health/medicines-prescriptions-england",
+        "title": "ब्रिटेन में दवा कैसे लें? पर्चा, Pharmacy First, और अपने देश में लगातार ली जाने वाली दवा का क्या करें",
+        "summary": "इंग्लैंड में दवाइयों की श्रेणियाँ, Pharmacy First, पर्चे का शुल्क और मुफ़्त होने की शर्तें, PPC, आपातकालीन दवा, और चीन से दवा लाने, जेनेरिक नाम, चीनी जड़ी-बूटी दवाओं और एंटीबायोटिक्स के बारे में ज़रूरी बातें।",
+        "sourceRevisionId": "4c528296-9639-4b5a-91d6-2ccb5b13c658",
+        "contentSha256": "afeb572e2530093a304835f670d260fd2a25b3aedec4da6becab2e466d107898",
+        "recomputedFromPublicProjection": true
+      }
+    },
+    "nhs-dentist-england": {
+      "zh-CN": {
+        "url": "https://lifeinuk.info/zh-CN/health/nhs-dentist-england",
+        "title": "英国牙医到底怎么看？NHS、Private、收费和怎么找牙医",
+        "summary": "在英格兰如何找 NHS 牙医、NHS 与自费治疗的区别、2026 年 4 月起的 NHS 牙科收费档次、免费条件，以及自费价格举例。",
+        "sourceRevisionId": "07c740b2-7385-460e-b301-38cdcfc7b6b6",
+        "contentSha256": "7764c123d9f42334b15ec1286905c17ee7f71f3c6094efbab5678a1fdf75426e",
+        "recomputedFromPublicProjection": true
+      },
+      "zh-TW": {
+        "url": "https://lifeinuk.info/zh-TW/health/nhs-dentist-england",
+        "title": "英國牙醫到底怎麼看？NHS、Private、收費和怎麼找牙醫",
+        "summary": "在英格蘭如何找 NHS 牙醫、NHS 與自費治療的區別、2026 年 4 月起的 NHS 牙科收費檔次、免費條件，以及自費價格舉例。",
+        "sourceRevisionId": "07c740b2-7385-460e-b301-38cdcfc7b6b6",
+        "contentSha256": "b2aade4cdc023f58716d68ae66e36a6a0f2e13deed7ba07a0ce1049cb14662c3",
+        "recomputedFromPublicProjection": true
+      },
+      "en": {
+        "url": "https://lifeinuk.info/en/health/nhs-dentist-england",
+        "title": "How do dentists work in the UK? NHS, private, charges and finding a dentist",
+        "summary": "How to find an NHS dentist in England, the difference between NHS and private treatment, NHS dental charge bands from April 2026, who gets free treatment, and examples of private prices.",
+        "sourceRevisionId": "07c740b2-7385-460e-b301-38cdcfc7b6b6",
+        "contentSha256": "caa6af63276f40c9169012661323e2ca664e54f71e2f8c73b6d7b82f4b6c84a3",
+        "recomputedFromPublicProjection": true
+      },
+      "ur": {
+        "url": "https://lifeinuk.info/ur/health/nhs-dentist-england",
+        "title": "برطانیہ میں دانتوں کا علاج کیسے ہوتا ہے؟ NHS، پرائیویٹ، فیسیں اور ڈینٹسٹ کیسے ڈھونڈیں",
+        "summary": "انگلینڈ میں NHS ڈینٹسٹ کیسے ڈھونڈیں، NHS اور پرائیویٹ علاج میں فرق، اپریل 2026 سے NHS دندان علاج کی فیس کے درجے، مفت علاج کی شرائط، اور پرائیویٹ قیمتوں کی مثالیں۔",
+        "sourceRevisionId": "07c740b2-7385-460e-b301-38cdcfc7b6b6",
+        "contentSha256": "01a09830c202c6312ed2ded51f948a405e8b406cd30630e72f67df53c3d4e7c1",
+        "recomputedFromPublicProjection": true
+      },
+      "hi": {
+        "url": "https://lifeinuk.info/hi/health/nhs-dentist-england",
+        "title": "ब्रिटेन में दाँतों का इलाज कैसे होता है? NHS, प्राइवेट, शुल्क और डेंटिस्ट कैसे ढूँढें",
+        "summary": "इंग्लैंड में NHS डेंटिस्ट कैसे ढूँढें, NHS और प्राइवेट इलाज में फ़र्क़, अप्रैल 2026 से NHS दंत इलाज के शुल्क की श्रेणियाँ, मुफ़्त इलाज की शर्तें, और प्राइवेट क़ीमतों के उदाहरण।",
+        "sourceRevisionId": "07c740b2-7385-460e-b301-38cdcfc7b6b6",
+        "contentSha256": "e86398ed4b1fecfeac9c3ea19d92e9ed32e317c7c80731f8de81105b8643f082",
+        "recomputedFromPublicProjection": true
+      }
+    },
+    "nhs-ihs-costs-england": {
+      "zh-CN": {
+        "url": "https://lifeinuk.info/zh-CN/health/nhs-ihs-costs-england",
+        "title": "刚来英国，我能用 NHS 吗？IHS 交了以后哪些还要自己付钱？",
+        "summary": "在英格兰交了 IHS 后可以免费使用哪些 NHS 服务、哪些仍需自付，以及没交 IHS 的访客和永居者的情况。",
+        "sourceRevisionId": "27dca22d-d145-48a8-b3f4-20d98334e6f7",
+        "contentSha256": "cbfc487ec9d7e9e6684aa0c78cbece05ceed69dc567b8119d87cdd9787d96ec0",
+        "recomputedFromPublicProjection": true
+      },
+      "zh-TW": {
+        "url": "https://lifeinuk.info/zh-TW/health/nhs-ihs-costs-england",
+        "title": "剛來英國，我能用 NHS 嗎？IHS 交了以後哪些還要自己付錢？",
+        "summary": "在英格蘭交了 IHS 後可以免費使用哪些 NHS 服務、哪些仍需自付，以及沒交 IHS 的訪客和永居者的情況。",
+        "sourceRevisionId": "27dca22d-d145-48a8-b3f4-20d98334e6f7",
+        "contentSha256": "5a03a9b3ffcd1fea2db668c5c5ad104875e50f00fb8e05cae794e149c87a7b80",
+        "recomputedFromPublicProjection": true
+      },
+      "en": {
+        "url": "https://lifeinuk.info/en/health/nhs-ihs-costs-england",
+        "title": "New to the UK: can I use the NHS? After paying the IHS, what do I still pay for?",
+        "summary": "Which NHS services are free in England once you have paid the IHS, which you still pay for, and the situation for visitors who have not paid the IHS and people with settled status.",
+        "sourceRevisionId": "27dca22d-d145-48a8-b3f4-20d98334e6f7",
+        "contentSha256": "4ede0e6de42c1039da4ac6b41e816b8e0ce22ba9fcefd96195a224b7fda8fa9e",
+        "recomputedFromPublicProjection": true
+      },
+      "ur": {
+        "url": "https://lifeinuk.info/ur/health/nhs-ihs-costs-england",
+        "title": "برطانیہ نئے آئے ہیں، کیا NHS استعمال کر سکتے ہیں؟ IHS دینے کے بعد کن چیزوں کے پیسے پھر بھی دینے ہوں گے؟",
+        "summary": "انگلینڈ میں IHS دینے کے بعد کون سی NHS سروسز مفت ہیں، کن کے پیسے پھر بھی دینے ہیں، اور IHS نہ دینے والے مہمانوں اور مستقل رہائش والوں کی صورتحال۔",
+        "sourceRevisionId": "27dca22d-d145-48a8-b3f4-20d98334e6f7",
+        "contentSha256": "f5fe2049e7a2425492b779b24b90a55ec172ec61399f5a185fb013b609119bab",
+        "recomputedFromPublicProjection": true
+      },
+      "hi": {
+        "url": "https://lifeinuk.info/hi/health/nhs-ihs-costs-england",
+        "title": "ब्रिटेन नए-नए आए हैं, क्या NHS इस्तेमाल कर सकते हैं? IHS देने के बाद किन चीज़ों के पैसे फिर भी देने होंगे?",
+        "summary": "इंग्लैंड में IHS देने के बाद कौन-सी NHS सेवाएँ मुफ़्त हैं, किनके पैसे फिर भी देने हैं, और IHS न देने वाले आगंतुकों और स्थायी निवास वालों की स्थिति।",
+        "sourceRevisionId": "27dca22d-d145-48a8-b3f4-20d98334e6f7",
+        "contentSha256": "82dcac9e6e790ed2955eb84eb6402d7a3904410cf496fcd75b678f06a4505189",
+        "recomputedFromPublicProjection": true
+      }
+    },
+    "nhs-interpreter-language-help-england": {
+      "zh-CN": {
+        "url": "https://lifeinuk.info/zh-CN/health/nhs-interpreter-language-help-england",
+        "title": "英语不好怎么看病？GP、医院和 NHS 111 可以要求中文口译吗？",
+        "summary": "在英格兰看 GP、打 NHS 111 和去医院时如何要求口译，口译的费用和安排责任，以及家人和 16 岁以下孩子担任翻译的规定。",
+        "sourceRevisionId": "82182257-2a46-4b47-a68a-c92283e9c272",
+        "contentSha256": "eacc5b02980d652b91a69ea8e6410c66f24e3a71d59032830dcfd30433f8e841",
+        "recomputedFromPublicProjection": true
+      },
+      "zh-TW": {
+        "url": "https://lifeinuk.info/zh-TW/health/nhs-interpreter-language-help-england",
+        "title": "英語不好怎麼看病？GP、醫院和 NHS 111 可以要求中文口譯嗎？",
+        "summary": "在英格蘭看 GP、打 NHS 111 和去醫院時如何要求口譯，口譯的費用和安排責任，以及家人和 16 歲以下孩子擔任翻譯的規定。",
+        "sourceRevisionId": "82182257-2a46-4b47-a68a-c92283e9c272",
+        "contentSha256": "09bb8e8449146d99aa811576560e98e52bf4d686675948444b8c78b3c5051e86",
+        "recomputedFromPublicProjection": true
+      },
+      "en": {
+        "url": "https://lifeinuk.info/en/health/nhs-interpreter-language-help-england",
+        "title": "Not confident in English? Can you ask for a Chinese interpreter at the GP, in hospital and on NHS 111?",
+        "summary": "How to ask for an interpreter when you see a GP, call NHS 111 or go to hospital in England, who pays for and arranges interpreting, and the rules on family members and children under 16 interpreting.",
+        "sourceRevisionId": "82182257-2a46-4b47-a68a-c92283e9c272",
+        "contentSha256": "d68036de3568a335d3138dbf9f8fdc13b706ef7b495708dfcc015a59710cc39f",
+        "recomputedFromPublicProjection": true
+      },
+      "ur": {
+        "url": "https://lifeinuk.info/ur/health/nhs-interpreter-language-help-england",
+        "title": "انگریزی اچھی نہیں تو علاج کیسے کروائیں؟ کیا GP، ہسپتال اور NHS 111 پر چینی ترجمان مانگا جا سکتا ہے؟",
+        "summary": "انگلینڈ میں GP کو دکھاتے وقت، NHS 111 پر کال کرتے وقت اور ہسپتال جاتے وقت ترجمان کیسے مانگیں، ترجمانی کا خرچ اور انتظام کس کی ذمہ داری ہے، اور گھر والوں اور 16 سال سے کم عمر بچوں کے ترجمانی کرنے کے بارے میں قواعد۔",
+        "sourceRevisionId": "82182257-2a46-4b47-a68a-c92283e9c272",
+        "contentSha256": "4094b82fd1dbf5dd89d5d387edf1de8d47c9ad969fbe734181a24a0f909eb5fc",
+        "recomputedFromPublicProjection": true
+      },
+      "hi": {
+        "url": "https://lifeinuk.info/hi/health/nhs-interpreter-language-help-england",
+        "title": "अंग्रेज़ी अच्छी नहीं तो इलाज कैसे कराएँ? क्या GP, अस्पताल और NHS 111 पर चीनी दुभाषिया माँगा जा सकता है?",
+        "summary": "इंग्लैंड में GP को दिखाते समय, NHS 111 पर कॉल करते समय और अस्पताल जाते समय दुभाषिया कैसे माँगें, दुभाषिए का ख़र्च और इंतज़ाम किसकी ज़िम्मेदारी है, और परिवार वालों और 16 साल से कम उम्र के बच्चों के दुभाषिए का काम करने के नियम।",
+        "sourceRevisionId": "82182257-2a46-4b47-a68a-c92283e9c272",
+        "contentSha256": "1ab699b9132ad1bcf072ddd7cb2b98a1d40131c8d688093f20842c3d5338bd1e",
+        "recomputedFromPublicProjection": true
+      }
+    },
+    "open-uk-bank-account-new-arrival": {
+      "zh-CN": {
+        "url": "https://lifeinuk.info/zh-CN/money/open-uk-bank-account-new-arrival",
+        "title": "刚到英国，怎么开第一个银行账户？",
+        "summary": "持中国护照、刚到英国的留学生和来工作、随家人或定居的人，开第一个英国银行账户前要准备什么、没有常见的英国地址证明怎么办、第一家开不了怎么办，以及怎么确认 FSCS 存款保障。",
+        "sourceRevisionId": "cb7d84d7-d4e3-410a-a66f-d28e21201c8d",
+        "contentSha256": "0edf92837b18244c45ee6f307feec672764d0f4a70ca5d91350e80fd7e7ea81f",
+        "recomputedFromPublicProjection": true
+      },
+      "zh-TW": {
+        "url": "https://lifeinuk.info/zh-TW/money/open-uk-bank-account-new-arrival",
+        "title": "剛到英國，怎麼開第一個銀行帳戶？",
+        "summary": "持中國護照、剛到英國的留學生和來工作、隨家人或定居的人，開第一個英國銀行帳戶前要準備什麼、沒有常見的英國地址證明怎麼辦、第一家開不了怎麼辦，以及怎麼確認 FSCS 存款保障。",
+        "sourceRevisionId": "cb7d84d7-d4e3-410a-a66f-d28e21201c8d",
+        "contentSha256": "f80f8b1672e65f4ba8bcd6b8e02ea0c10d4cb9bf9a5d2279b104b80eb443cff8",
+        "recomputedFromPublicProjection": true
+      },
+      "en": {
+        "url": "https://lifeinuk.info/en/money/open-uk-bank-account-new-arrival",
+        "title": "Just arrived in the UK: how do you open your first bank account?",
+        "summary": "For Chinese passport holders who have just arrived in the UK, whether as students or to work, join family or settle: what to prepare before opening your first UK bank account, what to do without the usual UK proof of address, what to do if the first bank says no, and how to check FSCS deposit protection.",
+        "sourceRevisionId": "cb7d84d7-d4e3-410a-a66f-d28e21201c8d",
+        "contentSha256": "ff37ceb5e56f402d081d2eab9b0776728668927bc71ce58fb5defe29232dfd56",
+        "recomputedFromPublicProjection": true
+      },
+      "ur": {
+        "url": "https://lifeinuk.info/ur/money/open-uk-bank-account-new-arrival",
+        "title": "برطانیہ نئے آئے ہیں، پہلا بینک اکاؤنٹ کیسے کھولیں؟",
+        "summary": "چینی پاسپورٹ رکھنے والے جو ابھی برطانیہ آئے ہیں، طلبہ ہوں یا کام، خاندان کے ساتھ یا مستقل رہائش کے لیے آئے ہوں: پہلا برطانوی بینک اکاؤنٹ کھولنے سے پہلے کیا تیاری کریں، برطانیہ کے عام پتے کے ثبوت کے بغیر کیا کریں، پہلا بینک انکار کرے تو کیا کریں، اور FSCS کا تحفظ کیسے دیکھیں۔",
+        "sourceRevisionId": "cb7d84d7-d4e3-410a-a66f-d28e21201c8d",
+        "contentSha256": "8183ae00b5440937b62557d6a62d6f3e3f8a66a760043cbaa7262e705ad436ac",
+        "recomputedFromPublicProjection": true
+      },
+      "hi": {
+        "url": "https://lifeinuk.info/hi/money/open-uk-bank-account-new-arrival",
+        "title": "ब्रिटेन नए-नए आए हैं, पहला बैंक खाता कैसे खोलें?",
+        "summary": "चीनी पासपोर्ट वाले जो अभी ब्रिटेन आए हैं, चाहे छात्र हों या काम, परिवार के साथ या बसने के लिए आए हों: पहला ब्रिटिश बैंक खाता खोलने से पहले क्या तैयारी करें, ब्रिटेन के आम पते के प्रमाण के बिना क्या करें, पहला बैंक मना कर दे तो क्या करें, और FSCS सुरक्षा कैसे जाँचें।",
+        "sourceRevisionId": "cb7d84d7-d4e3-410a-a66f-d28e21201c8d",
+        "contentSha256": "05372e96c0330bb11311e3b4025f668f1373b07480bc116906dff4bd14e35910",
+        "recomputedFromPublicProjection": true
+      }
+    },
+    "registering-with-a-gp-england": {
+      "zh-CN": {
+        "url": "https://lifeinuk.info/zh-CN/health/registering-with-a-gp-england",
+        "title": "刚到英国怎么注册 GP？没有地址证明、NHS Number 也可以吗？",
+        "summary": "在英格兰注册 GP 的申请方式、材料要求、被拒后的处理办法，以及临时注册和口译服务。",
+        "sourceRevisionId": "9ca7a5bc-90f3-424c-a79d-d99eb4949a90",
+        "contentSha256": "c0c80a05f62daa725eabb9f573cc17b13e5e400e813d8765ffd51a42fff247ac",
+        "recomputedFromPublicProjection": false
+      },
+      "zh-TW": {
+        "url": "https://lifeinuk.info/zh-TW/health/registering-with-a-gp-england",
+        "title": "剛到英國怎麼註冊 GP？沒有地址證明、NHS Number 也可以嗎？",
+        "summary": "在英格蘭註冊 GP 的申請方式、文件要求、被拒後的處理辦法，以及臨時註冊和口譯服務。",
+        "sourceRevisionId": "9ca7a5bc-90f3-424c-a79d-d99eb4949a90",
+        "contentSha256": "53f5038cc138116af50d76fc928de94a9ce924b2574ed4416eceabf06161f511",
+        "recomputedFromPublicProjection": false
+      },
+      "en": {
+        "url": "https://lifeinuk.info/en/health/registering-with-a-gp-england",
+        "title": "Just arrived in the UK: how do I register with a GP? Can I do it without proof of address or an NHS number?",
+        "summary": "How to register with a GP in England: ways to apply, what documents are needed, what to do if you are refused, plus temporary registration and interpreting services.",
+        "sourceRevisionId": "9ca7a5bc-90f3-424c-a79d-d99eb4949a90",
+        "contentSha256": "4058b04c9b5dc68f959f786ff39cf8d1cdbb2f8e28e7bb66d92c3e9a68fff079",
+        "recomputedFromPublicProjection": false
+      },
+      "ur": {
+        "url": "https://lifeinuk.info/ur/health/registering-with-a-gp-england",
+        "title": "برطانیہ نئے آئے ہیں تو GP کے ساتھ رجسٹریشن کیسے کریں؟ کیا پتے کے ثبوت یا NHS نمبر کے بغیر بھی ہو سکتی ہے؟",
+        "summary": "انگلینڈ میں GP کے ساتھ رجسٹریشن: درخواست کے طریقے، کاغذات کی شرائط، انکار کی صورت میں کیا کریں، نیز عارضی رجسٹریشن اور ترجمانی کی سہولت۔",
+        "sourceRevisionId": "9ca7a5bc-90f3-424c-a79d-d99eb4949a90",
+        "contentSha256": "606ec0b14405faaf274f982f06dd1d51c54c4e61ccaa09e6c1175c477f538d22",
+        "recomputedFromPublicProjection": false
+      },
+      "hi": {
+        "url": "https://lifeinuk.info/hi/health/registering-with-a-gp-england",
+        "title": "ब्रिटेन नए-नए आए हैं तो GP के साथ रजिस्ट्रेशन कैसे करें? क्या पते के प्रमाण या NHS नंबर के बिना भी हो सकता है?",
+        "summary": "इंग्लैंड में GP के साथ रजिस्ट्रेशन: आवेदन के तरीके, दस्तावेज़ों की ज़रूरतें, मना किए जाने पर क्या करें, साथ ही अस्थायी रजिस्ट्रेशन और दुभाषिया सेवा।",
+        "sourceRevisionId": "9ca7a5bc-90f3-424c-a79d-d99eb4949a90",
+        "contentSha256": "6e24bb291e468ff2d71f4214699cd9d655118399d11ff74e81d29fa2fe8566e7",
+        "recomputedFromPublicProjection": false
+      }
+    },
+    "urgent-dental-care-england": {
+      "zh-CN": {
+        "url": "https://lifeinuk.info/zh-CN/health/urgent-dental-care-england",
+        "title": "突然牙疼怎么办？Emergency Dentist、NHS 111 和什么时候去 A&E",
+        "summary": "在英格兰突然牙疼时先联系牙医还是 NHS 111，哪些危险信号要去 A&E 或打 999，等待期间的缓解办法，以及 NHS 紧急牙科收费。",
+        "sourceRevisionId": "093bc327-adad-49ae-ab89-4b930ad5af08",
+        "contentSha256": "0f91063b43b3d7c9c0b4c6484e3037bf18fc470d7dc3e91cd24ee5f06e9d67fc",
+        "recomputedFromPublicProjection": true
+      },
+      "zh-TW": {
+        "url": "https://lifeinuk.info/zh-TW/health/urgent-dental-care-england",
+        "title": "突然牙疼怎麼辦？Emergency Dentist、NHS 111 和什麼時候去 A&E",
+        "summary": "在英格蘭突然牙疼時先聯繫牙醫還是 NHS 111，哪些危險信號要去 A&E 或打 999，等待期間的緩解辦法，以及 NHS 緊急牙科收費。",
+        "sourceRevisionId": "093bc327-adad-49ae-ab89-4b930ad5af08",
+        "contentSha256": "8c76d588db0d5179fabcfa3484b779cf01d64bf68c20c9384d2e6474fe832b5a",
+        "recomputedFromPublicProjection": true
+      },
+      "en": {
+        "url": "https://lifeinuk.info/en/health/urgent-dental-care-england",
+        "title": "Sudden toothache: emergency dentists, NHS 111 and when to go to A&E",
+        "summary": "What to do about sudden toothache in England: whether to contact a dentist or NHS 111 first, which warning signs mean A&E or 999, how to ease the pain while you wait, and the NHS charge for urgent dental care.",
+        "sourceRevisionId": "093bc327-adad-49ae-ab89-4b930ad5af08",
+        "contentSha256": "36e62d0073fddb8d08ac2bd91a17776090042711a34811661baef15f731e0d68",
+        "recomputedFromPublicProjection": true
+      },
+      "ur": {
+        "url": "https://lifeinuk.info/ur/health/urgent-dental-care-england",
+        "title": "اچانک دانت میں درد: ایمرجنسی ڈینٹسٹ، NHS 111 اور A&E کب جائیں",
+        "summary": "انگلینڈ میں اچانک دانت درد ہو تو پہلے ڈینٹسٹ سے رابطہ کریں یا NHS 111 سے، کن خطرے کی علامات پر A&E جائیں یا 999 پر کال کریں، انتظار کے دوران درد کیسے کم کریں، اور NHS کے فوری دندان علاج کی فیس۔",
+        "sourceRevisionId": "093bc327-adad-49ae-ab89-4b930ad5af08",
+        "contentSha256": "c8d7ec847154517c6add198725f41c6dc04603bc5bc31829800de23795fc0eab",
+        "recomputedFromPublicProjection": true
+      },
+      "hi": {
+        "url": "https://lifeinuk.info/hi/health/urgent-dental-care-england",
+        "title": "अचानक दाँत दर्द: इमरजेंसी डेंटिस्ट, NHS 111 और A&E कब जाएँ",
+        "summary": "इंग्लैंड में अचानक दाँत दर्द हो तो पहले डेंटिस्ट से संपर्क करें या NHS 111 से, किन ख़तरे के संकेतों पर A&E जाएँ या 999 पर कॉल करें, इंतज़ार के दौरान दर्द कैसे कम करें, और NHS के तुरंत दंत इलाज का शुल्क।",
+        "sourceRevisionId": "093bc327-adad-49ae-ab89-4b930ad5af08",
+        "contentSha256": "5adb61b806740dc0a70658e5d7508157fa22792887819e23eacbc48db37f7abd",
+        "recomputedFromPublicProjection": true
+      }
+    },
+    "visiting-parents-healthcare-england": {
+      "zh-CN": {
+        "url": "https://lifeinuk.info/zh-CN/health/visiting-parents-healthcare-england",
+        "title": "父母来英国探亲，生病了怎么办？GP、A&E、NHS 收费和保险怎么处理",
+        "summary": "持访问签证来英格兰探亲的父母如何看 GP、急诊和 111，哪些医院治疗要按 150% 收费，以及保险、用药、口译和未付账单的影响。",
+        "sourceRevisionId": "5e789f75-86ee-4d96-8ffc-8ebd45a4bbc4",
+        "contentSha256": "22e84abfabb662db17450e0c1176e513b9418bfc9679e0d5121f2e9c21cd0377",
+        "recomputedFromPublicProjection": true
+      },
+      "zh-TW": {
+        "url": "https://lifeinuk.info/zh-TW/health/visiting-parents-healthcare-england",
+        "title": "父母來英國探親，生病了怎麼辦？GP、A&E、NHS 收費和保險怎麼處理",
+        "summary": "持訪問簽證來英格蘭探親的父母如何看 GP、急診和 111，哪些醫院治療要按 150% 收費，以及保險、用藥、口譯和未付帳單的影響。",
+        "sourceRevisionId": "5e789f75-86ee-4d96-8ffc-8ebd45a4bbc4",
+        "contentSha256": "e1db01037f194926a935b1d4f9ebb75157b06d8ae41cc9e97514667fd8f99d69",
+        "recomputedFromPublicProjection": true
+      },
+      "en": {
+        "url": "https://lifeinuk.info/en/health/visiting-parents-healthcare-england",
+        "title": "Parents visiting the UK fall ill: GPs, A&E, NHS charges and insurance",
+        "summary": "How parents visiting England on a visitor visa can see a GP, use A&E and 111, which hospital treatment is charged at 150%, and how insurance, medicines, interpreters and unpaid bills affect them.",
+        "sourceRevisionId": "5e789f75-86ee-4d96-8ffc-8ebd45a4bbc4",
+        "contentSha256": "4b77fb4e4211b9063163edf11567cc36340ab924448ada7a9c2cc7f569d5136c",
+        "recomputedFromPublicProjection": true
+      },
+      "ur": {
+        "url": "https://lifeinuk.info/ur/health/visiting-parents-healthcare-england",
+        "title": "والدین برطانیہ ملنے آئیں اور بیمار ہو جائیں تو کیا کریں؟ GP، A&E، NHS کی فیسیں اور بیمہ",
+        "summary": "وزٹ ویزا پر انگلینڈ آنے والے والدین GP، ایمرجنسی اور 111 کیسے استعمال کریں، ہسپتال کے کون سے علاج پر 150% فیس لگتی ہے، اور بیمہ، دواؤں، ترجمان اور غیر ادا شدہ بلوں کا کیا اثر ہوتا ہے۔",
+        "sourceRevisionId": "5e789f75-86ee-4d96-8ffc-8ebd45a4bbc4",
+        "contentSha256": "3ac061e7f939b6d95ec3f251613fa4d92c5d3dda077bd9c83c79a99acd34d8b6",
+        "recomputedFromPublicProjection": true
+      },
+      "hi": {
+        "url": "https://lifeinuk.info/hi/health/visiting-parents-healthcare-england",
+        "title": "माता-पिता ब्रिटेन मिलने आएँ और बीमार पड़ जाएँ तो क्या करें? GP, A&E, NHS शुल्क और बीमा",
+        "summary": "विज़िटर वीज़ा पर इंग्लैंड आने वाले माता-पिता GP, इमरजेंसी और 111 कैसे इस्तेमाल करें, अस्पताल के किस इलाज पर 150% शुल्क लगता है, और बीमा, दवाइयों, दुभाषिए और न चुकाए गए बिलों का क्या असर होता है।",
+        "sourceRevisionId": "5e789f75-86ee-4d96-8ffc-8ebd45a4bbc4",
+        "contentSha256": "9f6823366a70ec0ec5742e609a6801184a49025ae0da0c30d0c8ec68653319cb",
+        "recomputedFromPublicProjection": true
+      }
+    },
+    "where-to-go-when-ill-england": {
+      "zh-CN": {
+        "url": "https://lifeinuk.info/zh-CN/health/where-to-go-when-ill-england",
+        "title": "在英国生病了该去哪？Pharmacy、GP、NHS 111、Urgent Treatment Centre、A&E 和 999 怎么选",
+        "summary": "在英格兰生病时如何在 pharmacy、GP、NHS 111、urgent treatment centre、A&E 和 999 之间选择，以及各自适用的情况。",
+        "sourceRevisionId": "69ce194c-4fb7-4272-8969-ac565d5efd17",
+        "contentSha256": "edf4d16dbc535fd3e2cb1677079ca479e302f65679bd81739e81fa8b029ee536",
+        "recomputedFromPublicProjection": true
+      },
+      "zh-TW": {
+        "url": "https://lifeinuk.info/zh-TW/health/where-to-go-when-ill-england",
+        "title": "在英國生病了該去哪？Pharmacy、GP、NHS 111、Urgent Treatment Centre、A&E 和 999 怎麼選",
+        "summary": "在英格蘭生病時如何在 pharmacy、GP、NHS 111、urgent treatment centre、A&E 和 999 之間選擇，以及各自適用的情況。",
+        "sourceRevisionId": "69ce194c-4fb7-4272-8969-ac565d5efd17",
+        "contentSha256": "a0fa618d31020b1792fbe4f1b8bf8fad960e8769542c415bed90dd6804d1830b",
+        "recomputedFromPublicProjection": true
+      },
+      "en": {
+        "url": "https://lifeinuk.info/en/health/where-to-go-when-ill-england",
+        "title": "Ill in the UK, where should you go? Choosing between a pharmacy, GP, NHS 111, an urgent treatment centre, A&E and 999",
+        "summary": "How to choose between a pharmacy, GP, NHS 111, an urgent treatment centre, A&E and 999 when you are ill in England, and what each one is for.",
+        "sourceRevisionId": "69ce194c-4fb7-4272-8969-ac565d5efd17",
+        "contentSha256": "ba172977eb705297d7b1bf4d5273cf15829aa57f0978f83c649e5152f6eb616d",
+        "recomputedFromPublicProjection": true
+      },
+      "ur": {
+        "url": "https://lifeinuk.info/ur/health/where-to-go-when-ill-england",
+        "title": "برطانیہ میں بیمار ہوں تو کہاں جائیں؟ فارمیسی، GP، NHS 111، Urgent Treatment Centre، A&E اور 999 میں سے کیسے چنیں",
+        "summary": "انگلینڈ میں بیمار ہونے پر فارمیسی، GP، NHS 111، urgent treatment centre، A&E اور 999 میں سے کیسے انتخاب کریں، اور ہر ایک کن حالات کے لیے ہے۔",
+        "sourceRevisionId": "69ce194c-4fb7-4272-8969-ac565d5efd17",
+        "contentSha256": "feb7fb608b42e1d327c9462131f48a98d1774c6b8020b3f2bb7eef7e3f3ae4ee",
+        "recomputedFromPublicProjection": true
+      },
+      "hi": {
+        "url": "https://lifeinuk.info/hi/health/where-to-go-when-ill-england",
+        "title": "ब्रिटेन में बीमार हों तो कहाँ जाएँ? फ़ार्मेसी, GP, NHS 111, Urgent Treatment Centre, A&E और 999 में से कैसे चुनें",
+        "summary": "इंग्लैंड में बीमार होने पर फ़ार्मेसी, GP, NHS 111, urgent treatment centre, A&E और 999 में से कैसे चुनें, और हर एक किन स्थितियों के लिए है।",
+        "sourceRevisionId": "69ce194c-4fb7-4272-8969-ac565d5efd17",
+        "contentSha256": "ef5562286d56cd44cd53d08509d02916864bf9b140770e5c8c1167bda2dbe260",
+        "recomputedFromPublicProjection": true
+      }
+    }
+  }
+}
