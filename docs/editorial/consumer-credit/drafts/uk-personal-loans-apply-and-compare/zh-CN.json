@@ -1,0 +1,178 @@
+{
+  "slug": "uk-personal-loans-apply-and-compare",
+  "category": "money",
+  "title": "英国个人贷款：怎样申请、怎样比较实际成本",
+  "summary": "比较书面报价，弄懂代表性 APR，签约前先查提前结清条款。",
+  "content": "# 英国个人贷款：怎样申请、怎样比较实际成本\n\n最后更新: 2026-11-27\n\n## 先弄清会承担什么风险\n无抵押个人贷款通常一次放款，在约定期限内偿还，常见为每月固定金额。抵押贷款如果未按约还款，住房等抵押资产可能有风险。无抵押欠款逾期也可能带来严重后果。先留足房租、账单和不定期开支，再判断月供是否负担得起。 [借款类型](#guide-evidence-types)\n\n## 从预查到书面报价\n核对年龄、居住资格、收入和地址要求。若有软查询预查工具，确认查询类型后再使用。真实填报工作与收入，并检查信用报告。正式申请通常会做硬查询。代表性 APR 是广告用年化百分率：预计广告带来的协议中，至少 51% 可获该 APR 或更低；并不是说有 51% 的申请人获批。对同一借款金额，比较你实际收到的 APR、实收金额、费用、月供、总偿还额和期限。 [APR 和申请](#guide-evidence-apply) · [信用记录和查询](/zh-CN/money/uk-credit-history-and-credit-score)\n\n## 算例：两份 £3,000 报价\n假设无前置费用、月供固定。每月 £140，还 24 个月，共 £3,360，比借款多 £360。每月 £100，还 36 个月，共 £3,600，比借款多 £600。第二个方案每月少付 £40，总共却多花 £240。接受前要书面确认实际金额和全部费用。 [比较成本](#guide-evidence-example)\n\n## 提前结清和债务整合\n受监管的协议一般可以提前偿还。索取注明日期的结清金额，确认适用的利息或收费，再另外问部分多还款如何处理。当前显示余额、结清金额和剩余月供之和可能不同。合并欠款时，把结清费计入总成本，不要在刚还清的账户上再借，尤其要确认新贷款是否让房产承担风险。月供变低不一定省钱；期限拉长可能使总支出增加。 [提前偿还](#guide-evidence-settlement)\n\n## 识别骗局，及时找帮助\n警惕“保证批贷”，或突然要求先付费才放款。通过 FCA 核对机构和电话，不用对方发来的联系方式；不要在催促下付钱。账单或债务难以负担时，先联系贷款机构，并在加借前找免费独立债务咨询。本文为一般信息，不构成个人财务建议。 [贷款费用骗局](#guide-evidence-support) · [免费债务咨询](#guide-evidence-debt) · [新来英国开银行账户](/zh-CN/money/open-uk-bank-account-new-arrival)\n",
+  "status": "DRAFT",
+  "publishedAt": null,
+  "updatedAt": "2026-11-27T00:00:00Z",
+  "sources": [
+    {
+      "key": "apply",
+      "organisation": "MoneyHelper",
+      "title": "How to apply for a credit card or loan",
+      "url": "https://www.moneyhelper.org.uk/en/everyday-money/credit/apply-to-borrow-for-credit-card-or-loan",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "loans",
+      "organisation": "MoneyHelper",
+      "title": "Personal loans",
+      "url": "https://www.moneyhelper.org.uk/en/everyday-money/credit/personal-loans",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "borrow",
+      "organisation": "MoneyHelper",
+      "title": "Options for borrowing money",
+      "url": "https://www.moneyhelper.org.uk/en/everyday-money/credit/options-for-borrowing-money",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "apr",
+      "organisation": "Financial Conduct Authority",
+      "title": "Representative APR",
+      "url": "https://handbook.fca.org.uk/glossary/G3354",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "early",
+      "organisation": "UK Parliament",
+      "title": "Consumer Credit Act 1974 section 94",
+      "url": "https://www.legislation.gov.uk/ukpga/1974/39/section/94",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "fees",
+      "organisation": "Financial Conduct Authority",
+      "title": "Loan fee fraud",
+      "url": "https://www.fca.org.uk/consumers/loan-fee-fraud",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "debt",
+      "organisation": "MoneyHelper",
+      "title": "Help if you are struggling with debt",
+      "url": "https://www.moneyhelper.org.uk/en/money-troubles/dealing-with-debt/help-if-youre-struggling-with-debt",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "debt-uk",
+      "organisation": "GOV.UK",
+      "title": "Get free debt advice",
+      "url": "https://www.gov.uk/debt-advice",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    }
+  ],
+  "evidence": [
+    {
+      "key": "types",
+      "statement": "无抵押个人贷款通常一次放款，在约定期限内偿还，常见为每月固定金额。 抵押贷款如果未按约还款，住房等抵押资产可能有风险。",
+      "supports": [
+        {
+          "sourceKey": "loans",
+          "locator": "Costs, application and early settlement",
+          "excerpt": null,
+          "note": "无抵押个人贷款通常一次放款，在约定期限内偿还，常见为每月固定金额。 抵押贷款如果未按约还款，住房等抵押资产可能有风险。"
+        },
+        {
+          "sourceKey": "borrow",
+          "locator": "Secured and unsecured credit",
+          "excerpt": null,
+          "note": "无抵押个人贷款通常一次放款，在约定期限内偿还，常见为每月固定金额。 抵押贷款如果未按约还款，住房等抵押资产可能有风险。"
+        }
+      ]
+    },
+    {
+      "key": "apply",
+      "statement": "核对年龄、居住资格、收入和地址要求。 若有软查询预查工具，确认查询类型后再使用。",
+      "supports": [
+        {
+          "sourceKey": "apply",
+          "locator": "Application details and eligibility checks",
+          "excerpt": null,
+          "note": "核对年龄、居住资格、收入和地址要求。 若有软查询预查工具，确认查询类型后再使用。"
+        },
+        {
+          "sourceKey": "loans",
+          "locator": "Costs, application and early settlement",
+          "excerpt": null,
+          "note": "核对年龄、居住资格、收入和地址要求。 若有软查询预查工具，确认查询类型后再使用。"
+        },
+        {
+          "sourceKey": "apr",
+          "locator": "Representative APR definition",
+          "excerpt": null,
+          "note": "核对年龄、居住资格、收入和地址要求。 若有软查询预查工具，确认查询类型后再使用。"
+        }
+      ]
+    },
+    {
+      "key": "example",
+      "statement": "假设无前置费用、月供固定。每月 £140，还 24 个月，共 £3,360，比借款多 £360。每月 £100，还 36 个月，共 £3,600，比借款多 £600。第二个方案每月少付 £40，总共却多花 £240。接受前要书面确认实际金额和全部费用。",
+      "supports": [
+        {
+          "sourceKey": "loans",
+          "locator": "Costs, application and early settlement",
+          "excerpt": null,
+          "note": "假设无前置费用、月供固定。每月 £140，还 24 个月，共 £3,360，比借款多 £360。每月 £100，还 36 个月，共 £3,600，比借款多 £600。第二个方案每月少付 £40，总共却多花 £240。接受前要书面确认实际金额和全部费用。"
+        }
+      ]
+    },
+    {
+      "key": "settlement",
+      "statement": "受监管的协议一般可以提前偿还。索取注明日期的结清金额，确认适用的利息或收费，再另外问部分多还款如何处理。当前显示余额、结清金额和剩余月供之和可能不同。合并欠款时，把结清费计入总成本，不要在刚还清的账户上再借，尤其要确认新贷款是否让房产承担风险。月供变低不一定省钱；期限拉长可能使总支出增加。",
+      "supports": [
+        {
+          "sourceKey": "early",
+          "locator": "Early payment rights on regulated agreements",
+          "excerpt": null,
+          "note": "受监管的协议一般可以提前偿还。索取注明日期的结清金额，确认适用的利息或收费，再另外问部分多还款如何处理。当前显示余额、结清金额和剩余月供之和可能不同。合并欠款时，把结清费计入总成本，不要在刚还清的账户上再借，尤其要确认新贷款是否让房产承担风险。月供变低不一定省钱；期限拉长可能使总支出增加。"
+        },
+        {
+          "sourceKey": "loans",
+          "locator": "Costs, application and early settlement",
+          "excerpt": null,
+          "note": "受监管的协议一般可以提前偿还。索取注明日期的结清金额，确认适用的利息或收费，再另外问部分多还款如何处理。当前显示余额、结清金额和剩余月供之和可能不同。合并欠款时，把结清费计入总成本，不要在刚还清的账户上再借，尤其要确认新贷款是否让房产承担风险。月供变低不一定省钱；期限拉长可能使总支出增加。"
+        },
+        {
+          "sourceKey": "borrow",
+          "locator": "Secured and unsecured credit",
+          "excerpt": null,
+          "note": "受监管的协议一般可以提前偿还。索取注明日期的结清金额，确认适用的利息或收费，再另外问部分多还款如何处理。当前显示余额、结清金额和剩余月供之和可能不同。合并欠款时，把结清费计入总成本，不要在刚还清的账户上再借，尤其要确认新贷款是否让房产承担风险。月供变低不一定省钱；期限拉长可能使总支出增加。"
+        }
+      ]
+    },
+    {
+      "key": "support",
+      "statement": "警惕“保证批贷”，或突然要求先付费才放款。 通过 FCA 核对机构和电话，不用对方发来的联系方式；不要在催促下付钱。",
+      "supports": [
+        {
+          "sourceKey": "fees",
+          "locator": "Advance fees, verification and reporting",
+          "excerpt": null,
+          "note": "警惕“保证批贷”，或突然要求先付费才放款。 通过 FCA 核对机构和电话，不用对方发来的联系方式；不要在催促下付钱。"
+        }
+      ]
+    },
+    {
+      "key": "debt",
+      "statement": "免费债务咨询",
+      "supports": [
+        {
+          "sourceKey": "debt",
+          "locator": "Free support and repayment difficulties",
+          "excerpt": null,
+          "note": "免费债务咨询"
+        },
+        {
+          "sourceKey": "debt-uk",
+          "locator": "Independent debt support routes",
+          "excerpt": null,
+          "note": "免费债务咨询"
+        }
+      ]
+    }
+  ]
+}

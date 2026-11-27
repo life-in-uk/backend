@@ -1,0 +1,212 @@
+{
+  "slug": "uk-first-credit-card",
+  "category": "money",
+  "title": "在英国怎样申请第一张信用卡",
+  "summary": "核对条件，了解信用建立卡，以及被拒、还款和交易有争议时该怎么办。",
+  "content": "# 在英国怎样申请第一张信用卡\n\n最后更新: 2026-11-27\n\n## 申请前准备资料\n先向发卡机构确认最低年龄、英国居住资格、收入和地址记录要求。准备证件姓名、近期住址、工作或学生身份、真实收入和所需证件。刚来英国，可问能否填写海外住址、提供替代身份证明或地址文件。有资格才登记选民；无法登记时，问机构能接受什么其他证明。开银行账户和获批借款要分别审核。 [机构如何审核](#guide-evidence-eligibility) · [信用报告](/zh-CN/money/uk-credit-history-and-credit-score) · [开银行账户](/zh-CN/money/open-uk-bank-account-new-arrival)\n\n## 先查资格，再决定是否正式申请\n确认资格预查采用软查询；结果只是估计。正式申请通常会留下硬查询记录。机构会衡量你的具体情况和还款能力，没有哪个信用分数能保证获批。被拒后先停一下，避免连续递交申请。可询问原因或机构采用的信用报告机构，再查是否有错误地址、陌生账户等问题。 [查询与拒绝](#guide-evidence-search)\n\n## 信用建立卡与日常还款\n信用建立卡的起始额度可能较低，年化百分率（APR）可能较高。按期还款且相关记录被上报，有助于积累信用历史，不必为此支付利息。额度使用率就是已用金额占可用总额度的比例；没有适用所有机构的固定比例。看账单余额、最低还款额和到期日。用 Direct Debit 自动扣清账单，若条款和上期余额允许，可避免普通购物利息。确保账户资金充足，首次扣款未生效时及时手动还款。只还最低金额可能多年仍欠款。 [还款核对](#guide-evidence-repay)\n\n## 第 75 条、拒付与盗刷\n如果商家违约或作出不实陈述，商品或服务的现金价超过 £100 且不超过 £30,000，并且买方、贷款机构与商家之间符合法定关系，《消费者信贷法》第 75 条可让贷款机构承担连带责任。看的是商品本身的现金价，而不是把互不相关的商品加起来，也不是刷卡金额。若其他条件满足，给价值 £600 的商品用信用卡付 £50 订金也可能受保护。超过 £30,000 且使用关联信贷协议，可向贷款机构询问是否适用第 75A 条。经第三方支付或替别人购买会使关系更复杂。Chargeback（拒付）是卡组织的程序，借记卡也可能适用，但不保证退款。购物争议的申请窗口通常约为 120 天，但各卡组织的规则和起算日可能不同，尽快问发卡机构。保存收据和沟通记录，尽快找发卡机构。看见陌生交易，可先锁卡，再用可信号码联系机构。先向机构投诉，再核对金融申诉专员服务的资格与时限。 [购物争议](#guide-evidence-dispute) · [未经授权的交易](#guide-evidence-fraud)\n\n## 还款有压力\n本文提供一般信息，不构成个人财务建议。借款前先看自己的协议与预算。可能逾期时，尽早联系贷款机构，也可以寻求免费的独立债务咨询。 [债务帮助](#guide-evidence-help)\n",
+  "status": "DRAFT",
+  "publishedAt": null,
+  "updatedAt": "2026-11-27T00:00:00Z",
+  "sources": [
+    {
+      "key": "apply",
+      "organisation": "MoneyHelper",
+      "title": "How to apply for a credit card or loan",
+      "url": "https://www.moneyhelper.org.uk/en/everyday-money/credit/apply-to-borrow-for-credit-card-or-loan",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "refused",
+      "organisation": "MoneyHelper",
+      "title": "What to do if refused a loan or credit card",
+      "url": "https://www.moneyhelper.org.uk/en/everyday-money/credit/what-to-do-if-you-have-been-refused-a-loan-or-credit-card",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "history",
+      "organisation": "MoneyHelper",
+      "title": "How to improve your credit score",
+      "url": "https://www.moneyhelper.org.uk/en/everyday-money/credit/how-to-improve-your-credit-score",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "cards",
+      "organisation": "MoneyHelper",
+      "title": "A simple guide to credit cards",
+      "url": "https://www.moneyhelper.org.uk/en/everyday-money/credit/simple-guide-to-credit-cards",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "section75",
+      "organisation": "UK Parliament",
+      "title": "Consumer Credit Act 1974 section 75",
+      "url": "https://www.legislation.gov.uk/ukpga/1974/39/section/75",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "goods",
+      "organisation": "Financial Ombudsman Service",
+      "title": "Goods and services bought with credit",
+      "url": "https://www.financial-ombudsman.org.uk/consumers/complaints-can-help/credit-borrowing-money/goods-services-bought-credit",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "fraud",
+      "organisation": "Financial Ombudsman Service",
+      "title": "Unauthorised payments and identity theft",
+      "url": "https://www.financial-ombudsman.org.uk/consumers/complaints-can-help/fraud-scams/scams-involving-unauthorised-payments-identity-theft",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "issuer-check",
+      "organisation": "Nationwide",
+      "title": "Credit scoring guide",
+      "url": "https://www.nationwide.co.uk/help/credit-scoring-guide",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "repayment",
+      "organisation": "Financial Conduct Authority",
+      "title": "CONC 6.7 Post contract business practices",
+      "url": "https://handbook.fca.org.uk/handbook/conc6/conc6s7",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "debt",
+      "organisation": "MoneyHelper",
+      "title": "Help if you are struggling with debt",
+      "url": "https://www.moneyhelper.org.uk/en/money-troubles/dealing-with-debt/help-if-youre-struggling-with-debt",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "debt-uk",
+      "organisation": "GOV.UK",
+      "title": "Get free debt advice",
+      "url": "https://www.gov.uk/debt-advice",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "section75a",
+      "organisation": "UK Parliament",
+      "title": "Consumer Credit Act 1974 section 75A",
+      "url": "https://www.legislation.gov.uk/ukpga/1974/39/section/75A",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    }
+  ],
+  "evidence": [
+    {
+      "key": "eligibility",
+      "statement": "先向发卡机构确认最低年龄、英国居住资格、收入和地址记录要求。 准备证件姓名、近期住址、工作或学生身份、真实收入和所需证件。",
+      "supports": [
+        {
+          "sourceKey": "apply",
+          "locator": "Application details and eligibility checks",
+          "excerpt": null,
+          "note": "先向发卡机构确认最低年龄、英国居住资格、收入和地址记录要求。 准备证件姓名、近期住址、工作或学生身份、真实收入和所需证件。"
+        },
+        {
+          "sourceKey": "issuer-check",
+          "locator": "Worked example of lender assessment inputs",
+          "excerpt": null,
+          "note": "先向发卡机构确认最低年龄、英国居住资格、收入和地址记录要求。 准备证件姓名、近期住址、工作或学生身份、真实收入和所需证件。"
+        }
+      ]
+    },
+    {
+      "key": "search",
+      "statement": "确认资格预查采用软查询；结果只是估计。 正式申请通常会留下硬查询记录。",
+      "supports": [
+        {
+          "sourceKey": "apply",
+          "locator": "Application details and eligibility checks",
+          "excerpt": null,
+          "note": "确认资格预查采用软查询；结果只是估计。 正式申请通常会留下硬查询记录。"
+        },
+        {
+          "sourceKey": "refused",
+          "locator": "Refusal and next steps",
+          "excerpt": null,
+          "note": "确认资格预查采用软查询；结果只是估计。 正式申请通常会留下硬查询记录。"
+        }
+      ]
+    },
+    {
+      "key": "repay",
+      "statement": "信用建立卡的起始额度可能较低，年化百分率（APR）可能较高。 按期还款且相关记录被上报，有助于积累信用历史，不必为此支付利息。",
+      "supports": [
+        {
+          "sourceKey": "cards",
+          "locator": "Types, interest, repayments and rewards",
+          "excerpt": null,
+          "note": "信用建立卡的起始额度可能较低，年化百分率（APR）可能较高。 按期还款且相关记录被上报，有助于积累信用历史，不必为此支付利息。"
+        },
+        {
+          "sourceKey": "history",
+          "locator": "Credit history and repayment behaviour",
+          "excerpt": null,
+          "note": "信用建立卡的起始额度可能较低，年化百分率（APR）可能较高。 按期还款且相关记录被上报，有助于积累信用历史，不必为此支付利息。"
+        },
+        {
+          "sourceKey": "repayment",
+          "locator": "Credit card repayment allocation and treatment of customers",
+          "excerpt": null,
+          "note": "信用建立卡的起始额度可能较低，年化百分率（APR）可能较高。 按期还款且相关记录被上报，有助于积累信用历史，不必为此支付利息。"
+        }
+      ]
+    },
+    {
+      "key": "dispute",
+      "statement": "如果商家违约或作出不实陈述，商品或服务的现金价超过 £100 且不超过 £30,000，并且买方、贷款机构与商家之间符合法定关系，《消费者信贷法》第 75 条可让贷款机构承担连带责任。看的是商品本身的现金价，而不是把互不相关的商品加起来，也不是刷卡金额。若其他条件满足，给价值 £600 的商品用信用卡付 £50 订金也可能受保护。超过 £30,000 且使用关联信贷协议，可向贷款机构询问是否适用第 75A 条。经第三方支付或替别人购买会使关系更复杂。Chargeback（拒付）是卡组织的程序，借记卡也可能适用，但不保证退款。购物争议的申请窗口通常约为 120 天，但各卡组织的规则和起算日可能不同，尽快问发卡机构。保存收据和沟通记录，尽快找发卡机构。看见陌生交易，可先锁卡，再用可信号码联系机构。先向机构投诉，再核对金融申诉专员服务的资格与时限。",
+      "supports": [
+        {
+          "sourceKey": "section75",
+          "locator": "Linked credit and supplier liability",
+          "excerpt": null,
+          "note": "如果商家违约或作出不实陈述，商品或服务的现金价超过 £100 且不超过 £30,000，并且买方、贷款机构与商家之间符合法定关系，《消费者信贷法》第 75 条可让贷款机构承担连带责任。看的是商品本身的现金价，而不是把互不相关的商品加起来，也不是刷卡金额。若其他条件满足，给价值 £600 的商品用信用卡付 £50 订金也可能受保护。超过 £30,000 且使用关联信贷协议，可向贷款机构询问是否适用第 75A 条。经第三方支付或替别人购买会使关系更复杂。Chargeback（拒付）是卡组织的程序，借记卡也可能适用，但不保证退款。购物争议的申请窗口通常约为 120 天，但各卡组织的规则和起算日可能不同，尽快问发卡机构。保存收据和沟通记录，尽快找发卡机构。看见陌生交易，可先锁卡，再用可信号码联系机构。先向机构投诉，再核对金融申诉专员服务的资格与时限。"
+        },
+        {
+          "sourceKey": "section75a",
+          "locator": "Separate protection for certain linked credit agreements",
+          "excerpt": null,
+          "note": "如果商家违约或作出不实陈述，商品或服务的现金价超过 £100 且不超过 £30,000，并且买方、贷款机构与商家之间符合法定关系，《消费者信贷法》第 75 条可让贷款机构承担连带责任。看的是商品本身的现金价，而不是把互不相关的商品加起来，也不是刷卡金额。若其他条件满足，给价值 £600 的商品用信用卡付 £50 订金也可能受保护。超过 £30,000 且使用关联信贷协议，可向贷款机构询问是否适用第 75A 条。经第三方支付或替别人购买会使关系更复杂。Chargeback（拒付）是卡组织的程序，借记卡也可能适用，但不保证退款。购物争议的申请窗口通常约为 120 天，但各卡组织的规则和起算日可能不同，尽快问发卡机构。保存收据和沟通记录，尽快找发卡机构。看见陌生交易，可先锁卡，再用可信号码联系机构。先向机构投诉，再核对金融申诉专员服务的资格与时限。"
+        },
+        {
+          "sourceKey": "goods",
+          "locator": "Section 75 and chargeback",
+          "excerpt": null,
+          "note": "如果商家违约或作出不实陈述，商品或服务的现金价超过 £100 且不超过 £30,000，并且买方、贷款机构与商家之间符合法定关系，《消费者信贷法》第 75 条可让贷款机构承担连带责任。看的是商品本身的现金价，而不是把互不相关的商品加起来，也不是刷卡金额。若其他条件满足，给价值 £600 的商品用信用卡付 £50 订金也可能受保护。超过 £30,000 且使用关联信贷协议，可向贷款机构询问是否适用第 75A 条。经第三方支付或替别人购买会使关系更复杂。Chargeback（拒付）是卡组织的程序，借记卡也可能适用，但不保证退款。购物争议的申请窗口通常约为 120 天，但各卡组织的规则和起算日可能不同，尽快问发卡机构。保存收据和沟通记录，尽快找发卡机构。看见陌生交易，可先锁卡，再用可信号码联系机构。先向机构投诉，再核对金融申诉专员服务的资格与时限。"
+        }
+      ]
+    },
+    {
+      "key": "fraud",
+      "statement": "未经授权的交易",
+      "supports": [
+        {
+          "sourceKey": "fraud",
+          "locator": "Reporting unauthorised payments and complaints",
+          "excerpt": null,
+          "note": "未经授权的交易"
+        }
+      ]
+    },
+    {
+      "key": "help",
+      "statement": "本文提供一般信息，不构成个人财务建议。 借款前先看自己的协议与预算。",
+      "supports": [
+        {
+          "sourceKey": "debt",
+          "locator": "Free support and repayment difficulties",
+          "excerpt": null,
+          "note": "本文提供一般信息，不构成个人财务建议。 借款前先看自己的协议与预算。"
+        },
+        {
+          "sourceKey": "debt-uk",
+          "locator": "Independent debt support routes",
+          "excerpt": null,
+          "note": "本文提供一般信息，不构成个人财务建议。 借款前先看自己的协议与预算。"
+        }
+      ]
+    }
+  ]
+}

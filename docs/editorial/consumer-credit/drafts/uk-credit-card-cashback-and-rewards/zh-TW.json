@@ -1,0 +1,107 @@
+{
+  "slug": "uk-credit-card-cashback-and-rewards",
+  "category": "money",
+  "title": "英國現金回饋與點數信用卡：怎麼算實際收益",
+  "summary": "用原本就打算花的金額比較現金回饋、點數和航空哩程，再扣成本與限制。",
+  "content": "# 英國現金回饋與點數信用卡：怎麼算實際收益\n\n最後更新: 2026-11-27\n\n## 用實際會換的項目估價\n現金回饋通常以現金或帳單折抵發放。點數、航空哩程的價值取決於兌換方式。按你真的會選的兌換項目估價，再扣適用稅金及訂位費。也要看最低兌換門檻、到期日和是否有可兌換的機位。首刷禮可能要求在期限內達到合格消費門檻。日常支出達不到就不列入比較。 [回饋條款](#guide-evidence-types)\n\n## 確認哪些消費有回饋\n查年費、回饋比例、上限、排除交易及退款的影響。預借現金和餘額轉移通常沒有回饋。外幣交易費要分開算，拿到點數不會免除外幣費。首年與沒有首刷禮的後續年度要分開比較，以現行合約及回饋條款為準。 [費用及排除項目](#guide-evidence-terms)\n\n## 算例：£3,000 合格消費\n假設回饋 1%，原本可得 £30，但上限 £25。扣除 £24 年費，淨得 £1。若同一年已達上限，再刷一筆 £200 外幣交易，收費 3% 即 £6，淨結果變成損失 £5。若再付利息，結果更差。這些數字僅示範算法。 [淨回饋算法](#guide-evidence-example)\n\n## 用平日的預算比較\n列出原本會花的錢，再查回饋上限、可用兌換價值、費用、外幣手續費和利息。一個月的利息就可能吃掉少量回饋。不要為了首刷禮多花錢。若預期會留有欠款，先看借款成本。本文為一般資訊，不構成個人財務建議。 [信用卡成本](#guide-evidence-checklist) · [持卡及繳款](/zh-TW/money/uk-first-credit-card) · [信用紀錄](/zh-TW/money/uk-credit-history-and-credit-score)\n",
+  "status": "DRAFT",
+  "publishedAt": null,
+  "updatedAt": "2026-11-27T00:00:00Z",
+  "sources": [
+    {
+      "key": "cards",
+      "organisation": "MoneyHelper",
+      "title": "A simple guide to credit cards",
+      "url": "https://www.moneyhelper.org.uk/en/everyday-money/credit/simple-guide-to-credit-cards",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "rewards",
+      "organisation": "American Express",
+      "title": "Cardmember Agreement Part 1",
+      "url": "https://secure.cmax.americanexpress.com/Internet/Acquisition/GB_en/AppContent/common/config/Plat-CB-everyday-TandC-3BP.pdf",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "airline",
+      "organisation": "British Airways",
+      "title": "Reward flights",
+      "url": "https://www.britishairways.com/content/the-british-airways-club/avios/spending-avios/reward-flights",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    }
+  ],
+  "evidence": [
+    {
+      "key": "types",
+      "statement": "現金回饋通常以現金或帳單折抵發放。 點數、航空哩程的價值取決於兌換方式。",
+      "supports": [
+        {
+          "sourceKey": "cards",
+          "locator": "Types, interest, repayments and rewards",
+          "excerpt": null,
+          "note": "現金回饋通常以現金或帳單折抵發放。 點數、航空哩程的價值取決於兌換方式。"
+        },
+        {
+          "sourceKey": "rewards",
+          "locator": "Example issuer terms, charges and excluded transactions",
+          "excerpt": null,
+          "note": "現金回饋通常以現金或帳單折抵發放。 點數、航空哩程的價值取決於兌換方式。"
+        },
+        {
+          "sourceKey": "airline",
+          "locator": "Availability, Avios and cash charges",
+          "excerpt": null,
+          "note": "現金回饋通常以現金或帳單折抵發放。 點數、航空哩程的價值取決於兌換方式。"
+        }
+      ]
+    },
+    {
+      "key": "terms",
+      "statement": "查年費、回饋比例、上限、排除交易及退款的影響。預借現金和餘額轉移通常沒有回饋。外幣交易費要分開算，拿到點數不會免除外幣費。首年與沒有首刷禮的後續年度要分開比較，以現行合約及回饋條款為準。",
+      "supports": [
+        {
+          "sourceKey": "cards",
+          "locator": "Types, interest, repayments and rewards",
+          "excerpt": null,
+          "note": "查年費、回饋比例、上限、排除交易及退款的影響。預借現金和餘額轉移通常沒有回饋。外幣交易費要分開算，拿到點數不會免除外幣費。首年與沒有首刷禮的後續年度要分開比較，以現行合約及回饋條款為準。"
+        },
+        {
+          "sourceKey": "rewards",
+          "locator": "Example issuer terms, charges and excluded transactions",
+          "excerpt": null,
+          "note": "查年費、回饋比例、上限、排除交易及退款的影響。預借現金和餘額轉移通常沒有回饋。外幣交易費要分開算，拿到點數不會免除外幣費。首年與沒有首刷禮的後續年度要分開比較，以現行合約及回饋條款為準。"
+        }
+      ]
+    },
+    {
+      "key": "example",
+      "statement": "假設回饋 1%，原本可得 £30，但上限 £25。扣除 £24 年費，淨得 £1。若同一年已達上限，再刷一筆 £200 外幣交易，收費 3% 即 £6，淨結果變成損失 £5。若再付利息，結果更差。這些數字僅示範算法。",
+      "supports": [
+        {
+          "sourceKey": "cards",
+          "locator": "Types, interest, repayments and rewards",
+          "excerpt": null,
+          "note": "假設回饋 1%，原本可得 £30，但上限 £25。扣除 £24 年費，淨得 £1。若同一年已達上限，再刷一筆 £200 外幣交易，收費 3% 即 £6，淨結果變成損失 £5。若再付利息，結果更差。這些數字僅示範算法。"
+        },
+        {
+          "sourceKey": "rewards",
+          "locator": "Example issuer terms, charges and excluded transactions",
+          "excerpt": null,
+          "note": "假設回饋 1%，原本可得 £30，但上限 £25。扣除 £24 年費，淨得 £1。若同一年已達上限，再刷一筆 £200 外幣交易，收費 3% 即 £6，淨結果變成損失 £5。若再付利息，結果更差。這些數字僅示範算法。"
+        }
+      ]
+    },
+    {
+      "key": "checklist",
+      "statement": "列出原本會花的錢，再查回饋上限、可用兌換價值、費用、外幣手續費和利息。 一個月的利息就可能吃掉少量回饋。",
+      "supports": [
+        {
+          "sourceKey": "cards",
+          "locator": "Types, interest, repayments and rewards",
+          "excerpt": null,
+          "note": "列出原本會花的錢，再查回饋上限、可用兌換價值、費用、外幣手續費和利息。 一個月的利息就可能吃掉少量回饋。"
+        }
+      ]
+    }
+  ]
+}

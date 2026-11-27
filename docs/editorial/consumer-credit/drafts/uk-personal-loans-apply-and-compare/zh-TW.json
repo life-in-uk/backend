@@ -1,0 +1,178 @@
+{
+  "slug": "uk-personal-loans-apply-and-compare",
+  "category": "money",
+  "title": "英國個人貸款：怎麼申請並比較真正成本",
+  "summary": "比較書面貸款條件、看懂代表性 APR，簽約前先確認提前清償規定。",
+  "content": "# 英國個人貸款：怎麼申請並比較真正成本\n\n最後更新: 2026-11-27\n\n## 先想清楚借款的風險\n無擔保個人貸款通常一次撥款，在約定期間內償還，常見為每月固定分期。擔保貸款若未照約還款，房屋等擔保資產會有風險。無擔保借款逾期也可能有嚴重後果。還款預算要先扣除房租、帳單和不定期開支。 [借款類型](#guide-evidence-types)\n\n## 從預查到取得書面條件\n查年齡、居住、收入和地址規定。提供預查服務時，先確定是軟查詢。照實填報工作和收入，並檢查信用報告。正式送件通常會作硬查詢。代表性 APR 是廣告採用的年化百分率：預計至少有 51% 由該廣告產生的借款協議，會採該利率或更低；這與申請人的核准比例無關。以相同借款金額比較實際 APR、實拿金額、費用、月付金、還款總額及期間。 [APR 及申請](#guide-evidence-apply) · [信用報告與查詢](/zh-TW/money/uk-credit-history-and-credit-score)\n\n## 算例：兩個 £3,000 貸款條件\n假設無前置費用、每月還款固定。每月 £140、付 24 個月，共 £3,360，比本金多 £360。每月 £100、付 36 個月，共 £3,600，比本金多 £600。第二個每月少 £40，但總成本高 £240。接受前以書面確認實際金額和費用。 [比較成本](#guide-evidence-example)\n\n## 提前清償及債務整合\n受監管的借款協議通常可以提前清償。請機構提供有日期的結清金額和適用利息或費用，再另外確認部分提前還款如何處理。畫面上的餘額、結清金額和剩餘分期總額可能不同。整合債務應把結清費用算入總成本，避免在清償的帳戶再次借款，也要確認新貸款是否讓房產承擔風險。月付金較低，期限拉長仍可能讓總成本增加。 [提前清償](#guide-evidence-settlement)\n\n## 留意詐騙並及早求助\n留意「保證核貸」和突如其來的撥款前收費。用 FCA 資料查核業者與電話，別直接使用訊息裡的聯絡資料。不要因為催促而付款。無法負擔帳單或債務時，請聯絡貸款機構，並在再次借款前尋求免費獨立債務諮詢。本文是一般資訊，不構成個人財務建議。 [貸款收費詐騙](#guide-evidence-support) · [免費債務諮詢](#guide-evidence-debt) · [在英國開戶](/zh-TW/money/open-uk-bank-account-new-arrival)\n",
+  "status": "DRAFT",
+  "publishedAt": null,
+  "updatedAt": "2026-11-27T00:00:00Z",
+  "sources": [
+    {
+      "key": "apply",
+      "organisation": "MoneyHelper",
+      "title": "How to apply for a credit card or loan",
+      "url": "https://www.moneyhelper.org.uk/en/everyday-money/credit/apply-to-borrow-for-credit-card-or-loan",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "loans",
+      "organisation": "MoneyHelper",
+      "title": "Personal loans",
+      "url": "https://www.moneyhelper.org.uk/en/everyday-money/credit/personal-loans",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "borrow",
+      "organisation": "MoneyHelper",
+      "title": "Options for borrowing money",
+      "url": "https://www.moneyhelper.org.uk/en/everyday-money/credit/options-for-borrowing-money",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "apr",
+      "organisation": "Financial Conduct Authority",
+      "title": "Representative APR",
+      "url": "https://handbook.fca.org.uk/glossary/G3354",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "early",
+      "organisation": "UK Parliament",
+      "title": "Consumer Credit Act 1974 section 94",
+      "url": "https://www.legislation.gov.uk/ukpga/1974/39/section/94",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "fees",
+      "organisation": "Financial Conduct Authority",
+      "title": "Loan fee fraud",
+      "url": "https://www.fca.org.uk/consumers/loan-fee-fraud",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "debt",
+      "organisation": "MoneyHelper",
+      "title": "Help if you are struggling with debt",
+      "url": "https://www.moneyhelper.org.uk/en/money-troubles/dealing-with-debt/help-if-youre-struggling-with-debt",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "debt-uk",
+      "organisation": "GOV.UK",
+      "title": "Get free debt advice",
+      "url": "https://www.gov.uk/debt-advice",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    }
+  ],
+  "evidence": [
+    {
+      "key": "types",
+      "statement": "無擔保個人貸款通常一次撥款，在約定期間內償還，常見為每月固定分期。 擔保貸款若未照約還款，房屋等擔保資產會有風險。",
+      "supports": [
+        {
+          "sourceKey": "loans",
+          "locator": "Costs, application and early settlement",
+          "excerpt": null,
+          "note": "無擔保個人貸款通常一次撥款，在約定期間內償還，常見為每月固定分期。 擔保貸款若未照約還款，房屋等擔保資產會有風險。"
+        },
+        {
+          "sourceKey": "borrow",
+          "locator": "Secured and unsecured credit",
+          "excerpt": null,
+          "note": "無擔保個人貸款通常一次撥款，在約定期間內償還，常見為每月固定分期。 擔保貸款若未照約還款，房屋等擔保資產會有風險。"
+        }
+      ]
+    },
+    {
+      "key": "apply",
+      "statement": "查年齡、居住、收入和地址規定。 提供預查服務時，先確定是軟查詢。",
+      "supports": [
+        {
+          "sourceKey": "apply",
+          "locator": "Application details and eligibility checks",
+          "excerpt": null,
+          "note": "查年齡、居住、收入和地址規定。 提供預查服務時，先確定是軟查詢。"
+        },
+        {
+          "sourceKey": "loans",
+          "locator": "Costs, application and early settlement",
+          "excerpt": null,
+          "note": "查年齡、居住、收入和地址規定。 提供預查服務時，先確定是軟查詢。"
+        },
+        {
+          "sourceKey": "apr",
+          "locator": "Representative APR definition",
+          "excerpt": null,
+          "note": "查年齡、居住、收入和地址規定。 提供預查服務時，先確定是軟查詢。"
+        }
+      ]
+    },
+    {
+      "key": "example",
+      "statement": "假設無前置費用、每月還款固定。每月 £140、付 24 個月，共 £3,360，比本金多 £360。每月 £100、付 36 個月，共 £3,600，比本金多 £600。第二個每月少 £40，但總成本高 £240。接受前以書面確認實際金額和費用。",
+      "supports": [
+        {
+          "sourceKey": "loans",
+          "locator": "Costs, application and early settlement",
+          "excerpt": null,
+          "note": "假設無前置費用、每月還款固定。每月 £140、付 24 個月，共 £3,360，比本金多 £360。每月 £100、付 36 個月，共 £3,600，比本金多 £600。第二個每月少 £40，但總成本高 £240。接受前以書面確認實際金額和費用。"
+        }
+      ]
+    },
+    {
+      "key": "settlement",
+      "statement": "受監管的借款協議通常可以提前清償。請機構提供有日期的結清金額和適用利息或費用，再另外確認部分提前還款如何處理。畫面上的餘額、結清金額和剩餘分期總額可能不同。整合債務應把結清費用算入總成本，避免在清償的帳戶再次借款，也要確認新貸款是否讓房產承擔風險。月付金較低，期限拉長仍可能讓總成本增加。",
+      "supports": [
+        {
+          "sourceKey": "early",
+          "locator": "Early payment rights on regulated agreements",
+          "excerpt": null,
+          "note": "受監管的借款協議通常可以提前清償。請機構提供有日期的結清金額和適用利息或費用，再另外確認部分提前還款如何處理。畫面上的餘額、結清金額和剩餘分期總額可能不同。整合債務應把結清費用算入總成本，避免在清償的帳戶再次借款，也要確認新貸款是否讓房產承擔風險。月付金較低，期限拉長仍可能讓總成本增加。"
+        },
+        {
+          "sourceKey": "loans",
+          "locator": "Costs, application and early settlement",
+          "excerpt": null,
+          "note": "受監管的借款協議通常可以提前清償。請機構提供有日期的結清金額和適用利息或費用，再另外確認部分提前還款如何處理。畫面上的餘額、結清金額和剩餘分期總額可能不同。整合債務應把結清費用算入總成本，避免在清償的帳戶再次借款，也要確認新貸款是否讓房產承擔風險。月付金較低，期限拉長仍可能讓總成本增加。"
+        },
+        {
+          "sourceKey": "borrow",
+          "locator": "Secured and unsecured credit",
+          "excerpt": null,
+          "note": "受監管的借款協議通常可以提前清償。請機構提供有日期的結清金額和適用利息或費用，再另外確認部分提前還款如何處理。畫面上的餘額、結清金額和剩餘分期總額可能不同。整合債務應把結清費用算入總成本，避免在清償的帳戶再次借款，也要確認新貸款是否讓房產承擔風險。月付金較低，期限拉長仍可能讓總成本增加。"
+        }
+      ]
+    },
+    {
+      "key": "support",
+      "statement": "留意「保證核貸」和突如其來的撥款前收費。 用 FCA 資料查核業者與電話，別直接使用訊息裡的聯絡資料。",
+      "supports": [
+        {
+          "sourceKey": "fees",
+          "locator": "Advance fees, verification and reporting",
+          "excerpt": null,
+          "note": "留意「保證核貸」和突如其來的撥款前收費。 用 FCA 資料查核業者與電話，別直接使用訊息裡的聯絡資料。"
+        }
+      ]
+    },
+    {
+      "key": "debt",
+      "statement": "免費債務諮詢",
+      "supports": [
+        {
+          "sourceKey": "debt",
+          "locator": "Free support and repayment difficulties",
+          "excerpt": null,
+          "note": "免費債務諮詢"
+        },
+        {
+          "sourceKey": "debt-uk",
+          "locator": "Independent debt support routes",
+          "excerpt": null,
+          "note": "免費債務諮詢"
+        }
+      ]
+    }
+  ]
+}

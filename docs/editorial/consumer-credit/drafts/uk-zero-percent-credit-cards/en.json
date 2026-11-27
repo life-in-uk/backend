@@ -1,0 +1,147 @@
+{
+  "slug": "uk-zero-percent-credit-cards",
+  "category": "money",
+  "title": "UK 0% credit cards: balance transfers, purchases and money transfers",
+  "summary": "Choose the right transaction, compare fees and check whether you can clear the debt before the promotional rate ends.",
+  "content": "# UK 0% credit cards: balance transfers, purchases and money transfers\n\nLast updated: 2026-11-27\n\n## Match the offer to what you want to do\nA purchase offer covers eligible new card purchases. A balance transfer moves debt from another credit card. A money transfer pays money into an eligible bank account and leaves you owing the card issuer. An ATM withdrawal is cash borrowing: it commonly carries a fee and interest from the withdrawal date. It does not automatically qualify for a money transfer offer. Each transaction can have a different fee and rate. [Card types](#guide-evidence-types)\n\n## Check limits, dates and exclusions\nCheck the starting date, cut-off for transfers, fee, available transfer limit and the rate when the deal ends. The transfer limit may be lower than your card limit, and fees can use part of it. Some issuers reject transfers from the same brand or banking group. Ask about both issuers before relying on an offer. Keep paying the old card until the transfer appears. A 0% balance transfer does not give 0% on new purchases. A missed minimum may affect the offer. Read how payments are allocated, including where two balances have the same rate; repayments generally go to higher-interest balances first. [Offer terms and allocation](#guide-evidence-terms)\n\n## Worked example: moving £2,400\nIllustration only, assuming the fee is added to the balance, no new use and the balance is cleared within the deal. A 3% fee costs £72: repay £2,472, or £206 a month over 12 months. A 1.5% fee costs £36: repay £2,436, or £406 a month over 6 months. The second costs £36 less but demands almost twice the monthly payment. Schedule clearance before the expiry date, and compare both totals with the cost of leaving the debt where it is. [Transfer costs](#guide-evidence-example)\n\n## A plan that does not rely on another offer\nSet up at least the minimum as a backup, check it has started, and budget separately to clear the full amount. Record the expiry date and recheck the remaining balance each month. Repeated moves bring new fees and the next card may be refused. If you cannot meet essential bills or the minimum, speak to the lender and seek free debt advice. General information only, without personalised financial advice. [Debt support](#guide-evidence-checklist) · [First credit card](/en/money/uk-first-credit-card) · [Credit reports](/en/money/uk-credit-history-and-credit-score)\n",
+  "status": "DRAFT",
+  "publishedAt": null,
+  "updatedAt": "2026-11-27T00:00:00Z",
+  "sources": [
+    {
+      "key": "cards",
+      "organisation": "MoneyHelper",
+      "title": "A simple guide to credit cards",
+      "url": "https://www.moneyhelper.org.uk/en/everyday-money/credit/simple-guide-to-credit-cards",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "transfer",
+      "organisation": "MoneyHelper",
+      "title": "Deciding whether to transfer a credit card balance",
+      "url": "https://www.moneyhelper.org.uk/en/everyday-money/credit/deciding-whether-to-transfer-your-credit-card-balance",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "issuer",
+      "organisation": "Nationwide",
+      "title": "Transfer a balance to your credit card",
+      "url": "https://www.nationwide.co.uk/credit-cards/help/transfer-balance",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "repayment",
+      "organisation": "Financial Conduct Authority",
+      "title": "CONC 6.7 Post contract business practices",
+      "url": "https://handbook.fca.org.uk/handbook/conc6/conc6s7",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "debt",
+      "organisation": "MoneyHelper",
+      "title": "Help if you are struggling with debt",
+      "url": "https://www.moneyhelper.org.uk/en/money-troubles/dealing-with-debt/help-if-youre-struggling-with-debt",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "money-transfer",
+      "organisation": "MBNA",
+      "title": "Money transfers",
+      "url": "https://www.mbna.co.uk/credit-cards/help-and-support/my-account/balance-and-money-transfers/money-transfers.html",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "debt-uk",
+      "organisation": "GOV.UK",
+      "title": "Get free debt advice",
+      "url": "https://www.gov.uk/debt-advice",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    }
+  ],
+  "evidence": [
+    {
+      "key": "types",
+      "statement": "A purchase offer covers eligible new card purchases. A balance transfer moves debt from another credit card.",
+      "supports": [
+        {
+          "sourceKey": "cards",
+          "locator": "Types, interest, repayments and rewards",
+          "excerpt": null,
+          "note": "A purchase offer covers eligible new card purchases. A balance transfer moves debt from another credit card."
+        },
+        {
+          "sourceKey": "money-transfer",
+          "locator": "Issuer explanation and example offer terms",
+          "excerpt": null,
+          "note": "A purchase offer covers eligible new card purchases. A balance transfer moves debt from another credit card."
+        },
+        {
+          "sourceKey": "transfer",
+          "locator": "Transfer fees and repayment",
+          "excerpt": null,
+          "note": "A purchase offer covers eligible new card purchases. A balance transfer moves debt from another credit card."
+        }
+      ]
+    },
+    {
+      "key": "terms",
+      "statement": "Check the starting date, cut-off for transfers, fee, available transfer limit and the rate when the deal ends. The transfer limit may be lower than your card limit, and fees can use part of it. Some issuers reject transfers from the same brand or banking group. Ask about both issuers before relying on an offer. Keep paying the old card until the transfer appears. A 0% balance transfer does not give 0% on new purchases. A missed minimum may affect the offer. Read how payments are allocated, including where two balances have the same rate; repayments generally go to higher-interest balances first.",
+      "supports": [
+        {
+          "sourceKey": "transfer",
+          "locator": "Transfer fees and repayment",
+          "excerpt": null,
+          "note": "Check the starting date, cut-off for transfers, fee, available transfer limit and the rate when the deal ends. The transfer limit may be lower than your card limit, and fees can use part of it. Some issuers reject transfers from the same brand or banking group. Ask about both issuers before relying on an offer. Keep paying the old card until the transfer appears. A 0% balance transfer does not give 0% on new purchases. A missed minimum may affect the offer. Read how payments are allocated, including where two balances have the same rate; repayments generally go to higher-interest balances first."
+        },
+        {
+          "sourceKey": "issuer",
+          "locator": "Issuer-specific eligibility, limits and excluded accounts",
+          "excerpt": null,
+          "note": "Check the starting date, cut-off for transfers, fee, available transfer limit and the rate when the deal ends. The transfer limit may be lower than your card limit, and fees can use part of it. Some issuers reject transfers from the same brand or banking group. Ask about both issuers before relying on an offer. Keep paying the old card until the transfer appears. A 0% balance transfer does not give 0% on new purchases. A missed minimum may affect the offer. Read how payments are allocated, including where two balances have the same rate; repayments generally go to higher-interest balances first."
+        },
+        {
+          "sourceKey": "repayment",
+          "locator": "Credit card repayment allocation and treatment of customers",
+          "excerpt": null,
+          "note": "Check the starting date, cut-off for transfers, fee, available transfer limit and the rate when the deal ends. The transfer limit may be lower than your card limit, and fees can use part of it. Some issuers reject transfers from the same brand or banking group. Ask about both issuers before relying on an offer. Keep paying the old card until the transfer appears. A 0% balance transfer does not give 0% on new purchases. A missed minimum may affect the offer. Read how payments are allocated, including where two balances have the same rate; repayments generally go to higher-interest balances first."
+        }
+      ]
+    },
+    {
+      "key": "example",
+      "statement": "Illustration only, assuming the fee is added to the balance, no new use and the balance is cleared within the deal. A 3% fee costs £72: repay £2,472, or £206 a month over 12 months. A 1.5% fee costs £36: repay £2,436, or £406 a month over 6 months. The second costs £36 less but demands almost twice the monthly payment. Schedule clearance before the expiry date, and compare both totals with the cost of leaving the debt where it is.",
+      "supports": [
+        {
+          "sourceKey": "transfer",
+          "locator": "Transfer fees and repayment",
+          "excerpt": null,
+          "note": "Illustration only, assuming the fee is added to the balance, no new use and the balance is cleared within the deal. A 3% fee costs £72: repay £2,472, or £206 a month over 12 months. A 1.5% fee costs £36: repay £2,436, or £406 a month over 6 months. The second costs £36 less but demands almost twice the monthly payment. Schedule clearance before the expiry date, and compare both totals with the cost of leaving the debt where it is."
+        }
+      ]
+    },
+    {
+      "key": "checklist",
+      "statement": "Set up at least the minimum as a backup, check it has started, and budget separately to clear the full amount. Record the expiry date and recheck the remaining balance each month.",
+      "supports": [
+        {
+          "sourceKey": "transfer",
+          "locator": "Transfer fees and repayment",
+          "excerpt": null,
+          "note": "Set up at least the minimum as a backup, check it has started, and budget separately to clear the full amount. Record the expiry date and recheck the remaining balance each month."
+        },
+        {
+          "sourceKey": "debt",
+          "locator": "Free support and repayment difficulties",
+          "excerpt": null,
+          "note": "Set up at least the minimum as a backup, check it has started, and budget separately to clear the full amount. Record the expiry date and recheck the remaining balance each month."
+        },
+        {
+          "sourceKey": "debt-uk",
+          "locator": "Independent debt support routes",
+          "excerpt": null,
+          "note": "Set up at least the minimum as a backup, check it has started, and budget separately to clear the full amount. Record the expiry date and recheck the remaining balance each month."
+        }
+      ]
+    }
+  ]
+}

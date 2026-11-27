@@ -1,0 +1,107 @@
+{
+  "slug": "uk-credit-card-cashback-and-rewards",
+  "category": "money",
+  "title": "UK cashback and rewards credit cards: calculate what you actually keep",
+  "summary": "Compare cashback, points and miles after fees and restrictions, using only spending you already planned.",
+  "content": "# UK cashback and rewards credit cards: calculate what you actually keep\n\nLast updated: 2026-11-27\n\n## Give the reward a realistic value\nCashback usually pays money or statement credit. Points or airline miles depend on what you redeem them for. Use the value of a redemption you would actually choose, less applicable taxes or booking charges. Check minimum redemption, expiry and whether award seats are available. An introductory bonus may require a minimum amount of eligible spending by a deadline. Leave it out of your comparison if ordinary spending will not reach it. [Reward terms](#guide-evidence-types)\n\n## Check what counts and what costs extra\nCheck the annual fee, earning rates, caps, excluded transactions and how refunds affect rewards. Cash advances and balance transfers typically do not earn rewards. Check foreign transaction costs separately; earning points on a payment in another currency does not cancel a currency fee. Compare the first year and later years without the introductory bonus. Use the current agreement and reward rules, not the advert. [Fees and exclusions](#guide-evidence-terms)\n\n## Worked example: £3,000 of eligible spending\nAt a fictional 1% you earn £30 before a £25 cap. Subtract a £24 annual fee and the net is £1. If an additional £200 foreign purchase is within that already capped year and attracts a 3% fee, that costs £6 and changes the result to a £5 loss. Interest would reduce the result further. These figures illustrate the arithmetic, and do not quote a card. [Calculating net value](#guide-evidence-example)\n\n## Compare on your normal budget\nList only spending you already expect, then check capped rewards, usable redemption value, fees, foreign charges and interest. A month with interest can erase a small reward. Never spend extra for a bonus. If you expect to carry a balance, look at the borrowing cost before assigning value to rewards. General information only, without personalised financial advice. [Understanding card costs](#guide-evidence-checklist) · [Using and repaying a card](/en/money/uk-first-credit-card) · [Credit history](/en/money/uk-credit-history-and-credit-score)\n",
+  "status": "DRAFT",
+  "publishedAt": null,
+  "updatedAt": "2026-11-27T00:00:00Z",
+  "sources": [
+    {
+      "key": "cards",
+      "organisation": "MoneyHelper",
+      "title": "A simple guide to credit cards",
+      "url": "https://www.moneyhelper.org.uk/en/everyday-money/credit/simple-guide-to-credit-cards",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "rewards",
+      "organisation": "American Express",
+      "title": "Cardmember Agreement Part 1",
+      "url": "https://secure.cmax.americanexpress.com/Internet/Acquisition/GB_en/AppContent/common/config/Plat-CB-everyday-TandC-3BP.pdf",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "airline",
+      "organisation": "British Airways",
+      "title": "Reward flights",
+      "url": "https://www.britishairways.com/content/the-british-airways-club/avios/spending-avios/reward-flights",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    }
+  ],
+  "evidence": [
+    {
+      "key": "types",
+      "statement": "Cashback usually pays money or statement credit. Points or airline miles depend on what you redeem them for.",
+      "supports": [
+        {
+          "sourceKey": "cards",
+          "locator": "Types, interest, repayments and rewards",
+          "excerpt": null,
+          "note": "Cashback usually pays money or statement credit. Points or airline miles depend on what you redeem them for."
+        },
+        {
+          "sourceKey": "rewards",
+          "locator": "Example issuer terms, charges and excluded transactions",
+          "excerpt": null,
+          "note": "Cashback usually pays money or statement credit. Points or airline miles depend on what you redeem them for."
+        },
+        {
+          "sourceKey": "airline",
+          "locator": "Availability, Avios and cash charges",
+          "excerpt": null,
+          "note": "Cashback usually pays money or statement credit. Points or airline miles depend on what you redeem them for."
+        }
+      ]
+    },
+    {
+      "key": "terms",
+      "statement": "Check the annual fee, earning rates, caps, excluded transactions and how refunds affect rewards. Cash advances and balance transfers typically do not earn rewards. Check foreign transaction costs separately; earning points on a payment in another currency does not cancel a currency fee. Compare the first year and later years without the introductory bonus. Use the current agreement and reward rules, not the advert.",
+      "supports": [
+        {
+          "sourceKey": "cards",
+          "locator": "Types, interest, repayments and rewards",
+          "excerpt": null,
+          "note": "Check the annual fee, earning rates, caps, excluded transactions and how refunds affect rewards. Cash advances and balance transfers typically do not earn rewards. Check foreign transaction costs separately; earning points on a payment in another currency does not cancel a currency fee. Compare the first year and later years without the introductory bonus. Use the current agreement and reward rules, not the advert."
+        },
+        {
+          "sourceKey": "rewards",
+          "locator": "Example issuer terms, charges and excluded transactions",
+          "excerpt": null,
+          "note": "Check the annual fee, earning rates, caps, excluded transactions and how refunds affect rewards. Cash advances and balance transfers typically do not earn rewards. Check foreign transaction costs separately; earning points on a payment in another currency does not cancel a currency fee. Compare the first year and later years without the introductory bonus. Use the current agreement and reward rules, not the advert."
+        }
+      ]
+    },
+    {
+      "key": "example",
+      "statement": "At a fictional 1% you earn £30 before a £25 cap. Subtract a £24 annual fee and the net is £1. If an additional £200 foreign purchase is within that already capped year and attracts a 3% fee, that costs £6 and changes the result to a £5 loss. Interest would reduce the result further. These figures illustrate the arithmetic, and do not quote a card.",
+      "supports": [
+        {
+          "sourceKey": "cards",
+          "locator": "Types, interest, repayments and rewards",
+          "excerpt": null,
+          "note": "At a fictional 1% you earn £30 before a £25 cap. Subtract a £24 annual fee and the net is £1. If an additional £200 foreign purchase is within that already capped year and attracts a 3% fee, that costs £6 and changes the result to a £5 loss. Interest would reduce the result further. These figures illustrate the arithmetic, and do not quote a card."
+        },
+        {
+          "sourceKey": "rewards",
+          "locator": "Example issuer terms, charges and excluded transactions",
+          "excerpt": null,
+          "note": "At a fictional 1% you earn £30 before a £25 cap. Subtract a £24 annual fee and the net is £1. If an additional £200 foreign purchase is within that already capped year and attracts a 3% fee, that costs £6 and changes the result to a £5 loss. Interest would reduce the result further. These figures illustrate the arithmetic, and do not quote a card."
+        }
+      ]
+    },
+    {
+      "key": "checklist",
+      "statement": "List only spending you already expect, then check capped rewards, usable redemption value, fees, foreign charges and interest. A month with interest can erase a small reward.",
+      "supports": [
+        {
+          "sourceKey": "cards",
+          "locator": "Types, interest, repayments and rewards",
+          "excerpt": null,
+          "note": "List only spending you already expect, then check capped rewards, usable redemption value, fees, foreign charges and interest. A month with interest can erase a small reward."
+        }
+      ]
+    }
+  ]
+}

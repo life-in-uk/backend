@@ -1,0 +1,41 @@
+{
+  "slug": "uk-first-credit-card",
+  "category": "money",
+  "status": "DRAFT",
+  "sourceLocale": "zh-CN",
+  "sourcesVerifiedOn": "2026-11-27",
+  "editorialStatus": "Owner, independent professional financial and fluent-language review pending.",
+  "canonicalization": "guide-content-v1",
+  "variants": [
+    {
+      "locale": "zh-CN",
+      "path": "zh-CN.json",
+      "sha256": "419385d0fa1c56e11d246738b3092b38d601c1736adf6f4013ab8bf8db882053",
+      "contentSha256": "c43e9cbdcb0d50f7a910606c96dafc7e1f820dd21f8acfa5be793f5be16730cf"
+    },
+    {
+      "locale": "zh-TW",
+      "path": "zh-TW.json",
+      "sha256": "660c1ff6af1885e2dfcc31556f58bccf476cc715616e2d3cf31d966d4799b78e",
+      "contentSha256": "2f9213658f54ba4d7146ba7f06bc3be72630d7e003ffb714482f14ecedaab072"
+    },
+    {
+      "locale": "en",
+      "path": "en.json",
+      "sha256": "839ec5ecd14c6607bb56c39af29b2dace34e7ef46eee930b41a427d0422364c9",
+      "contentSha256": "eac7cc15acc21aad38fddecbd63c327ee6b22480a31eda5191a423489e5877ce"
+    },
+    {
+      "locale": "ur",
+      "path": "ur.json",
+      "sha256": "2a65d837aae2b6f845fb8e61610e266fd77ff85456069098b02d09f207e414f8",
+      "contentSha256": "044bdbfd12f639f7ac2aa498f3b9637813965c93906a383551ec88b9e5847302"
+    },
+    {
+      "locale": "hi",
+      "path": "hi.json",
+      "sha256": "4a26a661da4fb1f0a2f978173c41a2fd27c256cc9d1c2664038ec2f01f6518e5",
+      "contentSha256": "118fdcb45145546da7046f7c8af78ae377345f670ffe4323787d0684c35cac09"
+    }
+  ]
+}

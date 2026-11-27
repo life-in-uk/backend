@@ -1,0 +1,147 @@
+{
+  "slug": "uk-zero-percent-credit-cards",
+  "category": "money",
+  "title": "英国 0% 信用卡：余额转移、购物与转账到银行",
+  "summary": "弄清是哪类交易，算清费用，判断能否在优惠结束前还清。",
+  "content": "# 英国 0% 信用卡：余额转移、购物与转账到银行\n\n最后更新: 2026-11-27\n\n## 按用途区分交易\n0% 购物只覆盖符合条件的新消费。余额转移把另一张信用卡的欠款转过来。Money transfer（资金转账）是用信用额度向符合条件的银行账户转账，你仍欠发卡机构。ATM 提现属于现金借款，通常有手续费，且可能从提款日起计息，不会自动享受转账优惠。每类交易的费率都可能不同。 [信用卡交易类型](#guide-evidence-types)\n\n## 查上限、截止日期和限制\n确认优惠起算日、办理期限、手续费、转移上限和优惠后的利率。转移额度可能比信用额度低，手续费也可能占用额度。部分发卡机构不接受同品牌或同银行集团的转移；先确认两边的机构。旧卡看到入账之前照常还款。余额转移免息不代表新购物免息；漏还最低额可能影响优惠。查清分配还款的顺序，包括两笔余额利率相同的情况；一般先还利率较高的余额。 [条款和还款顺序](#guide-evidence-terms)\n\n## 算例：转移 £2,400 欠款\n假设手续费计入欠款，没有新增消费，并在优惠结束前还清。手续费 3%，即 £72，总还款 £2,472，分 12 个月每月 £206。手续费 1.5%，即 £36，总还款 £2,436，分 6 个月每月 £406。第二种少花 £36，但月供接近翻倍。在到期前计划还清，也要比较不转卡、继续还旧卡的成本。 [转移成本](#guide-evidence-example)\n\n## 不依赖下一次优惠\n设置最低额自动还款作为保障，确认已生效，再按预算多还以清零。记下截止日，每月复查余额。重复转移可能再收费，下一张卡也可能被拒。基本账单或最低额有困难时，及早联系贷款机构，并找免费债务咨询。本文为一般信息，不构成个人财务建议。 [债务帮助](#guide-evidence-checklist) · [第一张信用卡](/zh-CN/money/uk-first-credit-card) · [信用报告](/zh-CN/money/uk-credit-history-and-credit-score)\n",
+  "status": "DRAFT",
+  "publishedAt": null,
+  "updatedAt": "2026-11-27T00:00:00Z",
+  "sources": [
+    {
+      "key": "cards",
+      "organisation": "MoneyHelper",
+      "title": "A simple guide to credit cards",
+      "url": "https://www.moneyhelper.org.uk/en/everyday-money/credit/simple-guide-to-credit-cards",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "transfer",
+      "organisation": "MoneyHelper",
+      "title": "Deciding whether to transfer a credit card balance",
+      "url": "https://www.moneyhelper.org.uk/en/everyday-money/credit/deciding-whether-to-transfer-your-credit-card-balance",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "issuer",
+      "organisation": "Nationwide",
+      "title": "Transfer a balance to your credit card",
+      "url": "https://www.nationwide.co.uk/credit-cards/help/transfer-balance",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "repayment",
+      "organisation": "Financial Conduct Authority",
+      "title": "CONC 6.7 Post contract business practices",
+      "url": "https://handbook.fca.org.uk/handbook/conc6/conc6s7",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "debt",
+      "organisation": "MoneyHelper",
+      "title": "Help if you are struggling with debt",
+      "url": "https://www.moneyhelper.org.uk/en/money-troubles/dealing-with-debt/help-if-youre-struggling-with-debt",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "money-transfer",
+      "organisation": "MBNA",
+      "title": "Money transfers",
+      "url": "https://www.mbna.co.uk/credit-cards/help-and-support/my-account/balance-and-money-transfers/money-transfers.html",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "debt-uk",
+      "organisation": "GOV.UK",
+      "title": "Get free debt advice",
+      "url": "https://www.gov.uk/debt-advice",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    }
+  ],
+  "evidence": [
+    {
+      "key": "types",
+      "statement": "0% 购物只覆盖符合条件的新消费。 余额转移把另一张信用卡的欠款转过来。",
+      "supports": [
+        {
+          "sourceKey": "cards",
+          "locator": "Types, interest, repayments and rewards",
+          "excerpt": null,
+          "note": "0% 购物只覆盖符合条件的新消费。 余额转移把另一张信用卡的欠款转过来。"
+        },
+        {
+          "sourceKey": "money-transfer",
+          "locator": "Issuer explanation and example offer terms",
+          "excerpt": null,
+          "note": "0% 购物只覆盖符合条件的新消费。 余额转移把另一张信用卡的欠款转过来。"
+        },
+        {
+          "sourceKey": "transfer",
+          "locator": "Transfer fees and repayment",
+          "excerpt": null,
+          "note": "0% 购物只覆盖符合条件的新消费。 余额转移把另一张信用卡的欠款转过来。"
+        }
+      ]
+    },
+    {
+      "key": "terms",
+      "statement": "确认优惠起算日、办理期限、手续费、转移上限和优惠后的利率。转移额度可能比信用额度低，手续费也可能占用额度。部分发卡机构不接受同品牌或同银行集团的转移；先确认两边的机构。旧卡看到入账之前照常还款。余额转移免息不代表新购物免息；漏还最低额可能影响优惠。查清分配还款的顺序，包括两笔余额利率相同的情况；一般先还利率较高的余额。",
+      "supports": [
+        {
+          "sourceKey": "transfer",
+          "locator": "Transfer fees and repayment",
+          "excerpt": null,
+          "note": "确认优惠起算日、办理期限、手续费、转移上限和优惠后的利率。转移额度可能比信用额度低，手续费也可能占用额度。部分发卡机构不接受同品牌或同银行集团的转移；先确认两边的机构。旧卡看到入账之前照常还款。余额转移免息不代表新购物免息；漏还最低额可能影响优惠。查清分配还款的顺序，包括两笔余额利率相同的情况；一般先还利率较高的余额。"
+        },
+        {
+          "sourceKey": "issuer",
+          "locator": "Issuer-specific eligibility, limits and excluded accounts",
+          "excerpt": null,
+          "note": "确认优惠起算日、办理期限、手续费、转移上限和优惠后的利率。转移额度可能比信用额度低，手续费也可能占用额度。部分发卡机构不接受同品牌或同银行集团的转移；先确认两边的机构。旧卡看到入账之前照常还款。余额转移免息不代表新购物免息；漏还最低额可能影响优惠。查清分配还款的顺序，包括两笔余额利率相同的情况；一般先还利率较高的余额。"
+        },
+        {
+          "sourceKey": "repayment",
+          "locator": "Credit card repayment allocation and treatment of customers",
+          "excerpt": null,
+          "note": "确认优惠起算日、办理期限、手续费、转移上限和优惠后的利率。转移额度可能比信用额度低，手续费也可能占用额度。部分发卡机构不接受同品牌或同银行集团的转移；先确认两边的机构。旧卡看到入账之前照常还款。余额转移免息不代表新购物免息；漏还最低额可能影响优惠。查清分配还款的顺序，包括两笔余额利率相同的情况；一般先还利率较高的余额。"
+        }
+      ]
+    },
+    {
+      "key": "example",
+      "statement": "假设手续费计入欠款，没有新增消费，并在优惠结束前还清。手续费 3%，即 £72，总还款 £2,472，分 12 个月每月 £206。手续费 1.5%，即 £36，总还款 £2,436，分 6 个月每月 £406。第二种少花 £36，但月供接近翻倍。在到期前计划还清，也要比较不转卡、继续还旧卡的成本。",
+      "supports": [
+        {
+          "sourceKey": "transfer",
+          "locator": "Transfer fees and repayment",
+          "excerpt": null,
+          "note": "假设手续费计入欠款，没有新增消费，并在优惠结束前还清。手续费 3%，即 £72，总还款 £2,472，分 12 个月每月 £206。手续费 1.5%，即 £36，总还款 £2,436，分 6 个月每月 £406。第二种少花 £36，但月供接近翻倍。在到期前计划还清，也要比较不转卡、继续还旧卡的成本。"
+        }
+      ]
+    },
+    {
+      "key": "checklist",
+      "statement": "设置最低额自动还款作为保障，确认已生效，再按预算多还以清零。 记下截止日，每月复查余额。",
+      "supports": [
+        {
+          "sourceKey": "transfer",
+          "locator": "Transfer fees and repayment",
+          "excerpt": null,
+          "note": "设置最低额自动还款作为保障，确认已生效，再按预算多还以清零。 记下截止日，每月复查余额。"
+        },
+        {
+          "sourceKey": "debt",
+          "locator": "Free support and repayment difficulties",
+          "excerpt": null,
+          "note": "设置最低额自动还款作为保障，确认已生效，再按预算多还以清零。 记下截止日，每月复查余额。"
+        },
+        {
+          "sourceKey": "debt-uk",
+          "locator": "Independent debt support routes",
+          "excerpt": null,
+          "note": "设置最低额自动还款作为保障，确认已生效，再按预算多还以清零。 记下截止日，每月复查余额。"
+        }
+      ]
+    }
+  ]
+}
