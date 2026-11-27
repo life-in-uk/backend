@@ -24,7 +24,7 @@ import manifest
 from manifest import read_json
 from promote import (
     EDITORIAL_PATH, EDUCATION_IDENTITY, LOCALES, RELEASE, WAVES, BatchIdentity, OwnerSession, Refused, batch_path,
-    import_drafts, inspect_batch_detail, latest_target_batches, load_package, require,
+    canonical_form, import_drafts, inspect_batch_detail, latest_target_batches, load_package, require,
 )
 
 HOST = Path("/opt/lifeinuk")
@@ -207,7 +207,7 @@ def public_inventory(expected, *, category="education", slugs=SLUGS):
         target = {row["slug"] for row in rows if row["category"] == category or row["slug"] in slugs}
         require(target == expected, f"Public {category} listing has unexpected scope.")
         snapshot[locale] = sorted((row for row in rows if row["slug"] not in slugs), key=lambda row: row["slug"])
-    xml = ElementTree.fromstring(edge("/sitemap.xml", 200))
+    xml = ElementTree.fromstring(local_reader("/sitemap.xml", 200))
     paths = {loc.text for loc in xml.iter("{http://www.sitemaps.org/schemas/sitemap/0.9}loc")}
     require(all("/university-applications-student-visas" not in path for path in paths),
             "University is present in the sitemap.")
@@ -221,7 +221,7 @@ def public_inventory(expected, *, category="education", slugs=SLUGS):
 
 
 def manifest_inventory(expected, release):
-    """Snapshot unrelated listings and sitemap URLs, including same-category Guides."""
+    """Check public API listings and the backend's loopback sitemap projection."""
     for path in ("/api/owner/editorial/session", "/api/editorial/guide-batches/visibility-check"):
         edge(path, 404)
     domain = manifest.DOMAINS[release.category]
@@ -229,6 +229,8 @@ def manifest_inventory(expected, release):
     snapshot = {}
     for locale in LOCALES:
         rows = read_json(edge(f"/api/guides/locales/{locale}", 200))
+        require(len(rows) == len({row["slug"] for row in rows}),
+                f"Public catalogue has duplicate Guides for {locale}.")
         targets = [row for row in rows if row["slug"] in release.slugs]
         require(len(targets) == len(expected) and {row["slug"] for row in targets} == expected
                 and all(row["category"] == release.category for row in targets),
@@ -242,13 +244,17 @@ def manifest_inventory(expected, release):
             target_hubs.add(hub)
         target_paths.update(f"{hub}/{slug}" for slug in release.slugs)
 
-    xml = ElementTree.fromstring(edge("/sitemap.xml", 200))
+    # The edge sitemap describes deployed frontend pages and only advances with a frontend release.
+    xml = ElementTree.fromstring(local_reader("/sitemap.xml", 200))
     namespace = "{http://www.sitemaps.org/schemas/sitemap/0.9}"
-    entries = {row.findtext(namespace + "loc"): row for row in xml.iter(namespace + "url")}
+    urls = xml.findall(namespace + "url")
+    entries = {row.findtext(namespace + "loc"): row for row in urls}
+    require(xml.tag == namespace + "urlset" and len(entries) == len(urls) and None not in entries,
+            "Backend sitemap has invalid or duplicate entries.")
     paths = set(entries)
     wanted = {f"https://lifeinuk.info/{locale}/{domain}/{slug}" for locale in LOCALES for slug in expected}
     require(paths & target_paths == wanted and (other_hubs | target_hubs) <= paths,
-            "Public sitemap differs from the approved manifest.")
+            "Backend sitemap differs from the approved manifest.")
     for slug in expected:
         alternates = {("en-GB" if locale == "en" else locale, f"https://lifeinuk.info/{locale}/{domain}/{slug}")
                       for locale in LOCALES}
@@ -274,7 +280,7 @@ def release_inventory(expected, release):
     return public_inventory(expected, category=release.category, slugs=release.slugs)
 
 
-def verify_visibility(reader, expected, *, slugs=SLUGS, category="education"):
+def verify_visibility(reader, expected, *, slugs=SLUGS, category="education", package=None):
     for slug in sorted(slugs):
         for locale in LOCALES:
             path = f"/api/guides/{slug}/locales/{locale}"
@@ -287,6 +293,14 @@ def verify_visibility(reader, expected, *, slugs=SLUGS, category="education"):
                     and row["sourceRevisionId"] == receipt["sourceRevisionId"]
                     and row["contentHash"] == receipt["locales"][locale]["contentHash"],
                     "Public variant differs from the release receipt.")
+            if package is not None:
+                draft, content_hash = package[slug][locale]
+                # The API projects the publication timestamps and omits draft status.
+                body = {**row["guide"], "status": "DRAFT", "publishedAt": None, "updatedAt": draft["updatedAt"]}
+                if draft.get("evidence") is None and body.get("evidence") == []:
+                    body["evidence"] = None
+                require(digest(canonical_form(body).encode()) == content_hash,
+                        f"Public Guide body differs from the approved manifest for {slug}/{locale}.")
 
 
 def local_reader(path, status):
@@ -319,6 +333,12 @@ def read_state(*, slugs=SLUGS):
           SELECT slug, jsonb_agg(id ORDER BY id) AS revision_ids FROM guide_revision
           WHERE slug IN ({slugs}) GROUP BY slug
         ) r), '{{}}'::jsonb),
+        'currentLocales', COALESCE((SELECT jsonb_object_agg(slug, locales) FROM (
+          SELECT c.slug, jsonb_object_agg(c.locale, jsonb_build_object('batchId', c.batch_id,
+            'localeRevisionId', r.id, 'contentHash', r.content_hash)) AS locales
+          FROM guide_locale_current c JOIN guide_locale_revision r ON r.id = c.locale_revision_id
+          WHERE c.slug IN ({slugs}) GROUP BY c.slug
+        ) c), '{{}}'::jsonb),
         'publications', COALESCE((SELECT jsonb_object_agg(slug, releases) FROM (
           SELECT slug, jsonb_agg(jsonb_build_object('id', id, 'sourceRevisionId', revision_id,
             'ended', ended_at IS NOT NULL, 'checklistId', checklist_id, 'verifiedOn', verified_on) ORDER BY id) AS releases FROM guide_publication
@@ -416,6 +436,21 @@ def batch_state(session, slug, guides, receipt, findings, history, verified_on, 
     return status, pending, None
 
 
+def verify_committed_state(state, receipts, publications):
+    require(set(state["guideRows"]) == set(publications), "Committed Guide rows differ from the publication scope.")
+    require(state["revisions"] == {s: [r["sourceRevisionId"]] for s, r in receipts.items()},
+            "Committed revision history differs from the import receipt.")
+    require(set(state["publications"]) == set(publications)
+            and all(len(state["publications"][s]) == 1
+                    and state["publications"][s][0]["id"] == pub
+                    and state["publications"][s][0]["sourceRevisionId"] == receipts[s]["sourceRevisionId"]
+                    and state["publications"][s][0]["ended"] is False for s, pub in publications.items()),
+            "Committed publication history differs from the verified publications.")
+    pointers = {s: {loc: {**variant, "batchId": receipts[s]["batchId"]}
+                    for loc, variant in receipts[s]["locales"].items()} for s in publications}
+    require(state["currentLocales"] == pointers, "Committed locale pointers differ from the import receipt.")
+
+
 def publish(package, archive_hash, receipt_hash, verified_on, directory, *, release=EDUCATION):
     try:
         day = date.fromisoformat(verified_on)
@@ -451,8 +486,11 @@ def publish(package, archive_hash, receipt_hash, verified_on, directory, *, rele
 
         ready = {slug: inspect(slug, state) for slug in sorted(slugs)}
         published = {slug: row[2] for slug, row in ready.items() if row[0] == "PUBLISHED"}
+        visibility = {"package": package} if release.manifest_hash else {}
+        if release.manifest_hash:
+            verify_committed_state(state, receipts, published)
         before = release_inventory(set(published), release)
-        verify_visibility(local_reader, {s: receipts[s] for s in published}, slugs=slugs, category=category)
+        verify_visibility(local_reader, {s: receipts[s] for s in published}, slugs=slugs, category=category, **visibility)
         backup_name = backup(f"pre-{release.name}-publish")
         review_token = credential("review")
         for slug, (status, pending, _) in ready.items():
@@ -475,14 +513,17 @@ def publish(package, archive_hash, receipt_hash, verified_on, directory, *, rele
             require(status == "PUBLISHED", "Publication was not recorded.")
             published[slug] = publication_id
             print(f"Published {slug} {publication_id}", flush=True)
-    verify_visibility(edge, receipts, slugs=slugs, category=category)
-    require(release_inventory(set(slugs), release) == before,
-            "Unrelated public inventory changed during publication.")
+    if release.manifest_hash:
+        verify_committed_state(read_state(slugs=slugs), receipts, published)
+    verify_visibility(edge, receipts, slugs=slugs, category=category, **visibility)
+    after = release_inventory(set(slugs), release)
+    require(after == before, "Unrelated inventory changed during publication.")
     report = {"release": release.identity.release, "packageSha256": archive_hash,
               "importReceiptSha256": receipt_hash, "verifiedOn": verified_on, "backup": backup_name,
               "publications": published}
     if release.manifest_hash:
-        report.update(manifestSha256=release.manifest_hash, category=category, batches=receipts)
+        report.update(manifestSha256=release.manifest_hash, category=category, batches=receipts,
+                      catalogueCounts={locale: len(after[locale]) + len(slugs) for locale in LOCALES})
     return save_receipt(report, directory, "publications", prefix=release.name)
 
 
