@@ -1,0 +1,63 @@
+{
+  "slug": "nhs-ihs-costs-england",
+  "category": "health-nhs",
+  "status": "DRAFT",
+  "sourceLocale": "zh-CN",
+  "scope": "Existing Guide replacement proposal only",
+  "reviewedOn": "2026-11-27",
+  "canonicalization": "guide-content-v1",
+  "previousPublicSnapshot": {
+    "zh-CN": {
+      "sourceRevisionId": "27dca22d-d145-48a8-b3f4-20d98334e6f7",
+      "contentSha256": "cbfc487ec9d7e9e6684aa0c78cbece05ceed69dc567b8119d87cdd9787d96ec0"
+    },
+    "zh-TW": {
+      "sourceRevisionId": "27dca22d-d145-48a8-b3f4-20d98334e6f7",
+      "contentSha256": "5a03a9b3ffcd1fea2db668c5c5ad104875e50f00fb8e05cae794e149c87a7b80"
+    },
+    "en": {
+      "sourceRevisionId": "27dca22d-d145-48a8-b3f4-20d98334e6f7",
+      "contentSha256": "4ede0e6de42c1039da4ac6b41e816b8e0ce22ba9fcefd96195a224b7fda8fa9e"
+    },
+    "ur": {
+      "sourceRevisionId": "27dca22d-d145-48a8-b3f4-20d98334e6f7",
+      "contentSha256": "f5fe2049e7a2425492b779b24b90a55ec172ec61399f5a185fb013b609119bab"
+    },
+    "hi": {
+      "sourceRevisionId": "27dca22d-d145-48a8-b3f4-20d98334e6f7",
+      "contentSha256": "82dcac9e6e790ed2955eb84eb6402d7a3904410cf496fcd75b678f06a4505189"
+    }
+  },
+  "variants": [
+    {
+      "locale": "zh-CN",
+      "path": "zh-CN.json",
+      "sha256": "54607410b77e69d6cbf86c7679c3a1c0041dc76345f4bbab491ed7a99aa83c91",
+      "contentSha256": "91535befc8c7161f642eda24615ed083ffb595cee67e472fe6b1220b5768e5af"
+    },
+    {
+      "locale": "zh-TW",
+      "path": "zh-TW.json",
+      "sha256": "e29ef0d2bee980d6891ed5a01950989459b87d9eb2f562ecb2079ac439f66986",
+      "contentSha256": "619d9d510892e5546754654ae6485231aa88d7f94e9550d40e683424147becb1"
+    },
+    {
+      "locale": "en",
+      "path": "en.json",
+      "sha256": "834c74a5a59df8c0fcac2558d63e34839bb39d80b5e799441a792a2e276b4500",
+      "contentSha256": "4346d316e81ba80466f1cb3af792d50a4ed53ce9c76f77630548b84d6ceee744"
+    },
+    {
+      "locale": "ur",
+      "path": "ur.json",
+      "sha256": "9d2ba5908a3a0b21a075b9e739f4319adac8de4534907fcb1adb6007aef3413a",
+      "contentSha256": "6d9cbbe02ba2afb51ef736adc0cdb5840c16917e021979ddee583701fd670ee7"
+    },
+    {
+      "locale": "hi",
+      "path": "hi.json",
+      "sha256": "35c27a1e2eb2a72247fdb9c63db7b8f8858a54d22bb2ad00a90939887da55bc7",
+      "contentSha256": "411fa7a7cf1eddca5203768e7d1194b7398330e661319665889967f09610cbf1"
+    }
+  ]
+}
