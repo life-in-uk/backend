@@ -1,0 +1,63 @@
+{
+  "slug": "where-to-go-when-ill-england",
+  "category": "health-nhs",
+  "status": "DRAFT",
+  "sourceLocale": "zh-CN",
+  "scope": "Existing Guide replacement proposal only",
+  "reviewedOn": "2026-11-27",
+  "canonicalization": "guide-content-v1",
+  "previousPublicSnapshot": {
+    "zh-CN": {
+      "sourceRevisionId": "69ce194c-4fb7-4272-8969-ac565d5efd17",
+      "contentSha256": "edf4d16dbc535fd3e2cb1677079ca479e302f65679bd81739e81fa8b029ee536"
+    },
+    "zh-TW": {
+      "sourceRevisionId": "69ce194c-4fb7-4272-8969-ac565d5efd17",
+      "contentSha256": "a0fa618d31020b1792fbe4f1b8bf8fad960e8769542c415bed90dd6804d1830b"
+    },
+    "en": {
+      "sourceRevisionId": "69ce194c-4fb7-4272-8969-ac565d5efd17",
+      "contentSha256": "ba172977eb705297d7b1bf4d5273cf15829aa57f0978f83c649e5152f6eb616d"
+    },
+    "ur": {
+      "sourceRevisionId": "69ce194c-4fb7-4272-8969-ac565d5efd17",
+      "contentSha256": "feb7fb608b42e1d327c9462131f48a98d1774c6b8020b3f2bb7eef7e3f3ae4ee"
+    },
+    "hi": {
+      "sourceRevisionId": "69ce194c-4fb7-4272-8969-ac565d5efd17",
+      "contentSha256": "ef5562286d56cd44cd53d08509d02916864bf9b140770e5c8c1167bda2dbe260"
+    }
+  },
+  "variants": [
+    {
+      "locale": "zh-CN",
+      "path": "zh-CN.json",
+      "sha256": "ee12ea633c09bd2f524a0a90936a90ea22a0fe208588ca9daa2c339cd2f5295e",
+      "contentSha256": "9c1cb4d0298793a0277c928e9fe49d39b4c27addc5d66ca92323119ffac89afe"
+    },
+    {
+      "locale": "zh-TW",
+      "path": "zh-TW.json",
+      "sha256": "d46fd0791fb41924f0185cd4483889fcf680ef26528af18a3f8aaa80e8af2758",
+      "contentSha256": "d83cb974cdf1ecd3428f13d5a156c4e3efe01172c9fb4d33f94fd0a921283fb0"
+    },
+    {
+      "locale": "en",
+      "path": "en.json",
+      "sha256": "d73312741a557d69e7fdc9ba9bb4ed7712050b4766730c368b7a9599009c30b6",
+      "contentSha256": "3cc8ecf23395500882c0643bd4f0fae569a1375b1801412363bc531c5d7cefec"
+    },
+    {
+      "locale": "ur",
+      "path": "ur.json",
+      "sha256": "b64c7f86054e1aa5ef2532a59434fa16a78eac19c73ee1c205979f32522f4d43",
+      "contentSha256": "fe30c90b66f376d7f2e4495258318ed77ba1d58f09e0d82ad6985d18817194bb"
+    },
+    {
+      "locale": "hi",
+      "path": "hi.json",
+      "sha256": "e42cf7c0952dd974fb5f33472f773aaa5fac0e237ebb1730689451c848851e88",
+      "contentSha256": "10120ba639b983ef6a94c0432813634193fbf0fea69f5b7dcfd78c0c0ff2bd3e"
+    }
+  ]
+}

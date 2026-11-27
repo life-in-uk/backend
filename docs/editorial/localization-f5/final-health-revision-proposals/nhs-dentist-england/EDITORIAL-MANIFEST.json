@@ -1,0 +1,63 @@
+{
+  "slug": "nhs-dentist-england",
+  "category": "health-nhs",
+  "status": "DRAFT",
+  "sourceLocale": "zh-CN",
+  "scope": "Existing Guide replacement proposal only",
+  "reviewedOn": "2026-11-27",
+  "canonicalization": "guide-content-v1",
+  "previousPublicSnapshot": {
+    "zh-CN": {
+      "sourceRevisionId": "07c740b2-7385-460e-b301-38cdcfc7b6b6",
+      "contentSha256": "7764c123d9f42334b15ec1286905c17ee7f71f3c6094efbab5678a1fdf75426e"
+    },
+    "zh-TW": {
+      "sourceRevisionId": "07c740b2-7385-460e-b301-38cdcfc7b6b6",
+      "contentSha256": "b2aade4cdc023f58716d68ae66e36a6a0f2e13deed7ba07a0ce1049cb14662c3"
+    },
+    "en": {
+      "sourceRevisionId": "07c740b2-7385-460e-b301-38cdcfc7b6b6",
+      "contentSha256": "caa6af63276f40c9169012661323e2ca664e54f71e2f8c73b6d7b82f4b6c84a3"
+    },
+    "ur": {
+      "sourceRevisionId": "07c740b2-7385-460e-b301-38cdcfc7b6b6",
+      "contentSha256": "01a09830c202c6312ed2ded51f948a405e8b406cd30630e72f67df53c3d4e7c1"
+    },
+    "hi": {
+      "sourceRevisionId": "07c740b2-7385-460e-b301-38cdcfc7b6b6",
+      "contentSha256": "e86398ed4b1fecfeac9c3ea19d92e9ed32e317c7c80731f8de81105b8643f082"
+    }
+  },
+  "variants": [
+    {
+      "locale": "zh-CN",
+      "path": "zh-CN.json",
+      "sha256": "f0abf7d4c02c963b5c3d7633e0396ccf94eb305afd4719b02fb1f27151c8e931",
+      "contentSha256": "b327d66934c058eac947bd4d2bd3488d882da966ade310fc1370199cbd817b3b"
+    },
+    {
+      "locale": "zh-TW",
+      "path": "zh-TW.json",
+      "sha256": "66be8365dc9ad89efc9e98cb06e914e179619455e9690ef7c35e7e85b7a48eb5",
+      "contentSha256": "608da709f0265af08aed26fe566ad038ea6d5a9d1143fb2e065e4575ed9a563e"
+    },
+    {
+      "locale": "en",
+      "path": "en.json",
+      "sha256": "7570e5c97b6399dd54c18d6655c09dfb3290dc9c3c994415838bc0897c4c334a",
+      "contentSha256": "4530aa0f11a3fef56fde7fb783070ec549d3de0f2b219a51554a531995c1da5d"
+    },
+    {
+      "locale": "ur",
+      "path": "ur.json",
+      "sha256": "79b1b67ce138d3610241c01a27307c0cdda35ec8610f7aa39fd584feaeae3017",
+      "contentSha256": "bca3aef9fa656c2e4681008bcb9917f19be847028cdfe5ccc7342e3a554162a7"
+    },
+    {
+      "locale": "hi",
+      "path": "hi.json",
+      "sha256": "3dd599677c51900d55ebff778917dd6b36bb73ea5d535e99ea7188a7c71180ac",
+      "contentSha256": "66e9ba704f34bfb02418c1b6f93ebe455011880428485613eb147998d698e00e"
+    }
+  ]
+}

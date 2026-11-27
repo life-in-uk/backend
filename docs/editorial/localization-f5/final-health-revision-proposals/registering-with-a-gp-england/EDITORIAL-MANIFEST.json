@@ -1,0 +1,63 @@
+{
+  "slug": "registering-with-a-gp-england",
+  "category": "health-nhs",
+  "status": "DRAFT",
+  "sourceLocale": "zh-CN",
+  "scope": "Existing Guide replacement proposal only",
+  "reviewedOn": "2026-11-27",
+  "canonicalization": "guide-content-v1",
+  "previousPublicSnapshot": {
+    "zh-CN": {
+      "sourceRevisionId": "9ca7a5bc-90f3-424c-a79d-d99eb4949a90",
+      "contentSha256": "c0c80a05f62daa725eabb9f573cc17b13e5e400e813d8765ffd51a42fff247ac"
+    },
+    "zh-TW": {
+      "sourceRevisionId": "9ca7a5bc-90f3-424c-a79d-d99eb4949a90",
+      "contentSha256": "53f5038cc138116af50d76fc928de94a9ce924b2574ed4416eceabf06161f511"
+    },
+    "en": {
+      "sourceRevisionId": "9ca7a5bc-90f3-424c-a79d-d99eb4949a90",
+      "contentSha256": "4058b04c9b5dc68f959f786ff39cf8d1cdbb2f8e28e7bb66d92c3e9a68fff079"
+    },
+    "ur": {
+      "sourceRevisionId": "9ca7a5bc-90f3-424c-a79d-d99eb4949a90",
+      "contentSha256": "606ec0b14405faaf274f982f06dd1d51c54c4e61ccaa09e6c1175c477f538d22"
+    },
+    "hi": {
+      "sourceRevisionId": "9ca7a5bc-90f3-424c-a79d-d99eb4949a90",
+      "contentSha256": "6e24bb291e468ff2d71f4214699cd9d655118399d11ff74e81d29fa2fe8566e7"
+    }
+  },
+  "variants": [
+    {
+      "locale": "zh-CN",
+      "path": "zh-CN.json",
+      "sha256": "4a8de2fa303c6fbb24679a4a41245d00ad095c9a3ff78b471968818a4d3981ab",
+      "contentSha256": "2e9ff57b8ca530cb7b575bfc771a05df4c2caaf89ceab17eacea6dbc70070ec0"
+    },
+    {
+      "locale": "zh-TW",
+      "path": "zh-TW.json",
+      "sha256": "e699d22e2ccba1dc2fc3f610a7af04f2da3d9e0dffbf46beb2e03e13dca5ae52",
+      "contentSha256": "9129fe97ef8c700e0350d820595abb5623ddc99c323a3a2668451d78193f40d7"
+    },
+    {
+      "locale": "en",
+      "path": "en.json",
+      "sha256": "a3bfc31d0e25c26fe680be2bd34013db9fb02b888a111ced9b3fcd84ec34fcd6",
+      "contentSha256": "1000d90eb9950c96db5387fa25c44fe2f59f7a5496a59d2264e1da49f6b11502"
+    },
+    {
+      "locale": "ur",
+      "path": "ur.json",
+      "sha256": "3980a0e533e3b7c7e1d2ab0a59aeea37d291a77f4eacf41c432e4abce41cdd8c",
+      "contentSha256": "d97c643f0abfce93765500cc5ea0b608eb66353e2e33f73c03b173386fe07a7e"
+    },
+    {
+      "locale": "hi",
+      "path": "hi.json",
+      "sha256": "1069ffd2cb593a07cdc02bc42e536c82b077f55875ba1b3ce53a2717a28bf68f",
+      "contentSha256": "6bd735babb10d705fb1b963197a19c5bd7d19c6e454720723996529f97b7847d"
+    }
+  ]
+}
