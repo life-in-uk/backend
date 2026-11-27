@@ -1,0 +1,719 @@
+{
+  "slug": "open-uk-bank-account-new-arrival",
+  "category": "money",
+  "title": "ब्रिटेन नए-नए आए हैं, पहला बैंक खाता कैसे खोलें?",
+  "summary": "ब्रिटेन में पहला बैंक खाता खोलने के लिए पहचान और पते के प्रमाण देखें। स्थानीय कागज़ न हों या बैंक मना करे तो विकल्प समझें और FSCS सुरक्षा जाँचें।",
+  "content": "# ब्रिटेन नए-नए आए हैं, पहला बैंक खाता कैसे खोलें?\n\nअंतिम अपडेट: 2026-11-27\n\n> यह गाइड हाल में ब्रिटेन आए लोगों के लिए है, जैसे अंतरराष्ट्रीय छात्र या काम, परिवार या लंबे समय तक रहने के लिए आने वाले लोग।\n> लेख में जिन बैंकों के तरीकों का ज़िक्र है, वे **7 अक्टूबर 2026 तक** हमने उन बैंकों की वेबसाइट पर जो देखा, वह है। ये सिर्फ़ उदाहरण हैं, सिफ़ारिश नहीं, और सभी बैंकों का प्रतिनिधित्व नहीं करते। बैंक नियम बदलते रहते हैं, आवेदन से पहले उस समय की बैंक वेबसाइट देखें।\n\nअभी पहुँचे हैं, किराया देना है, तनख़्वाह आनी है, फ़ीस और फ़ोन का बिल कटना है, और सबसे पहले जो काम अटकता है वह अक्सर बैंक खाता खोलना है: इंटरनेट पर खोजें तो कोई कहता है पते का प्रमाण चाहिए, कोई कहता है सिर्फ़ पासपोर्ट काफ़ी है, कोई कहता है छात्रों के लिए यूनिवर्सिटी का bank letter ज़रूरी है। बातें अलग-अलग इसलिए हैं कि **हर बैंक, हर तरह के खाते, और ऑनलाइन या ब्रांच में आवेदन के हिसाब से शर्तें अलग हो सकती हैं**। यह लेख क्रम से बताता है: पहले क्या तैयारी करें, \"ब्रिटेन का पते का प्रमाण नहीं\" वाली स्थिति में क्या करें, छात्र और काम / परिवार / बसने वाले किस रास्ते से चलें, और पहला बैंक मना कर दे तो आगे क्या करें।\n\n## 1. पहले दो बातें अलग करें: क़ानून क्या माँगता है, और बैंक क्या माँगता है\n\n**क़ानून के स्तर पर**: ब्रिटेन के मनी लॉन्ड्रिंग विरोधी नियम बैंकों से कहते हैं कि कारोबारी रिश्ता शुरू करते समय **ग्राहक की पहचान करें और उसकी पुष्टि करें**, और यह बैंक अपने जोखिम आकलन के हिसाब से करे, अलग-अलग स्थितियों में तरीका अलग हो सकता है। [आधिकारिक आधार देखें](#guide-evidence-mlr-identity-verification) नियम भरोसेमंद और स्वतंत्र स्रोतों से पहचान की पुष्टि की अनुमति देते हैं, जिनमें शर्तें पूरी करने वाली इलेक्ट्रॉनिक पहचान जाँच भी शामिल है, जैसे दस्तावेज़ की फ़ोटो अपलोड करना, सेल्फ़ी या वीडियो लेकर मिलान करना। [आधिकारिक आधार देखें](#guide-evidence-mlr-electronic-identification)\n\n**बैंक के स्तर पर**: नियमों ने सभी बैंकों के लिए कोई एक समान \"खाता खोलने के दस्तावेज़ों की सूची\" तय नहीं की है। कौन-से दस्तावेज़, पते का प्रमाण चाहिए या नहीं, कौन-से दस्तावेज़ ऑनलाइन अपलोड हो सकते हैं और कौन-से सिर्फ़ ब्रांच ले जाने होंगे, यह हर बैंक अपनी जोखिम प्रक्रिया के हिसाब से तय करता है। [आधिकारिक आधार देखें](#guide-evidence-mlr-risk-based-cdd) इसलिए:\n\n- \"यह बैंक मुझसे पते का प्रमाण माँग रहा है\", यह इस बैंक (इस खाते, इस आवेदन के तरीके) की शर्त है;\n- इसका **मतलब यह नहीं** कि \"ब्रिटेन का क़ानून कहता है कि हर खाता खोलने वाले को एक ही तरह का पते का प्रमाण देना होगा\"।\n\nअसल में **ज़्यादातर बैंक पते का प्रमाण माँगते हैं या माँग सकते हैं**, फ़र्क़ बस यह है कि कौन-से दस्तावेज़ और किस तरीके से स्वीकार होते हैं। [आधिकारिक आधार देखें](#guide-evidence-providers-ask-for-address) इसलिए यह उम्मीद न रखें कि \"क़ानून में नहीं लिखा तो बैंक नहीं माँग सकता\", बल्कि यह पता करें कि **जिस बैंक और जिस खाते के लिए आप आवेदन कर रहे हैं** वह अभी क्या स्वीकार करता है।\n\n\n## 2. पहले देखें कि अभी आपके पास क्या है\n\nशुरू करने से पहले अपने पास की चीज़ों की सूची बना लें। नीचे वे दस्तावेज़ हैं जो बहुत-से नए आने वालों के पास **हो सकते हैं**, लेकिन \"आपके पास है\" का मतलब \"बैंक स्वीकार करता है\" नहीं, इसे कैसे जाँचें यह आगे बताया गया है:\n\n- वैध पासपोर्ट या पहचान का कोई और प्रमाण जिसे बैंक स्वीकार करता हो;\n- ब्रिटेन में इमिग्रेशन स्थिति का प्रमाण, जैसे आपका eVisa। ब्रिटेन सरकार के अनुसार eVisa ने काग़ज़ी इमिग्रेशन दस्तावेज़ों की जगह ले ली है; [आधिकारिक आधार देखें](#guide-evidence-evisa-replaced-physical-documents) आप अपने UKVI खाते में share code बनाकर दूसरों से अपनी स्थिति की पुष्टि करा सकते हैं, share code 90 दिन तक वैध रहता है, ख़त्म होने पर नया बना सकते हैं; [आधिकारिक आधार देखें](#guide-evidence-evisa-share-code-90-days)\n- ब्रिटेन में आपका पता (हॉस्टल, किराए का घर, या अस्थायी पता);\n- छात्र: यूनिवर्सिटी के दाख़िले या नामांकन की जानकारी, यूनिवर्सिटी की ओर से मिलने वाला पत्र;\n- काम के लिए आए लोग: नौकरी का अनुबंध, नियोक्ता की जानकारी;\n- एक मोबाइल नंबर जिस पर SMS आ सके, और ईमेल।\n\nकुछ बैंकों की दस्तावेज़ सूची में अब भी BRP (बायोमेट्रिक निवास कार्ड) लिखा है। अगर आपके पास सिर्फ़ eVisa है और BRP नहीं, तो यह न मान लें कि खाता नहीं खुल सकता; पहले देखें कि यह बैंक अब क्या लिखता है, ज़रूरत हो तो सीधे बैंक से पूछें। [आधिकारिक आधार देखें](#guide-evidence-brp-still-listed-by-some-providers)\n\n## 3. खाता चुनना: इनाम से पहले \"क्या आवेदन कर सकता हूँ\" देखें\n\nबहुत-से लोग पहले यह देखते हैं कि कौन-सा बैंक पैसे या तोहफ़ा दे रहा है। अभी-अभी ब्रिटेन आए हैं तो ज़्यादा ज़रूरी **खाते की पात्रता** है: उम्र, \"ब्रिटेन में रहना / ब्रिटिश निवासी होना\" ज़रूरी है या नहीं, ब्रिटेन का मोबाइल नंबर चाहिए या नहीं, ब्रिटेन में कुछ समय रहना ज़रूरी है या नहीं।\n\nदो उदाहरण (7 अक्टूबर 2026 तक वेबसाइट की जानकारी):\n\n- छात्र खाता ज़रूरी नहीं कि अभी आए लोगों के लिए ठीक हो। Barclays का **Student Additions Account**, Lloyds का **Student Current Account** और NatWest का **Student खाता**, इन सबकी वेबसाइट पर आवेदन की शर्तों में \"ब्रिटेन में लगभग तीन साल रहना\" जैसी शर्त है (Barclays के पेज पर \"तीन साल से ज़्यादा\" और \"कम से कम तीन साल\" दोनों तरह लिखा है)। यह **इन छात्र खातों की अपनी** शर्त है, इसका मतलब यह नहीं कि ये बैंक नए अंतरराष्ट्रीय छात्रों को नहीं लेते: इन बैंकों के पेज बताते हैं कि जो शर्त पूरी न करें वे उनके दूसरे खाते देखें। [आधिकारिक आधार देखें](#guide-evidence-student-accounts-three-year-residence)\n- Barclays के **Barclays Bank Account** में लिखा है कि आवेदक ब्रिटिश निवासी हो, ब्रिटेन का मोबाइल नंबर हो, और पहचान का प्रमाण दे; ब्रिटेन का मोबाइल नंबर न हो तो ऑनलाइन आवेदन कर सकते हैं (app के बिना)। eVisa इस्तेमाल करना हो तो ब्रांच में अपॉइंटमेंट लेना होगा। [आधिकारिक आधार देखें](#guide-evidence-barclays-bank-account-requirements)\n\nइसके अलावा कुछ खातों में खोलते समय क्रेडिट जाँच होती है, और कुछ बैंक खाता खुलने के बाद भी समय-समय पर पहचान, धोखाधड़ी और क्रेडिट की जाँच करते हैं; लेकिन हर बैंक और हर खाते में ऐसा नहीं होता। [आधिकारिक आधार देखें](#guide-evidence-credit-checks-vary) जो अभी ब्रिटेन आए हैं और यहाँ उनका कोई क्रेडिट इतिहास नहीं है, वे आवेदन से पहले देख लें कि खाते के पेज पर \"subject to a credit check\" जैसी शर्त तो नहीं।\n\n## 4. ऑनलाइन आवेदन या ब्रांच?\n\nएक ही बैंक में **app / ऑनलाइन आवेदन और ब्रांच (branch) में स्वीकार होने वाले दस्तावेज़ अलग हो सकते हैं**। कुछ उदाहरण (7 अक्टूबर 2026 तक):\n\n- Lloyds ने लिखा है कि **ग़ैर-ब्रिटिश पासपोर्ट सिर्फ़ मोबाइल app में पहचान साबित करने के लिए इस्तेमाल हो सकता है**; [आधिकारिक आधार देखें](#guide-evidence-lloyds-non-uk-passport-app-only)\n- Barclays ने लिखा है कि eVisa इस्तेमाल करने के लिए **ब्रांच में अपॉइंटमेंट** लेना होगा; [आधिकारिक आधार देखें](#guide-evidence-barclays-bank-account-requirements)\n- NatWest ने लिखा है कि ग़ैर-ब्रिटिश / ग़ैर-यूरोपीय संघ पासपोर्ट के साथ **वैध वीज़ा या eVisa share code** होना ज़रूरी है। [आधिकारिक आधार देखें](#guide-evidence-natwest-passport-with-visa-or-share-code)\n\nइसलिए अगर ऑनलाइन प्रक्रिया \"पते का प्रमाण अपलोड करें\" या \"पहचान जाँच विफल\" पर अटक जाए, तो ज़रूरी नहीं कि खाता नहीं खुल सकता: पहले देखें कि इस बैंक की ब्रांच आपके पास के दूसरे दस्तावेज़ स्वीकार करती है या नहीं।\n\n**app से खाता खोलने में भी पहचान की जाँच होती है।** जैसे Monzo में खाता खोलने के लिए दस्तावेज़ की फ़ोटो और सेल्फ़ी वीडियो लेनी होती है, और लिखा है कि **हो सकता है** आपसे यह साबित करने को कहा जाए कि आप दिए गए पते पर रहते हैं। [आधिकारिक आधार देखें](#guide-evidence-monzo-onboarding-may-ask-address) \"app में खाता खोलना\" का मतलब न यह है कि प्रमाण नहीं चाहिए, न यह कि यह पारंपरिक बैंक से ज़रूर आसान है।\n\n## 5. अभी ब्रिटेन आए हैं और आम पते का प्रमाण नहीं है तो क्या करें\n\nनए आने वाले सबसे ज़्यादा यहीं अटकते हैं: बैंकों की सूचियों में आम पते के प्रमाण, जैसे बिजली, गैस, पानी के बिल, Council Tax का बिल, ब्रिटिश बैंक स्टेटमेंट, ब्रिटिश ड्राइविंग लाइसेंस, अभी आए लोगों के पास अक्सर इनमें से कुछ भी नहीं होता। ऐसे में इस क्रम से चलें:\n\n1. **पहले देखें कि जिस बैंक और खाते के लिए आवेदन कर रहे हैं, वह अभी कौन-से दस्तावेज़ स्वीकार करता है।** बैंकों में बहुत फ़र्क़ होता है, इंटरनेट की \"आम सूची\" भरोसेमंद नहीं।\n2. **ऑनलाइन और ब्रांच की सूचियाँ अलग-अलग देखें।** कुछ दस्तावेज़ सिर्फ़ ब्रांच में चलते हैं।\n3. **इस बैंक के साफ़ लिखे \"वैकल्पिक दस्तावेज़\" ढूँढें।** जैसे (7 अक्टूबर 2026 तक):\n   - HSBC के दस्तावेज़ विवरण में यूनिवर्सिटी का वह पत्र दिया गया है जो किसी पात्र कोर्स में आपके दाख़िले की पुष्टि करे (ऑनलाइन और ब्रांच दोनों के लिए), और ब्रांच में \"जाने-माने नियोक्ता\" का वह पत्र भी दिया गया है जो आपके पते और नौकरी की पुष्टि करे; [आधिकारिक आधार देखें](#guide-evidence-hsbc-university-and-employer-letters)\n   - नैटवेस्ट राष्ट्रीय बीमा नंबर या टैक्स कोड के बारे में HMRC का पत्र, या नए ब्रिटिश पते वाला पुराने बैंक खाते का स्टेटमेंट सूचीबद्ध करता है। पुराना बैंक ब्रिटेन के बाहर भी हो सकता है। बैंक से मौजूदा शर्तें और अपने दस्तावेज़ों की स्वीकार्यता पूछें। [आधिकारिक आधार देखें](#guide-evidence-natwest-new-to-uk-alternatives)\n4. **अगर इस बैंक का सामान्य खाता न खुल सके, तो देखें कि बुनियादी खाते (Basic Bank Account) पर विचार करना चाहिए या नहीं**, खंड 9 देखें।\n5. **मना कर दिया जाए तो यह न मानें कि सब बैंक इसी तरह मना करेंगे।** हर बैंक की जोखिम प्रक्रिया और दस्तावेज़ सूची अलग है, दूसरा बैंक, दूसरा खाता या दूसरा तरीका आज़माएँ तो नतीजा अलग हो सकता है।\n\n\nदस्तावेज़ विदेश में जारी हुए हों तो बैंक से पूछें कि कौन-से दस्तावेज़ और भाषाएँ स्वीकार हैं और अनुवाद चाहिए या नहीं। सूची में विदेशी दस्तावेज़ लिखे होने से हर स्टेटमेंट, पते का प्रमाण या फ़ोन नंबर स्वीकार नहीं हो जाता।\n\n## 6. अगर आप अभी आए अंतरराष्ट्रीय छात्र हैं\n\n**आपके पास शायद यह हो**: पहचान का स्वीकार्य प्रमाण, लागू होने पर eVisa, प्रवेश या नामांकन की जानकारी, हॉस्टल या किराए का पता और शायद यूनिवर्सिटी का पत्र।\n\n**ध्यान रखें**:\n\n- छात्रों का ख़ास खाता शायद अभी पहुँचे लोगों के लिए ठीक न हो। ऊपर बताए गए Barclays, Lloyds और NatWest के तीनों **छात्र खातों** के लिए 7 अक्टूबर 2026 तक ब्रिटेन में लगभग तीन साल रहना ज़रूरी था। अगर आप इन छात्र खातों की निवास अवधि पूरी नहीं करते, तो उसी बैंक के दूसरे खातों की पात्रता की शर्तें देख सकते हैं, या दूसरे बैंकों के खातों की तुलना कर सकते हैं; शर्तें पूरी हों तो बुनियादी खाते (Basic Bank Account, खंड 9 देखें) के बारे में भी जान सकते हैं। [आधिकारिक आधार देखें](#guide-evidence-student-accounts-three-year-residence)\n- यूनिवर्सिटी का पत्र काम का है, लेकिन \"ज़रूरी\" नहीं। 7 अक्टूबर 2026 तक HSBC के दस्तावेज़ विवरण में यूनिवर्सिटी का दाख़िले की पुष्टि वाला पत्र दिया गया है; [आधिकारिक आधार देखें](#guide-evidence-hsbc-university-and-employer-letters) Santander ने ब्रिटेन में नए छात्रों के लिए Basic Current Account के बारे में बताते हुए \"university banking letter\" को पहचान और पते के प्रमाण के एक उदाहरण के रूप में बताया है। [आधिकारिक आधार देखें](#guide-evidence-santander-basic-for-new-uk-students) लेकिन **ऐसा कोई आधिकारिक नियम नहीं कि अंतरराष्ट्रीय छात्रों को खाता खोलने के लिए यूनिवर्सिटी का bank letter देना ही होगा**; यह काम का है या नहीं, और किस चरण में, यह बैंक पर निर्भर है।\n- कुछ उदाहरण (7 अक्टूबर 2026 तक):\n  - Lloyds ने लिखा है कि 18 साल या उससे ज़्यादा उम्र, **पहले से ब्रिटेन में रहना** और वैध पासपोर्ट हो तो उसके Classic Account के लिए आवेदन कर सकते हैं। [आधिकारिक आधार देखें](#guide-evidence-lloyds-classic-for-international-students)\n  - Santander ने लिखा है कि उसका Basic Current Account उन लोगों के लिए है जो 16 साल से ज़्यादा उम्र के हों, ब्रिटेन में रहते हों, और जिनका अभी कोई ब्रिटिश बैंक खाता न हो (या दूसरे खाते का आवेदन अस्वीकार हो चुका हो), और share code / वीज़ा दे सकने का ज़िक्र किया है। [आधिकारिक आधार देखें](#guide-evidence-santander-basic-for-new-uk-students)\n- पहले यूनिवर्सिटी से पूछें: बहुत-सी यूनिवर्सिटियों के अंतरराष्ट्रीय छात्र कार्यालय बताते हैं कि वे कौन-से प्रमाण-पत्र दे सकते हैं और उनका प्रारूप क्या है। पत्र मिलने के बाद भी जिस बैंक के लिए आवेदन कर रहे हैं उसकी सूची से मिला लें।\n\n## 7. अगर आप काम के लिए, परिवार के साथ या बसने के लिए आए हैं\n\n**आपके पास शायद यह हो**: पहचान का स्वीकार्य प्रमाण, लागू होने पर eVisa, नौकरी या नियोक्ता की जानकारी और किराए का अनुबंध या अस्थायी पता। बाद में HMRC या किसी सरकारी संस्था का पत्र मिले तो पूछें कि बैंक उसे स्वीकार करता है या नहीं।\n\n**ध्यान रखें**:\n\n- **नियोक्ता का पत्र और किराए का अनुबंध हर बैंक स्वीकार नहीं करता।** 7 अक्टूबर 2026 तक:\n  - HSBC ब्रांच में \"जाने-माने नियोक्ता\" का वह पत्र स्वीकार करता है जो पते और नौकरी की पुष्टि करे; [आधिकारिक आधार देखें](#guide-evidence-hsbc-university-and-employer-letters)\n  - किराए के अनुबंध की स्वीकार्यता में बहुत फ़र्क़ है: कुछ बैंक सिर्फ़ काउंसिल (council) या हाउसिंग एसोसिएशन (housing association) का अनुबंध लेते हैं, कुछ प्रतिष्ठित एजेंट या वकील का भी लेते हैं, कुछ सिर्फ़ ब्रांच में लेते हैं, ऑनलाइन अपलोड नहीं। निजी मकान मालिक से सीधे किया गया अनुबंध ज़्यादातर सूचियों में साफ़ तौर पर स्वीकार होता **नहीं दिखा**। [आधिकारिक आधार देखें](#guide-evidence-tenancy-agreement-varies)\n- **HMRC का पत्र काम का हो सकता है, लेकिन इंतज़ार करना पड़ता है।** ब्रिटेन सरकार के अनुसार जो लोग ब्रिटेन में रहते हैं, काम करने का अधिकार रखते हैं, और काम कर रहे हैं / काम ढूँढ रहे हैं / नौकरी का प्रस्ताव है, वे राष्ट्रीय बीमा नंबर के लिए आवेदन कर सकते हैं; कुछ लोगों का नंबर पहले से eVisa में दिखता है; आवेदन में **ज़्यादा से ज़्यादा 4 हफ़्ते** लग सकते हैं। [आधिकारिक आधार देखें](#guide-evidence-ni-number-eligibility-and-timing) HMRC का सूचना पत्र मिलने के बाद कुछ बैंक (जैसे ऊपर बताया गया NatWest) इसे नए आने वालों के इस्तेमाल लायक़ दस्तावेज़ों में गिनते हैं। [आधिकारिक आधार देखें](#guide-evidence-natwest-new-to-uk-alternatives)\n- जो परिवार के साथ आए हैं या बसने की सोच रहे हैं और अभी उनके पास काम के दस्तावेज़ नहीं हैं, वे मुख्य रूप से खंड 5 का तरीका देखें: सूची जाँचें, तरीके अलग करें, इस बैंक के लिखे वैकल्पिक दस्तावेज़ ढूँढें, ज़रूरत हो तो बुनियादी खाता देखें।\n\n## 8. पहला बैंक खाता न खोले तो क्या करें\n\n1. **कारण पूछें।** पहचान की जाँच नहीं हुई, पते का दस्तावेज़ स्वीकार नहीं हुआ, या इस खाते की पात्रता शर्त पूरी नहीं हुई (जैसे छात्र खाते की निवास अवधि)?\n2. **तरीका बदलें।** ऑनलाइन न हो तो देखें कि ब्रांच आपके दूसरे दस्तावेज़ स्वीकार करती है या नहीं; कुछ बैंकों ने लिखा है कि सूची वाला पहचान दस्तावेज़ या ब्रिटेन का स्थायी पता न हो तो ब्रांच में बात कर सकते हैं (जैसे 7 अक्टूबर 2026 तक Santander के Basic Current Account के पेज पर यही लिखा है)। [आधिकारिक आधार देखें](#guide-evidence-santander-branch-help-without-listed-documents)\n3. **खाता बदलें।** एक ही बैंक में सामान्य खाते की शर्तें पूरी न हों तो उसका बुनियादी खाता देखें।\n4. **बैंक बदलें।** अलग-अलग बैंकों की शर्तें अलग हैं, एक के मना करने का मतलब यह नहीं कि दूसरे भी मना करेंगे।\n5. **बुनियादी खाते का रास्ता** (अगला खंड)।\n\n**वीज़ा के बारे में।** ब्रिटेन का क़ानून बैंकों को ऐसे व्यक्ति का चालू खाता खोलने से मना करता है जो ब्रिटेन में हो, जिसे रहने की अनुमति चाहिए पर न हो, और जिसके बारे में सरकार मानती हो कि उसका खाता नहीं खुलना चाहिए। [आधिकारिक आधार देखें](#guide-evidence-immigration-act-s40-disqualified-person) वैध निवास अनुमति वाले इस श्रेणी में नहीं आते, लेकिन इसका **मतलब यह नहीं कि खाता ज़रूर खुलेगा**: बैंक फिर भी पहचान की पुष्टि करेगा, और इमिग्रेशन स्थिति का प्रमाण (जैसे eVisa share code) माँग सकता है।\n\n## 9. बुनियादी खाता (Basic Bank Account) क्या है, और कब पूछना चाहिए\n\nबुनियादी खाता एक सरल पाउंड खाता है: पैसे जमा करना, नक़द निकालना, डेबिट कार्ड इस्तेमाल करना, direct debit लगाना और पैसे भेजना संभव है, सामान्य काम मुफ़्त हैं, और **ओवरड्राफ़्ट नहीं** होता। [आधिकारिक आधार देखें](#guide-evidence-basic-account-features)\n\nब्रिटेन के नियम सरकार द्वारा नामित कुछ बैंकों से कहते हैं कि वे **पात्र लोगों** को बुनियादी खाता दें, हर बैंक पर यह दायित्व नहीं है। [आधिकारिक आधार देखें](#guide-evidence-basic-account-designated-institutions) शर्तें मोटे तौर पर ये हैं: ब्रिटेन में क़ानूनी रूप से रहना, और ब्रिटेन में बुनियादी सुविधाओं वाला कोई दूसरा बैंक खाता न होना, **या** इस बैंक के बाक़ी सभी खातों की शर्तें पूरी न होना। [आधिकारिक आधार देखें](#guide-evidence-basic-account-eligibility)\n\nइसलिए यह **\"हर किसी के लिए\" नहीं** है: ब्रिटेन में क़ानूनी रूप से रहना या अभी आना इसकी गारंटी नहीं कि खाता खुलेगा; अगर आपका पहले से एक ब्रिटिश खाता है, तो नियम के अनुसार आम तौर पर पहली शर्त पूरी नहीं होती। बैंक फिर भी पहचान की जाँच करेगा, और अगर खाता खोलना ग़ैर-क़ानूनी हो (जैसे मनी लॉन्ड्रिंग विरोधी नियमों के अनुसार पहचान की जाँच पूरी न हो सके), तो बैंक को **मना करना ही होगा**। [आधिकारिक आधार देखें](#guide-evidence-basic-account-refusal-grounds) मना होने पर बैंक को आम तौर पर लिखित में कारण बताना चाहिए, और शिकायत का तरीका भी, जिसमें Financial Ombudsman Service (वित्तीय लोकपाल) से शिकायत शामिल है। [आधिकारिक आधार देखें](#guide-evidence-basic-account-refusal-reasons-complaints)\n\n**कब पूछना चाहिए**: जब पात्रता, क्रेडिट इतिहास या दस्तावेज़ों की वजह से सामान्य खाता न खुल सके, और ब्रिटेन में आपका कोई दूसरा बैंक खाता न हो। जैसे 7 अक्टूबर 2026 तक Santander ने लिखा है कि उसका बुनियादी खाता आम तौर पर उन लोगों के लिए है जिनका ब्रिटिश बैंक खाता न हो या जो दूसरे खाते न खोल सकें, जिनमें अभी ब्रिटेन आए लोग भी शामिल हैं। [आधिकारिक आधार देखें](#guide-evidence-santander-basic-for-new-uk-students) आवेदन से पहले इस बैंक की शर्तें देख लें, यह न मान लें कि आप ज़रूर पात्र हैं।\n\n## 10. पैसे जमा करने के बाद: FSCS सुरक्षा कैसे पक्की करें\n\nअगर ब्रिटेन का अधिकृत बैंक, बिल्डिंग सोसाइटी (building society) या क्रेडिट यूनियन बंद हो जाए, तो ब्रिटेन की Financial Services Compensation Scheme (FSCS) आम तौर पर **हर पात्र जमाकर्ता, हर अधिकृत संस्था** को ज़्यादा से ज़्यादा **£120,000** तक का भुगतान करती है। यह **30 नवंबर 2025 के बाद** बंद होने वाली संस्थाओं पर लागू होता है। [आधिकारिक आधार देखें](#guide-evidence-fscs-120k-limit)\n\nदो बातों का ध्यान रखें:\n\n- **एक बैंकिंग लाइसेंस साझा करने वाले अलग-अलग ब्रांड एक ही बैंक गिने जाते हैं।** अगर आपने एक ही समूह के, एक लाइसेंस वाले कई ब्रांडों में पैसे रखे हैं, तो सब मिलाकर एक ही £120,000 की सीमा में आते हैं, हर ब्रांड के लिए अलग नहीं। [आधिकारिक आधार देखें](#guide-evidence-fscs-shared-licence)\n- **इलेक्ट्रॉनिक मनी संस्थाओं और भुगतान संस्थाओं में रखा पैसा FSCS की जमा सुरक्षा में शामिल नहीं है।** [आधिकारिक आधार देखें](#guide-evidence-fscs-emoney-not-covered)\n\nकैसे जाँचें: FSCS की वेबसाइट का सुरक्षा जाँच टूल इस्तेमाल करें, या FCA के Financial Services Register पर देखें कि संस्था अधिकृत है या नहीं, और किसके साथ लाइसेंस साझा करती है। [आधिकारिक आधार देखें](#guide-evidence-fscs-how-to-check) जैसे 1 सितंबर 2026 तक बैंक ऑफ़ इंग्लैंड (PRA) की सूची में Monzo Bank Limited और Starling Bank Limited दोनों ब्रिटेन में पंजीकृत, जमा लेने के लिए अधिकृत बैंक के रूप में दर्ज हैं; सूची ख़ुद बताती है कि Financial Services Register ही अंतिम है। [आधिकारिक आधार देखें](#guide-evidence-pra-list-monzo-starling)\n\n## 11. खाता खोलने से पहले आख़िरी जाँच\n\n- [ ] मैं **किस बैंक के किस खाते** के लिए आवेदन कर रहा हूँ? क्या मैं इसकी लिखी पात्रता शर्तें पूरी करता हूँ (ब्रिटेन में रहना, उम्र, निवास अवधि, मोबाइल नंबर)?\n- [ ] यह बैंक **अभी** कौन-से पहचान और कौन-से पते के दस्तावेज़ स्वीकार करता है? मैं ऑनलाइन सूची देख रहा हूँ या ब्रांच की?\n- [ ] क्या मेरा पासपोर्ट वैध है? ज़रूरत हो तो क्या मैं eVisa share code बनाना जानता हूँ?\n- [ ] अगर आम पते का प्रमाण नहीं है, तो क्या इस बैंक ने कोई वैकल्पिक दस्तावेज़ लिखे हैं?\n- [ ] खाता न खुले तो अगला कदम क्या है: तरीका बदलना, खाता बदलना, बैंक बदलना, या बुनियादी खाते के बारे में पूछना?\n- [ ] मेरा पैसा ब्रिटेन के अधिकृत बैंक या बिल्डिंग सोसाइटी में है? क्या यह किसी दूसरे ब्रांड के साथ लाइसेंस साझा करता है?\n- [ ] **अपना खाता किसी और को इस्तेमाल न करने दें, और अजनबियों के लिए पैसे न लें, न भेजें।** ब्रिटेन सरकार के अनुसार आपराधिक गिरोह दूसरों के खातों से अपराध का पैसा घुमाते हैं (जिसे \"money mule\" कहा जाता है), और मनी लॉन्ड्रिंग की सज़ा 14 साल तक की जेल हो सकती है; कुछ बैंक यह भी चेतावनी देते हैं कि धोखेबाज़ ख़ास तौर पर ब्रिटेन में नए आए छात्रों को निशाना बनाते हैं। [आधिकारिक आधार देखें](#guide-evidence-money-mule-warning)\n\n## आधिकारिक स्रोत\n\nनीचे दिए गए सभी स्रोत 7 अक्टूबर 2026 को देखे गए।\n\n- legislation.gov.uk — *The Money Laundering, Terrorist Financing and Transfer of Funds (Information on the Payer) Regulations 2017, regulation 28* — https://www.legislation.gov.uk/uksi/2017/692/regulation/28\n- Financial Conduct Authority (FCA) — *FCG 3.2 Themes (Financial Crime Guide)* — https://handbook.fca.org.uk/handbook/fcg3/fcg3s2\n- legislation.gov.uk — *The Payment Accounts Regulations 2015, regulation 19* — https://www.legislation.gov.uk/uksi/2015/2038/regulation/19\n- legislation.gov.uk — *The Payment Accounts Regulations 2015, regulation 20* — https://www.legislation.gov.uk/uksi/2015/2038/regulation/20\n- legislation.gov.uk — *The Payment Accounts Regulations 2015, regulation 22* — https://www.legislation.gov.uk/uksi/2015/2038/regulation/22\n- legislation.gov.uk — *The Payment Accounts Regulations 2015, regulation 23* — https://www.legislation.gov.uk/uksi/2015/2038/regulation/23\n- legislation.gov.uk — *The Payment Accounts Regulations 2015, regulation 25* — https://www.legislation.gov.uk/uksi/2015/2038/regulation/25\n- legislation.gov.uk — *Immigration Act 2014, section 40* — https://www.legislation.gov.uk/ukpga/2014/22/section/40\n- HM Treasury (GOV.UK) — *Basic bank accounts: July 2023 to June 2024* — https://www.gov.uk/government/publications/basic-bank-accounts-july-2023-to-june-2024/basic-bank-accounts-july-2023-to-june-2024\n- GOV.UK — *eVisas: access and use your online immigration status — What an eVisa is* — https://www.gov.uk/evisa/what-an-evisa-is\n- GOV.UK — *eVisas: access and use your online immigration status — View your eVisa and get a share code to prove your immigration status* — https://www.gov.uk/evisa/view-evisa-get-share-code-prove-immigration-status\n- GOV.UK — *Apply for a National Insurance number* — https://www.gov.uk/apply-national-insurance-number\n- Home Office (GOV.UK) — *Money laundering-linked financial exploitation: guidance for frontline professionals* — https://www.gov.uk/government/publications/money-mule-action-plan/money-laundering-linked-financial-exploitation-guidance-for-frontline-professionals-accessible\n- Financial Services Compensation Scheme (FSCS) — *Banks, building societies and credit unions* — https://www.fscs.org.uk/what-we-cover/banks-building-societies-credit-unions/\n- Financial Services Compensation Scheme (FSCS) — *Bank & savings protection checker* — https://www.fscs.org.uk/check/check-your-money-is-protected/\n- Bank of England (PRA) — *PRA confirms FSCS deposit limit to be increased to £120,000 from 1 December* — https://www.bankofengland.co.uk/news/2025/november/pra-confirms-fscs-deposit-limit-to-be-increased-to-120000-from-1-december\n- Bank of England (PRA) — *List of PRA-regulated Banks - September 2026 (as at 1 September 2026)* — https://www.bankofengland.co.uk/-/media/boe/files/prudential-regulation/authorisations/which-firms-does-the-pra-regulate/2026/banks-list-2609.csv\n\nनीचे दिए गए बैंकों की वेबसाइट के पेज सिर्फ़ लेख में उदाहरण के लिए हैं, सिफ़ारिश नहीं:\n\n- Barclays — *Student Additions Account* — https://www.barclays.co.uk/current-accounts/student-account/\n- Barclays — *Barclays Bank Account* — https://www.barclays.co.uk/current-accounts/bank-account/\n- Barclays — *What ID documents do I need to take to a branch?* — https://www.barclays.co.uk/help/accounts/opening/what-id/\n- Lloyds Bank — *Student bank accounts* — https://www.lloydsbank.com/current-accounts/all-accounts/student-account.html\n- Lloyds Bank — *New to the United Kingdom* — https://www.lloydsbank.com/current-accounts/help-and-guidance/new-to-uk.html\n- Lloyds Bank — *International Student* — https://www.lloydsbank.com/current-accounts/international-student.html\n- Lloyds Bank — *Proving your identity* — https://www.lloydsbank.com/help-guidance/legal-information/privacy/proof-of-identity.html\n- NatWest — *Student Bank Account* — https://www.natwest.com/current-accounts/student_account.html\n- NatWest — *What you need to open a bank account* — https://www.natwest.com/current-accounts/what-do-you-need-to-open-a-current-account.html\n- HSBC UK — *Documents you need for an ID check* — https://www.hsbc.co.uk/help/banking-made-easy/help-us-identify-you/\n- HSBC UK — *Bank Account* — https://www.hsbc.co.uk/current-accounts/products/bank-account/\n- Santander UK — *Basic Current Account* — https://www.santander.co.uk/personal/current-accounts/basic-current-account\n- Santander UK — *Bank account for international students* — https://www.santander.co.uk/personal/current-accounts/santander-edge-student-current-account/international-student\n- Nationwide Building Society — *Proving your identity* — https://www.nationwide.co.uk/help/your-details/proving-your-identity\n- Monzo — *How to open a Monzo Personal Account* — https://monzo.com/help/opening-an-account/how-to-open-a-Monzo-Personal-Account\n- Starling Bank — *Personal Account General Terms* — https://www.starlingbank.com/docs/legal/terms/starling-personal-account-general-terms-may-2026.pdf\n",
+  "publishedAt": null,
+  "updatedAt": "2026-11-27T00:00:00Z",
+  "sources": [
+    {
+      "key": "mlr-2017-reg-28",
+      "organisation": "legislation.gov.uk",
+      "title": "The Money Laundering, Terrorist Financing and Transfer of Funds (Information on the Payer) Regulations 2017, regulation 28",
+      "url": "https://www.legislation.gov.uk/uksi/2017/692/regulation/28",
+      "accessedAt": "2026-10-07T12:11:35Z"
+    },
+    {
+      "key": "fca-fcg-3-2",
+      "organisation": "Financial Conduct Authority（FCA）",
+      "title": "FCG 3.2 Themes（Financial Crime Guide）",
+      "url": "https://handbook.fca.org.uk/handbook/fcg3/fcg3s2",
+      "accessedAt": "2026-10-07T09:39:12Z"
+    },
+    {
+      "key": "par-2015-reg-19",
+      "organisation": "legislation.gov.uk",
+      "title": "The Payment Accounts Regulations 2015, regulation 19",
+      "url": "https://www.legislation.gov.uk/uksi/2015/2038/regulation/19",
+      "accessedAt": "2026-10-07T09:38:12Z"
+    },
+    {
+      "key": "par-2015-reg-20",
+      "organisation": "legislation.gov.uk",
+      "title": "The Payment Accounts Regulations 2015, regulation 20",
+      "url": "https://www.legislation.gov.uk/uksi/2015/2038/regulation/20",
+      "accessedAt": "2026-10-07T09:38:12Z"
+    },
+    {
+      "key": "par-2015-reg-22",
+      "organisation": "legislation.gov.uk",
+      "title": "The Payment Accounts Regulations 2015, regulation 22",
+      "url": "https://www.legislation.gov.uk/uksi/2015/2038/regulation/22",
+      "accessedAt": "2026-10-07T12:10:48Z"
+    },
+    {
+      "key": "par-2015-reg-23",
+      "organisation": "legislation.gov.uk",
+      "title": "The Payment Accounts Regulations 2015, regulation 23",
+      "url": "https://www.legislation.gov.uk/uksi/2015/2038/regulation/23",
+      "accessedAt": "2026-10-07T12:10:49Z"
+    },
+    {
+      "key": "par-2015-reg-25",
+      "organisation": "legislation.gov.uk",
+      "title": "The Payment Accounts Regulations 2015, regulation 25",
+      "url": "https://www.legislation.gov.uk/uksi/2015/2038/regulation/25",
+      "accessedAt": "2026-10-07T12:10:49Z"
+    },
+    {
+      "key": "immigration-act-2014-s40",
+      "organisation": "legislation.gov.uk",
+      "title": "Immigration Act 2014, section 40",
+      "url": "https://www.legislation.gov.uk/ukpga/2014/22/section/40",
+      "accessedAt": "2026-10-07T12:11:36Z"
+    },
+    {
+      "key": "hmt-basic-bank-accounts-2024",
+      "organisation": "HM Treasury（GOV.UK）",
+      "title": "Basic bank accounts: July 2023 to June 2024",
+      "url": "https://www.gov.uk/government/publications/basic-bank-accounts-july-2023-to-june-2024/basic-bank-accounts-july-2023-to-june-2024",
+      "accessedAt": "2026-10-07T12:11:04Z"
+    },
+    {
+      "key": "govuk-evisa-what",
+      "organisation": "GOV.UK",
+      "title": "eVisas: access and use your online immigration status — What an eVisa is",
+      "url": "https://www.gov.uk/evisa/what-an-evisa-is",
+      "accessedAt": "2026-10-07T09:38:00Z"
+    },
+    {
+      "key": "govuk-evisa-share-code",
+      "organisation": "GOV.UK",
+      "title": "eVisas: access and use your online immigration status — View your eVisa and get a share code to prove your immigration status",
+      "url": "https://www.gov.uk/evisa/view-evisa-get-share-code-prove-immigration-status",
+      "accessedAt": "2026-10-07T09:38:00Z"
+    },
+    {
+      "key": "govuk-apply-ni-number",
+      "organisation": "GOV.UK",
+      "title": "Apply for a National Insurance number",
+      "url": "https://www.gov.uk/apply-national-insurance-number",
+      "accessedAt": "2026-10-07T09:43:52Z"
+    },
+    {
+      "key": "home-office-money-mule-guidance",
+      "organisation": "Home Office（GOV.UK）",
+      "title": "Money laundering-linked financial exploitation: guidance for frontline professionals",
+      "url": "https://www.gov.uk/government/publications/money-mule-action-plan/money-laundering-linked-financial-exploitation-guidance-for-frontline-professionals-accessible",
+      "accessedAt": "2026-10-07T09:39:34Z"
+    },
+    {
+      "key": "fscs-banks",
+      "organisation": "Financial Services Compensation Scheme（FSCS）",
+      "title": "Banks, building societies and credit unions",
+      "url": "https://www.fscs.org.uk/what-we-cover/banks-building-societies-credit-unions/",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "fscs-protection-checker",
+      "organisation": "Financial Services Compensation Scheme（FSCS）",
+      "title": "Bank & savings protection checker",
+      "url": "https://www.fscs.org.uk/check/check-your-money-is-protected/",
+      "accessedAt": "2026-10-07T09:39:19Z"
+    },
+    {
+      "key": "boe-pra-fscs-120k",
+      "organisation": "Bank of England（PRA）",
+      "title": "PRA confirms FSCS deposit limit to be increased to £120,000 from 1 December",
+      "url": "https://www.bankofengland.co.uk/news/2025/november/pra-confirms-fscs-deposit-limit-to-be-increased-to-120000-from-1-december",
+      "accessedAt": "2026-10-07T12:12:46Z"
+    },
+    {
+      "key": "boe-pra-banks-list-2026-09",
+      "organisation": "Bank of England（PRA）",
+      "title": "List of PRA-regulated Banks - September 2026（as at 1 September 2026）",
+      "url": "https://www.bankofengland.co.uk/-/media/boe/files/prudential-regulation/authorisations/which-firms-does-the-pra-regulate/2026/banks-list-2609.csv",
+      "accessedAt": "2026-10-07T12:14:10Z"
+    },
+    {
+      "key": "barclays-student-account",
+      "organisation": "Barclays",
+      "title": "Student Additions Account",
+      "url": "https://www.barclays.co.uk/current-accounts/student-account/",
+      "accessedAt": "2026-10-07T12:12:54Z"
+    },
+    {
+      "key": "barclays-bank-account",
+      "organisation": "Barclays",
+      "title": "Barclays Bank Account",
+      "url": "https://www.barclays.co.uk/current-accounts/bank-account/",
+      "accessedAt": "2026-10-07T12:12:55Z"
+    },
+    {
+      "key": "barclays-branch-id",
+      "organisation": "Barclays",
+      "title": "What ID documents do I need to take to a branch?",
+      "url": "https://www.barclays.co.uk/help/accounts/opening/what-id/",
+      "accessedAt": "2026-10-07T09:40:20Z"
+    },
+    {
+      "key": "lloyds-student-account",
+      "organisation": "Lloyds Bank",
+      "title": "Student bank accounts",
+      "url": "https://www.lloydsbank.com/current-accounts/all-accounts/student-account.html",
+      "accessedAt": "2026-10-07T12:12:54Z"
+    },
+    {
+      "key": "lloyds-new-to-uk",
+      "organisation": "Lloyds Bank",
+      "title": "New to the United Kingdom",
+      "url": "https://www.lloydsbank.com/current-accounts/help-and-guidance/new-to-uk.html",
+      "accessedAt": "2026-10-07T09:40:25Z"
+    },
+    {
+      "key": "lloyds-international-student",
+      "organisation": "Lloyds Bank",
+      "title": "International Student",
+      "url": "https://www.lloydsbank.com/current-accounts/international-student.html",
+      "accessedAt": "2026-10-07T09:40:25Z"
+    },
+    {
+      "key": "lloyds-proving-identity",
+      "organisation": "Lloyds Bank",
+      "title": "Proving your identity",
+      "url": "https://www.lloydsbank.com/help-guidance/legal-information/privacy/proof-of-identity.html",
+      "accessedAt": "2026-10-07T09:40:25Z"
+    },
+    {
+      "key": "natwest-student-account",
+      "organisation": "NatWest",
+      "title": "Student Bank Account",
+      "url": "https://www.natwest.com/current-accounts/student_account.html",
+      "accessedAt": "2026-10-07T12:12:55Z"
+    },
+    {
+      "key": "natwest-what-you-need",
+      "organisation": "NatWest",
+      "title": "What you need to open a bank account",
+      "url": "https://www.natwest.com/current-accounts/what-do-you-need-to-open-a-current-account.html",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "hsbc-id-documents",
+      "organisation": "HSBC UK",
+      "title": "Documents you need for an ID check",
+      "url": "https://www.hsbc.co.uk/help/banking-made-easy/help-us-identify-you/",
+      "accessedAt": "2026-10-07T09:40:23Z"
+    },
+    {
+      "key": "hsbc-bank-account",
+      "organisation": "HSBC UK",
+      "title": "Bank Account",
+      "url": "https://www.hsbc.co.uk/current-accounts/products/bank-account/",
+      "accessedAt": "2026-10-07T12:13:53Z"
+    },
+    {
+      "key": "santander-basic-account",
+      "organisation": "Santander UK",
+      "title": "Basic Current Account",
+      "url": "https://www.santander.co.uk/personal/current-accounts/basic-current-account",
+      "accessedAt": "2026-10-07T12:23:36Z"
+    },
+    {
+      "key": "santander-international-students",
+      "organisation": "Santander UK",
+      "title": "Bank account for international students",
+      "url": "https://www.santander.co.uk/personal/current-accounts/santander-edge-student-current-account/international-student",
+      "accessedAt": "2026-10-07T12:23:31Z"
+    },
+    {
+      "key": "nationwide-proving-identity",
+      "organisation": "Nationwide Building Society",
+      "title": "Proving your identity",
+      "url": "https://www.nationwide.co.uk/help/your-details/proving-your-identity",
+      "accessedAt": "2026-10-07T09:40:28Z"
+    },
+    {
+      "key": "monzo-how-to-open",
+      "organisation": "Monzo",
+      "title": "How to open a Monzo Personal Account",
+      "url": "https://monzo.com/help/opening-an-account/how-to-open-a-Monzo-Personal-Account",
+      "accessedAt": "2026-10-07T09:40:27Z"
+    },
+    {
+      "key": "starling-general-terms",
+      "organisation": "Starling Bank",
+      "title": "Personal Account General Terms",
+      "url": "https://www.starlingbank.com/docs/legal/terms/starling-personal-account-general-terms-may-2026.pdf",
+      "accessedAt": "2026-10-07T12:14:50Z"
+    }
+  ],
+  "evidence": [
+    {
+      "key": "mlr-identity-verification",
+      "statement": "ब्रिटेन के मनी लॉन्ड्रिंग विरोधी नियम बैंकों से ग्राहक की पहचान और उसकी पुष्टि करने को कहते हैं, और तरीका बैंक अपने जोखिम आकलन से तय करता है, जो अलग-अलग स्थितियों में अलग हो सकता है।",
+      "supports": [
+        {
+          "sourceKey": "mlr-2017-reg-28",
+          "locator": "regulation 28(2), (12)",
+          "excerpt": null,
+          "note": "\"identify the customer\"; \"verify the customer's identity\"; उपायों में जोखिम आकलन झलकना चाहिए, \"may differ from case to case\"।"
+        }
+      ]
+    },
+    {
+      "key": "mlr-electronic-identification",
+      "statement": "नियम भरोसेमंद और स्वतंत्र स्रोतों से पहचान की पुष्टि की अनुमति देते हैं, और शर्तें पूरी करने वाली इलेक्ट्रॉनिक पहचान जाँच ऐसा स्रोत हो सकती है।",
+      "supports": [
+        {
+          "sourceKey": "mlr-2017-reg-28",
+          "locator": "regulation 28(18), (19)",
+          "excerpt": null,
+          "note": "\"obtained from a reliable source which is independent\"; \"electronic identification process\" से भी हो सकता है, बशर्ते सुरक्षित हो और पर्याप्त भरोसा दे।"
+        },
+        {
+          "sourceKey": "fca-fcg-3-2",
+          "locator": "FCG 3.2.4（Customer due diligence）",
+          "excerpt": null,
+          "note": "\"an electronic identification process may be regarded as a reliable source for the purposes of CDD verification\"। सेल्फ़ी और वीडियो मिलान बैंकों की असली प्रक्रिया के उदाहरण हैं।"
+        }
+      ]
+    },
+    {
+      "key": "mlr-risk-based-cdd",
+      "statement": "नियमों ने सभी बैंकों के लिए खाता खोलने के दस्तावेज़ों की कोई एक समान सूची तय नहीं की; कौन-से दस्तावेज़ चाहिए, यह हर बैंक अपनी जोखिम प्रक्रिया से तय करता है।",
+      "supports": [
+        {
+          "sourceKey": "mlr-2017-reg-28",
+          "locator": "regulation 28(12), (18)",
+          "excerpt": null,
+          "note": "प्रावधान पहचान की पुष्टि और जोखिम आकलन के हिसाब से उपायों की माँग करता है (\"may differ from case to case\"), और सिर्फ़ यह कहता है कि पुष्टि भरोसेमंद, स्वतंत्र स्रोत के \"documents or information\" पर हो; कोई ख़ास दस्तावेज़ या पते का प्रमाण नहीं दिया गया। उद्योग दिशानिर्देश (JMLSG) की समीक्षा नहीं की गई, इसलिए बात \"नियमों में एक समान सूची नहीं\" तक सीमित है।"
+        }
+      ]
+    },
+    {
+      "key": "providers-ask-for-address",
+      "statement": "ज़्यादातर बैंक पते का प्रमाण माँगते हैं या माँग सकते हैं, कौन-से दस्तावेज़ और किस तरीके से स्वीकार होते हैं, यह हर बैंक में अलग है।",
+      "supports": [
+        {
+          "sourceKey": "barclays-branch-id",
+          "locator": "Proof of address",
+          "excerpt": null,
+          "note": "ब्रांच में खाता खोलने के लिए \"two valid, original documents – one to prove your identity and one to verify your address\"।"
+        },
+        {
+          "sourceKey": "natwest-what-you-need",
+          "locator": "How can you prove your identity online?",
+          "excerpt": null,
+          "note": "\"We might also need to see a proof of address\"।"
+        },
+        {
+          "sourceKey": "monzo-how-to-open",
+          "locator": "Step 4: Tell us about you",
+          "excerpt": null,
+          "note": "\"We might ask you to verify that you live at the address you chose\"। शोध में शामिल 8 बैंकों में से ज़्यादातर पते का प्रमाण लिखते हैं, शब्दों की सख़्ती अलग-अलग है।"
+        }
+      ]
+    },
+    {
+      "key": "evisa-replaced-physical-documents",
+      "statement": "eVisa ने काग़ज़ी इमिग्रेशन दस्तावेज़ों की जगह ले ली है।",
+      "supports": [
+        {
+          "sourceKey": "govuk-evisa-what",
+          "locator": "What an eVisa is",
+          "excerpt": null,
+          "note": "\"eVisas have replaced physical immigration documents.\""
+        }
+      ]
+    },
+    {
+      "key": "evisa-share-code-90-days",
+      "statement": "share code बनाकर दूसरों से इमिग्रेशन स्थिति की पुष्टि कराई जा सकती है; share code 90 दिन तक वैध रहता है और कभी भी नया बनाया जा सकता है।",
+      "supports": [
+        {
+          "sourceKey": "govuk-evisa-share-code",
+          "locator": "View your eVisa and get a share code to prove your immigration status",
+          "excerpt": null,
+          "note": "\"A share code lasts for 90 days\"; \"get a new share code whenever you need one\"।"
+        }
+      ]
+    },
+    {
+      "key": "brp-still-listed-by-some-providers",
+      "statement": "7 अक्टूबर 2026 तक कुछ बैंकों की दस्तावेज़ सूची में अब भी BRP दर्ज था।",
+      "supports": [
+        {
+          "sourceKey": "nationwide-proving-identity",
+          "locator": "Proof of name（表格）",
+          "excerpt": null,
+          "note": "नाम साबित करने वाले दस्तावेज़ों में \"UK Home Office Biometric Residence Permit\" दर्ज है (सिर्फ़ ब्रांच)। यह सिर्फ़ \"कुछ बैंक अब भी BRP लिखते हैं\" का उदाहरण है, दूसरे बैंकों के तरीके का प्रतिनिधित्व नहीं।"
+        }
+      ]
+    },
+    {
+      "key": "student-accounts-three-year-residence",
+      "statement": "7 अक्टूबर 2026 तक Barclays Student Additions Account, Lloyds Student Current Account और NatWest छात्र खाते की शर्तों में ब्रिटेन में लगभग तीन साल रहना ज़रूरी था; ये बैंक बताते हैं कि शर्त पूरी न करने वाले दूसरे खाते देख सकते हैं।",
+      "supports": [
+        {
+          "sourceKey": "barclays-student-account",
+          "locator": "How to apply；FAQ",
+          "excerpt": null,
+          "note": "\"You can only apply for a student account if you've lived in the UK for more than three years\"; FAQ में यह भी लिखा है \"You must have been living in the UK for at least 3 years to open a student account\" (दोनों तरह के शब्द मौजूद हैं); \"If you haven't, you can apply for a Barclays Bank Account in the app\"।"
+        },
+        {
+          "sourceKey": "lloyds-student-account",
+          "locator": "Who can apply?；Are you an international student?",
+          "excerpt": null,
+          "note": "\"have been a UK resident for at least 3 years\"; \"But you could apply for another account with us\"।"
+        },
+        {
+          "sourceKey": "natwest-student-account",
+          "locator": "You can apply if；Can an international student get a bank account in the UK?",
+          "excerpt": null,
+          "note": "\"have been living in the UK for at least 3 years\"; \"We have plenty of other current account options\"।"
+        }
+      ]
+    },
+    {
+      "key": "barclays-bank-account-requirements",
+      "statement": "7 अक्टूबर 2026 तक Barclays Bank Account के लिए ब्रिटिश निवासी होना, ब्रिटेन का मोबाइल नंबर और पहचान का प्रमाण ज़रूरी था; ब्रिटेन का मोबाइल नंबर न हो तो ऑनलाइन आवेदन; eVisa के लिए ब्रांच अपॉइंटमेंट ज़रूरी।",
+      "supports": [
+        {
+          "sourceKey": "barclays-bank-account",
+          "locator": "To open a Barclays Bank Account；FAQ",
+          "excerpt": null,
+          "note": "\"Be a UK resident\"; \"Have a UK mobile number\"; \"If you don't have a UK mobile number, you can apply online instead\"; \"If you are looking to use an eVisa then an appointment will need to be made in Branch\"। उसी पेज का \"three years of address history\" सार्वजनिक पाठ में इस्तेमाल नहीं किया गया (अर्थ स्पष्ट नहीं)।"
+        }
+      ]
+    },
+    {
+      "key": "credit-checks-vary",
+      "statement": "कुछ खातों में खोलते समय क्रेडिट जाँच होती है, कुछ बैंक खुलने के बाद भी समय-समय पर पहचान, धोखाधड़ी और क्रेडिट जाँच करते हैं; हर बैंक और खाते में अलग है।",
+      "supports": [
+        {
+          "sourceKey": "barclays-student-account",
+          "locator": "FAQ：I've just moved to the country",
+          "excerpt": null,
+          "note": "Barclays Bank Account \"subject to a successful credit check\"।"
+        },
+        {
+          "sourceKey": "hsbc-bank-account",
+          "locator": "Who can apply?",
+          "excerpt": null,
+          "note": "\"Are happy for us to do a credit check against your name (if you're applying for a joint account and live in the UK)\", यानी हर स्थिति में जाँच नहीं होती।"
+        },
+        {
+          "sourceKey": "starling-general-terms",
+          "locator": "Personal Account General Terms（2026 年 5 月版）",
+          "excerpt": null,
+          "note": "\"we carry out certain identity fraud and credit checks regularly\" (खाता देने और बनाए रखने के लिए)। PDF से पाठ निकालने में कुछ अक्षर छूट गए, यह वाक्य पूरा है।"
+        }
+      ]
+    },
+    {
+      "key": "lloyds-non-uk-passport-app-only",
+      "statement": "7 अक्टूबर 2026 तक Lloyds ने लिखा था कि ग़ैर-ब्रिटिश पासपोर्ट सिर्फ़ मोबाइल app में पहचान साबित करने के लिए इस्तेमाल हो सकता है।",
+      "supports": [
+        {
+          "sourceKey": "lloyds-new-to-uk",
+          "locator": "1. Account opening essentials：Identification we accept",
+          "excerpt": null,
+          "note": "\"Non-UK passport (mobile banking app only).\""
+        }
+      ]
+    },
+    {
+      "key": "natwest-passport-with-visa-or-share-code",
+      "statement": "7 अक्टूबर 2026 तक NatWest ने लिखा था कि ग़ैर-ब्रिटिश / ग़ैर-यूरोपीय संघ पासपोर्ट के साथ वैध वीज़ा या eVisa share code ज़रूरी है।",
+      "supports": [
+        {
+          "sourceKey": "natwest-what-you-need",
+          "locator": "Non-UK/EU：Proof of ID",
+          "excerpt": null,
+          "note": "\"Your passport must be supported by a valid Visa or an eVisa Share Code.\""
+        }
+      ]
+    },
+    {
+      "key": "monzo-onboarding-may-ask-address",
+      "statement": "Monzo खाता खोलने के लिए दस्तावेज़ की फ़ोटो और सेल्फ़ी वीडियो लेनी होती है, और दिए गए पते पर रहने का प्रमाण माँगा जा सकता है।",
+      "supports": [
+        {
+          "sourceKey": "monzo-how-to-open",
+          "locator": "Step 4；Step 5",
+          "excerpt": null,
+          "note": "\"We might ask you to verify that you live at the address you chose\"; \"take a picture of your ID and then take a selfie video\"। इसका मतलब यह नहीं कि यह दूसरे बैंकों से आसान है।"
+        }
+      ]
+    },
+    {
+      "key": "hsbc-university-and-employer-letters",
+      "statement": "7 अक्टूबर 2026 तक HSBC के दस्तावेज़ विवरण में पात्र कोर्स में दाख़िले की पुष्टि करने वाला यूनिवर्सिटी का पत्र (ऑनलाइन और ब्रांच) दर्ज था, और ब्रांच में जाने-माने नियोक्ता का पते और नौकरी की पुष्टि वाला पत्र।",
+      "supports": [
+        {
+          "sourceKey": "hsbc-id-documents",
+          "locator": "Proof of address documents you can upload online；Proof of address documents you can bring into a branch",
+          "excerpt": null,
+          "note": "\"Letter from a UK Border Agency accredited college or university, confirming your acceptance onto a qualifying course\" (ऑनलाइन अपलोड सूची; ब्रांच सूची में भी मिलते-जुलते शब्द); ब्रांच: \"Letter from employer, confirming your address and that you currently work for them (it must be a known employer)\"। HSBC के पाठ में एक समाप्त हो चुकी संस्था का नाम इस्तेमाल हुआ है।"
+        }
+      ]
+    },
+    {
+      "key": "natwest-new-to-uk-alternatives",
+      "statement": "7 अक्टूबर 2026 तक NatWest ने नए आने वालों को सलाह दी कि HMRC का राष्ट्रीय बीमा नंबर या टैक्स कोड सूचना पत्र, या ब्रिटेन के नए पते पर भेजा गया मौजूदा बैंक का स्टेटमेंट (ज़रूरी नहीं कि ब्रिटिश बैंक का हो) इस्तेमाल कर सकते हैं।",
+      "supports": [
+        {
+          "sourceKey": "natwest-what-you-need",
+          "locator": "Are you new to the UK?：Working in the UK；International student",
+          "excerpt": null,
+          "note": "\"HMRC notification of National Insurance number\"; \"HMRC notification of tax coding\"; \"Bank statement from an existing bank which is now addressed to your new UK address (this does not need to be from a UK bank)\"। यह पुष्टि नहीं हुई कि चीनी बैंक ऐसे भेज सकते हैं या किसी ख़ास मामले में स्वीकार होगा।"
+        }
+      ]
+    },
+    {
+      "key": "santander-basic-for-new-uk-students",
+      "statement": "7 अक्टूबर 2026 तक Santander ने लिखा कि उसका Basic Current Account 16 साल से ज़्यादा उम्र, ब्रिटेन में रहने वाले, और ब्रिटिश बैंक खाता न होने या दूसरा खाता अस्वीकार होने वालों के लिए है, और अभी ब्रिटेन आए लोगों के लिए ठीक है; अंतरराष्ट्रीय छात्रों के लिए share code / वीज़ा और university banking letter का ज़िक्र है।",
+      "supports": [
+        {
+          "sourceKey": "santander-international-students",
+          "locator": "Can I apply for a Basic account ? Yes if",
+          "excerpt": null,
+          "note": "\"Our Basic Current Account might be suitable if you are a student new to the UK\"; \"you can provide your share code/visa\"; \"such as your university banking letter\"।"
+        },
+        {
+          "sourceKey": "santander-basic-account",
+          "locator": "Basic Current Account（开头）；Can I apply for a Basic account ? Yes if",
+          "excerpt": null,
+          "note": "\"This account is usually for people who don't have a UK bank account or can't get one of our other current accounts\"; \"if you're new to the UK\"; \"You're 16+ and live in the UK\"। दस्तावेज़ सूची (PDF) पढ़ी नहीं जा सकी, इसलिए नहीं दी गई।"
+        }
+      ]
+    },
+    {
+      "key": "lloyds-classic-for-international-students",
+      "statement": "7 अक्टूबर 2026 तक Lloyds ने लिखा था कि 18 साल या ज़्यादा उम्र, पहले से ब्रिटेन में रहना और वैध पासपोर्ट हो तो Classic Account के लिए आवेदन कर सकते हैं।",
+      "supports": [
+        {
+          "sourceKey": "lloyds-international-student",
+          "locator": "Welcome to student life in the UK",
+          "excerpt": null,
+          "note": "\"If you're aged 18 or over, living in the UK and have a valid passport, you can apply for a Lloyds Classic Account\"।"
+        }
+      ]
+    },
+    {
+      "key": "tenancy-agreement-varies",
+      "statement": "किराए का अनुबंध स्वीकार होता है या नहीं, यह बैंक पर निर्भर है: जारी करने वाले और तरीके दोनों पर सीमाएँ हैं; निजी मकान मालिक से सीधे किए गए अनुबंध की साफ़ स्वीकार्यता ज़्यादातर सूचियों में नहीं दिखी।",
+      "supports": [
+        {
+          "sourceKey": "barclays-branch-id",
+          "locator": "And one proof of UK address document",
+          "excerpt": null,
+          "note": "\"Tenancy agreement from last 12 months from local council or housing association\"।"
+        },
+        {
+          "sourceKey": "lloyds-proving-identity",
+          "locator": "Accepted documents（表格）",
+          "excerpt": null,
+          "note": "\"Tenancy agreement issued by a solicitor, housing association, local council or reputable letting agency\"; तालिका में इस पंक्ति के लिए \"Accepted online\" पर No लिखा है।"
+        },
+        {
+          "sourceKey": "hsbc-id-documents",
+          "locator": "Proof of address documents you can bring into a branch",
+          "excerpt": null,
+          "note": "\"Tenancy agreement (must be from a local council or reputable lending agency)\"। \"ज़्यादातर सूचियों में नहीं दिखी\" शोध में शामिल सूचियों का सार है।"
+        }
+      ]
+    },
+    {
+      "key": "ni-number-eligibility-and-timing",
+      "statement": "जो ब्रिटेन में रहते हों, काम करने का अधिकार रखते हों, और काम कर रहे हों / काम ढूँढ रहे हों / नौकरी का प्रस्ताव हो, वे राष्ट्रीय बीमा नंबर के लिए आवेदन कर सकते हैं; कुछ लोगों का नंबर पहले से eVisa में दिखता है; ज़्यादा से ज़्यादा 4 हफ़्ते लग सकते हैं।",
+      "supports": [
+        {
+          "sourceKey": "govuk-apply-ni-number",
+          "locator": "Who can apply；If you have a biometric residence permit (BRP) or eVisa；If you've already applied",
+          "excerpt": null,
+          "note": "\"have the right to work in the UK\"; \"are working, looking for work or have an offer to start work\"; \"you might have a National Insurance number already\"; \"It can take up to 4 weeks to get your National Insurance number.\""
+        }
+      ]
+    },
+    {
+      "key": "santander-branch-help-without-listed-documents",
+      "statement": "7 अक्टूबर 2026 तक Santander ने लिखा था कि सूची वाला पहचान दस्तावेज़ या ब्रिटेन का स्थायी पता न हो तो ब्रांच में बात की जा सकती है।",
+      "supports": [
+        {
+          "sourceKey": "santander-basic-account",
+          "locator": "Facing homelessness or housing difficulties / 文件说明",
+          "excerpt": null,
+          "note": "\"If you don't have a listed proof of ID or permanent UK address, we may still be able to help. Please come and talk to us in branch\"।"
+        }
+      ]
+    },
+    {
+      "key": "immigration-act-s40-disqualified-person",
+      "statement": "क़ानून बैंकों को ऐसे व्यक्ति का चालू खाता खोलने से मना करता है जो ब्रिटेन में हो, जिसे रहने की अनुमति चाहिए पर न हो, और जिसके बारे में सरकार मानती हो कि खाता नहीं खुलना चाहिए।",
+      "supports": [
+        {
+          "sourceKey": "immigration-act-2014-s40",
+          "locator": "section 40(1)–(3)",
+          "excerpt": null,
+          "note": "\"must not open a current account for a person (P) who is within subsection (2)\"; \"requires leave to enter or remain in the United Kingdom but does not have it\"; \"for whom the Secretary of State considers that a current account should not be opened\"। मौजूदा कार्य प्रक्रिया की पुष्टि नहीं हुई, इसलिए वर्णन नहीं किया गया।"
+        }
+      ]
+    },
+    {
+      "key": "basic-account-features",
+      "statement": "बुनियादी खाता पाउंड खाता है, जिसमें पैसे जमा करना, नक़द निकालना, डेबिट कार्ड, direct debit और पैसे भेजना संभव है, सामान्य पाउंड लेन-देन मुफ़्त हैं, और ओवरड्राफ़्ट नहीं होता।",
+      "supports": [
+        {
+          "sourceKey": "par-2015-reg-19",
+          "locator": "regulation 19(1)",
+          "excerpt": null,
+          "note": "शामिल हैं \"direct debits\", \"payment transactions through a payment card\", \"credit transfers\"।"
+        },
+        {
+          "sourceKey": "par-2015-reg-20",
+          "locator": "regulation 20(1)",
+          "excerpt": null,
+          "note": "\"must not charge any fee\" (संबंधित पाउंड सेवाओं के लिए)।"
+        },
+        {
+          "sourceKey": "hmt-basic-bank-accounts-2024",
+          "locator": "Introduction",
+          "excerpt": null,
+          "note": "\"must be fee-free for standard operations (when provided in sterling) and not have an overdraft facility\"।"
+        }
+      ]
+    },
+    {
+      "key": "basic-account-designated-institutions",
+      "statement": "ब्रिटेन के नियम सरकार द्वारा नामित कुछ बैंकों से पात्र लोगों को बुनियादी खाता देने को कहते हैं; हर बैंक पर यह दायित्व नहीं।",
+      "supports": [
+        {
+          "sourceKey": "par-2015-reg-22",
+          "locator": "regulation 22(1)",
+          "excerpt": null,
+          "note": "\"A designated credit institution must offer a payment account with basic features\" (reg 23 की शर्तें पूरी करने वालों के लिए)।"
+        },
+        {
+          "sourceKey": "hmt-basic-bank-accounts-2024",
+          "locator": "Introduction",
+          "excerpt": null,
+          "note": "\"HM Treasury has designated the nine largest personal current account (PCA) providers\" (सूची रिपोर्ट में है, डेटा जून 2024 तक, नवंबर 2025 में प्रकाशित; सार्वजनिक पाठ में सूची नहीं दी गई)।"
+        }
+      ]
+    },
+    {
+      "key": "basic-account-eligibility",
+      "statement": "शर्तें मोटे तौर पर: ब्रिटेन में क़ानूनी रूप से रहना, और बुनियादी सुविधाओं वाला कोई दूसरा ब्रिटिश बैंक खाता न होना, या इस बैंक के बाक़ी सभी खातों की शर्तें पूरी न होना।",
+      "supports": [
+        {
+          "sourceKey": "par-2015-reg-23",
+          "locator": "regulation 23(1)",
+          "excerpt": null,
+          "note": "\"legally resident\"; \"not hold a payment account with any United Kingdom credit institution\"; \"be ineligible for all payment accounts offered by B that are not payment accounts with basic features\"। \"क़ानूनी रूप से रहना\" की नियमों में पूरी परिभाषा नहीं।"
+        }
+      ]
+    },
+    {
+      "key": "basic-account-refusal-grounds",
+      "statement": "बैंक फिर भी पहचान की जाँच करता है; खाता खोलना ग़ैर-क़ानूनी हो तो बैंक को मना करना होगा।",
+      "supports": [
+        {
+          "sourceKey": "par-2015-reg-25",
+          "locator": "regulation 25(1)",
+          "excerpt": null,
+          "note": "\"must refuse to open a payment account with basic features for a consumer where it would be unlawful for it to do so, including\" मनी लॉन्ड्रिंग विरोधी नियमों का उल्लंघन आदि। \"पहचान की जाँच पूरी न हो पाना\" इसी के आधार पर उदाहरण है।"
+        }
+      ]
+    },
+    {
+      "key": "basic-account-refusal-reasons-complaints",
+      "statement": "मना करने पर बैंक को आम तौर पर लिखित कारण और शिकायत का तरीका बताना चाहिए, जिसमें वित्तीय लोकपाल (FOS) शामिल है।",
+      "supports": [
+        {
+          "sourceKey": "par-2015-reg-25",
+          "locator": "regulation 25(3)–(5)（2026 年 4 月 28 日起的版本）",
+          "excerpt": null,
+          "note": "\"inform the consumer in writing and free of charge of the reason for the refusal if it may lawfully do so\"; \"the right to make a complaint to the Financial Ombudsman Service\" बताना ज़रूरी है।"
+        }
+      ]
+    },
+    {
+      "key": "fscs-120k-limit",
+      "statement": "ब्रिटेन का अधिकृत बैंक, बिल्डिंग सोसाइटी या क्रेडिट यूनियन बंद हो तो FSCS आम तौर पर हर पात्र जमाकर्ता, हर अधिकृत संस्था को £120,000 तक देती है, यह 30 नवंबर 2025 के बाद बंद होने वाली संस्थाओं पर लागू है।",
+      "supports": [
+        {
+          "sourceKey": "fscs-banks",
+          "locator": "If the firm failed after 30 November 2025",
+          "excerpt": null,
+          "note": "\"up to £120,000 per eligible person, per bank, building society or credit union\"; \"On 1 December 2025 the deposit limit rose to £120,000.\""
+        },
+        {
+          "sourceKey": "boe-pra-fscs-120k",
+          "locator": "News release（2025 年 11 月 18 日）",
+          "excerpt": null,
+          "note": "\"will protect up to £120,000 of a depositor\" (PRA द्वारा पुष्ट नई सीमा)।"
+        }
+      ]
+    },
+    {
+      "key": "fscs-shared-licence",
+      "statement": "एक बैंकिंग लाइसेंस साझा करने वाले अलग-अलग ब्रांड एक ही बैंक गिने जाते हैं।",
+      "supports": [
+        {
+          "sourceKey": "fscs-banks",
+          "locator": "Shared banking licences",
+          "excerpt": null,
+          "note": "\"share a banking licence) we have to treat them as one bank\"।"
+        }
+      ]
+    },
+    {
+      "key": "fscs-emoney-not-covered",
+      "statement": "इलेक्ट्रॉनिक मनी संस्थाओं और भुगतान संस्थाओं का पैसा FSCS की जमा सुरक्षा में शामिल नहीं है।",
+      "supports": [
+        {
+          "sourceKey": "fscs-protection-checker",
+          "locator": "Can't find your firm?",
+          "excerpt": null,
+          "note": "\"FSCS can't protect e-money or payment services firms.\""
+        }
+      ]
+    },
+    {
+      "key": "fscs-how-to-check",
+      "statement": "FSCS का सुरक्षा जाँच टूल, या FCA का Financial Services Register इस्तेमाल करके देखा जा सकता है कि संस्था अधिकृत है या नहीं, और लाइसेंस साझा करती है या नहीं।",
+      "supports": [
+        {
+          "sourceKey": "fscs-banks",
+          "locator": "Banks, building societies and credit unions（开头）；Shared banking licences",
+          "excerpt": null,
+          "note": "\"you can check this on the Financial Services Register\"; \"bank & savings protection checker\"; रजिस्टर पर \"which banks share a licence\" देखा जा सकता है।"
+        }
+      ]
+    },
+    {
+      "key": "pra-list-monzo-starling",
+      "statement": "1 सितंबर 2026 तक PRA की सूची में Monzo Bank Limited और Starling Bank Limited ब्रिटेन में पंजीकृत, जमा लेने के लिए अधिकृत बैंक के रूप में दर्ज हैं; सूची के अनुसार Financial Services Register अंतिम है।",
+      "supports": [
+        {
+          "sourceKey": "boe-pra-banks-list-2026-09",
+          "locator": "Banks incorporated in the UK authorised to accept deposits",
+          "excerpt": null,
+          "note": "\"MONZO BANK LIMITED\",\"730427\"; \"Starling Bank Limited\",\"730166\"; \"it does not supersede the Financial Service Register\"। सिर्फ़ उदाहरण, सिफ़ारिश नहीं।"
+        }
+      ]
+    },
+    {
+      "key": "money-mule-warning",
+      "statement": "आपराधिक गिरोह दूसरों के खातों से अपराध का पैसा घुमाते हैं (money mule), मनी लॉन्ड्रिंग की सज़ा 14 साल जेल तक हो सकती है; कुछ बैंक चेतावनी देते हैं कि धोखेबाज़ नए आए छात्रों को निशाना बनाते हैं।",
+      "supports": [
+        {
+          "sourceKey": "home-office-money-mule-guidance",
+          "locator": "What is ‘money muling’?；What is money laundering?",
+          "excerpt": null,
+          "note": "\"Money mules can also give control of their account to criminals\"; \"up to 14 years in prison\"।"
+        },
+        {
+          "sourceKey": "santander-international-students",
+          "locator": "Stay safe from scams",
+          "excerpt": null,
+          "note": "\"Some criminals target students who are new to the country.\""
+        }
+      ]
+    }
+  ],
+  "status": "DRAFT"
+}
