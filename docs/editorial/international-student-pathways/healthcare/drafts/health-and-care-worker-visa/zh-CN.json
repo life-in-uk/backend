@@ -1,0 +1,244 @@
+{
+  "slug": "health-and-care-worker-visa",
+  "category": "work-visa",
+  "title": "NHS 求职与健康和护理工作签证：申请前怎么核对岗位",
+  "summary": "写给国际毕业生和在海外受训的医护人员。接受录用前，核对执业注册、岗位担保、薪资和适用的签证类别。",
+  "content": "# NHS 求职与健康和护理工作签证：申请前怎么核对岗位\n\n最后更新: 2026-11-27\n\n## 先核对具体岗位\n在 NHS 工作不等于符合签证条件。健康和护理工作签证属于技术工人（Skilled Worker）路线。你需要符合条件的岗位、获准担保的雇主和担保证明（CoS）。NHS 机构、符合条件的 NHS 供应商或成人社会护理机构可以担保符合条件的岗位。找到具体招聘公告，在担保雇主名册核对雇主的法定名称，并向招聘团队确认这个岗位是否提供担保。不要只看公告中的通用措辞。 [核对雇主](#guide-evidence-start)\n\n## 分开核对执业注册与签证\n医生应核对英国医学总会（GMC）的注册和执业许可，以及职级要求。海外医学毕业生可能需要参加 PLAB 考试，也可能符合 GMC 的其他注册途径。护士和助产士应查看护理及助产士委员会（NMC）对学历、英语证明及适用的能力测试的要求。物理治疗师、放射技师等使用受保护职称的专业人员应查询健康与护理专业委员会（HCPC）；如在海外受训且符合条件，查看其国际申请途径。问清何时必须完成注册，以及注册延误会怎样。执业注册不能保证录用或担保。 [执业监管机构](#guide-evidence-registration)\n\n## 书面确认职业代码、工资和工时\n请招聘方书面确认工作职责、SOC 职业代码、工作地点、合同保证的基本工资、每周合同工时，以及适用的薪级或档位。这条签证路线通常要求年薪至少 £25,000，同时满足适用的岗位标准工资或全国薪级表。使用全国薪级表时，要查岗位和工作所在英国构成国对应的标准。按实际合同工资和工时核对规则，不能只看 NHS 薪级。如果持学生签证，另行核对何时能转换签证，包括课程完成时间、入职日期和博士生例外。 [薪资与转换](#guide-evidence-vacancy)\n\n## 没有医护资质怎么办？\n在现有许可允许的范围内，可考虑适合自身技能的行政、数据或实验室辅助等岗位。逐一核对职责和专业要求。辅助或行政岗位未必符合健康和护理工作签证条件，需要另查能否走普通技术工人路线。比如，即使你已在 HCPC 注册，物理治疗助理岗位也不会因此变成注册物理治疗师岗位。不要把口头录用当成担保承诺。考虑成人社会护理岗位的读者可查看[护理岗位签证转换指南](/zh-CN/work-visa/adult-social-care-worker-sponsorship)。 [岗位资格](#guide-evidence-support)\n\n## 做好预算，核对家属资格\n申请仍要缴费。符合条件的主申请人和家属无需缴纳移民医疗附加费（IHS）。另留预算支付可能的执业注册费或考试费。家属资格取决于职业，护理员及部分其他中等技能职业有额外限制。在符合条件的担保许可下居留的时间，可能计入现行技术工人五年永居路线，还须满足其他条件。更广泛的 earned settlement（按贡献取得永居）改革要等相关规则生效后才会改变申请标准。可阅读[工作签证转换](/zh-CN/work-visa/skilled-worker-switch-extend-change-employer)和[技术工人永居](/zh-CN/work-visa/skilled-worker-settlement-ilr)。 [费用及家属](#guide-evidence-budget)\n",
+  "status": "DRAFT",
+  "publishedAt": null,
+  "updatedAt": "2026-11-27T00:00:00Z",
+  "sources": [
+    {
+      "key": "health",
+      "organisation": "Home Office",
+      "title": "Health and Care Worker visa",
+      "url": "https://www.gov.uk/health-care-worker-visa",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "health-job",
+      "organisation": "Home Office",
+      "title": "Health and Care Worker visa: Your job",
+      "url": "https://www.gov.uk/health-care-worker-visa/your-job",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "health-fees",
+      "organisation": "Home Office",
+      "title": "Health and Care Worker visa: How much it costs",
+      "url": "https://www.gov.uk/health-care-worker-visa/how-much-it-costs",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "health-family",
+      "organisation": "Home Office",
+      "title": "Health and Care Worker visa: Your partner and children",
+      "url": "https://www.gov.uk/health-care-worker-visa/your-partner-and-children",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "skilled-rules",
+      "organisation": "Home Office",
+      "title": "Immigration Rules Appendix Skilled Worker",
+      "url": "https://www.gov.uk/guidance/immigration-rules/immigration-rules-appendix-skilled-worker",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "occupation",
+      "organisation": "Home Office",
+      "title": "Immigration Rules Appendix Skilled Occupations",
+      "url": "https://www.gov.uk/guidance/immigration-rules/immigration-rules-appendix-skilled-occupations",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "sponsoring",
+      "organisation": "Home Office",
+      "title": "Workers and Temporary Workers: sponsor a skilled worker",
+      "url": "https://www.gov.uk/government/publications/sponsor-a-skilled-worker/workers-and-temporary-workers-sponsor-a-skilled-worker-accessible",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "register",
+      "organisation": "Home Office",
+      "title": "Register of licensed sponsors: workers",
+      "url": "https://www.gov.uk/government/publications/register-of-licensed-sponsors-workers",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "nhs-jobs",
+      "organisation": "NHS Business Services Authority",
+      "title": "NHS Jobs",
+      "url": "https://www.nhsbsa.nhs.uk/nhs-jobs",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "gmc",
+      "organisation": "General Medical Council",
+      "title": "Full registration for international medical graduates",
+      "url": "https://www.gmc-uk.org/registration-and-licensing/join-our-registers/registration-applications/application-guides/full-registration-for-international-medical-graduates",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "nmc",
+      "organisation": "Nursing and Midwifery Council",
+      "title": "Trained outside the UK: how-to guide",
+      "url": "https://www.nmc.org.uk/registration/joining-the-register/register-nurse-midwife/trained-outside-uk/how-to-guide/",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "hcpc",
+      "organisation": "Health and Care Professions Council",
+      "title": "International applications",
+      "url": "https://www.hcpc-uk.org/registration/getting-on-the-register/international-applications/",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "switch",
+      "organisation": "Home Office",
+      "title": "Health and Care Worker visa: Switch to this visa",
+      "url": "https://www.gov.uk/health-care-worker-visa/switch-to-this-visa",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    },
+    {
+      "key": "settlement",
+      "organisation": "Home Office",
+      "title": "Earned settlement: government response",
+      "url": "https://www.gov.uk/government/consultations/earned-settlement/outcome/a-fairer-pathway-to-settlement-government-response-to-the-consultation",
+      "accessedAt": "2026-11-27T00:00:00Z"
+    }
+  ],
+  "evidence": [
+    {
+      "key": "start",
+      "statement": "在 NHS 工作不等于符合签证条件。 健康和护理工作签证属于技术工人（Skilled Worker）路线。",
+      "supports": [
+        {
+          "sourceKey": "health",
+          "locator": "Overview and eligibility",
+          "excerpt": null,
+          "note": "在 NHS 工作不等于符合签证条件。 健康和护理工作签证属于技术工人（Skilled Worker）路线。"
+        },
+        {
+          "sourceKey": "register",
+          "locator": "Worker route and sponsor legal name",
+          "excerpt": null,
+          "note": "在 NHS 工作不等于符合签证条件。 健康和护理工作签证属于技术工人（Skilled Worker）路线。"
+        },
+        {
+          "sourceKey": "nhs-jobs",
+          "locator": "Official recruitment service",
+          "excerpt": null,
+          "note": "在 NHS 工作不等于符合签证条件。 健康和护理工作签证属于技术工人（Skilled Worker）路线。"
+        }
+      ]
+    },
+    {
+      "key": "registration",
+      "statement": "医生应核对英国医学总会（GMC）的注册和执业许可，以及职级要求。海外医学毕业生可能需要参加 PLAB 考试，也可能符合 GMC 的其他注册途径。护士和助产士应查看护理及助产士委员会（NMC）对学历、英语证明及适用的能力测试的要求。物理治疗师、放射技师等使用受保护职称的专业人员应查询健康与护理专业委员会（HCPC）；如在海外受训且符合条件，查看其国际申请途径。问清何时必须完成注册，以及注册延误会怎样。执业注册不能保证录用或担保。",
+      "supports": [
+        {
+          "sourceKey": "gmc",
+          "locator": "Full registration with a licence to practise",
+          "excerpt": null,
+          "note": "医生应核对英国医学总会（GMC）的注册和执业许可，以及职级要求。海外医学毕业生可能需要参加 PLAB 考试，也可能符合 GMC 的其他注册途径。护士和助产士应查看护理及助产士委员会（NMC）对学历、英语证明及适用的能力测试的要求。物理治疗师、放射技师等使用受保护职称的专业人员应查询健康与护理专业委员会（HCPC）；如在海外受训且符合条件，查看其国际申请途径。问清何时必须完成注册，以及注册延误会怎样。执业注册不能保证录用或担保。"
+        },
+        {
+          "sourceKey": "nmc",
+          "locator": "Evidence and assessment for registration",
+          "excerpt": null,
+          "note": "医生应核对英国医学总会（GMC）的注册和执业许可，以及职级要求。海外医学毕业生可能需要参加 PLAB 考试，也可能符合 GMC 的其他注册途径。护士和助产士应查看护理及助产士委员会（NMC）对学历、英语证明及适用的能力测试的要求。物理治疗师、放射技师等使用受保护职称的专业人员应查询健康与护理专业委员会（HCPC）；如在海外受训且符合条件，查看其国际申请途径。问清何时必须完成注册，以及注册延误会怎样。执业注册不能保证录用或担保。"
+        },
+        {
+          "sourceKey": "hcpc",
+          "locator": "International route and evidence requirements",
+          "excerpt": null,
+          "note": "医生应核对英国医学总会（GMC）的注册和执业许可，以及职级要求。海外医学毕业生可能需要参加 PLAB 考试，也可能符合 GMC 的其他注册途径。护士和助产士应查看护理及助产士委员会（NMC）对学历、英语证明及适用的能力测试的要求。物理治疗师、放射技师等使用受保护职称的专业人员应查询健康与护理专业委员会（HCPC）；如在海外受训且符合条件，查看其国际申请途径。问清何时必须完成注册，以及注册延误会怎样。执业注册不能保证录用或担保。"
+        }
+      ]
+    },
+    {
+      "key": "vacancy",
+      "statement": "请招聘方书面确认工作职责、SOC 职业代码、工作地点、合同保证的基本工资、每周合同工时，以及适用的薪级或档位。这条签证路线通常要求年薪至少 £25,000，同时满足适用的岗位标准工资或全国薪级表。使用全国薪级表时，要查岗位和工作所在英国构成国对应的标准。按实际合同工资和工时核对规则，不能只看 NHS 薪级。如果持学生签证，另行核对何时能转换签证，包括课程完成时间、入职日期和博士生例外。",
+      "supports": [
+        {
+          "sourceKey": "health-job",
+          "locator": "Eligible occupations, salary and employer",
+          "excerpt": null,
+          "note": "请招聘方书面确认工作职责、SOC 职业代码、工作地点、合同保证的基本工资、每周合同工时，以及适用的薪级或档位。这条签证路线通常要求年薪至少 £25,000，同时满足适用的岗位标准工资或全国薪级表。使用全国薪级表时，要查岗位和工作所在英国构成国对应的标准。按实际合同工资和工时核对规则，不能只看 NHS 薪级。如果持学生签证，另行核对何时能转换签证，包括课程完成时间、入职日期和博士生例外。"
+        },
+        {
+          "sourceKey": "occupation",
+          "locator": "Occupation tables, pay scales and restrictions for 6135–6136",
+          "excerpt": null,
+          "note": "请招聘方书面确认工作职责、SOC 职业代码、工作地点、合同保证的基本工资、每周合同工时，以及适用的薪级或档位。这条签证路线通常要求年薪至少 £25,000，同时满足适用的岗位标准工资或全国薪级表。使用全国薪级表时，要查岗位和工作所在英国构成国对应的标准。按实际合同工资和工时核对规则，不能只看 NHS 薪级。如果持学生签证，另行核对何时能转换签证，包括课程完成时间、入职日期和博士生例外。"
+        },
+        {
+          "sourceKey": "sponsoring",
+          "locator": "SK4 care restrictions, SK6 salaries and CoS fees",
+          "excerpt": null,
+          "note": "请招聘方书面确认工作职责、SOC 职业代码、工作地点、合同保证的基本工资、每周合同工时，以及适用的薪级或档位。这条签证路线通常要求年薪至少 £25,000，同时满足适用的岗位标准工资或全国薪级表。使用全国薪级表时，要查岗位和工作所在英国构成国对应的标准。按实际合同工资和工时核对规则，不能只看 NHS 薪级。如果持学生签证，另行核对何时能转换签证，包括课程完成时间、入职日期和博士生例外。"
+        },
+        {
+          "sourceKey": "switch",
+          "locator": "Student switching and in-country application restrictions",
+          "excerpt": null,
+          "note": "请招聘方书面确认工作职责、SOC 职业代码、工作地点、合同保证的基本工资、每周合同工时，以及适用的薪级或档位。这条签证路线通常要求年薪至少 £25,000，同时满足适用的岗位标准工资或全国薪级表。使用全国薪级表时，要查岗位和工作所在英国构成国对应的标准。按实际合同工资和工时核对规则，不能只看 NHS 薪级。如果持学生签证，另行核对何时能转换签证，包括课程完成时间、入职日期和博士生例外。"
+        }
+      ]
+    },
+    {
+      "key": "support",
+      "statement": "在现有许可允许的范围内，可考虑适合自身技能的行政、数据或实验室辅助等岗位。 逐一核对职责和专业要求。",
+      "supports": [
+        {
+          "sourceKey": "health-job",
+          "locator": "Eligible occupations, salary and employer",
+          "excerpt": null,
+          "note": "在现有许可允许的范围内，可考虑适合自身技能的行政、数据或实验室辅助等岗位。 逐一核对职责和专业要求。"
+        },
+        {
+          "sourceKey": "occupation",
+          "locator": "Occupation tables, pay scales and restrictions for 6135–6136",
+          "excerpt": null,
+          "note": "在现有许可允许的范围内，可考虑适合自身技能的行政、数据或实验室辅助等岗位。 逐一核对职责和专业要求。"
+        },
+        {
+          "sourceKey": "switch",
+          "locator": "Student switching and in-country application restrictions",
+          "excerpt": null,
+          "note": "在现有许可允许的范围内，可考虑适合自身技能的行政、数据或实验室辅助等岗位。 逐一核对职责和专业要求。"
+        }
+      ]
+    },
+    {
+      "key": "budget",
+      "statement": "申请仍要缴费。 符合条件的主申请人和家属无需缴纳移民医疗附加费（IHS）。",
+      "supports": [
+        {
+          "sourceKey": "health-fees",
+          "locator": "Application fees, healthcare surcharge and savings",
+          "excerpt": null,
+          "note": "申请仍要缴费。 符合条件的主申请人和家属无需缴纳移民医疗附加费（IHS）。"
+        },
+        {
+          "sourceKey": "health-family",
+          "locator": "Role restrictions and family conditions",
+          "excerpt": null,
+          "note": "申请仍要缴费。 符合条件的主申请人和家属无需缴纳移民医疗附加费（IHS）。"
+        },
+        {
+          "sourceKey": "skilled-rules",
+          "locator": "SW 1.5A, SW 6.1B–6.1C, salary options, SW 19–24, SW 29.1A and SW 32A.2",
+          "excerpt": null,
+          "note": "申请仍要缴费。 符合条件的主申请人和家属无需缴纳移民医疗附加费（IHS）。"
+        },
+        {
+          "sourceKey": "settlement",
+          "locator": "Announced reform and implementation status",
+          "excerpt": null,
+          "note": "申请仍要缴费。 符合条件的主申请人和家属无需缴纳移民医疗附加费（IHS）。"
+        }
+      ]
+    }
+  ]
+}

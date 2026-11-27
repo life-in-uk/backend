@@ -1,0 +1,41 @@
+{
+  "slug": "adult-social-care-worker-sponsorship",
+  "category": "work-visa",
+  "status": "DRAFT",
+  "sourceLocale": "zh-CN",
+  "sourcesVerifiedOn": "2026-11-27",
+  "editorialStatus": "Owner and independent immigration and fluent-language review pending.",
+  "canonicalization": "guide-content-v1",
+  "variants": [
+    {
+      "locale": "zh-CN",
+      "path": "zh-CN.json",
+      "sha256": "2abb0d44bebab21b1602f6c8d9d376c309f9945f7e76f54c30cc114aed30efa8",
+      "contentSha256": "4e06a9b4a71bb822463fccb2d9af568e9cbbd6e41202c3c376271ed40f0704a0"
+    },
+    {
+      "locale": "zh-TW",
+      "path": "zh-TW.json",
+      "sha256": "ff6314eb2b125bdc7cc286bac0d37798c1e0504d5a86c02a75e31c7ebefbea10",
+      "contentSha256": "7f1eded821de4d412e654897e6220248cbfea268de82f0e89b69cc4ed7557459"
+    },
+    {
+      "locale": "en",
+      "path": "en.json",
+      "sha256": "8eea0d3299d021357aa76d6145b2c6b2a82fe541ab51f0117ad6ae390afd0715",
+      "contentSha256": "a2c58552c1ee38c1be9262e73f94b44d8b8d36d755d1b9dd1152aa18ad363904"
+    },
+    {
+      "locale": "ur",
+      "path": "ur.json",
+      "sha256": "9c329398c1edcaf704cddd82583267f5625f2c4167c74d3cf65031ad68a6e8dc",
+      "contentSha256": "7c147ee64220f493208b7ed83ad40976c405ac4aaa975d03874f7ee2cca6510c"
+    },
+    {
+      "locale": "hi",
+      "path": "hi.json",
+      "sha256": "075ebf35749e392a5166ea5e863ada23f3377684e9207e855cb3435963f6db86",
+      "contentSha256": "5e87ddefb39326c505c470d46344aec1a145729fbf655b02a8ab65ec2eaa08cb"
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+# Healthcare and adult social care editorial review
+
+**GO for owner review. DRAFT.** The ten localized files cover `zh-CN`, `zh-TW`, `en`, `ur` and `hi`. Independent professional immigration review and independent fluent human language review have not taken place. Recheck Urdu and Hindi idiom and legally sensitive distinctions before publication. The examples are fictional.
+
+- The immigration and professional registration checks use sources verified on 27 November 2026. NHS hiring, registration and sponsorship are separate decisions. The UK visa rules and nation-specific pay scales are distinguished from the England-only CQC check. The GMC source was verified through web research. A separate command-line link check returned HTTP 403, so reader access can vary by client.
+- Overseas entry for SOC 6135/6136 and the two domestic provisions are distinguished. Checked the sponsoring-employer, lawful-work and CoS issue-date conditions, the strictly-before-22-July-2028 deadline for SW 6.1B(a), the existing-worker route in SW 6.1B(b), and the limited SW 6.1C CQC exception. Checked salary requirements, the dependant partner restriction, the qualifying original 6145 or 6146 grant under the pre-11 March 2024 rules, continuous qualifying sponsored permission and the limited child exceptions against the operative rules. [Immigration Rules](https://www.gov.uk/guidance/immigration-rules/immigration-rules-appendix-skilled-worker) · [Sponsor guidance](https://www.gov.uk/government/publications/sponsor-a-skilled-worker/workers-and-temporary-workers-sponsor-a-skilled-worker-accessible)
+- The health Guide separates the current qualifying five-year settlement route from wider policy reform. Recheck Rules, future changes, fees and occupational going rates before staging any release. Protecting against misleading CoS and recruitment offers is part of the care Guide. [Earned settlement response](https://www.gov.uk/government/consultations/earned-settlement/outcome/a-fairer-pathway-to-settlement-government-response-to-the-consultation) · [Official scam reporting](https://www.gov.uk/report-suspicious-emails-websites-phishing/report-visa-and-immigration-scams)
+
+| Validation | Result |
+|---|---|
+| Locale, dates, source parity, links and canonical hashes | Both editorial validator tests passed. |
+| Java Guide reader and GuideQualityGate | 10 of 10 accepted, zero warnings, exact canonical hashes. |
+| Read-only public catalogue | Ten candidate API routes returned 404 and 15 unique localized links to existing Guides returned 200. Check protected draft inventory in the normal protected process before any write. |
+| Backend | Maven verify on the base revision completed with 1,242 passed, 53 skipped and zero failures. This PR changes editorial files only. |
+| Offline publisher rehearsal | All 50 tests passed. The real local archive passed pack/check and the generic runner chose `family-visa-v1` with the exact scope. A mocked resume reused its original checkpoint. AWS and editorial writes were mocked. |
+| Frontend fixture previews | All ten localized routes rendered at 320 px. Checked canonical URLs, five hreflang targets, Urdu RTL, overflow and a single section-aware disclaimer against a local PR #48 snapshot. Production smoke checks and curated navigation are separate release steps. |
+
+Local review ZIP SHA-256 `8292dd0a57a2b2441f66e1f6c56a9fd343627d72ca8c6c74d5f6d55219203e82`. Release manifest SHA-256 `8191694c87b157306a2a807547c265d407fd9690231c712fd6128330d67aba31`. Canonical hashes are pinned in the two per-Guide editorial manifests. Follow the [existing publishing runbook](../../../../deploy/PUBLISHING.md) after owner review and separate authorization.
