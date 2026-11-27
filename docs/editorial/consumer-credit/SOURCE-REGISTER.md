@@ -1,6 +1,6 @@
 # Primary and authoritative consumer-credit sources
 
-Verified on 27 November 2026. Statutes and the FCA Handbook are used for legal and regulatory rules. MoneyHelper and the Financial Ombudsman explain the practical steps. Issuer terms are examples of product mechanics. Product thresholds, costs and offers still need to be checked against the customer's terms. MoneyHelper was readable with the research browser. Direct command-line link checks returned HTTP 403 for its URLs; GOV.UK provides a separate free debt advice reference.
+Final review on 27 November 2026. Statutes and the FCA Handbook are used for legal and regulatory rules. MoneyHelper and the Financial Ombudsman explain the practical steps. Issuer terms are examples of product mechanics. Product thresholds, costs and offers still need to be checked against the customer's terms. MoneyHelper was readable with the research browser. Direct command-line link checks returned HTTP 403 for its URLs; GOV.UK provides a separate free debt advice reference.
 
 | ID | Source | Verified use |
 |---|---|---|
@@ -25,3 +25,4 @@ Verified on 27 November 2026. Statutes and the FCA Handbook are used for legal a
 | money-transfer | [Money transfers](https://www.mbna.co.uk/credit-cards/help-and-support/my-account/balance-and-money-transfers/money-transfers.html) · MBNA | Issuer explanation and example offer terms |
 | airline | [Reward flights](https://www.britishairways.com/content/the-british-airways-club/avios/spending-avios/reward-flights) · British Airways | Availability, Avios and cash charges |
 | debt-uk | [Get free debt advice](https://www.gov.uk/debt-advice) · GOV.UK | Independent debt support routes |
+| section75a | [Consumer Credit Act 1974 section 75A](https://www.legislation.gov.uk/ukpga/1974/39/section/75A) · UK Parliament | Separate potential protection for certain linked credit agreements. |

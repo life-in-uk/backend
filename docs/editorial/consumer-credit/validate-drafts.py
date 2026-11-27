@@ -88,7 +88,7 @@ class ConsumerCreditDraftTest(unittest.TestCase):
         for locale in LOCALES:
             with self.subTest(locale=locale):
                 self.check_numbers(FIRST, locale,
-                                   ["75", "75", "£100", "£30,000", "75", "£50", "£600"])
+                                   ["75", "75", "£100", "£30,000", "75", "£50", "£600", "120"])
                 self.check_numbers(PROMO, locale, ["0%", "0%", "0%", "£2,400", "3%", pounds(fee_12),
                                    pounds(transfer + fee_12), "12", pounds((transfer + fee_12) / 12),
                                    "1.5%", pounds(fee_6), pounds(transfer + fee_6), "6",
