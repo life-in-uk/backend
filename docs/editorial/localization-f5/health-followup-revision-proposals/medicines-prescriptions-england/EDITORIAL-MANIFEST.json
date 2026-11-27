@@ -1,0 +1,63 @@
+{
+  "slug": "medicines-prescriptions-england",
+  "category": "health-nhs",
+  "status": "DRAFT",
+  "sourceLocale": "zh-CN",
+  "scope": "Existing Guide replacement proposal only",
+  "reviewedOn": "2026-11-27",
+  "canonicalization": "guide-content-v1",
+  "previousPublicSnapshot": {
+    "zh-CN": {
+      "sourceRevisionId": "4c528296-9639-4b5a-91d6-2ccb5b13c658",
+      "contentSha256": "7ec7cce6c6841222dd7df0e30e325bc014c8d34454e3ad9f3dbcff59b043a378"
+    },
+    "zh-TW": {
+      "sourceRevisionId": "4c528296-9639-4b5a-91d6-2ccb5b13c658",
+      "contentSha256": "31183776db6549b99c383055215340f956720f10dab50733292ee5a4c5da9877"
+    },
+    "en": {
+      "sourceRevisionId": "4c528296-9639-4b5a-91d6-2ccb5b13c658",
+      "contentSha256": "dbbe7fccc89dd98219e75abcd0374477915983340a5e1d54926d12de4c4e447f"
+    },
+    "ur": {
+      "sourceRevisionId": "4c528296-9639-4b5a-91d6-2ccb5b13c658",
+      "contentSha256": "b4ad0a189f54b95ba11ceea126082e634904ec383c8a9d745bf0651bd5c4de3d"
+    },
+    "hi": {
+      "sourceRevisionId": "4c528296-9639-4b5a-91d6-2ccb5b13c658",
+      "contentSha256": "afeb572e2530093a304835f670d260fd2a25b3aedec4da6becab2e466d107898"
+    }
+  },
+  "variants": [
+    {
+      "locale": "zh-CN",
+      "path": "zh-CN.json",
+      "sha256": "a22347644f7288ce18d53583f02efe2e3e798c892d17a3ac01e6dbdb88196e24",
+      "contentSha256": "16b0d394d6c18ec3d6f2465703bb3e0e30803053c9b2f90d76064a94f1cb216d"
+    },
+    {
+      "locale": "zh-TW",
+      "path": "zh-TW.json",
+      "sha256": "cb05d93752d67b8664576c3573b23439b62ae2622506c47abc73c2745be29854",
+      "contentSha256": "ddf6ab57657a6d36099c8d21a08e4d04348670f73c30edf6faff5ba6caa744ba"
+    },
+    {
+      "locale": "en",
+      "path": "en.json",
+      "sha256": "313aa46bf1f2bd82486d0a647c824db6d521e3910cd8fda6979a8d833ac9545f",
+      "contentSha256": "7364a210723526213918dd278c3a036c992a14f4e2d689d3d884abe5746a310c"
+    },
+    {
+      "locale": "ur",
+      "path": "ur.json",
+      "sha256": "500dc55809ddba92c81ed1e7aacc73eadc01b2b461f48791667b0ec8c1967afd",
+      "contentSha256": "18a2c984edb3be9da4776d8ff24cde49f4d804379c2156b1cd772cce2ba3eda5"
+    },
+    {
+      "locale": "hi",
+      "path": "hi.json",
+      "sha256": "b85a5a6cbaf707544106c1c60568f13875f1a9fcc651c23d6b160355ed131898",
+      "contentSha256": "314373d2b9b25705cc444b1dcc7305622699de4bc384442d643fe18edbcfc48e"
+    }
+  ]
+}

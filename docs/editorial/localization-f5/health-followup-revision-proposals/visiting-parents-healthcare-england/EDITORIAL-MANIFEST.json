@@ -1,0 +1,63 @@
+{
+  "slug": "visiting-parents-healthcare-england",
+  "category": "health-nhs",
+  "status": "DRAFT",
+  "sourceLocale": "zh-CN",
+  "scope": "Existing Guide replacement proposal only",
+  "reviewedOn": "2026-11-27",
+  "canonicalization": "guide-content-v1",
+  "previousPublicSnapshot": {
+    "zh-CN": {
+      "sourceRevisionId": "5e789f75-86ee-4d96-8ffc-8ebd45a4bbc4",
+      "contentSha256": "22e84abfabb662db17450e0c1176e513b9418bfc9679e0d5121f2e9c21cd0377"
+    },
+    "zh-TW": {
+      "sourceRevisionId": "5e789f75-86ee-4d96-8ffc-8ebd45a4bbc4",
+      "contentSha256": "e1db01037f194926a935b1d4f9ebb75157b06d8ae41cc9e97514667fd8f99d69"
+    },
+    "en": {
+      "sourceRevisionId": "5e789f75-86ee-4d96-8ffc-8ebd45a4bbc4",
+      "contentSha256": "4b77fb4e4211b9063163edf11567cc36340ab924448ada7a9c2cc7f569d5136c"
+    },
+    "ur": {
+      "sourceRevisionId": "5e789f75-86ee-4d96-8ffc-8ebd45a4bbc4",
+      "contentSha256": "3ac061e7f939b6d95ec3f251613fa4d92c5d3dda077bd9c83c79a99acd34d8b6"
+    },
+    "hi": {
+      "sourceRevisionId": "5e789f75-86ee-4d96-8ffc-8ebd45a4bbc4",
+      "contentSha256": "9f6823366a70ec0ec5742e609a6801184a49025ae0da0c30d0c8ec68653319cb"
+    }
+  },
+  "variants": [
+    {
+      "locale": "zh-CN",
+      "path": "zh-CN.json",
+      "sha256": "aacca1f3e393dd34d26bf28d32eff351bcbb51c9fd3ddb6623a4133932700fc1",
+      "contentSha256": "3593368c74c79d2a03f61598b2a0c3c364060272922f181d60d7af54e602d9c3"
+    },
+    {
+      "locale": "zh-TW",
+      "path": "zh-TW.json",
+      "sha256": "a8f3fb8fa7dbba4a66e0c58ccdc22534642327aefb0fab2fd2fc36af5f49812d",
+      "contentSha256": "1c28628fedcd52592d170b20da4edfdd3436a8c7505aee746524cd1073a159ec"
+    },
+    {
+      "locale": "en",
+      "path": "en.json",
+      "sha256": "149955d66ffceda40939a18c2f584b9014b881101cbd490bc604e44fb1d8ad66",
+      "contentSha256": "9235daacddb1da9254b3c6c10e5dbc50105717bf428d448efc885e534e1e1f42"
+    },
+    {
+      "locale": "ur",
+      "path": "ur.json",
+      "sha256": "93f8af4c34e4d924209972f2ee30ec1817de60921b1c28f526a2e35e70813142",
+      "contentSha256": "c8b104a92c70569cc971d353f4f3f7866b3846f599ad82973b1d256b402c3ff8"
+    },
+    {
+      "locale": "hi",
+      "path": "hi.json",
+      "sha256": "8f9bf0876c7506b98b0b78a9ff832f242b74e9897336851169c097925b1b1201",
+      "contentSha256": "8098e336c3c3695acdfd93e2c28ff185223555ccd329b82b5f108e96b5dd434c"
+    }
+  ]
+}

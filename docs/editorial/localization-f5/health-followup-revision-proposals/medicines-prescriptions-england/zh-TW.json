@@ -1,0 +1,387 @@
+{
+  "slug": "medicines-prescriptions-england",
+  "category": "health-nhs",
+  "title": "英國怎麼買藥？處方、Pharmacy First、國內一直吃的藥到了英國怎麼辦",
+  "summary": "英格蘭的藥品分類、Pharmacy First、處方費與免費條件、PPC、緊急用藥，以及從國內帶藥、通用名、中藥和抗生素的注意事項。",
+  "content": "# 英國怎麼買藥？處方、Pharmacy First、國內一直吃的藥到了英國怎麼辦\n\n最後更新: 2026-11-27\n\n> 這篇講的是**英格蘭（England）**。處方怎麼收費、藥房能做哪些事，蘇格蘭、威爾士和北愛爾蘭都有自己的規定，跟英格蘭不一樣，以後單獨寫。\n\n到了英格蘭，買藥的方式可能跟你習慣的不太一樣。這邊的藥大致分三種拿法：有的在超市就能買，有的要在藥房、當著藥劑師的面才能買，還有的必須有處方。弄清楚自己要的藥屬於哪一種，很多事情就好辦了。\n\n## 藥分三類：超市、藥房、處方\n\n英國把藥分成三類：\n\n- **General Sales List（GSL）**：超市、便利店都能買到，藥房的貨架上也能自己拿；\n- **Pharmacy medicines（P）**：只能在藥房買，而且要在藥劑師在場的情況下賣給你；\n- **Prescription only medicines（POM）**：必須有醫生或其他有權開藥的醫護人員開的處方，到藥房去取。[查看官方依據](#guide-evidence-three-medicine-classes)\n\n所以在超市找不到你要的藥，不一定是英國沒有，可能要去藥房問，或者需要處方。\n\n## 不舒服，可以先去藥房\n\n英格蘭的 pharmacy（藥房）不只是賣藥的地方。藥劑師（pharmacist）可以給你看看情況、出主意，告訴你該買什麼藥，或者該去找誰。\n\n從 2024 年 1 月底開始，英格蘭有一個叫 **Pharmacy First** 的 NHS 服務。下面這七種情況，可以直接去藥房，不用先約 GP，也不用別人轉介：\n\n- 鼻竇炎（sinusitis）：12 歲及以上；\n- 喉嚨痛（sore throat）：5 歲及以上；\n- 急性中耳炎（acute otitis media）：1 到 17 歲；\n- 蟲咬後感染（infected insect bite）：1 歲及以上；\n- 膿皰瘡（impetigo）：1 歲及以上；\n- 帶狀皰疹（shingles）：18 歲及以上；\n- 單純性尿路感染（uncomplicated UTI）：16 到 64 歲的女性。[查看官方依據](#guide-evidence-pharmacy-first-seven-conditions)\n\n藥劑師會按規定的診療流程給你看，給你自我護理的建議；只有在合適的時候，才會從一小部分處方藥裡給你拿藥。也就是說，去了不一定就給開藥，也不是所有小病藥劑師都能處理。[查看官方依據](#guide-evidence-pharmacy-first-pathway-limits)\n\n超出這個範圍的情況，藥劑師可能會建議你去看 GP 或者找其他服務。這是正常的分工，不是推脫。去之前可以先打個電話，問問這家藥房提供不提供 Pharmacy First。[查看官方依據](#guide-evidence-pharmacy-first-pathway-limits)\n\n另外，GP 診所、NHS 111 也可能把你轉到藥房去看一些小病。[查看官方依據](#guide-evidence-pharmacy-first-pathway-limits)\n\n## 處方是怎麼回事，要多少錢\n\nGP 或其他有權開藥的醫護人員給你開了處方以後，你去藥房取藥。\n\n在英格蘭，處方藥按**每一種藥**收費（item），不是按一張處方收費。2026/27 年度是 **每種 £9.90**，跟上一年一樣沒有漲。一張處方上開了三種藥，就要付三次 £9.90。[查看官方依據](#guide-evidence-prescription-charge-per-item)\n\n有些處方上的東西一直是免費的，比如避孕（contraception）用的藥品，還有住院期間用的藥。[查看官方依據](#guide-evidence-prescription-charge-per-item)\n\n## 誰可以免費拿處方藥\n\n英格蘭有一些人可以免費拿處方藥，條件跟年齡、懷孕或剛生孩子、某些身體狀況，以及是否領取某些福利或者收入低有關。具體條件比較細，最可靠的是去 NHSBSA（負責處理 NHS 費用減免的機構）的網站，用它的 eligibility checker 查一下自己符不符合。[查看官方依據](#guide-evidence-free-prescription-eligibility)\n\n有兩點可以先說清楚：\n\n- **交了 IHS 不代表處方免費。** GOV.UK 寫得很明白：交了 IHS 以後，處方藥還是要自己付錢。[查看官方依據](#guide-evidence-ihs-and-students-not-exempt)\n- **學生身份本身也不會讓處方自動免費。** 學生跟其他人一樣，要看自己是否符合免費或減費的條件。[查看官方依據](#guide-evidence-ihs-and-students-not-exempt)\n\n## Prescription Prepayment Certificate（PPC）\n\n如果你需要長期吃好幾種處方藥，可以瞭解一下 **PPC**。它不是保險，而是預先付一筆錢，在有效期內拿英格蘭 NHS 的處方藥，一般就不用再一次次按種付錢。\n\n現在的價格是：\n\n- 3 個月：£32.05；\n- 12 個月：£114.50。\n\n按 NHSBSA 的說法，如果你三個月裡要拿的處方藥超過 3 種、或者一年裡超過 11 種，PPC 可能會幫你省錢。如果你一年只偶爾拿一兩次藥，就未必划算。買之前，NHSBSA 也建議先查一下自己是不是本來就可以免費。[查看官方依據](#guide-evidence-prescription-prepayment-certificates)\n\n另外還有一種跟激素替代治療（HRT）有關的 HRT PPC，12 個月 £19.80。[查看官方依據](#guide-evidence-prescription-prepayment-certificates)\n\n## 長期吃的藥快沒了\n\n平時最好提前去 GP 那裡續藥，不要等到完全吃完。\n\n如果已經完全沒有了，GP 又聯繫不上，NHS 官網給的辦法是：\n\n- 藥已經完全吃完、又急需的時候，可以用 **111 網上的緊急處方服務**（emergency prescription）；[查看官方依據](#guide-evidence-running-out-of-regular-medicine)\n- 也可以打 **111**，跟 111 商量怎麼拿到應急用藥，撐到能正常拿處方為止；[查看官方依據](#guide-evidence-running-out-of-regular-medicine)\n- 藥房有時可以在沒有處方的情況下給一些應急的藥，**但可能要自己付錢**，而且給不給、給什麼，由藥劑師判斷；[查看官方依據](#guide-evidence-running-out-of-regular-medicine)\n- 如果是真正緊急的情況，就去 urgent treatment centre 或 A&E。[查看官方依據](#guide-evidence-running-out-of-regular-medicine)\n\n## 國內一直吃的藥，到英國以後怎麼辦\n\n很多人來英國之前，已經吃了好幾年降壓藥、降糖藥或者其他長期的藥。到了這邊，最自然的想法是讓 GP 照著國內的處方繼續開。\n\n這裡要有心理準備：沒有哪條規定說英國的 GP 必須照著國內的處方開藥。GP 會根據自己的臨床判斷來決定，可能會先問你的情況、做些檢查，然後決定是繼續用同樣成分的藥、換成別的藥，還是調整劑量。按 GOV.UK 對管制類藥物的說法，打算在英國住超過 3 個月的人，後續的藥要通過英國的醫生來開。[查看官方依據](#guide-evidence-uk-clinician-for-continuing-supply)\n\n所以，藥帶來了還不夠，最好把這些資訊也整理好帶上：\n\n- 藥名，**最好有通用名（有效成分的名字）**，不只是商品名；\n- 每片的規格（比如幾毫克）、每次吃多少、一天幾次；\n- 為什麼吃這個藥，也就是診斷是什麼；\n- 過敏史；\n- 相關的病歷、檢查報告、專科醫生的意見。\n\n這些不是官方要求你必須提交的材料，但有了它們，GP 理解你的情況會快很多。病歷是中文的話，NHS England 給診所的指引是：病人帶來的外文健康資料，如果臨床上需要，應當由合格的翻譯譯成英文，必要時中英文都放進病歷。[查看官方依據](#guide-evidence-foreign-health-records-translation)\n\n## 為什麼只知道中國的商品名不夠\n\n一種藥的商品名（brand name）是藥廠自己起的，通用名（generic name）則是它的有效成分的名字。比如同一個成分，不同的藥廠可以賣成不同的牌子。\n\nNHS 的做法是，除非有臨床上的理由，一般按通用名開處方。所以你跟英國醫生說國內的商品名，對方很可能對不上；說出有效成分的名字，就清楚得多。藥盒上通常能找到有效成分，可以拍下來，或者請國內的醫生把通用名寫在藥單上。[查看官方依據](#guide-evidence-generic-prescribing)\n\n不過也不能簡單認為\"成分一樣就完全一樣\"。有些藥的不同牌子之間不能隨便換，比如緩釋劑型、某些治療窗很窄的藥、吸入器和胰島素筆這類器械，以及生物製劑。國內的藥在英國也不一定有獲批的同款。具體用哪一種，由英國的醫生決定。[查看官方依據](#guide-evidence-brand-prescribing-exceptions)\n\n## 能不能從國內帶藥過來\n\n從中國帶藥只是本節的一個例子；限制取決於藥物成分、攜帶方式等條件，出發前請查英國官方規定。\n\n先說清楚一件事：網上常見的\"藥品最多隻能帶三個月\"，我們查到的官方規定，只針對**管制類藥物（controlled drugs）**。普通的、不屬於管制類的藥，我們沒有找到官方給出的統一數量上限。GOV.UK 對這類藥只說，進口規定要去看 MHRA（英國藥監機構）的要求。所以這裡不給具體數字，按個人需要帶，放在原包裝裡，附上處方或醫生寫的藥單，比較穩妥。[查看官方依據](#guide-evidence-non-controlled-medicine-import)\n\n如果是管制類藥物，GOV.UK 的規定是：[查看官方依據](#guide-evidence-controlled-drugs-import-rules)\n\n- 隨身帶入英國，最多 **3 個月** 的用量，而且必須是在你常住國家合法開給你本人的；\n- 要帶一封能證明藥是開給你的醫生信，寫明你的姓名、出行日期、藥品清單和劑量規格，並有開藥醫生的簽名；\n- 超過 3 個月用量的，或者之後再寄過來的，會被沒收；有特殊情況需要多帶的，可以提前申請個人許可（personal licence）；\n- 某些最嚴格的一類管制藥物（Schedule 1），沒有許可一律不能帶入。\n\n自己的藥算不算管制類藥物，可以問開藥的醫生，或者查 GOV.UK 上的說明。\n\n## 中藥和草藥，跟普通藥片不一樣\n\n中成藥、中草藥情況更復雜一些，不能簡單當作普通藥片看待：\n\n- MHRA 曾指出，英國市場上的草藥產品大多沒有經過註冊，並提醒過有些草藥產品被查出含有有毒的馬兜鈴屬成分、重金屬，或者摻了西藥成分。在英國買草藥產品，可以留意包裝上有沒有 THR 或 PL 號碼，有的話說明經過了 MHRA 的評估；[查看官方依據](#guide-evidence-herbal-products-and-imports)\n- 含有瀕危動植物成分的藥，入境英國可能需要 CITES 許可，不能隨便帶；[查看官方依據](#guide-evidence-herbal-products-and-imports)\n- 從大多數非歐盟國家個人帶入肉類、奶製品是不允許的；含動物成分的產品最好先查清楚。[查看官方依據](#guide-evidence-herbal-products-and-imports)\n\n另外，如果你在吃中藥，看 GP 的時候最好也告訴醫生。\n\n## 為什麼英國醫生不給開抗生素\n\n如果你以前在類似的情況下吃過抗生素，來英國以後同樣的症狀，GP 或藥劑師卻沒有給，可能會覺得奇怪。\n\nNHS 的說法是，抗生素對病毒感染沒用，比如感冒、流感和大多數咳嗽；在不需要的時候吃抗生素，以後真正需要的時候可能就不管用了。所以英國的醫生和藥劑師會先判斷是不是真的需要抗生素，不會只因為你以前在類似情況下吃過就開。[查看官方依據](#guide-evidence-antibiotics-not-for-viral-infections)\n\n需不需要抗生素，由看你的醫生或藥劑師按具體情況判斷。\n\n## 剛到英國，可以先準備好這些\n\n- 自己在吃的每一種藥：通用名、規格、劑量、一天幾次、為什麼吃；\n- 過敏史和主要病史，中文病歷最好有一份簡單的英文摘要；\n- 帶來的藥放在原包裝裡，附上處方或藥單；管制類藥物按 GOV.UK 的要求帶好醫生信；\n- 儘早註冊 GP，長期用藥的話，在帶來的藥吃完之前預約 GP；\n- 記住：藥快吃完又聯繫不上 GP，可以用 111 網上的緊急處方服務，或者打 111。\n\n## 官方資料\n\n以下資料訪問日期均為 2026 年 10 月 5 日。\n\n- GOV.UK（MHRA）— *Medicines: reclassify your product* — https://www.gov.uk/guidance/medicines-reclassify-your-product\n- NHS England — *Pharmacy First* — https://www.england.nhs.uk/primary-care/pharmacy/pharmacy-services/pharmacy-first/\n- Department of Health and Social Care（GOV.UK）— *Chancellor freezes charges to keep prescriptions under a tenner*（2025 年 11 月 21 日）— https://www.gov.uk/government/news/chancellor-freezes-charges-to-keep-prescriptions-under-a-tenner\n- NHS（NHS.uk）— *NHS prescription charges* — https://www.nhs.uk/nhs-services/prescriptions/nhs-prescription-charges/\n- NHS（NHS.uk）— *Who can get free prescriptions* — https://www.nhs.uk/nhs-services/prescriptions-and-pharmacies/who-can-get-free-prescriptions/\n- NHS Business Services Authority（NHSBSA）— *Free NHS prescriptions* — https://www.nhsbsa.nhs.uk/help-nhs-prescription-costs/free-nhs-prescriptions\n- NHS Business Services Authority（NHSBSA）— *Prescription prepayment certificates* — https://www.nhsbsa.nhs.uk/PPC\n- GOV.UK — *Pay for UK healthcare as part of your immigration application* — https://www.gov.uk/healthcare-immigration-application\n- NHS（NHS.uk）— *Getting medical care as a student* — https://www.nhs.uk/nhs-services/getting-medical-care-as-a-student/\n- NHS（NHS.uk）— *Emergency prescriptions* — https://www.nhs.uk/nhs-services/prescriptions/emergency-prescriptions/\n- NHS（NHS.uk）— *When to use 111* — https://www.nhs.uk/nhs-services/urgent-and-emergency-care-services/when-to-use-111/\n- NHS Specialist Pharmacy Service — *Prescribing by generic or brand name in primary care* — https://www.sps.nhs.uk/articles/prescribing-by-generic-or-brand-name-in-primary-care/\n- Powys Teaching Health Board（NHS Wales）— *Brand to generic medication information* — https://pthb.nhs.wales/services/pharmacy-and-medicines-management/public/brand-to-generic-medication-information/\n- NHS England — *Guidance for commissioners: Interpreting and Translation Services in Primary Care* — https://www.england.nhs.uk/wp-content/uploads/2018/09/guidance-for-commissioners-interpreting-and-translation-services-in-primary-care.pdf\n- GOV.UK — *Travelling with medicine containing controlled drugs* — https://www.gov.uk/guidance/controlled-drugs-personal-licences\n- GOV.UK — *Take medicine in or out of the UK* — https://www.gov.uk/take-medicine-in-or-out-uk\n- GOV.UK — *Banned and restricted goods* — https://www.gov.uk/duty-free-goods/banned-and-restricted-goods\n- GOV.UK（MHRA）— *Herbal medicines: new help available when advising patients about safe use* — https://www.gov.uk/drug-safety-update/herbal-medicines-new-help-available-when-advising-patients-about-safe-use\n- NHS（NHS.uk）— *Antibiotics* — https://www.nhs.uk/medicines/antibiotics/\n",
+  "publishedAt": null,
+  "updatedAt": "2026-11-27T00:00:00Z",
+  "sources": [
+    {
+      "key": "mhra-medicine-classification",
+      "organisation": "GOV.UK（MHRA）",
+      "title": "Medicines: reclassify your product",
+      "url": "https://www.gov.uk/guidance/medicines-reclassify-your-product",
+      "accessedAt": "2026-10-05T06:04:00Z"
+    },
+    {
+      "key": "nhs-england-pharmacy-first",
+      "organisation": "NHS England",
+      "title": "Pharmacy First",
+      "url": "https://www.england.nhs.uk/primary-care/pharmacy/pharmacy-services/pharmacy-first/",
+      "accessedAt": "2026-10-05T06:04:00Z"
+    },
+    {
+      "key": "dhsc-prescription-charge-freeze",
+      "organisation": "Department of Health and Social Care（GOV.UK）",
+      "title": "Chancellor freezes charges to keep prescriptions under a tenner",
+      "url": "https://www.gov.uk/government/news/chancellor-freezes-charges-to-keep-prescriptions-under-a-tenner",
+      "accessedAt": "2026-10-05T06:04:00Z"
+    },
+    {
+      "key": "nhs-prescription-charges",
+      "organisation": "NHS（NHS.uk）",
+      "title": "NHS prescription charges",
+      "url": "https://www.nhs.uk/nhs-services/prescriptions/nhs-prescription-charges/",
+      "accessedAt": "2026-10-05T06:04:00Z"
+    },
+    {
+      "key": "nhs-free-prescriptions-checker",
+      "organisation": "NHS（NHS.uk）",
+      "title": "Who can get free prescriptions",
+      "url": "https://www.nhs.uk/nhs-services/prescriptions-and-pharmacies/who-can-get-free-prescriptions/",
+      "accessedAt": "2026-10-05T06:04:00Z"
+    },
+    {
+      "key": "nhsbsa-free-prescriptions",
+      "organisation": "NHS Business Services Authority（NHSBSA）",
+      "title": "Free NHS prescriptions",
+      "url": "https://www.nhsbsa.nhs.uk/help-nhs-prescription-costs/free-nhs-prescriptions",
+      "accessedAt": "2026-10-05T06:04:00Z"
+    },
+    {
+      "key": "nhsbsa-ppc",
+      "organisation": "NHS Business Services Authority（NHSBSA）",
+      "title": "Prescription prepayment certificates",
+      "url": "https://www.nhsbsa.nhs.uk/PPC",
+      "accessedAt": "2026-10-05T06:04:00Z"
+    },
+    {
+      "key": "govuk-ihs",
+      "organisation": "GOV.UK",
+      "title": "Pay for UK healthcare as part of your immigration application",
+      "url": "https://www.gov.uk/healthcare-immigration-application",
+      "accessedAt": "2026-10-05T06:04:00Z"
+    },
+    {
+      "key": "nhs-student-medical-care",
+      "organisation": "NHS（NHS.uk）",
+      "title": "Getting medical care as a student",
+      "url": "https://www.nhs.uk/nhs-services/getting-medical-care-as-a-student/",
+      "accessedAt": "2026-10-05T06:04:00Z"
+    },
+    {
+      "key": "nhs-emergency-prescriptions",
+      "organisation": "NHS（NHS.uk）",
+      "title": "Emergency prescriptions",
+      "url": "https://www.nhs.uk/nhs-services/prescriptions/emergency-prescriptions/",
+      "accessedAt": "2026-10-05T06:04:00Z"
+    },
+    {
+      "key": "nhs-111",
+      "organisation": "NHS（NHS.uk）",
+      "title": "When to use 111",
+      "url": "https://www.nhs.uk/nhs-services/urgent-and-emergency-care-services/when-to-use-111/",
+      "accessedAt": "2026-10-05T06:04:00Z"
+    },
+    {
+      "key": "sps-generic-brand-prescribing",
+      "organisation": "NHS Specialist Pharmacy Service",
+      "title": "Prescribing by generic or brand name in primary care",
+      "url": "https://www.sps.nhs.uk/articles/prescribing-by-generic-or-brand-name-in-primary-care/",
+      "accessedAt": "2026-10-05T06:04:00Z"
+    },
+    {
+      "key": "powys-brand-to-generic",
+      "organisation": "Powys Teaching Health Board（NHS Wales）",
+      "title": "Brand to generic medication information",
+      "url": "https://pthb.nhs.wales/services/pharmacy-and-medicines-management/public/brand-to-generic-medication-information/",
+      "accessedAt": "2026-10-05T06:04:00Z"
+    },
+    {
+      "key": "nhs-england-interpreting-guidance",
+      "organisation": "NHS England",
+      "title": "Guidance for commissioners: Interpreting and Translation Services in Primary Care",
+      "url": "https://www.england.nhs.uk/wp-content/uploads/2018/09/guidance-for-commissioners-interpreting-and-translation-services-in-primary-care.pdf",
+      "accessedAt": "2026-10-05T06:04:00Z"
+    },
+    {
+      "key": "govuk-controlled-drugs-travel",
+      "organisation": "GOV.UK",
+      "title": "Travelling with medicine containing controlled drugs",
+      "url": "https://www.gov.uk/guidance/controlled-drugs-personal-licences",
+      "accessedAt": "2026-10-05T06:04:00Z"
+    },
+    {
+      "key": "govuk-take-medicine-in-or-out",
+      "organisation": "GOV.UK",
+      "title": "Take medicine in or out of the UK",
+      "url": "https://www.gov.uk/take-medicine-in-or-out-uk",
+      "accessedAt": "2026-10-05T06:04:00Z"
+    },
+    {
+      "key": "govuk-banned-restricted-goods",
+      "organisation": "GOV.UK",
+      "title": "Banned and restricted goods",
+      "url": "https://www.gov.uk/duty-free-goods/banned-and-restricted-goods",
+      "accessedAt": "2026-10-05T06:04:00Z"
+    },
+    {
+      "key": "mhra-herbal-medicines",
+      "organisation": "GOV.UK（MHRA）",
+      "title": "Herbal medicines: new help available when advising patients about safe use",
+      "url": "https://www.gov.uk/drug-safety-update/herbal-medicines-new-help-available-when-advising-patients-about-safe-use",
+      "accessedAt": "2026-10-05T06:04:00Z"
+    },
+    {
+      "key": "nhs-antibiotics",
+      "organisation": "NHS（NHS.uk）",
+      "title": "Antibiotics",
+      "url": "https://www.nhs.uk/medicines/antibiotics/",
+      "accessedAt": "2026-10-05T06:04:00Z"
+    }
+  ],
+  "evidence": [
+    {
+      "key": "three-medicine-classes",
+      "statement": "英國藥品分為 GSL（商店可買）、P（只能在藥房、藥劑師在場時購買）和 POM（需要有權開藥者開具的處方）。",
+      "supports": [
+        {
+          "sourceKey": "mhra-medicine-classification",
+          "locator": "Prescription only medicines；Pharmacy medicines；General sales list medicines",
+          "excerpt": null,
+          "note": "POM 需 \"a valid prescription issued by an authorised health professional\"；P \"only from a pharmacy and in the presence of a pharmacist\"；GSL 可在 corner shops 和 supermarkets 購買，藥房也可自選。"
+        }
+      ]
+    },
+    {
+      "key": "pharmacy-first-seven-conditions",
+      "statement": "Pharmacy First 自 2024 年 1 月 31 日起提供；七種情況可直接到藥房，不需預約 GP 或轉介，適用年齡如列表所示。",
+      "supports": [
+        {
+          "sourceKey": "nhs-england-pharmacy-first",
+          "locator": "服务介绍；7 conditions 年龄表",
+          "excerpt": null,
+          "note": "\"launched 31 January 2024\"；七種情況可 \"attending or contacting the pharmacy directly without the need for referral\"；年齡/性別範圍逐項一致。"
+        }
+      ]
+    },
+    {
+      "key": "pharmacy-first-pathway-limits",
+      "statement": "藥劑師按臨床路徑給出自我護理建議，只在合適時從一組受限的處方藥中供藥；超出範圍可能建議去 GP 或其他服務；GP、急診和 NHS 111 也可轉介到藥房。",
+      "supports": [
+        {
+          "sourceKey": "nhs-england-pharmacy-first",
+          "locator": "服务介绍：clinical pathway；referrals；red flag symptoms",
+          "excerpt": null,
+          "note": "\"only if appropriate, supplying a restricted set of prescription only medicines\"；轉介來源含 general practice、urgent and emergency care、NHS 111；red flag \"may warrant a referral to another healthcare provider\"。"
+        }
+      ]
+    },
+    {
+      "key": "prescription-charge-per-item",
+      "statement": "英格蘭處方費按項收取，2026/27 年度每項 £9.90；避孕藥品和住院病人用藥始終免費。",
+      "supports": [
+        {
+          "sourceKey": "nhs-prescription-charges",
+          "locator": "NHS prescription charges",
+          "excerpt": null,
+          "note": "\"£9.90 per item\"；\"Prescription charges are for each item not each prescription\"；避孕和住院用藥 \"always free\"。"
+        },
+        {
+          "sourceKey": "dhsc-prescription-charge-freeze",
+          "locator": "新闻稿正文（2025 年 11 月 21 日）",
+          "excerpt": null,
+          "note": "處方費凍結在 £9.90。"
+        }
+      ]
+    },
+    {
+      "key": "free-prescription-eligibility",
+      "statement": "免費處方條件與年齡、懷孕或近期生育、某些身體狀況以及福利或低收入有關，可用 NHSBSA eligibility checker 查詢。",
+      "supports": [
+        {
+          "sourceKey": "nhsbsa-free-prescriptions",
+          "locator": "Age；Benefits；Certificates",
+          "excerpt": null,
+          "note": "年齡、福利/低收入、孕產（需 maternity exemption certificate）和醫療豁免證明。"
+        },
+        {
+          "sourceKey": "nhs-free-prescriptions-checker",
+          "locator": "Check if you can get free prescriptions",
+          "excerpt": null,
+          "note": "NHS.uk 指向 NHSBSA 的資格查詢服務，會詢問年齡、居住地和健康狀況。"
+        }
+      ]
+    },
+    {
+      "key": "ihs-and-students-not-exempt",
+      "statement": "交了 IHS 仍需付處方費；學生身份本身不帶來免費處方，需看是否符合免費或減費條件。",
+      "supports": [
+        {
+          "sourceKey": "govuk-ihs",
+          "locator": "Overview",
+          "excerpt": null,
+          "note": "\"You’ll still need to pay for certain types of services, such as prescriptions …\""
+        },
+        {
+          "sourceKey": "nhs-student-medical-care",
+          "locator": "2. Register with a dentist",
+          "excerpt": null,
+          "note": "\"You may be able to apply for help with health costs, including prescriptions\"，即需申請而非自動免費。"
+        }
+      ]
+    },
+    {
+      "key": "prescription-prepayment-certificates",
+      "statement": "PPC 3 個月 £32.05、12 個月 £114.50，3 個月超過 3 項或 12 個月 11 項可能省錢；建議先查是否本可免費；HRT PPC 12 個月 £19.80。",
+      "supports": [
+        {
+          "sourceKey": "nhsbsa-ppc",
+          "locator": "NHS Prescription Prepayment Certificate (PPC)；If you get NHS prescriptions for HRT medicines",
+          "excerpt": null,
+          "note": "價格與省錢條件一致；\"check if you’re entitled to free NHS prescriptions\"；HRT PPC \"covers certain HRT medicines for a set price of £19.80 … valid for 12 months\"。"
+        }
+      ]
+    },
+    {
+      "key": "running-out-of-regular-medicine",
+      "statement": "長期用藥用完而 GP 聯繫不上時，可用 111 online 緊急處方服務或打 111 商量；藥房可在無處方時提供某些應急藥但可能收費；真正緊急時去 UTC 或 A&E。",
+      "supports": [
+        {
+          "sourceKey": "nhs-emergency-prescriptions",
+          "locator": "How to get emergency prescription medicine",
+          "excerpt": null,
+          "note": "111 online 可能轉到藥房；非重複處方 \"call 111 to discuss your options\"；藥房 \"may need to pay\"；列出 UTC 和 \"Go to A&E if it's an emergency\"。"
+        },
+        {
+          "sourceKey": "nhs-111",
+          "locator": "Emergency prescriptions",
+          "excerpt": null,
+          "note": "111 online 向藥房發出有限供應請求，\"until you can organise your regular repeat prescription\"。"
+        }
+      ]
+    },
+    {
+      "key": "uk-clinician-for-continuing-supply",
+      "statement": "打算在英國住超過 3 個月的人，後續含管制成分的藥需通過英國醫生開具。",
+      "supports": [
+        {
+          "sourceKey": "govuk-controlled-drugs-travel",
+          "locator": "Temporary residents in the UK, or visitors extending their stay (more than 3 months’ stay)",
+          "excerpt": null,
+          "note": "應攜帶至多 3 個月用量，並 \"obtain further supplies by consulting a UK clinician\"。該句僅針對管制類藥物，正文亦如此表述。"
+        }
+      ]
+    },
+    {
+      "key": "foreign-health-records-translation",
+      "statement": "病人帶來的外文健康資料，在有臨床需要時應儘快譯成英文，必要時中英文都納入病歷。",
+      "supports": [
+        {
+          "sourceKey": "nhs-england-interpreting-guidance",
+          "locator": "Principle 3 §5",
+          "excerpt": null,
+          "note": "\"should be translated into English as soon as possible where there is an identified clinical need\"；\"included in the patient record in both languages where this is deemed necessary\"。"
+        }
+      ]
+    },
+    {
+      "key": "generic-prescribing",
+      "statement": "通用名是有效成分名，商品名由藥廠命名；NHS 一般按通用名開處方，除非有臨床理由。",
+      "supports": [
+        {
+          "sourceKey": "sps-generic-brand-prescribing",
+          "locator": "Generic prescribing",
+          "excerpt": null,
+          "note": "\"The NHS has a policy of prescribing medicines by their generic name unless there is a clinical reason why the medicine must be prescribed by brand.\""
+        },
+        {
+          "sourceKey": "powys-brand-to-generic",
+          "locator": "Brand names and generics",
+          "excerpt": null,
+          "note": "品牌名由藥廠命名，通用名為有效成分名；包裝上總能找到通用名。"
+        }
+      ]
+    },
+    {
+      "key": "brand-prescribing-exceptions",
+      "statement": "緩釋劑型、治療窗窄的藥、吸入器和胰島素筆等器械以及生物製劑，不同牌子之間不宜隨意替換。",
+      "supports": [
+        {
+          "sourceKey": "sps-generic-brand-prescribing",
+          "locator": "When to prescribe by brand",
+          "excerpt": null,
+          "note": "列出 bioavailability differences（narrow therapeutic index）、modified release、specific devices（inhalers、insulin injection devices）和 biologics。"
+        }
+      ]
+    },
+    {
+      "key": "non-controlled-medicine-import",
+      "statement": "官方的 3 個月上限針對管制類藥物；不含管制成分的藥，GOV.UK 指向 MHRA 的進口規定。",
+      "supports": [
+        {
+          "sourceKey": "govuk-controlled-drugs-travel",
+          "locator": "Personal import 段落",
+          "excerpt": null,
+          "note": "\"If the medication … does not contain a controlled drug, you will need to check the regulations for importing with the … MHRA\"。"
+        },
+        {
+          "sourceKey": "govuk-take-medicine-in-or-out",
+          "locator": "Bringing medicine to the UK",
+          "excerpt": null,
+          "note": "\"You can only bring up to 3 months supply\" 出現在管制類藥物語境。"
+        }
+      ]
+    },
+    {
+      "key": "controlled-drugs-import-rules",
+      "statement": "管制類藥物最多隨身帶 3 個月用量，須在常住國家合法開給本人；帶醫生信；過量或之後郵寄的會被扣押，特殊情況可申請許可；Schedule 1 無許可一律不能帶入。",
+      "supports": [
+        {
+          "sourceKey": "govuk-controlled-drugs-travel",
+          "locator": "Personal import；Temporary residents；Exceptional circumstances",
+          "excerpt": null,
+          "note": "\"lawfully prescribed to you in your country of habitual residence\"；過量或郵寄 \"will be seized\"；\"Schedule 1 drugs cannot be imported into the UK without a licence in any circumstances\"。"
+        },
+        {
+          "sourceKey": "govuk-take-medicine-in-or-out",
+          "locator": "Bringing medicine to the UK",
+          "excerpt": null,
+          "note": "非英國居民 \"will need to carry a letter of proof\"，信件 \"must include\" 姓名、出行日期、藥品清單及劑量和開藥者簽名。"
+        }
+      ]
+    },
+    {
+      "key": "herbal-products-and-imports",
+      "statement": "MHRA 曾指出英國市場上的草藥產品大多未經許可，並警告過含馬兜鈴屬、重金屬或藥物成分的草藥產品；THR 或 PL 號碼錶示受監管產品；含瀕危物種成分的藥可能需 CITES 許可；大多數非歐盟國家的肉類和奶製品不得個人帶入。",
+      "supports": [
+        {
+          "sourceKey": "mhra-herbal-medicines",
+          "locator": "Article (April 2008)；How to identify regulated herbal products",
+          "excerpt": null,
+          "note": "\"Most herbal medicines on the UK market are currently unlicensed products\"（2008 年文章，2014 年發佈於 GOV.UK）；THR 和 PL 號碼用於識別受監管產品。"
+        },
+        {
+          "sourceKey": "govuk-banned-restricted-goods",
+          "locator": "Banned goods；Check if you need a CITES permit",
+          "excerpt": null,
+          "note": "CITES 許可 \"may\" 需要，包括 \"some medicines\"；\"personal imports of meat and dairy products from most non-EU countries\" 屬禁止。"
+        }
+      ]
+    },
+    {
+      "key": "antibiotics-not-for-viral-infections",
+      "statement": "抗生素對感冒、流感和大多數咳嗽等病毒感染無效；醫生和藥劑師會判斷是否需要。",
+      "supports": [
+        {
+          "sourceKey": "nhs-antibiotics",
+          "locator": "Overview",
+          "excerpt": null,
+          "note": "\"Antibiotics do not work for viral infections such as colds and flu, and most coughs\"；並說明許多輕微細菌感染可自愈。"
+        }
+      ]
+    }
+  ],
+  "status": "DRAFT"
+}
