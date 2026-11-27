@@ -49,23 +49,30 @@ protected GitHub `production` environment.
 6. Save the final private report digest printed by the workflow. Read
    `editorial/household/publications/<report-sha256>.json` for the manifest and
    package digests, backup reference, import receipt, publication UUIDs,
-   source and locale revision IDs, and hashes. A successful report means
-   all target Guide APIs, localized listings, sitemap URLs and Guide
-   hreflang entries verified. The runner also compared unrelated listing
-   metadata and sitemap URLs before and after publication.
-7. For new static Guide URLs, use the existing frontend Production release
-   process after the backend reports success. Verify the public detail and
-   hub routes in each locale after release. The editorial workflow performs
-   no application deployment or database migration.
+   source and locale revision IDs, hashes and per-locale public API catalogue
+   counts. The runner verifies committed revision history and locale pointers,
+   public API content and listings, and the backend's loopback sitemap and
+   hreflang entries. It also compares unrelated public listing metadata and
+   loopback sitemap URLs before and after publication.
+7. After backend acceptance, use the separate frontend Production release.
+   The frontend owns the public sitemap and release page list. Verify both
+   against the new frontend release's canonical URLs, including the new Guides
+   and their hreflang entries, and check the public detail and hub routes in
+   each locale. The editorial workflow performs no application deployment or
+   database migration.
 
 ## Recovery
 
 - After an interruption, retry with the same archive hash, S3 version and
   manifest hash, with a fresh Production approval. The runner reuses exact
   private batches and skips already published Guides only if their open
-  publication, review findings, date and hashes match the immutable receipt.
-  A missing checkpoint after review, foreign revision, mismatched package or
-  withdrawn publication stops the run for owner reconciliation.
+  publication, review findings, date and hashes match the immutable import
+  receipt and approved release. If publication committed before a verification
+  or report write failed, the retry verifies the committed release before
+  saving its report. The report's backup reference is from the verification
+  attempt that produced the report. A missing checkpoint after review,
+  foreign revision, mismatched package or withdrawn publication stops the
+  run for owner reconciliation.
 - For an authorized withdrawal, use the existing backend owner command
   `--guide-withdraw=<slug> --expect-current=<publication UUID> --reason=<reason>`.
   Use the exact current UUID printed for each completed publication or recorded

@@ -190,51 +190,6 @@ class ManifestReleaseTest(unittest.TestCase):
         self.assertIn("LifeInUK-PublishEducationGuides", protected)
         self.assertNotIn("release-manifest", (REPO / "infra/aws/ssm-editorial-import.yml").read_text())
 
-    def test_same_protected_publish_path_handles_single_guide_and_batches(self):
-        for slugs in ((CREDIT_SLUG,), (CREDIT_SLUG, SYNTHETIC_SLUG)):
-            with self.subTest(slugs=slugs):
-                self.assert_publication_sequence(slugs)
-
-    def assert_publication_sequence(self, slugs):
-        identities = {slug: {"slug": slug, "batchId": str(UUID(int=i)),
-                             "sourceRevisionId": str(UUID(int=i + 20))}
-                      for i, slug in enumerate(slugs, 1)}
-        receipts = {slug: {**row, "locales": {loc: {"contentHash": "c" * 64} for loc in ci.LOCALES}}
-                    for slug, row in identities.items()}
-        release = ci.Release("household", "money", frozenset(slugs), ci.EDUCATION_IDENTITY, self.manifest_hash)
-        state = {"batches": list(identities.values()), "publications": {},
-                 "revisions": {slug: [row["sourceRevisionId"]] for slug, row in identities.items()}}
-        publications = {slug: str(UUID(int=i + 40)) for i, slug in enumerate(slugs, 1)}
-        steps = {slug: iter([("DRAFT", list(ci.LOCALES), None), ("READY", [], None),
-                             ("APPROVED", [], None), ("PUBLISHED", [], publications[slug])])
-                 for slug in slugs}
-        session = Mock()
-
-        with patch.multiple(ci, load_import_receipt=Mock(return_value=receipts), read_state=Mock(return_value=state),
-                            owner_session=Mock(return_value=nullcontext(session)),
-                            batch_state=Mock(side_effect=lambda _, slug, *a, **k: next(steps[slug])),
-                            release_inventory=Mock(return_value={"unchanged": True}), verify_visibility=Mock(),
-                            backup=Mock(return_value="verified-backup"), credential=Mock(return_value="local-test-token"),
-                            save_receipt=Mock(return_value="d" * 64)):
-            result = ci.publish(dict.fromkeys(slugs, {}), "a" * 64, "b" * 64, DAY, self.root, release=release)
-            self.assertEqual(result, "d" * 64)
-            ci.owner_session.assert_called_once_with("APPROVAL")
-            ci.backup.assert_called_once_with("pre-household-publish")
-            ci.verify_visibility.assert_called_with(ci.edge, receipts, slugs=release.slugs, category="money")
-            report = ci.save_receipt.call_args.args[0]
-            self.assertEqual(report["publications"], publications)
-            self.assertEqual(report["batches"], receipts)
-            self.assertEqual(report["manifestSha256"], self.manifest_hash)
-
-        for row in identities.values():
-            batch_id = row["batchId"]
-            path = ci.batch_path(batch_id)
-            calls = [call for call in session.request.call_args_list if batch_id in call.args[1]]
-            self.assertEqual([call.args[:2] for call in calls[5:]], [("POST", path + "/approve"), ("POST", path + "/publish")])
-            self.assertEqual(len(calls[:5]), 5)
-            self.assertTrue(all(call.kwargs["bearer"] == "local-test-token" for call in calls[:5]))
-            self.assertIsNone(calls[-1].args[2]["expectCurrentPublicationId"])
-
     def test_generic_rollback_cannot_replay_a_withdrawn_publication(self):
         locale_rows = {locale: {} for locale in ci.LOCALES}
         receipt = {"batchId": str(UUID(int=9)), "sourceRevisionId": str(UUID(int=10)), "locales": locale_rows}
@@ -256,3 +211,208 @@ class ManifestReleaseTest(unittest.TestCase):
             withdrawn[0]["ended"] = True
             with self.assertRaisesRegex(ci.Refused, "withdrawn"):
                 go(withdrawn)
+
+
+class ManifestPublicationTest(unittest.TestCase):
+    def setUp(self):
+        scratch = tempfile.TemporaryDirectory()
+        self.addCleanup(scratch.cleanup)
+        self.root = Path(scratch.name)
+        self.slugs = (CREDIT_SLUG, SYNTHETIC_SLUG)
+        self.release = ci.Release("household", "money", frozenset(self.slugs), ci.EDUCATION_IDENTITY, "a" * 64)
+        self.package, self.receipts, self.details, self.publications = {}, {}, {}, {}
+        self.archive_hash, self.import_hash = "d" * 64, "b" * 64
+        self.findings = [{"source": "Local content review and GitHub Production owner approval",
+                          "importReceiptSha256": self.import_hash, "verifiedOn": DAY}]
+        self.state = {"batches": [], "guideRows": [], "revisions": {}, "publications": {}, "currentLocales": {}}
+        self.baseline = {"slug": "existing-money-guide", "category": "money", "title": "Existing title"}
+        self.edge_fault = None
+        self.origin_sitemap_fault = False
+        self.history_fault = False
+        self.pointer_fault = False
+        self.writes = []
+        self.saved_objects = {}
+        reviewed = manifest.read_json((CREDIT_PACKAGE / "EDITORIAL-MANIFEST.json").read_bytes())
+        paths = {row["locale"]: row["path"] for row in reviewed["variants"]}
+        for index, slug in enumerate(self.slugs, 1):
+            batch_id, source_id, publication_id = (str(UUID(int=index * 100 + offset)) for offset in (1, 2, 3))
+            self.package[slug], variants, locales = {}, {}, []
+            for offset, locale in enumerate(ci.LOCALES, 10):
+                draft = manifest.read_json((CREDIT_PACKAGE / paths[locale]).read_bytes())
+                draft["slug"] = slug
+                canonical = ci.canonical_form(draft)
+                content_hash = ci.digest(canonical.encode())
+                self.package[slug][locale] = (draft, content_hash)
+                variants[locale] = {"localeRevisionId": str(UUID(int=index * 100 + offset)), "contentHash": content_hash}
+                locales.append({**variants[locale], "locale": locale, "batchId": batch_id,
+                                "sourceRevisionId": source_id, "validationStatus": "VALID",
+                                "canonicalContent": canonical, "reviewStatus": "PENDING", "reviewedHash": None})
+            identity = self.release.identity
+            batch = {"batchId": batch_id, "sourceRevisionId": source_id, "slug": slug,
+                     "sourceContentHash": variants["zh-CN"]["contentHash"], "status": "DRAFT",
+                     "validFrom": identity.valid_from, "validUntil": None}
+            self.details[batch_id] = {"batch": batch, "locales": locales, "policyVersion": identity.policy,
+                                      "sourceVersion": identity.release}
+            self.receipts[slug] = {k: batch[k] for k in ("batchId", "sourceRevisionId", "sourceContentHash")}
+            self.receipts[slug]["locales"] = variants
+            self.state["batches"].append({"slug": slug, "batchId": batch_id, "sourceRevisionId": source_id})
+            self.state["revisions"][slug] = [source_id]
+            self.publications[slug] = publication_id
+
+    def request(self, method, path, payload=None, *, bearer=None):
+        parts = path.split("/")
+        batch_id = parts[4] if "/reviews/" in path else parts[5]
+        detail = self.details[batch_id]
+        batch = detail["batch"]
+        slug = batch["slug"]
+        if method == "GET":
+            return deepcopy(detail)
+        self.writes.append((slug, path.rsplit("/", 1)[-1]))
+        if "/reviews/" in path:
+            row = next(r for r in detail["locales"] if path.endswith("/" + r["locale"]))
+            self.assertEqual(bearer, "review-token")
+            self.assertEqual(payload, {"passed": True, "findings": self.findings, "contentHash": row["contentHash"]})
+            row.update(reviewStatus="PASSED", reviewedHash=row["contentHash"], reviewer=ci.REVIEW_SERVICE_ACTOR,
+                       reviewResult=ci.encoded(payload["findings"]).decode())
+            if all(r["reviewStatus"] == "PASSED" for r in detail["locales"]):
+                batch["status"] = "READY"
+        elif path.endswith("/approve"):
+            self.assertEqual(batch["status"], "READY")
+            batch["status"] = "APPROVED"
+        else:
+            self.assertTrue(path.endswith("/publish"))
+            self.assertEqual(batch["status"], "APPROVED")
+            self.assertEqual(payload, {"checklistId": "standard-v1", "verifiedOn": DAY,
+                                       "expectCurrentPublicationId": None})
+            batch["status"] = "PUBLISHED"
+            self.state["guideRows"].append(slug)
+            self.state["publications"][slug] = [{"id": self.publications[slug],
+                "sourceRevisionId": batch["sourceRevisionId"], "ended": False,
+                "checklistId": "standard-v1", "verifiedOn": DAY}]
+            self.state["currentLocales"][slug] = {
+                loc: {**variant, "batchId": batch_id} for loc, variant in self.receipts[slug]["locales"].items()
+            }
+            if self.history_fault:
+                self.state["revisions"][slug].append(str(UUID(int=999)))
+            if self.pointer_fault:
+                self.state["currentLocales"][slug]["en"]["localeRevisionId"] = str(UUID(int=999))
+
+    def detail_response(self, path, status, *, public=False):
+        *_, slug, _, locale = path.split("/")
+        if slug not in self.state["guideRows"]:
+            self.assertEqual(status, 404)
+            return b""
+        self.assertEqual(status, 200)
+        guide, content_hash = self.package[slug][locale]
+        body = {k: v for k, v in guide.items() if k != "status"}
+        body.update(publishedAt="2026-11-21T12:00:00Z", updatedAt="2026-11-21T12:00:00Z")
+        if public and self.edge_fault == "body":
+            body["content"] = "Unexpected public body"
+        if public and self.edge_fault == "hash":
+            content_hash = "0" * 64
+        if public and self.edge_fault == "unavailable":
+            raise ci.Refused("Public edge returned unexpected status for " + path)
+        return ci.encoded({"locale": locale, "guide": body, "contentHash": content_hash,
+                           "sourceRevisionId": self.receipts[slug]["sourceRevisionId"]})
+
+    def edge(self, path, status):
+        # The frontend has not added the new URLs and its sitemap is outside the publisher's contract.
+        self.assertNotEqual(path, "/sitemap.xml")
+        if path.startswith(("/api/owner/", "/api/editorial/")):
+            self.assertEqual(status, 404)
+            return b""
+        if path.startswith("/api/guides/locales/"):
+            rows = [self.baseline] + [{"slug": slug, "category": "money"} for slug in self.state["guideRows"]]
+            if self.state["guideRows"] and self.edge_fault == "duplicate":
+                rows.append(self.baseline)
+            if self.state["guideRows"] and self.edge_fault == "missing":
+                rows.pop()
+            if self.state["guideRows"] and self.edge_fault == "unrelated":
+                rows[0] = {**self.baseline, "title": "Unexpected unrelated edit"}
+            return ci.encoded(rows)
+        return self.detail_response(path, status, public=True)
+
+    def local_reader(self, path, status):
+        if path != "/sitemap.xml":
+            return self.detail_response(path, status)
+        self.assertEqual(status, 200)
+        root = '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">'
+        def url(locale, slug=""):
+            return f"https://lifeinuk.info/{locale}/money" + (f"/{slug}" if slug else "")
+        def entry(href, alternates=""):
+            return f"<url><loc>{href}</loc>{alternates}</url>"
+        entries = [entry(url(loc)) + entry(url(loc, self.baseline["slug"])) for loc in ci.LOCALES]
+        for slug in self.state["guideRows"]:
+            alternate_locales = [("en-GB" if loc == "en" else loc, loc) for loc in ci.LOCALES]
+            alternate_locales.append(("x-default", "zh-CN"))
+            if self.origin_sitemap_fault:
+                alternate_locales.pop()
+            links = "".join(f'<xhtml:link rel="alternate" hreflang="{lang}" href="{url(loc, slug)}"/>'
+                            for lang, loc in alternate_locales)
+            entries.extend(entry(url(loc, slug), links) for loc in ci.LOCALES)
+        return (root + "".join(entries) + "</urlset>").encode()
+
+    def write_audit_object(self, raw, key, directory):
+        self.assertNotIn(key, self.saved_objects)
+        self.saved_objects[key] = raw
+        return True
+
+    def publish(self):
+        with patch.multiple(ci, load_import_receipt=Mock(return_value=self.receipts),
+                            read_state=Mock(side_effect=lambda **_: deepcopy(self.state)),
+                            owner_session=Mock(return_value=nullcontext(Mock(request=self.request))),
+                            edge=Mock(side_effect=self.edge), local_reader=Mock(side_effect=self.local_reader),
+                            backup=Mock(return_value="verified-backup"), credential=Mock(return_value="review-token"),
+                            write_audit_object=Mock(side_effect=self.write_audit_object)):
+            return ci.publish(self.package, self.archive_hash, self.import_hash, DAY, self.root, release=self.release)
+
+    def assert_receipt(self, digest):
+        self.assertEqual(len(self.saved_objects), 1)
+        raw = self.saved_objects[f"editorial/household/publications/{digest}.json"]
+        self.assertEqual(ci.digest(raw), digest)
+        self.assertEqual(manifest.read_json(raw), {
+            "release": self.release.identity.release, "packageSha256": self.archive_hash,
+            "importReceiptSha256": self.import_hash, "verifiedOn": DAY, "backup": "verified-backup",
+            "publications": self.publications, "manifestSha256": self.release.manifest_hash,
+            "category": "money", "batches": self.receipts, "catalogueCounts": dict.fromkeys(ci.LOCALES, 3),
+        })
+
+    def test_publish_accepts_frontend_sitemap_lag_and_writes_verified_receipt(self):
+        self.assert_receipt(self.publish())
+        self.assertEqual(self.writes, [(slug, step) for slug in sorted(self.slugs)
+                                       for step in (*ci.LOCALES, "approve", "publish")])
+
+    def test_committed_batch_retries_verification_and_receipt_without_republication(self):
+        self.edge_fault = "unavailable"
+        with self.assertRaisesRegex(ci.Refused, "Public edge returned unexpected status"):
+            self.publish()
+        self.assertEqual(set(self.state["publications"]), set(self.slugs))
+        self.assertFalse(self.saved_objects)
+        writes = list(self.writes)
+        self.edge_fault = None
+        self.assert_receipt(self.publish())
+        self.assertEqual(self.writes, writes)
+
+    def test_real_verification_failures_prevent_the_final_receipt(self):
+        cases = (
+            ("edge_fault", "body", "Public Guide body differs"),
+            ("edge_fault", "hash", "Public variant differs"),
+            ("edge_fault", "duplicate", "Public catalogue has duplicate"),
+            ("edge_fault", "missing", "Public listing differs"),
+            ("edge_fault", "unrelated", "Unrelated inventory changed"),
+            ("origin_sitemap_fault", True, "Guide sitemap alternates differ"),
+            ("history_fault", True, "Committed revision history differs"),
+            ("pointer_fault", True, "Committed locale pointers differ"),
+        )
+        for attribute, fault, message in cases:
+            with self.subTest(fault=fault, check=attribute):
+                # Each subcase begins with a separate private import state.
+                fixture = ManifestPublicationTest()
+                fixture.setUp()
+                try:
+                    setattr(fixture, attribute, fault)
+                    with self.assertRaisesRegex(ci.Refused, message):
+                        fixture.publish()
+                    self.assertFalse(fixture.saved_objects)
+                finally:
+                    fixture.doCleanups()

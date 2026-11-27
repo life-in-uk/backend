@@ -116,12 +116,12 @@ class HouseholdDraftTests(unittest.TestCase):
             if path.startswith(("/api/owner/", "/api/editorial/")):
                 self.assertEqual(status, 404)
                 return b""
-            if path == "/sitemap.xml":
-                return sitemap
+            self.assertNotEqual(path, "/sitemap.xml")
             return ci.encoded(public_rows)
 
-        with patch.object(ci, "edge", side_effect=response):
+        with patch.multiple(ci, edge=Mock(side_effect=response), local_reader=Mock(return_value=sitemap)):
             baseline = ci.public_inventory(set(), category=household.CATEGORY, slugs=household.SLUGS)
+            ci.local_reader.assert_called_once_with("/sitemap.xml", 200)
             self.assertEqual(baseline["en"], [guide])
             self.assertEqual(baseline["sitemap"], [f"https://lifeinuk.info/en/education/{school}"])
             public_rows.append({"category": household.CATEGORY, "slug": sorted(household.SLUGS)[0]})
